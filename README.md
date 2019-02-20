@@ -1,2 +1,3 @@
-# website
-Project website
+# Ferret Website
+
+Built with Hugo
