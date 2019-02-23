@@ -1,6 +1,6 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <a class="navbar-item" href="https://bulma.io">
+        <a class="navbar-item" href="/">
             <img src="/img/logo.png" width="28" height="28" />
         </a>
 
@@ -16,30 +16,16 @@
             <span aria-hidden="true"></span>
         </a>
     </div>
-
+    
+    {{ if .Site.Menus.main }}
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item">
-                Introduction
-            </a>
-            <a class="navbar-item">
-                Quick Start
-            </a>
-            <a class="navbar-item">
-                Guidelines
-            </a>
-            <a class="navbar-item">
-                API
-            </a>
-        </div>
-
-        <div class="navbar-end">
-            <a class="navbar-item">
-                FAQ
-            </a>
-            <a class="navbar-item">
-                Contact
-            </a>
+            {{ range .Site.Menus.main.ByWeight }}
+                    <a href="{{ .URL }}" class="navbar-item">
+                        {{ .Name }}
+                    </a>
+            {{ end }}
         </div>
     </div>
 </nav>
+{{ end }}
