@@ -1,45 +1,24 @@
-
 {{ define "main" }}
 <div class="container section content">
     <div class="columns">
-<section id="main" class="column">
-  <h1 id="title">{{ .Title }}</h1>
-  <div>
-        <article id="content">
-           {{ .Content }}
-        </article>
-  </div>
-</section>
-<aside id="meta" class="column is-3">
-    <div>
-    <section>
-      <h4 id="date"> {{ .Date.Format "Mon Jan 2, 2006" }} </h4>
-      <h5 id="wordcount"> {{ .WordCount }} Words </h5>
-    </section>
-    {{ with .Params.topics }}
-    <ul id="topics">
-      {{ range . }}
-        <li><a href="{{ "topics" | absURL}}{{ . | urlize }}">{{ . }}</a> </li>
-      {{ end }}
-    </ul>
-    {{ end }}
-    {{ with .Params.tags }}
-    <ul id="tags">
-      {{ range . }}
-        <li> <a href="{{ "tags" | absURL }}{{ . | urlize }}">{{ . }}</a> </li>
-      {{ end }}
-    </ul>
-    {{ end }}
+        <section id="main" class="column is-8">
+            <h1 id="title">{{ .Title }}</h1>
+            <div>
+                <article id="content">
+                    {{ .Content }}
+                </article>
+            </div>
+        </section>
+        <aside class="column is-3 sticky-nav">
+            <h2>{{ .Parent.Title }}</h2>
+            {{ range .Parent.Pages }}
+                <article>
+                    <a href="{{ .URL }}">
+                        {{ .Title }}
+                    </a>
+                </article>
+            {{ end }}
+        </aside>
     </div>
-    <div>
-        {{ with .PrevInSection }}
-          <a class="previous" href="{{.Permalink}}"> {{.Title}}</a>
-        {{ end }}
-        {{ with .NextInSection }}
-          <a class="next" href="{{.Permalink}}"> {{.Title}}</a>
-        {{ end }}
-    </div>
-</aside>
-</div>
 </div>
 {{ end }}

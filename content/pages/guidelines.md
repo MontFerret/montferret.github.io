@@ -1,7 +1,9 @@
 ---
 title: "Guidelines"
 date: 2019-02-21T09:36:35-05:00
-draft: false 
+draft: false
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Sit duis officia ea fugiat. Reprehenderit consequat fugiat anim officia ipsum adipisicing quis est non ullamco magna aliquip ipsum sint. Esse eu qui qui laboris esse veniam voluptate eiusmod commodo exercitation.
+
+Aliqua minim aliquip mollit laborum dolor Lorem sint voluptate nostrud qui id laborum. Dolore Lorem amet cillum commodo adipisicing dolor sit proident ea cupidatat eiusmod cupidatat laboris proident. Et deserunt ut enim proident tempor. Irure amet laborum occaecat est nostrud duis sit aute non minim dolore Lorem veniam.
