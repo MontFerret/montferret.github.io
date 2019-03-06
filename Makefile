@@ -1,7 +1,7 @@
 default: build
 
 build:
-	rm -rf public && hugo
+	rm -rf public/* && hugo
 
 install:
 	cd themes/ferret && npm i && cd ../..
