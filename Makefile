@@ -1,4 +1,7 @@
-default: build
+default: serve
+
+serve:
+	rm -rf public/* && hugo server
 
 build:
 	rm -rf public/* && hugo

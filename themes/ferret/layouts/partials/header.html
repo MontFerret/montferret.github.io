@@ -22,7 +22,17 @@
         <div id="primary-nav" class="navbar-menu">
             <div class="navbar-start">
                 {{ $currentPage := . }}
-                {{ range .Site.Menus.main.ByWeight }}
+                {{ range .Site.Menus.left.ByWeight }}
+                        <a href="{{ .URL }}" class="navbar-item {{if or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }} active{{end}}"
+                        title={{ .Title }} id={{ .Identifier }}>
+                            {{ .Name }}
+                        </a>
+                {{ end }}
+            </div>
+
+            <div class="navbar-end">
+                {{ $currentPage := . }}
+                {{ range .Site.Menus.right.ByWeight }}
                         <a href="{{ .URL }}" class="navbar-item {{if or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }} active{{end}}"
                         title={{ .Title }} id={{ .Identifier }}>
                             {{ .Name }}
