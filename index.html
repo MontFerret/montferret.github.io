@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.0232661e82f9a0d5bcbfa7ec90746c211dc0b5a96100f5a8e635024293807e44.css">
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.cec2c4018ba48114fff0bd079da5418700d0b6b998798c7c0698827da1e86d4a.css">
 
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
@@ -92,24 +92,39 @@
             <div class="navbar-start">
                 
                 
-                        <a href="/quick-start/" class="navbar-item "
-                        title=Quick&#32;Start id=quickstart>
-                            Quick Start
+                        <a href="/overview/" class="navbar-item "
+                        title=Project&#32;overview id=overview>
+                            Overview
                         </a>
                 
-                        <a href="/guidelines/" class="navbar-item "
-                        title=Project&#32;Guidelines id=guidelines>
-                            Guidelines
+                        <a href="/guide/" class="navbar-item "
+                        title=User&#32;guide id=guide>
+                            Guide
                         </a>
                 
                         <a href="/api/" class="navbar-item "
-                        title=API id=api>
-                            API
+                        title=Api id=api>
+                            Api
                         </a>
                 
-                        <a href="/faqs/" class="navbar-item "
-                        title=Frequently&#32;Asked&#32;Questions id=faqs>
-                            FAQs
+                        <a href="/blog/" class="navbar-item "
+                        title=Blog id=blog>
+                            Blog
+                        </a>
+                
+            </div>
+
+            <div class="navbar-end">
+                
+                
+                        <a href="https://opencollective.com/ferret" class="navbar-item "
+                        title=Open&#32;collective id=donate>
+                            Donate
+                        </a>
+                
+                        <a href="https://github.com/MontFerret/ferret" class="navbar-item "
+                        title=GitHub&#32;repository id=github>
+                            GitHub
                         </a>
                 
             </div>
@@ -144,14 +159,10 @@
                 a web scraping system <br />aiming to simplify data extraction
                 from the web
             </h2>
-            <iframe
-                src="https://ghbtns.com/github-btn.html?user=MontFerret&repo=ferret&type=star&count=true&size=large"
-                frameborder="0"
-                scrolling="0"
-                width="160px"
-                height="30px"
-                style="height: 30px !important; padding-left: 10px;"
-            ></iframe>
+            <div class="hero-buttons">
+                <a href="/guide/get-started/" class="button is-primary is-radiusless">Get started</a>
+                <a href="https://github.com/MontFerret/ferret/releases" class="button is-radiusless">Download</a>
+            </div>
         </div>
     </div>
 </section>
@@ -159,26 +170,113 @@
 <main class="content container section">
     <div class="columns">
         <div class="column">
-            <h3>What is it?</h3>
+            <h3>Declarative</h3>
             <p>
-                ferret is a web scraping system aiming to simplify data
-                extraction from the web for such things like UI testing, machine
-                learning and analytics. Having its own declarative language,
-                ferret abstracts away technical details and complexity of the
-                underlying technologies, helping to focus on the data itself.
-                It's extremely portable, extensible and fast.
+                ferret has a declarative query language that makes it easy to focus on a data that you need to get.
             </p>
-            <a href="/quickstart/" class="button is-primary is-radiusless">Quick Start</a>
         </div>
         <div class="column">
-            <h3>Lorem Ipsum</h3>
+            <h3>Dynamic pages support</h3>
             <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo rem magni culpa. Officia, magnam voluptatum suscipit minus excepturi eos quo velit delectus, impedit nisi vel. Alias corrupti itaque ullam quisquam?
+                ferret has the ability to scrape JS rendered pages, handle all page events and emulate user interactions.
             </p>
-            <a href="#" class="button is-primary is-radiusless">Lorem Ipsum</a>
+        </div>
+        <div class="column">
+            <h3>Embeddable</h3>
+            <p>
+                ferret was designed as a library from the ground up. it can be easily embedded into any Go application.
+            </p>
         </div>
     </div>
 </main>
+
+<section class="content container section">
+    <hr />
+    <div class="columns">
+        <div class="column">
+            <h3>Hello, Ferret!</h3>
+            <p>
+                ferret uses Chrome/Chromium via Chrome Devtools Protocol to handle dynamically rendered web pages.
+            </p>
+        </div>
+        <div class="column">
+            <pre>
+                <code class="">
+LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
+
+WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
+
+LET tracks = ELEMENTS(doc, '.chartTrack__details')
+
+FOR track IN tracks
+    RETURN {
+        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
+        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
+    }
+                </code>
+            </pre>
+        </div>
+    </div>
+
+    <hr />
+    <div class="columns">
+        <div class="column">
+            <pre>
+                <code class="">
+LET doc = DOCUMENT("https://github.com/topics")
+
+FOR el IN ELEMENTS(doc, ".py-4.border-bottom")
+    LIMIT 10
+    LET url = ELEMENT(el, "a")
+    LET name = ELEMENT(el, ".f3")
+    LET desc = ELEMENT(el, ".f5")
+
+    RETURN {
+        name: TRIM(name.innerText),
+        description: TRIM(desc.innerText),
+        url: "https://github.com" + url.attributes.href
+    }
+                </code>
+            </pre>
+        </div>
+        <div class="column">
+            <h3>Dynamic pages handled easily</h3>
+            <p>ferret helps you to focus on the data you need using an easy to learn declarative language</p>
+        </div>
+    </div>
+
+    <hr />
+    <div class="columns">
+        <div class="column">
+            <h3>Simple extensibility</h3>
+            <p>ferret is extremeley extensible. Creating custom functions and types is super easy.</p>
+        </div>
+        <div class="column">
+            <pre>
+                <code class="">
+transform := func(ctx context.Context, args ...core.Value) (core.Value, error) {
+    str := args[0].(values.String)
+
+    return values.NewString(strings.ToUpper(str.String() + "_ferret")), nil
+}
+
+query := `
+    FOR el IN ["foo", "bar", "qaz"]
+        RETURN TRANSFORM(el)
+`
+
+comp := compiler.New()
+
+if err := comp.RegisterFunction("transform", transform); err != nil {
+    return nil, err
+}
+
+program, err := comp.Compile(query)
+                </code>
+            </pre>
+        </div>
+    </div>
+</section>
 
         </div><footer class="footer">
     <div class="content has-text-centered">
