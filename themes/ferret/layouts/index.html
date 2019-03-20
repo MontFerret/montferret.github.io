@@ -13,7 +13,10 @@
                 a web scraping system <br />aiming to simplify data extraction
                 from the web
             </h2>
-            <a href="/guide/get-started/" class="button is-primary is-radiusless">Get started</a>
+            <div class="hero-buttons">
+                <a href="/guide/get-started/" class="button is-primary is-radiusless">Get started</a>
+                <a href="https://github.com/MontFerret/ferret/releases" class="button is-radiusless">Download</a>
+            </div>
         </div>
     </div>
 </section>
@@ -40,4 +43,92 @@
         </div>
     </div>
 </main>
+
+<section class="content container section">
+    <hr />
+    <div class="columns">
+        <div class="column">
+            <h3>Hello, Ferret!</h3>
+            <p>
+                ferret uses Chrome/Chromium via Chrome Devtools Protocol to handle dynamically rendered web pages.
+            </p>
+        </div>
+        <div class="column">
+            <pre>
+                <code class="">
+LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
+
+WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
+
+LET tracks = ELEMENTS(doc, '.chartTrack__details')
+
+FOR track IN tracks
+    RETURN {
+        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
+        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
+    }
+                </code>
+            </pre>
+        </div>
+    </div>
+
+    <hr />
+    <div class="columns">
+        <div class="column">
+            <pre>
+                <code class="">
+LET doc = DOCUMENT("https://github.com/topics")
+
+FOR el IN ELEMENTS(doc, ".py-4.border-bottom")
+    LIMIT 10
+    LET url = ELEMENT(el, "a")
+    LET name = ELEMENT(el, ".f3")
+    LET desc = ELEMENT(el, ".f5")
+
+    RETURN {
+        name: TRIM(name.innerText),
+        description: TRIM(desc.innerText),
+        url: "https://github.com" + url.attributes.href
+    }
+                </code>
+            </pre>
+        </div>
+        <div class="column">
+            <h3>Dynamic pages handled easily</h3>
+            <p>ferret helps you to focus on the data you need using an easy to learn declarative language</p>
+        </div>
+    </div>
+
+    <hr />
+    <div class="columns">
+        <div class="column">
+            <h3>Simple extensibility</h3>
+            <p>ferret is extremeley extensible. Creating custom functions and types is super easy.</p>
+        </div>
+        <div class="column">
+            <pre>
+                <code class="">
+transform := func(ctx context.Context, args ...core.Value) (core.Value, error) {
+    str := args[0].(values.String)
+
+    return values.NewString(strings.ToUpper(str.String() + "_ferret")), nil
+}
+
+query := `
+    FOR el IN ["foo", "bar", "qaz"]
+        RETURN TRANSFORM(el)
+`
+
+comp := compiler.New()
+
+if err := comp.RegisterFunction("transform", transform); err != nil {
+    return nil, err
+}
+
+program, err := comp.Compile(query)
+                </code>
+            </pre>
+        </div>
+    </div>
+</section>
 {{ end }}
