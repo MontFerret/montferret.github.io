@@ -1,0 +1,19 @@
+<ul class="toc">
+    {{ range .Pages.ByWeight}}
+        <li class="toc-page">
+            <a href="{{ .Permalink }}">
+                {{ .Title }}
+            </a>
+        </li>
+    {{ end }}
+    {{ range .Sections}}
+    <li class="toc-section">
+        <a href="{{ .Permalink }}">
+            {{ .Title }}
+        </a>
+        {{ if .Pages}}
+            {{ partial "toc.html" . }}
+        {{ end }}
+    </li>
+    {{ end }}
+</ul>
