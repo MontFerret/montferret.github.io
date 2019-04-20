@@ -22,8 +22,10 @@
         <div id="primary-nav" class="navbar-menu">
             <div class="navbar-start">
                 {{ $currentPage := . }}
+                {{ $url := urls.Parse $currentPage.Permalink }}
                 {{ range .Site.Menus.left.ByWeight }}
-                        <a href="{{ .URL }}" class="navbar-item {{if or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }} active{{end}}"
+                        {{ $isActive := hasPrefix $url.Path .URL }}
+                        <a href="{{ .URL }}" class="navbar-item {{if $isActive }} active{{end}}"
                         title={{ .Title }} id={{ .Identifier }}>
                             {{ .Name }}
                         </a>
@@ -33,7 +35,7 @@
             <div class="navbar-end">
                 {{ $currentPage := . }}
                 {{ range .Site.Menus.right.ByWeight }}
-                        <a href="{{ .URL }}" class="navbar-item {{if or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }} active{{end}}"
+                        <a href="{{ .URL }}" class="navbar-item {{if or ($currentPage.IsMenuCurrent "right" .) ($currentPage.HasMenuCurrent "right" .) }} active{{end}}"
                         title={{ .Title }} id={{ .Identifier }}>
                             {{ .Name }}
                         </a>
