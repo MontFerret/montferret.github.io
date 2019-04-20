@@ -1,11 +1,11 @@
 {{ define "main" }}
-<div class="container section content">
+<div class="content section">
     <div class="columns">
-        <aside class="column is-3 sticky-nav">
-            {{ partial "toc.html" ( .GetPage "/docs" ) }}
+        <aside class="column is-2 sticky-nav">
+            {{ partial "toc.html" (dict "Root" (.GetPage "/docs") "Currentlink" .Permalink) }}
         </aside>
-        <section id="main" class="column is-8">
-            <h1 id="title">{{ .Title }} List</h1>
+        <section id="main" class="column is-10">
+            <h1 id="title">{{ .Title }}</h1>
             <div>
                 <article id="content">
                     {{ .Content }}

@@ -1,18 +1,23 @@
 <ul class="toc">
-    {{ range .Pages.ByWeight}}
-        <li class="toc-page">
+    {{ $url := .Currentlink }}
+    {{ range .Root.Pages.ByWeight}}
+        <li class="toc-page {{ if eq $url .Permalink }}toc-item-active{{ end }}">
             <a href="{{ .Permalink }}">
                 {{ .Title }}
             </a>
+
+            <!-- {{ if eq $url .Permalink }}
+                {{ .TableOfContents }}
+            {{ end }} -->
         </li>
     {{ end }}
-    {{ range .Sections}}
-    <li class="toc-section">
+    {{ range .Root.Sections}}
+    <li class="toc-section {{ if eq $url .Permalink }}toc-item-active{{ end }}">
         <a href="{{ .Permalink }}">
             {{ .Title }}
         </a>
         {{ if .Pages}}
-            {{ partial "toc.html" . }}
+            {{ partial "toc.html" ( dict "Root" . "Currentlink" $url) }}
         {{ end }}
     </li>
     {{ end }}
