@@ -1,10 +1,12 @@
 ---
 title: "Installation"
-weight: 2
+weight: 3
 draft: false
 ---
 
 # How to install Ferret
+
+Ferret comes with 
 
 ## From binary
 
