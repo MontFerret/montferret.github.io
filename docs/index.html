@@ -132,140 +132,87 @@
         })
     })();
 </script><div id="content">
-
-<section class="hero is-primary">
-    <div class="hero-body homepage-hero has-text-centered">
-        <div class="container">
-            <div class="logo-wrap">
-                <img src="/img/logo.png" width="120" height="120" />
-                <h1 class="title logo">
-                    Ferret
-                </h1>
-            </div>
-            <h2 class="subtitle is-centered">
-                a web scraping system <br />aiming to simplify data extraction
-                from the web
-            </h2>
-            <div class="hero-buttons">
-                <a href="/docs/getting-started/" class="button is-primary is-radiusless">Get started</a>
-                <a href="https://github.com/MontFerret/ferret/releases" class="button is-radiusless">Download</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<main class="content container section">
+    <div class="content section docs">
     <div class="columns">
-        <div class="column">
-            <h3>Declarative</h3>
-            <p>
-                ferret has a declarative query language that makes it easy to focus on a data that you need to get.
-            </p>
-        </div>
-        <div class="column">
-            <h3>Dynamic pages support</h3>
-            <p>
-                ferret has the ability to scrape JS rendered pages, handle all page events and emulate user interactions.
-            </p>
-        </div>
-        <div class="column">
-            <h3>Embeddable</h3>
-            <p>
-                ferret was designed as a library from the ground up. it can be easily embedded into any Go application.
-            </p>
-        </div>
+        <section class="column is-2">
+            <aside class="menu">
+    
+    
+    
+
+    
+
+<p class="menu-label">
+    General
+</p>
+<ul class="menu-list">
+    
+        
+        <li>
+            <a href="https://www.montferret.dev/docs/about/" class="">
+                About
+            </a>    
+        </li>
+    
+        
+        <li>
+            <a href="https://www.montferret.dev/docs/overview/" class="">
+                Overview
+            </a>    
+        </li>
+    
+        
+        <li>
+            <a href="https://www.montferret.dev/docs/installation/" class="">
+                Installation
+            </a>    
+        </li>
+    
+        
+        <li>
+            <a href="https://www.montferret.dev/docs/getting-started/" class="">
+                Getting started
+            </a>    
+        </li>
+    
+</ul>
+
+    
+        
+            
+
+<p class="menu-label">
+    Query language
+</p>
+<ul class="menu-list">
+    
+        
+        <li>
+            <a href="https://www.montferret.dev/docs/fql/introduction/" class="">
+                Introduction
+            </a>    
+        </li>
+    
+        
+        <li>
+            <a href="https://www.montferret.dev/docs/fql/syntax/" class="">
+                Syntax
+            </a>    
+        </li>
+    
+</ul>
+        
+    
+</aside>
+
+        </section>
+        <section id="main" class="column is-10">
+            <article id="content">
+    
+</article>
+        </section>
     </div>
-</main>
-
-<section class="content container section">
-    <hr />
-    <div class="columns">
-        <div class="column">
-            <h3>Hello, Ferret!</h3>
-            <p>
-                ferret helps you to focus on the data you need using an easy to learn declarative language
-            </p>
-        </div>
-        <div class="column">
-            <pre>
-                <code class="">
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
-
-WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
-
-LET tracks = ELEMENTS(doc, '.chartTrack__details')
-
-FOR track IN tracks
-    RETURN {
-        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
-        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
-    }
-                </code>
-            </pre>
-        </div>
-    </div>
-
-    <hr />
-    <div class="columns">
-        <div class="column">
-            <pre>
-                <code class="">
-LET doc = DOCUMENT("https://github.com/topics")
-
-FOR el IN ELEMENTS(doc, ".py-4.border-bottom")
-    LIMIT 10
-    LET url = ELEMENT(el, "a")
-    LET name = ELEMENT(el, ".f3")
-    LET desc = ELEMENT(el, ".f5")
-
-    RETURN {
-        name: TRIM(name.innerText),
-        description: TRIM(desc.innerText),
-        url: "https://github.com" + url.attributes.href
-    }
-                </code>
-            </pre>
-        </div>
-        <div class="column">
-            <h3>Dynamic pages handled easily</h3>
-            <p>
-                ferret uses Chrome/Chromium via Chrome Devtools Protocol to handle dynamically rendered web pages
-            </p>
-        </div>
-    </div>
-
-    <hr />
-    <div class="columns">
-        <div class="column">
-            <h3>Simple extensibility</h3>
-            <p>ferret is extremeley extensible - creating custom functions and types is super easy</p>
-        </div>
-        <div class="column">
-            <pre>
-                <code class="">
-transform := func(ctx context.Context, args ...core.Value) (core.Value, error) {
-    str := args[0].(values.String)
-
-    return values.NewString(strings.ToUpper(str.String() + "_ferret")), nil
-}
-
-query := `
-    FOR el IN ["foo", "bar", "qaz"]
-        RETURN TRANSFORM(el)
-`
-
-comp := compiler.New()
-
-if err := comp.RegisterFunction("transform", transform); err != nil {
-    return nil, err
-}
-
-program, err := comp.Compile(query)
-                </code>
-            </pre>
-        </div>
-    </div>
-</section>
+</div>
 
         </div><footer class="footer">
     <div class="columns">
