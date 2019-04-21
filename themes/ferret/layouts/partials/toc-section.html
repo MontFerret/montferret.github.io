@@ -5,8 +5,9 @@
 </p>
 <ul class="menu-list">
     {{ range .Root.Pages.ByWeight}}
+        {{ $active := (eq $url .Permalink) }}
         <li>
-            <a href="{{ .Permalink }}" class="{{ if eq $url .Permalink }}is-active{{ end }}">
+            <a href="{{ .Permalink }}" class="{{ if $active }}is-active{{ end }}">
                 {{ .Title }}
             </a>    
         </li>
