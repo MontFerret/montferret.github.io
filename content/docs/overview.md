@@ -40,18 +40,26 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
 
 ### Dynamic pages and user events
 
-Previous examples work with
+Previous examples works with static web pages, but nowadays, more and more websites use dynamic page rendering and old plain HTTP GET request is not a solution any more.     
+Therefore, there should be possible to handle this kind of web pages.    
+
+And Ferret can handle it, the following query represents it:
 
 {{< highlight sql >}}
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', true)
+LET google = DOCUMENT("https://www.google.com/", { driver: "cdp" })
 
-WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
+INPUT(google, 'input[name="q"]', "ferret", 25)
+CLICK(google, 'input[name="btnK"]')
 
-LET tracks = ELEMENTS(doc, '.chartTrack__details')
+WAIT_NAVIGATION(google)
+WAIT_ELEMENT(google, '.g', 5000)
 
-FOR track IN tracks
+FOR result IN ELEMENTS(google, '.g')
+    // filter out extra elements like videos and 'People also ask'
+    FILTER TRIM(result.attributes.class) == 'g'
     RETURN {
-        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
-        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
+        title: INNER_TEXT(result, 'h3'),
+        description: INNER_TEXT(result, '.st'),
+        url: INNER_TEXT(result, 'cite')
     }
 {{< /highlight >}}
