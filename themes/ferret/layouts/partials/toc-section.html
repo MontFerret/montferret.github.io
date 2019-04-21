@@ -1,0 +1,15 @@
+{{ $url := .Current.Permalink }}
+
+<p class="menu-label">
+    {{ .Root.Title }}
+</p>
+<ul class="menu-list">
+    {{ range .Root.Pages.ByWeight}}
+        {{ $active := (eq $url .Permalink) }}
+        <li>
+            <a href="{{ .Permalink }}" class="{{ if $active }}is-active{{ end }}">
+                {{ .Title }}
+            </a>    
+        </li>
+    {{ end }}
+</ul>
