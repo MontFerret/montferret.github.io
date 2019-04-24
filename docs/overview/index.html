@@ -149,13 +149,6 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/about/" class="">
-                About
-            </a>    
-        </li>
-    
-        
-        <li>
             <a href="https://www.montferret.dev/docs/overview/" class="is-active">
                 Overview
             </a>    
@@ -224,57 +217,29 @@
             <article id="content">
     
 
-<h1 id="anatomy-of-ferret">Anatomy of Ferret</h1>
+<h1 id="what-is-ferret">What is Ferret?</h1>
 
-<p>Working with Ferret, you write your scrapers using its own declarative query language called FQL (Ferret Query Language).</p>
+<p>Ferret project is an ambitious initiative trying to bring the universal platform for writing scrapers without any hassle. It aims to simplify data extraction from the web for UI testing, machine learning, analytics and more.</p>
 
-<p>Let&rsquo;s go through the examples below to get a glimpse into how a Ferret query is structured.</p>
+<p>Ferret allows you to focus on the data by abstracting away the technical details and complexity of underlying technologies using its own declarative language.</p>
 
-<h3 id="everything-has-a-result">Everything has a result</h3>
+<p>Ferret is extremely portable, extensible and fast.</p>
 
-<p>Every FQL query must have either a <code>RETURN</code> or <code>FOR</code> statement.</p>
+<hr />
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">RETURN</span> <span style="color:#e6db74">&#34;foobar&#34;</span></code></pre></div>
+<h1 id="motivation">Motivation</h1>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">FOR</span> i <span style="color:#66d9ef">IN</span> <span style="color:#ae81ff">1</span>..<span style="color:#ae81ff">10</span>
-    <span style="color:#66d9ef">RETURN</span> i <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span></code></pre></div>
+<p>Nowadays data is everything and who owns data - owns the world.</p>
 
-<h3 id="functions-are-essential">Functions are essential</h3>
+<p><a href="https://github.com/ziflex">I</a> have worked on multiple data-driven projects where data was an essential part of a system and I realized how cumbersome writing tons of scrapers is.<br />
+After some time looking for a tool that would let me to not write a code, but just express what data I need, decided to come up with my own solution.</p>
 
-<p>Writing FQL scripts always involves calling functions.
-One is the most important one is <code>DOCUMENT</code> that allows you to open an HTML page and start scraping it.</p>
+<hr />
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">LET page <span style="color:#f92672">=</span> DOCUMENT(<span style="color:#e6db74">&#34;https://github.com/trending&#34;</span>)
+<h1 id="inspiration">Inspiration</h1>
 
-<span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">row</span> <span style="color:#66d9ef">IN</span> ELEMENTS(page, <span style="color:#e6db74">&#34;ol.repo-list li&#34;</span>)
-    LET name <span style="color:#f92672">=</span> INNER_TEXT(<span style="color:#66d9ef">row</span>, <span style="color:#e6db74">&#34;div:nth-child(1)&#34;</span>)
-    LET description <span style="color:#f92672">=</span> INNER_TEXT(<span style="color:#66d9ef">row</span>, <span style="color:#e6db74">&#34;div:nth-child(3)&#34;</span>)
-    
-    <span style="color:#66d9ef">RETURN</span> <span style="color:#960050;background-color:#1e0010">{</span> name, description <span style="color:#960050;background-color:#1e0010">}</span></code></pre></div>
-
-<h3 id="dynamic-pages-and-user-events">Dynamic pages and user events</h3>
-
-<p>Previous examples works with static web pages, but nowadays, more and more websites use dynamic page rendering and old plain HTTP GET request is not a solution any more.<br />
-Therefore, there should be possible to handle this kind of web pages.</p>
-
-<p>And Ferret can handle it, the following query represents it:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">LET google <span style="color:#f92672">=</span> DOCUMENT(<span style="color:#e6db74">&#34;https://www.google.com/&#34;</span>, <span style="color:#960050;background-color:#1e0010">{</span> driver: <span style="color:#e6db74">&#34;cdp&#34;</span> <span style="color:#960050;background-color:#1e0010">}</span>)
-
-<span style="color:#66d9ef">INPUT</span>(google, <span style="color:#e6db74">&#39;input[name=&#34;q&#34;]&#39;</span>, <span style="color:#e6db74">&#34;ferret&#34;</span>, <span style="color:#ae81ff">25</span>)
-CLICK(google, <span style="color:#e6db74">&#39;input[name=&#34;btnK&#34;]&#39;</span>)
-
-WAIT_NAVIGATION(google)
-WAIT_ELEMENT(google, <span style="color:#e6db74">&#39;.g&#39;</span>, <span style="color:#ae81ff">5000</span>)
-
-<span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">result</span> <span style="color:#66d9ef">IN</span> ELEMENTS(google, <span style="color:#e6db74">&#39;.g&#39;</span>)
-    <span style="color:#f92672">//</span> filter <span style="color:#66d9ef">out</span> extra elements <span style="color:#66d9ef">like</span> videos <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;People also ask&#39;</span>
-    FILTER <span style="color:#66d9ef">TRIM</span>(<span style="color:#66d9ef">result</span>.attributes.<span style="color:#66d9ef">class</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;g&#39;</span>
-    <span style="color:#66d9ef">RETURN</span> <span style="color:#960050;background-color:#1e0010">{</span>
-        title: INNER_TEXT(<span style="color:#66d9ef">result</span>, <span style="color:#e6db74">&#39;h3&#39;</span>),
-        description: INNER_TEXT(<span style="color:#66d9ef">result</span>, <span style="color:#e6db74">&#39;.st&#39;</span>),
-        url: INNER_TEXT(<span style="color:#66d9ef">result</span>, <span style="color:#e6db74">&#39;cite&#39;</span>)
-    <span style="color:#960050;background-color:#1e0010">}</span></code></pre></div>
+<p>FQL (Ferret Query Language) is heavily inspired by AQL (ArangoDB Query Language).
+But due to the domain specifics, there are some differences in how things work.</p>
 
 </article>
         </section>
