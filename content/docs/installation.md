@@ -1,6 +1,6 @@
 ---
 title: "Installation"
-weight: 3
+weight: 2
 draft: false
 ---
 
@@ -26,8 +26,9 @@ go get github.com/MontFerret/ferret
 go get github.com/MontFerret/ferret/pkg/compiler
 {{</ highlight >}}
 
-# Environment
+<hr />
 
+# Environment
 In order to use all Ferret features, you will need to have Chrome either installed locally or running in Docker. For ease of use we recommend to run Chrome inside a Docker container:
 
 {{< highlight bash >}}

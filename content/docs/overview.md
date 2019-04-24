@@ -1,65 +1,26 @@
 ---
 title: "Overview"
-weight: 2
+weight: 1
 draft: false
 ---
 
-# Anatomy of Ferret
+# What is Ferret?
+Ferret project is an ambitious initiative trying to bring the universal platform for writing scrapers without any hassle. It aims to simplify data extraction from the web for UI testing, machine learning, analytics and more.    
+      
+Ferret allows you to focus on the data by abstracting away the technical details and complexity of underlying technologies using its own declarative language. 
 
-Working with Ferret, you write your scrapers using its own declarative query language called FQL (Ferret Query Language).
+Ferret is extremely portable, extensible and fast.
 
-Let's go through the examples below to get a glimpse into how a Ferret query is structured.
+<hr />
 
-### Everything has a result
+# Motivation
+Nowadays data is everything and who owns data - owns the world.
 
-Every FQL query must have either a ``RETURN`` or ``FOR`` statement.
+[I](https://github.com/ziflex) have worked on multiple data-driven projects where data was an essential part of a system and I realized how cumbersome writing tons of scrapers is.   
+After some time looking for a tool that would let me to not write a code, but just express what data I need, decided to come up with my own solution.
 
-{{< highlight sql >}}
-RETURN "foobar"
-{{< /highlight >}}
+<hr />
 
-{{< highlight sql >}}
-FOR i IN 1..10
-    RETURN i + 2
-{{< /highlight >}}
-
-### Functions are essential
-
-Writing FQL scripts always involves calling functions.
-One is the most important one is ``DOCUMENT`` that allows you to open an HTML page and start scraping it.
-
-{{< highlight sql >}}
-LET page = DOCUMENT("https://github.com/trending")
-
-FOR row IN ELEMENTS(page, "ol.repo-list li")
-    LET name = INNER_TEXT(row, "div:nth-child(1)")
-    LET description = INNER_TEXT(row, "div:nth-child(3)")
-    
-    RETURN { name, description }
-{{< /highlight >}}
-
-### Dynamic pages and user events
-
-Previous examples works with static web pages, but nowadays, more and more websites use dynamic page rendering and old plain HTTP GET request is not a solution any more.     
-Therefore, there should be possible to handle this kind of web pages.    
-
-And Ferret can handle it, the following query represents it:
-
-{{< highlight sql >}}
-LET google = DOCUMENT("https://www.google.com/", { driver: "cdp" })
-
-INPUT(google, 'input[name="q"]', "ferret", 25)
-CLICK(google, 'input[name="btnK"]')
-
-WAIT_NAVIGATION(google)
-WAIT_ELEMENT(google, '.g', 5000)
-
-FOR result IN ELEMENTS(google, '.g')
-    // filter out extra elements like videos and 'People also ask'
-    FILTER TRIM(result.attributes.class) == 'g'
-    RETURN {
-        title: INNER_TEXT(result, 'h3'),
-        description: INNER_TEXT(result, '.st'),
-        url: INNER_TEXT(result, 'cite')
-    }
-{{< /highlight >}}
+# Inspiration
+FQL (Ferret Query Language) is heavily inspired by AQL (ArangoDB Query Language).
+But due to the domain specifics, there are some differences in how things work.
