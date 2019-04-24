@@ -39,7 +39,7 @@ If you need to do string processing in the query, you need to use string functio
 RETURN CONCAT('prefix', @id, 'suffix')
 {{</ highlight >}}
 
-Bind paramers can be used for square bracket notation for sub-attribute access. They can also be chained:
+Bind parameters can be used for square bracket notation for sub-attribute access. They can also be chained:
 
 {{< highlight sql >}}
 LET doc = { foo: { bar: "baz" } }
