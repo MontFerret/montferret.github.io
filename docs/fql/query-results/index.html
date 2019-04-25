@@ -94,7 +94,7 @@
                 
                 
                         
-                        <a href="/docs/overview" class="navbar-item  active"
+                        <a href="/docs/overview" class="navbar-item "
                         title=Project&#32;documentation id=docs>
                             Docs
                         </a>
@@ -149,7 +149,7 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/overview/" class="is-active">
+            <a href="https://www.montferret.dev/docs/overview/" class="">
                 Overview
             </a>    
         </li>
@@ -216,7 +216,7 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/fql/query-results/" class="">
+            <a href="https://www.montferret.dev/docs/fql/query-results/" class="is-active">
                 Query results
             </a>    
         </li>
@@ -231,29 +231,34 @@
             <article id="content">
     
 
-<h1 id="what-is-ferret">What is Ferret?</h1>
+<h1 id="query-results">Query results</h1>
 
-<p>Ferret project is an ambitious initiative trying to bring the universal platform for writing scrapers without any hassle. It aims to simplify data extraction from the web for UI testing, machine learning, analytics and more.</p>
+<p>Unlike AQL, The result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.</p>
 
-<p>Ferret allows you to focus on the data by abstracting away the technical details and complexity of underlying technologies using its own declarative language.</p>
+<p>For example, when the <code>RETURN</code> statement is used as the last query statment, a values gets returned as it is:</p>
 
-<p>Ferret is extremely portable, extensible and fast.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">RETURN</span> <span style="color:#ae81ff">1</span>
+</code></pre></div>
 
-<hr />
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#ae81ff">1</span></code></pre></div>
 
-<h1 id="motivation">Motivation</h1>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">RETURN</span> { <span style="color:#a6e22e">foo</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bar&#34;</span> }
+</code></pre></div>
 
-<p>Nowadays data is everything and who owns data - owns the world.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span> <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#f92672">}</span></code></pre></div>
 
-<p><a href="https://github.com/ziflex">I</a> have worked on multiple data-driven projects where data was an essential part of a system and I realized how cumbersome writing tons of scrapers is.<br />
-After some time looking for a tool that would let me to not write a code, but just express what data I need, decided to come up with my own solution.</p>
+<p>However, when returning data from an iteration, the result values will be always an array:</p>
 
-<hr />
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">FOR</span> <span style="color:#a6e22e">u</span> <span style="color:#a6e22e">IN</span> <span style="color:#a6e22e">elements</span>
+    <span style="color:#a6e22e">RETURN</span> <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">href</span>
+</code></pre></div>
 
-<h1 id="inspiration">Inspiration</h1>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span> <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#f92672">}</span></code></pre></div>
 
-<p>FQL (Ferret Query Language) is heavily inspired by AQL (ArangoDB Query Language).
-But due to the domain specifics, there are some differences in how things work.</p>
+<h2 id="result-type">Result type</h2>
+
+<p>The result data type is in JSON format.
+All binary data gets endcoded into base64 strings.</p>
 
 </article>
         </section>
