@@ -202,7 +202,7 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/fql/bind-parameters/" class="is-active">
+            <a href="https://www.montferret.dev/docs/fql/bind-parameters/" class="">
                 Bind parameters
             </a>    
         </li>
@@ -223,7 +223,7 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/fql/query-errors/" class="">
+            <a href="https://www.montferret.dev/docs/fql/query-errors/" class="is-active">
                 Query errors
             </a>    
         </li>
@@ -238,40 +238,17 @@
             <article id="content">
     
 
-<h1 id="bind-parameters">Bind parameters</h1>
+<h1 id="query-errors">Query errors</h1>
 
-<p>FQL supports the usage of bind parameters, thus allowing to separate the query text from literal values used in the query. It is good practice to separate the query text from the literal values because it allows to reuse same query in different scenarios.</p>
+<p>Issuing an invalid query to Ferret will result in a parse error if the query is syntactically invalid. The Ferret compiler will detect such errors during query inspection and abort further processing. Instead, an error message are returned so that the errors can be fixed.</p>
 
-<p>Using bind parameters, the meaning of an existing query cannot be changed. Bind parameters can be used everywhere in a query where literals can be used.</p>
+<p>Under some circumstances, executing a query may also produce run-time errors that cannot be predicted from inspecting the query text alone. This is because queries may use data from collections that may also be inhomogeneous. Some examples that will cause run-time errors are:</p>
 
-<p>The syntax for bind parameters is <code>@name</code> where <code>@</code> signifies that this is a bind parameter and name is the actual parameter name. Parameter names must start with any of the letters a to z (upper or lower case) or a digit (0 to 9), and can be followed by any letter, digit or the underscore symbol.</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">LET google <span style="color:#f92672">=</span> DOCUMENT(<span style="color:#e6db74">&#34;https://www.google.com/&#34;</span>, <span style="color:#66d9ef">true</span>)
-
-<span style="color:#66d9ef">INPUT</span>(google, <span style="color:#e6db74">&#39;input[name=&#34;q&#34;]&#39;</span>, <span style="color:#f92672">@</span>criteria)
-
-WAIT_NAVIGATION(google)
-
-<span style="color:#66d9ef">RETURN</span> ELEMENTS(google, <span style="color:#e6db74">&#39;.g&#39;</span>)</code></pre></div>
-
-<p>The bind parameter values need to be passed along with the query when it is executed, but not as part of the query text itself.</p>
-
-<p>Bind parameters that are declared in the query must also be passed a parameter value, or the query will fail. Specifying parameters that are not declared in the query will result in an error too.</p>
-
-<p>Bind variables represent a value like a string, and must not be put in quotes in the FQL code:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">FILTER u.name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;@name&#34;</span> <span style="color:#f92672">//</span> wrong
-FILTER u.name <span style="color:#f92672">==</span> <span style="color:#f92672">@</span>name   <span style="color:#f92672">//</span> correct</code></pre></div>
-
-<p>If you need to do string processing in the query, you need to use string functions to do so:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">RETURN</span> CONCAT(<span style="color:#e6db74">&#39;prefix&#39;</span>, <span style="color:#f92672">@</span>id, <span style="color:#e6db74">&#39;suffix&#39;</span>)</code></pre></div>
-
-<p>Bind parameters can be used for square bracket notation for sub-attribute access. They can also be chained:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">LET doc <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">{</span> foo: <span style="color:#960050;background-color:#1e0010">{</span> bar: <span style="color:#e6db74">&#34;baz&#34;</span> <span style="color:#960050;background-color:#1e0010">}</span> <span style="color:#960050;background-color:#1e0010">}</span>
-
-<span style="color:#66d9ef">RETURN</span> doc[<span style="color:#f92672">@</span>attr][<span style="color:#f92672">@</span>subattr]</code></pre></div>
+<ul>
+<li>Division by zero: Will be triggered when an attempt is made to use the value 0 as the divisor in an arithmetic division or modulus operation</li>
+<li>Invalid argument types: Some function can return an error if given arguments have invalid type.</li>
+<li>Timeouts: Intercations with web pages may timeout due to some changes on the pages or invalid query logic or selectors.</li>
+</ul>
 
 </article>
         </section>
