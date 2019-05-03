@@ -1,15 +1,45 @@
-{{ $url := .Current.Permalink }}
+{{ $root := .RootPage }}
+{{ $rootURL := urls.Parse .RootPage.Permalink }}
+{{ $rootDir := path.Dir $rootURL.Path }}
+{{ $page := .Page }}
+{{ $pageURL := urls.Parse .Page.Permalink}}
+{{ $pageDir := path.Dir $pageURL.Path }}
+{{ $active := .ActivePage }}
+{{ $isTopLevel := eq $rootDir $pageDir }}
 
 <p class="menu-label">
-    {{ .Root.Title }}
+    {{ .Page.Title }}
 </p>
 <ul class="menu-list">
-    {{ range .Root.Pages.ByWeight}}
-        {{ $active := (eq $url .Permalink) }}
+    {{ range .Page.Pages.ByWeight}}
+        {{ $isActive := (eq $active.Permalink .Permalink) }}
         <li>
-            <a href="{{ .Permalink }}" class="{{ if $active }}is-active{{ end }}">
+            <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
                 {{ .Title }}
-            </a>    
+            </a>
         </li>
     {{ end }}
+
+{{ if $isTopLevel }}
 </ul>
+{{ end }}
+
+{{ range $page.Sections}}
+    {{ if .Pages }}
+        {{ $sectionURL := urls.Parse .Permalink }}
+
+        {{ if $isTopLevel }}
+            {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
+        {{ else }}
+            {{ if hasPrefix $sectionURL.Path $pageURL.Path }}
+                <li>
+                    {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
+                </li>
+            {{ end }}
+        {{end}}
+    {{ end }}
+{{ end }}
+
+{{ if not $isTopLevel }}
+</ul>
+{{ end }}

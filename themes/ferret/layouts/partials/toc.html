@@ -1,13 +1,4 @@
 <aside class="menu">
-    {{ $root := .Root }}
-    {{ $current := .Current }}
-    {{ $url := $current.Permalink }}
-
-    {{ partial "toc-section.html" ( dict "Root" $root "Current" $current ) }}
-
-    {{ range .Root.Sections}}
-        {{ if .Pages}}
-            {{ partial "toc-section.html" ( dict "Root" . "Current" $current ) }}
-        {{ end }}
-    {{ end }}
+    {{ $root := .Page.GetPage .Dir }}
+    {{ partial "toc-section.html" (dict "RootPage" $root "Page" $root "ActivePage" .Page ) }}
 </aside>
