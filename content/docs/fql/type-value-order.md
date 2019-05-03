@@ -1,6 +1,6 @@
 ---
 title: "Type and value order"
-weight: 5
+weight: 6
 draft: false
 ---
 

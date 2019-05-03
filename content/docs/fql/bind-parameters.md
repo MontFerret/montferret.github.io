@@ -1,6 +1,6 @@
 ---
 title: "Bind parameters"
-weight: 4
+weight: 5
 draft: false
 ---
 
