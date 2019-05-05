@@ -1,0 +1,17 @@
+{{ define "main" }}
+<div class="content section blog">
+    <div class="columns is-centered">
+        <section class="column is-10">
+            <ul class="list blog-list">
+                {{ range .Paginator.Pages}}
+                    <li class="list-item">
+                        {{ partial "blog/list-item.html" . }}
+                    </li>
+                {{ end }}
+            </ul>
+
+            {{ partial "pagination.html" .Paginator }}
+        </section>
+    </div>
+</div>
+{{ end }}

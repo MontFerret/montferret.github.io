@@ -1,0 +1,23 @@
+{{ define "main" }}
+    <div class="content section blog blog-post">
+        <div class="columns is-centered blog-post-header has-text-centered">
+            <div class="column is-10">
+                <p class="title is-2">
+                    {{ .Title }}
+                </p>
+                <p class="subtitle is-4">
+                        {{ .Params.subtitle }}
+                    </p>
+                <p class="subtitle is-6 has-text-grey">
+                    <span>{{ .Date.Format "January 2, 2006" }}</span> by <a href="{{ .Params.authorLink }}">{{ .Params.author }}</a>
+                </p>
+                <hr class="is-block-centered" />
+            </div>
+        </div>
+        <div class="columns is-centered blog-post-content has-text-justified">
+            <div class="column is-8">
+                {{ .Content }}
+            </div>
+        </div>
+    </div>
+{{ end }}
