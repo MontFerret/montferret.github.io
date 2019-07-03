@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.55.4" />
+    <meta name="generator" content="Hugo 0.55.6" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,8 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.27f50477c13176c66fe17e9fe7eddb165227fc28f9ae25763da1fbfc534a81cc.css">
-
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.19b6c093e56aedfb1c89e85b8febe9f586b0af98f0c3e18c821f2acd95a22c9b.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -54,6 +53,7 @@
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
     <link rel="manifest" href="/favicon/manifest.json" />
+    
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
     <meta name="theme-color" content="#ffffff" />
@@ -63,7 +63,6 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'UA-135792752-1');
     </script>
 </head>
@@ -288,13 +287,19 @@
 
 <p>The syntax for bind parameters is <code>@name</code> where <code>@</code> signifies that this is a bind parameter and name is the actual parameter name. Parameter names must start with any of the letters a to z (upper or lower case) or a digit (0 to 9), and can be followed by any letter, digit or the underscore symbol.</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">LET google <span style="color:#f92672">=</span> DOCUMENT(<span style="color:#e6db74">&#34;https://www.google.com/&#34;</span>, <span style="color:#66d9ef">true</span>)
+<pre class="hl">
+    <code class="fql">
+        
+LET google = DOCUMENT("https://www.google.com/", true)
 
-<span style="color:#66d9ef">INPUT</span>(google, <span style="color:#e6db74">&#39;input[name=&#34;q&#34;]&#39;</span>, <span style="color:#f92672">@</span>criteria)
+INPUT(google, 'input[name="q"]', @criteria)
 
 WAIT_NAVIGATION(google)
 
-<span style="color:#66d9ef">RETURN</span> ELEMENTS(google, <span style="color:#e6db74">&#39;.g&#39;</span>)</code></pre></div>
+RETURN ELEMENTS(google, '.g')
+
+    </code>
+</pre>
 
 <p>The bind parameter values need to be passed along with the query when it is executed, but not as part of the query text itself.</p>
 
@@ -302,18 +307,36 @@ WAIT_NAVIGATION(google)
 
 <p>Bind variables represent a value like a string, and must not be put in quotes in the FQL code:</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">FILTER u.name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;@name&#34;</span> <span style="color:#f92672">//</span> wrong
-FILTER u.name <span style="color:#f92672">==</span> <span style="color:#f92672">@</span>name   <span style="color:#f92672">//</span> correct</code></pre></div>
+<pre class="hl">
+    <code class="fql">
+        
+FILTER u.name == "@name" // wrong
+FILTER u.name == @name   // correct
+
+    </code>
+</pre>
 
 <p>If you need to do string processing in the query, you need to use string functions to do so:</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">RETURN</span> CONCAT(<span style="color:#e6db74">&#39;prefix&#39;</span>, <span style="color:#f92672">@</span>id, <span style="color:#e6db74">&#39;suffix&#39;</span>)</code></pre></div>
+<pre class="hl">
+    <code class="fql">
+        
+RETURN CONCAT('prefix', @id, 'suffix')
+
+    </code>
+</pre>
 
 <p>Bind parameters can be used for square bracket notation for sub-attribute access. They can also be chained:</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">LET doc <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">{</span> foo: <span style="color:#960050;background-color:#1e0010">{</span> bar: <span style="color:#e6db74">&#34;baz&#34;</span> <span style="color:#960050;background-color:#1e0010">}</span> <span style="color:#960050;background-color:#1e0010">}</span>
+<pre class="hl">
+    <code class="fql">
+        
+LET doc = { foo: { bar: "baz" } }
 
-<span style="color:#66d9ef">RETURN</span> doc[<span style="color:#f92672">@</span>attr][<span style="color:#f92672">@</span>subattr]</code></pre></div>
+RETURN doc[@attr][@subattr]
+
+    </code>
+</pre>
 
 </article>
         </section>
@@ -334,6 +357,18 @@ FILTER u.name <span style="color:#f92672">==</span> <span style="color:#f92672">
             <a href="#">BACK TO TOP Δ</a>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@montferret/highlight-fql@1.0.1/index.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            hljs.registerLanguage('fql', registerFQL);
+            hljs.initHighlighting();
+        });
+    </script>
 </footer>
 </body>
 </html>

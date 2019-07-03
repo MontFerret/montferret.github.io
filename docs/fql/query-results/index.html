@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.55.4" />
+    <meta name="generator" content="Hugo 0.55.6" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,8 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.27f50477c13176c66fe17e9fe7eddb165227fc28f9ae25763da1fbfc534a81cc.css">
-
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.19b6c093e56aedfb1c89e85b8febe9f586b0af98f0c3e18c821f2acd95a22c9b.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -54,6 +53,7 @@
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
     <link rel="manifest" href="/favicon/manifest.json" />
+    
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
     <meta name="theme-color" content="#ffffff" />
@@ -63,7 +63,6 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'UA-135792752-1');
     </script>
 </head>
@@ -286,23 +285,44 @@
 
 <p>For example, when the <code>RETURN</code> statement is used as the last query statment, a values gets returned as it is:</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">RETURN</span> <span style="color:#ae81ff">1</span>
-</code></pre></div>
+<pre class="hl">
+    <code class="fql">
+        
+RETURN 1
+
+    </code>
+</pre>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#ae81ff">1</span></code></pre></div>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">RETURN</span> { <span style="color:#a6e22e">foo</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bar&#34;</span> }
-</code></pre></div>
+<pre class="hl">
+    <code class="fql">
+        
+RETURN { foo: "bar" }
+
+    </code>
+</pre>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span> <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#f92672">}</span></code></pre></div>
 
 <p>However, when returning data from an iteration, the result values will be always an array:</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#a6e22e">FOR</span> <span style="color:#a6e22e">u</span> <span style="color:#a6e22e">IN</span> <span style="color:#a6e22e">elements</span>
-    <span style="color:#a6e22e">RETURN</span> <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">href</span>
-</code></pre></div>
+<pre class="hl">
+    <code class="fql">
+        
+FOR u IN elements
+    RETURN i.href
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span> <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#f92672">}</span></code></pre></div>
+    </code>
+</pre>
+
+<pre class="hl">
+    <code class="bash">
+        
+{ "foo": "bar" }
+
+    </code>
+</pre>
 
 <h2 id="result-type">Result type</h2>
 
@@ -328,6 +348,18 @@ All binary data gets endcoded into base64 strings.</p>
             <a href="#">BACK TO TOP Δ</a>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@montferret/highlight-fql@1.0.1/index.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            hljs.registerLanguage('fql', registerFQL);
+            hljs.initHighlighting();
+        });
+    </script>
 </footer>
 </body>
 </html>

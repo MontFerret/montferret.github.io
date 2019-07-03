@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.55.4" />
+    <meta name="generator" content="Hugo 0.55.6" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,8 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.27f50477c13176c66fe17e9fe7eddb165227fc28f9ae25763da1fbfc534a81cc.css">
-
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.19b6c093e56aedfb1c89e85b8febe9f586b0af98f0c3e18c821f2acd95a22c9b.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -54,6 +53,7 @@
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
     <link rel="manifest" href="/favicon/manifest.json" />
+    
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
     <meta name="theme-color" content="#ffffff" />
@@ -63,7 +63,6 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'UA-135792752-1');
     </script>
 </head>
@@ -303,40 +302,51 @@
 <li>Multi line comments: These start with a forward slash and asterisk, and end with an asterisk and a following forward slash. They can span as many lines as necessary.</li>
 </ul>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">/* this is a comment */</span> <span style="color:#a6e22e">RETURN</span> <span style="color:#ae81ff">1</span>
-<span style="color:#75715e">/* these */</span> <span style="color:#a6e22e">RETURN</span> <span style="color:#75715e">/* are */</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">/* multiple */</span> <span style="color:#f92672">+</span> <span style="color:#75715e">/* comments */</span> <span style="color:#ae81ff">1</span>
-<span style="color:#75715e">/* this is
-</span><span style="color:#75715e">   a multi line
-</span><span style="color:#75715e">   comment */</span>
-<span style="color:#75715e">// a single line comment
-</span></code></pre></div>
+<pre class="hl">
+    <code class="fql">
+        
+/* this is a comment */ RETURN 1
+/* these */ RETURN /* are */ 1 /* multiple */ + /* comments */ 1
+/* this is
+   a multi line
+   comment */
+// a single line comment
+
+    </code>
+</pre>
 
 <h3 id="keywords">Keywords</h3>
 
 <p>On the top level, FQL offers the following operations:</p>
 
 <ul>
-<li>FOR: array iteration</li>
-<li>RETURN: results projection</li>
-<li>FILTER: non-view results filtering</li>
-<li>SEARCH: view results filtering</li>
-<li>SORT: result sorting</li>
-<li>LIMIT: result slicing</li>
-<li>LET: variable assignment</li>
-<li>COLLECT: result grouping</li>
+<li><code>FOR</code>: array iteration</li>
+<li><code>RETURN</code>: results projection</li>
+<li><code>FILTER</code>: non-view results filtering</li>
+<li><code>SEARCH</code>: view results filtering</li>
+<li><code>SORT</code>: result sorting</li>
+<li><code>LIMIT</code>: result slicing</li>
+<li><code>LET</code>: variable assignment</li>
+<li><code>COLLECT</code>: result grouping</li>
 </ul>
 
 <p>Each of the above operations can be initiated in a query by using a keyword of the same name. An FQL query can (and typically does) consist of multiple of the above operations.</p>
 
 <p>An example FQL query may look like this:</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">LET page <span style="color:#f92672">=</span> DOCUMENT(<span style="color:#e6db74">&#34;https://github.com/trending&#34;</span>)
+<pre class="hl">
+    <code class="fql">
+        
+LET page = DOCUMENT("https://github.com/trending")
 
-<span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">row</span> <span style="color:#66d9ef">IN</span> ELEMENTS(page, <span style="color:#e6db74">&#34;ol.repo-list li&#34;</span>)
-    LET name <span style="color:#f92672">=</span> INNER_TEXT(<span style="color:#66d9ef">row</span>, <span style="color:#e6db74">&#34;div:nth-child(1)&#34;</span>)
-    LET description <span style="color:#f92672">=</span> INNER_TEXT(<span style="color:#66d9ef">row</span>, <span style="color:#e6db74">&#34;div:nth-child(3)&#34;</span>)
+FOR row IN ELEMENTS(page, "ol.repo-list li")
+    LET name = INNER_TEXT(row, "div:nth-child(1)")
+    LET description = INNER_TEXT(row, "div:nth-child(3)")
     
-    <span style="color:#66d9ef">RETURN</span> <span style="color:#960050;background-color:#1e0010">{</span> name, description <span style="color:#960050;background-color:#1e0010">}</span></code></pre></div>
+    RETURN { name, description }
+
+    </code>
+</pre>
 
 <p>In this example query, the terms <code>FOR</code>, <code>FILTER</code>, and <code>RETURN</code> initiate the higher-level operation according to their name. These terms are also keywords, meaning that they have a special meaning in the language.</p>
 
@@ -386,16 +396,28 @@
 
 <p>Keywords must not be used as names. If a reserved keyword should be used as a name, the name must be enclosed in single or dobule quotes. Enclosing a name in quotes makes it possible to use otherwise reserved keywords as names. An example for this is:</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">FOR</span> i <span style="color:#66d9ef">IN</span> [<span style="color:#960050;background-color:#1e0010">{</span> <span style="color:#e6db74">&#34;RETURN&#34;</span>: <span style="color:#e6db74">&#34;foobar&#34;</span> <span style="color:#960050;background-color:#1e0010">}</span>]
-    <span style="color:#66d9ef">RETURN</span> i.<span style="color:#e6db74">&#34;RETURN&#34;</span></code></pre></div>
+<pre class="hl">
+    <code class="fql">
+        
+FOR i IN [{ "RETURN": "foobar" }]
+    RETURN i."RETURN"
+
+    </code>
+</pre>
 
 <h4 id="variable-names">Variable names</h4>
 
 <p>FQL allows the user to assign values to additional variables in a query. All variables that are assigned a value must have a name that is unique within the context of the query.</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">LET users <span style="color:#f92672">=</span> [<span style="color:#960050;background-color:#1e0010">{</span> name: <span style="color:#e6db74">&#34;Steve&#34;</span> <span style="color:#960050;background-color:#1e0010">}</span>]
-<span style="color:#66d9ef">FOR</span> u <span style="color:#66d9ef">IN</span> users
-  <span style="color:#66d9ef">RETURN</span> <span style="color:#960050;background-color:#1e0010">{</span> name : u.name <span style="color:#960050;background-color:#1e0010">}</span></code></pre></div>
+<pre class="hl">
+    <code class="fql">
+        
+LET users = [{ name: "Steve" }]
+FOR u IN users
+  RETURN { name : u.name }
+
+    </code>
+</pre>
 
 <p>Allowed characters in variable names are the letters a to z (both in lower and upper case), the numbers 0 to 9, the underscore (_) symbol and the dollar ($) sign. A variable name must not start with a number. If a variable name starts with the underscore character, the underscore must be followed by least one letter (a-z or A-Z) or digit (0-9).</p>
 
@@ -418,6 +440,18 @@
             <a href="#">BACK TO TOP Δ</a>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@montferret/highlight-fql@1.0.1/index.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            hljs.registerLanguage('fql', registerFQL);
+            hljs.initHighlighting();
+        });
+    </script>
 </footer>
 </body>
 </html>
