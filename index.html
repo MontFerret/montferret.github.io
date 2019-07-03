@@ -194,16 +194,18 @@
         <div class="column">
             <pre class="hl">
                 <code class="fql">
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
+LET doc = DOCUMENT('https://github.com/topics')
 
-WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
+FOR el IN ELEMENTS(doc, '.py-4.border-bottom')
+    LIMIT 10
+    LET url = ELEMENT(el, 'a')
+    LET name = ELEMENT(el, '.f3')
+    LET desc = ELEMENT(el, '.f5')
 
-LET tracks = ELEMENTS(doc, '.chartTrack__details')
-
-FOR track IN tracks
     RETURN {
-        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
-        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
+        name: TRIM(name.innerText),
+        description: TRIM(desc.innerText),
+        url: 'https://github.com' + url.attributes.href
     }
                 </code>
             </pre>
@@ -215,18 +217,18 @@ FOR track IN tracks
         <div class="column">
             <pre class="hl">
                 <code class="fql">
-LET doc = DOCUMENT("https://github.com/topics")
+LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
+    driver: 'cdp'
+})
 
-FOR el IN ELEMENTS(doc, ".py-4.border-bottom")
-    LIMIT 10
-    LET url = ELEMENT(el, "a")
-    LET name = ELEMENT(el, ".f3")
-    LET desc = ELEMENT(el, ".f5")
+WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
 
+LET tracks = ELEMENTS(doc, '.chartTrack__details')
+
+FOR track IN tracks
     RETURN {
-        name: TRIM(name.innerText),
-        description: TRIM(desc.innerText),
-        url: "https://github.com" + url.attributes.href
+        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
+        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
     }
                 </code>
             </pre>
