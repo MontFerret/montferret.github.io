@@ -54,7 +54,7 @@ Let's see how it works.
 
 For example, to scrape a list of trending repositories on GitHub, you can use the following query:
 
-{{< highlight sql >}}
+{{< code fql >}}
 LET page = DOCUMENT("https://github.com/trending")
 
 FOR row IN ELEMENTS(page, "ol.repo-list li")
@@ -62,7 +62,7 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
     LET description = INNER_TEXT(row, "div:nth-child(3)")
 
     RETURN { name, description }
-{{</ highlight >}}
+{{</ code >}}
 
 There are not many things happening above, but they solve 2 of our 3 problems: boilerplate code and frequent markup changes. We will discuss how to solve the 3rd later.
 
@@ -87,7 +87,7 @@ The example above solves only 2 problems, and we still cannot scrape pages that 
 
 What if we need to get a list of top songs from SoundCloud? If we execute the following query, we will get an empty array:
 
-{{< highlight sql >}}
+{{< code fql >}}
 LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
 LET tracks = ELEMENTS(doc, ".chartTrack__details")
 
@@ -96,7 +96,7 @@ FOR track IN tracks
         artist: TRIM(INNER_TEXT(track, ".chartTrack__username")),
         track: TRIM(INNER_TEXT(track, ".chartTrack__title"))
     }
-{{</ highlight >}}
+{{</ code >}}
 
 In order to fix the query we need to do 2 things:
 
@@ -105,7 +105,7 @@ In order to fix the query we need to do 2 things:
 
 Here is an updated version of the query:
 
-{{< highlight sql >}}
+{{< code fql >}}
 LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', true)
 
@@ -118,7 +118,7 @@ FOR track IN tracks
         artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
         track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
     }
-{{</ highlight >}}
+{{</ code >}}
 
 You may notice, that there is a new line of code: ``WAIT_ELEMENT(doc, ‘.chartTrack__details’, 5000)``. Since everything is dynamically rendered, we need to be sure that the data we need is in place. That’s why we block the execution until the table with tracks appears on the page or the operation times out. The signature is pretty similar to what we have seen above with an extra timeout argument.
 
@@ -144,7 +144,7 @@ In order to get a list of products and their information we need to implement th
 - Move to a next page
 - Repeat step #3
 
-{{< highlight sql >}}
+{{< code fql >}}
 LET amazon = DOCUMENT('https://www.amazon.com/', true)
 
 INPUT(amazon, '#twotabsearchtextbox', @criteria)
@@ -184,7 +184,7 @@ LET result = (
 )
 
 RETURN FLATTEN(result)
-{{</ highlight >}}
+{{</ code >}}
 
 At this point, most of the constructions of the language should be familiar, so I will just highlight what has not been covered before.
 

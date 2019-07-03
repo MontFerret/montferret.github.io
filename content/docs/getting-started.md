@@ -8,11 +8,11 @@ draft: false
 ### Browserless mode
 If you want to play with FQL and check its syntax, you can run CLI with the following commands to run Ferret CLI in REPL mode:
 
-{{< highlight bash >}}
+{{< code bash >}}
 ferret
-{{</ highlight >}}
+{{</ code >}}
 
-{{< highlight bash >}}
+{{< code bash >}}
 Welcome to Ferret REPL
 Please use `Ctrl-D` to exit this program.
 >%
@@ -20,23 +20,23 @@ Please use `Ctrl-D` to exit this program.
 >FOR post IN ELEMENTS(doc, '.storylink')
 >RETURN post.attributes.href
 >%
-{{</ highlight >}}
+{{</ code >}}
 
 **NOTE**: symbol % is used to start and end multi-line queries. You also can use the heredoc format.
 
 If you want to execute a query stored in a file, just pass a file name:
 
-{{< highlight bash >}}
+{{< code bash >}}
 ferret ./docs/examples/static-page.fql
-{{</ highlight >}}
+{{</ code >}}
 
-{{< highlight bash >}}
+{{< code bash >}}
 cat ./docs/examples/static-page.fql | ferret
-{{</ highlight >}}
+{{</ code >}}
 
-{{< highlight bash >}}
+{{< code bash >}}
 ferret < ./docs/examples/static-page.fql
-{{</ highlight >}}
+{{</ code >}}
 
 ### Browser mode
 By default, Ferret loads HTML pages via HTTP protocol, because it's faster.
@@ -45,21 +45,21 @@ For such cases, you may fetch documents using Chrome or Chromium via Chrome DevT
 First, you need to make sure that you launched Chrome with ``remote-debugging-port=9222`` flag.
 Second, you need to pass the address to Ferret CLI.
 
-{{< highlight bash >}}
-ferret --cdp http://127.0.0.1:9222
-{{</ highlight >}}
+{{< code bash >}}
+$ ferret --cdp http://127.0.0.1:9222
+{{</ code >}}
 
 **NOTE**: By default, Ferret will try to use this local address as a default one, so it makes sense to explicitly pass the parameter only in case of either different port number or remote address.
 
 Alternatively, you can tell CLI to launch Chrome for you.
 
-{{< highlight bash >}}
-ferret --cdp-launch
-{{</ highlight >}}
+{{< code bash >}}
+$ ferret --cdp-launch
+{{</ code >}}
 
 Once Ferret knows how to communicate with Chrome, you can use ``DOCUMENT(url, opts)`` function with true boolean value for dynamic pages:
 
-{{< highlight bash >}}
+{{< code bash >}}
 Welcome to Ferret REPL
 Please use `exit` or `Ctrl-D` to exit this program.
 >%
@@ -74,4 +74,4 @@ Please use `exit` or `Ctrl-D` to exit this program.
 >        track: title.innerText
 >    }
 >%
-{{</ highlight >}}
+{{</ code >}}

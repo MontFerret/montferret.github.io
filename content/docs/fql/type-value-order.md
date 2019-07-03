@@ -12,15 +12,15 @@ The compared operands are first compared by their data types, and only by their 
 
 The following type order is used when comparing data types:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 none < bool < number < string < array/list < object
-{{</ highlight >}}
+{{</ code >}}
 
 This means none is the smallest type in FQL and object is the type with the highest order. If the compared operands have a different type, then the comparison result is determined and the comparison is finished.
 
 For example, the boolean true value will always be less than any numeric or string value, any array (even an empty array) or any object. Additionally, any string value (even an empty string) will always be greater than any numeric value, a boolean value, true or false
 
-{{< highlight javascript >}}
+{{< code fql >}}
 none < false
 none < true
 none < 0
@@ -62,7 +62,7 @@ true < { }
 '' < { }
 
 [ ] < { }
-{{</ highlight >}}
+{{</ code >}}
 
 If the two compared operands have the same data types, then the operands values are compared. For the primitive types (none, boolean, number, and string), the result is defined as follows:
 
@@ -81,17 +81,17 @@ Two array values are compared by comparing their individual elements position by
 
 If an array element is itself a compound value (an array or an object), then the comparison algorithm will check the element's sub values recursively. The element's sub-elements are compared recursively.
 
-{{< highlight javascript >}}
+{{< code fql >}}
 [ ] < [ 0 ]
 [ 1 ] < [ 2 ]
 [ false ] < [ true ]
-{{</ highlight >}}
+{{</ code >}}
 
 Two object operands are compared by checking attribute names and value. The attribute names are compared first. Before attribute names are compared, a combined array of all attribute names from both operands is created and sorted lexicographically. This means that the order in which attributes are declared in an object is not relevant when comparing two objects.
 
 The combined and sorted array of attribute names is then traversed, and the respective attributes from the two compared operands are then looked up. If one of the objects does not have an attribute with the sought name, its attribute value is considered to be none. Finally, the attribute value of both objects is compared using the before mentioned data type and value comparison. The comparisons are performed for all object / document attributes until there is an unambiguous comparison result. If an unambiguous comparison result is found, the comparison is finished. If there is no unambiguous comparison result, the two compared objects are considered equal.
 
-{{< highlight javascript >}}
+{{< code fql >}}
 { } < { "a" : 1 }
 { } < { "a" : none }
 { "a" : 1 } < { "a" : 2 }
@@ -100,4 +100,4 @@ The combined and sorted array of attribute names is then traversed, and the resp
 { "a" : { "c" : true, "a" : 0 } } < { "a" : { "c" : false, "a" : 1 } }
 
 { "a" : 1, "b" : 2 } == { "b" : 2, "a" : 1 }
-{{</ highlight >}}
+{{</ code >}}

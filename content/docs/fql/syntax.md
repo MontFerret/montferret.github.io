@@ -22,32 +22,32 @@ FQL supports two types of comments:
 - Single line comments: These start with a double forward slash and end at the end of the line, or the end of the query string (whichever is first).
 - Multi line comments: These start with a forward slash and asterisk, and end with an asterisk and a following forward slash. They can span as many lines as necessary.
 
-{{< highlight javascript >}}
+{{< code fql >}}
 /* this is a comment */ RETURN 1
 /* these */ RETURN /* are */ 1 /* multiple */ + /* comments */ 1
 /* this is
    a multi line
    comment */
 // a single line comment
-{{</ highlight >}}
+{{</ code >}}
 
 ### Keywords
 On the top level, FQL offers the following operations:
 
-- FOR: array iteration
-- RETURN: results projection
-- FILTER: non-view results filtering
-- SEARCH: view results filtering
-- SORT: result sorting
-- LIMIT: result slicing
-- LET: variable assignment
-- COLLECT: result grouping
+- ``FOR``: array iteration
+- ``RETURN``: results projection
+- ``FILTER``: non-view results filtering
+- ``SEARCH``: view results filtering
+- ``SORT``: result sorting
+- ``LIMIT``: result slicing
+- ``LET``: variable assignment
+- ``COLLECT``: result grouping
 
 Each of the above operations can be initiated in a query by using a keyword of the same name. An FQL query can (and typically does) consist of multiple of the above operations.
 
 An example FQL query may look like this:
 
-{{< highlight sql >}}
+{{< code fql >}}
 LET page = DOCUMENT("https://github.com/trending")
 
 FOR row IN ELEMENTS(page, "ol.repo-list li")
@@ -55,7 +55,7 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
     LET description = INNER_TEXT(row, "div:nth-child(3)")
     
     RETURN { name, description }
-{{</ highlight >}}
+{{</ code >}}
 
 In this example query, the terms ``FOR``, ``FILTER``, and ``RETURN`` initiate the higher-level operation according to their name. These terms are also keywords, meaning that they have a special meaning in the language.
 
@@ -104,18 +104,18 @@ The maximum supported length of any name is 64 bytes. Names in FQL are always ca
 
 Keywords must not be used as names. If a reserved keyword should be used as a name, the name must be enclosed in single or dobule quotes. Enclosing a name in quotes makes it possible to use otherwise reserved keywords as names. An example for this is:
 
-{{< highlight sql >}}
+{{< code fql >}}
 FOR i IN [{ "RETURN": "foobar" }]
     RETURN i."RETURN"
-{{</ highlight >}}
+{{</ code >}}
 
 #### Variable names
 FQL allows the user to assign values to additional variables in a query. All variables that are assigned a value must have a name that is unique within the context of the query.
 
-{{< highlight sql >}}
+{{< code fql >}}
 LET users = [{ name: "Steve" }]
 FOR u IN users
   RETURN { name : u.name }
-{{</ highlight >}}
+{{</ code >}}
 
 Allowed characters in variable names are the letters a to z (both in lower and upper case), the numbers 0 to 9, the underscore (_) symbol and the dollar ($) sign. A variable name must not start with a number. If a variable name starts with the underscore character, the underscore must be followed by least one letter (a-z or A-Z) or digit (0-9).

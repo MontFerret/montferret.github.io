@@ -30,7 +30,7 @@ The comparison operators accept any data types for the first and second operands
 
 Some examples for comparison operations in FQL:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 0 == NONE                 // false
 1 > 0                     // true
 true != NONE              // true
@@ -46,20 +46,20 @@ true != NONE              // true
 "foo" LIKE "f%"           // true
 "foo" =~ "^f[o].$"        // true
 "foo" !~ "[a-z]+bar$"     // true
-{{</ highlight >}}
+{{</ code >}}
 
 The ``LIKE`` operator checks whether its left operand matches the pattern specified in its right operand. The pattern can consist of regular characters and wildcards. The supported wildcards are _ to match a single arbitrary character, and % to match any number of arbitrary characters. Literal % and _ need to be escaped with a backslash. Backslashes need to be escaped themselves, which effectively means that two reverse solidus characters need to preceed a literal percent sign or underscore. In arangosh, additional escaping is required, making it four backslashes in total preceeding the to-be-escaped character.
 
-{{< highlight javascript >}}
+{{< code fql >}}
 "abc" LIKE "a%"              // true
 "abc" LIKE "_bc"             // true
 "a_b_foo" LIKE "a\\_b\\_foo" // true
-{{</ highlight >}}
+{{</ code >}}
 
 ## Array comparison operators
 The comparison operators also exist as array variant. In the array variant, the operator is prefixed with one of the keywords ``ALL``, ``ANY`` or ``NONE``. Using one of these keywords changes the operator behavior to execute the comparison operation for all, any, or none of its left hand argument values. It is therefore expected that the left hand argument of an array operator is an array.
 
-{{< highlight javascript >}}
+{{< code fql >}}
 [ 1, 2, 3 ] ALL IN [ 2, 3, 4 ]   // false
 [ 1, 2, 3 ] ALL IN [ 1, 2, 3 ]   // true
 [ 1, 2, 3 ] NONE IN [ 3 ]        // false
@@ -78,7 +78,7 @@ The comparison operators also exist as array variant. In the array variant, the 
 ["foo", "bar"] ALL != "moo"      // true
 ["foo", "bar"] NONE == "bar"     // false
 ["foo", "bar"] ANY == "foo"      // true
-{{</ highlight >}}
+{{</ code >}}
 
 ## Logical operators
 The following logical operators are supported in FQL:
@@ -103,12 +103,12 @@ The result of the logical operators in FQL is defined as follows:
 - ``lhs || rhs`` will return ``lhs`` if it is ``true`` or would be ``true`` when converted into a boolean. If ``lhs`` is ``false`` or would be ``false`` when converted to a boolean, ``rhs`` will be returned.
 - ``! value`` will return the negated value of value converted into a boolean
 
-{{< highlight javascript >}}
+{{< code fql >}}
 u.age > 15 && u.address.city != ""
 true || false
 NOT u.isInvalid
 1 || ! 0
-{{</ highlight >}}
+{{</ code >}}
 
 Passing non-boolean values to a logical operator is allowed. Any non-boolean operands will be casted to boolean implicitly by the operator, without making the query abort.
 
@@ -124,20 +124,20 @@ The result of *logical and* and *logical or* operations can now have any data ty
 
 For example, the following logical operations will return boolean values:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 25 > 1 && 42 != 7                          // true
 22 IN [ 23, 42 ] || 23 NOT IN [ 22, 7 ]    // true
 25 != 25                                   // false
-{{</ highlight >}}
+{{</ code >}}
 
 whereas the following logical operations will not return boolean values:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 1 || 7                                     // 1
 NONE || "foo"                              // "foo"
 NONE && true                               // NONE
 true && 23                                 // 23
-{{</ highlight >}}
+{{</ code >}}
 
 ## Arithmetic operators
 Arithmetic operators perform an arithmetic operation on two numeric operands. The result of an arithmetic operation is again a numeric value.
@@ -152,18 +152,18 @@ FQL supports the following arithmetic operators:
 
 Unary plus and unary minus are supported as well:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 LET x = -5
 LET y = 1
 RETURN [-x, +y]
 // [5, 1]
-{{</ highlight >}}
+{{</ code >}}
 
 For exponentiation, there is a numeric function POW(). The syntax base ** exp is not supported.
 
 Some example arithmetic operations:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 1 + 1
 33 - 99
 12.4 * 4.5
@@ -171,7 +171,7 @@ Some example arithmetic operations:
 23 % 7
 -15
 +9.99
-{{</ highlight >}}
+{{</ code >}}
 
 The arithmetic operators accept operands of any type. Passing non-numeric values to an arithmetic operator will cast the operands to numbers:
 
@@ -184,7 +184,7 @@ The arithmetic operators accept operands of any type. Passing non-numeric values
 
 Here are a few examples:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 1 + "a"                 // 1
 1 + "99"                // 100
 1 + NONE                // 1
@@ -198,35 +198,35 @@ NONE + 1                // 1
 5 * [ 7 ]               // 35
 24 / "12"               // 2
 1 / 0                   // 0
-{{</ highlight >}}
+{{</ code >}}
 
 ## Ternary operator
 FQL also supports a ternary operator that can be used for conditional evaluation. The ternary operator expects a boolean condition as its first operand, and it returns the result of the second operand if the condition evaluates to true, and the third operand otherwise.
 
-{{< highlight javascript >}}
+{{< code fql >}}
 u.age > 15 || u.active == true ? u.userId : null
-{{</ highlight >}}
+{{</ code >}}
 
 There is also a shortcut variant of the ternary operator with just two operands. This variant can be used when the expression for the boolean condition and the return value should be the same:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 u.value ? : 'value is null, 0 or not present'
-{{</ highlight >}}
+{{</ code >}}
 
 ## Range operator
 FQL supports expressing simple numeric ranges with the ``..`` operator. This operator can be used to easily iterate over a sequence of numeric values.
 
 The ``..`` operator will produce an array of the integer values in the defined range, with both bounding values included.
 
-{{< highlight javascript >}}
+{{< code fql >}}
 2010..2013
-{{</ highlight >}}
+{{</ code >}}
 
 will produce the following result:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 [ 2010, 2011, 2012, 2013 ]
-{{</ highlight >}}
+{{</ code >}}
 
 ## Operator precedence
 The operator precedence in FQL is similar as in other familiar languages (lowest precedence first):

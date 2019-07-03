@@ -10,32 +10,32 @@ Unlike AQL, The result of an FQL query is an not always array of values. The ind
 
 For example, when the ``RETURN`` statement is used as the last query statment, a values gets returned as it is:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 RETURN 1
-{{</ highlight >}}
+{{</ code >}}
 
 {{< highlight bash >}}
 1
-{{</ highlight >}}
+{{</ code >}}
 
-{{< highlight javascript >}}
+{{< code fql >}}
 RETURN { foo: "bar" }
-{{</ highlight >}}
+{{</ code >}}
 
 {{< highlight bash >}}
 { "foo": "bar" }
-{{</ highlight >}}
+{{</ code >}}
 
 However, when returning data from an iteration, the result values will be always an array:
 
-{{< highlight javascript >}}
+{{< code fql >}}
 FOR u IN elements
     RETURN i.href
-{{</ highlight >}}
+{{</ code >}}
 
-{{< highlight bash >}}
+{{< code bash >}}
 { "foo": "bar" }
-{{</ highlight >}}
+{{</ code >}}
 
 ## Result type
 
