@@ -9,7 +9,7 @@ draft: false
 If you want to play with FQL and check its syntax, you can run CLI with the following commands to run Ferret CLI in REPL mode:
 
 {{< code bash >}}
-ferret
+$ ferret
 {{</ code >}}
 
 {{< code bash >}}
@@ -27,15 +27,15 @@ Please use `Ctrl-D` to exit this program.
 If you want to execute a query stored in a file, just pass a file name:
 
 {{< code bash >}}
-ferret ./docs/examples/static-page.fql
+$ ferret ./docs/examples/static-page.fql
 {{</ code >}}
 
 {{< code bash >}}
-cat ./docs/examples/static-page.fql | ferret
+$ cat ./docs/examples/static-page.fql | ferret
 {{</ code >}}
 
 {{< code bash >}}
-ferret < ./docs/examples/static-page.fql
+$ ferret < ./docs/examples/static-page.fql
 {{</ code >}}
 
 ### Browser mode
