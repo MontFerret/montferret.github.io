@@ -113,7 +113,7 @@ LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 {{</ code >}}
 
 ## New functions to manipulate DOM
-There are some cases when you might need to change the existing DOM. ThatTo help with that, we added the ``INNER_HTML_SET`` and ``INNER_TEXT_SET`` functions.
+There are some cases when you might need to change the existing DOM. To help with that, we added the ``INNER_HTML_SET`` and ``INNER_TEXT_SET`` functions.
 
 {{< code fql >}}
 // Using document and selector
