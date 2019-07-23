@@ -7,10 +7,13 @@ authorLink: "https://www.twitter.com/ziflex"
 date: "2019-07-23"
 ---
 
-It's been a while since the last release, but we worked hard to bring new and better release of Ferret.
+Hooray, **[Ferret v0.8](https://github.com/MontFerret/ferret/releases/tag/v0.7.0)** has been released!
 
-This release has many new exciting features, but unfortunately also has some breaking changes. 
-The full changelog you can find [here](https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#080).
+It's been a while since the last release, but we worked hard to bring new and better Ferret.
+
+This release has many new exciting features, but unfortunately, also some breaking changes. 
+
+The full changelog you can find **[here](https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#080)**.
 
 Let's go!
 
@@ -143,19 +146,19 @@ This is a big change in how Ferret handles page interactions.
 Now Ferret performs it in a more advanced way - scrolls down or up to an element, moves the mouse, focuses and types... with a random delay. As a real person!
 
 ## Other
-There are many other many small chanes here and there like adding missed ``FOCUS``, ``ESCAPE_HTML``, ``UNESCAPE_HTML`` and ``DECODE_URI_COMPONENT`` functions, perfomance improvements and change of the internal design of some parts of the system.
+There are many other many small changes here and there like adding ``FOCUS``, ``ESCAPE_HTML``, ``UNESCAPE_HTML`` and ``DECODE_URI_COMPONENT`` functions, improving perfomance and changing internal design of some parts of the system.
 
 # What's broken
-We are trying to make things compatible between versions but some features require serious design changes that lead to breaking the compatibility. 
+We are trying to make things compatible between versions, but some features required serious design changes that lead to breaking the compatibility. 
 
 The good news is that as we aproach to release v1.0, the API gets more stable and require less dramatic changes.
 
 <div class="notification is-info">
-	Most of the breaking changes affect only embedded solutions. No scripts need to change.
+	Most of the breaking changes will affect only embedded solutions, use of HTML drivers in particular. No changes in the syntax, so no scripts need to change.
 </div>
 
 ## Virtual DOM structure
-Work on ``iframe`` support required us to redesign the structure of the virtual DOM by introducing top level object called ``HTMLPage``:
+Work on ``iframe`` support required us to redesign the structure of the virtual DOM by introducing top level entity called ``HTMLPage``:
 
 {{< code go>}}
 type HTMLPage interface {
@@ -183,11 +186,11 @@ type HTMLPage interface {
 }
 {{</ code >}}
 
-Previously, the role of open page was played by ``HTMLDocument`` struct but the need of having multiple documents representing ``iframe`` nodes led us to bring a new entity to the structure.
+Previously, the role of open page was played by ``HTMLDocument``, but the need of having multiple documents representing ``iframe`` nodes led us to bring a new entity to the structure.
 
 ## Driver API
 
-Because of the changes in vDOM structure, the driver API has been changed as well in order to be reasonable.
+Because of the changes in Virtual DOM structure, the driver API has been changed as well in order to be reasonable.
 
 ``Driver.LoadDocument`` and ``LoadDocumentParams`` are renamed to ``Driver.Open`` and ``Params``.
 
