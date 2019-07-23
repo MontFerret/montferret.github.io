@@ -9,20 +9,18 @@ date: "2019-07-23"
 
 Hooray, **[Ferret v0.8](https://github.com/MontFerret/ferret/releases/tag/v0.8.0)** has been released!
 
-It's been a while since the last release, but we worked hard to bring new and better Ferret.
+It's been a while since the last release, but we worked hard to bring new and better Ferret. This release has many new exciting features, but unfortunately, there are also some breaking changes. 
 
-This release has many new exciting features, but unfortunately, also some breaking changes. 
-
-The full changelog you can find **[here](https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#080)**.
+You can find the full changelog **[here](https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#080)**.
 
 Let's go!
 
 # What's added
 ## iframe
-Finally, Ferret has a support of ``iframe`` elements.    
-When a page gets loaded, Ferret finds all available elements and provieds an access to them via ``.frames`` property of a page object.    
+Ferret *finally* supports ``iframe`` elements.    
+When a page gets loaded, Ferret finds all available elements and provieds an access to them via the ``.frames`` property of a page object.
 
-In order to find a target frame, you may use the following snippet:
+Here's an example of how to find a target frame:
 
 {{< code fql >}}
 LET page = DOCUMENT("https://www.bbc.com/", {
@@ -38,18 +36,18 @@ LET frame = (
 RETURN INNER_TEXT(FIRST(frame))
 {{</ code >}}
 
-Alternatevley, you can filter them out by url or access to a target iframe by index if you know it's position.
+Alternatevley, you can filter them out by url or access to a target iframe by index, if you know it's position.
 
 <div class="notification is-warning">
-  You still may have issues with iframes pointing to another domain due to CORS security policy.
+  Due to CORS security policies, you still may have issues with iframes if it points to another domain.
 </div>
 
 ## Namespaces
-With this release, we introduce a new language feature - namespaces.    
+With this release, we introduce a new language feature - **namespaces**.    
 
-Namespaces will allow library authors (and us) to isoalate their functions into a dedicated sub sections.
+Namespaces allow library authors (and us) to isoalate functions into dedicated sub sections.
 
-Here is an example of possible use:
+Here is an example:
 
 {{< code fql >}}
 LET blob = DOWNLOAD("https://raw.githubusercontent.com/MontFerret/ferret/master/assets/logo.png")
@@ -57,7 +55,7 @@ LET blob = DOWNLOAD("https://raw.githubusercontent.com/MontFerret/ferret/master/
 RETURN IO::FS::WRITE("logo.png", blob)
 {{</ code >}}
 
-In order to use namespaces, you need to use new ``namespace`` method which can be chained:
+To namespace a function, use the new ``namespace`` method. The ``namespace`` method is chainable:
 
 {{< code go >}}
 package main
@@ -86,9 +84,9 @@ func main() {
 </div>
 
 ## XPath
-Good web scraping tool cannot be without XPath support and Ferret finaly has it!   
+A good web scraping tool needs XPath support, and Ferret finaly has it!   
 Ferret provides simple interface to XPath engine for both drivers - CDP and HTTP.   
-It automatically detects a type of output values and deserializes them accordingly.    
+It automatically detects the output value type and deserializes them accordingly.    
 
 {{< code fql >}}
 RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
@@ -104,7 +102,7 @@ These two queries will return 2 different types:
 2. Returns a number indicating how many "div" elements are on the page.
 
 ## Regular expression operator
-This is a shorthand for using regexp assertions:
+This release provides a shorthand for using regexp assertions:
 
 {{< code fql >}}
 LET result = "foo" =~ "^f[o].$" // returns "true"
@@ -115,7 +113,7 @@ LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 {{</ code >}}
 
 ## New functions to manipulate DOM
-There are some cases when you might need to do some changes in the existing DOM. That's why we added new ``INNER_HTML_SET`` and ``INNER_TEXT_SET`` functions to help you do that.
+There are some cases when you might need to change the existing DOM. To help with that, we added the ``INNER_HTML_SET`` and ``INNER_TEXT_SET`` functions.
 
 {{< code fql >}}
 // Using document and selector
@@ -143,15 +141,13 @@ LET doc = DOCUMENT(@url, {
 ## Better emulation of user interaction
 This is a big change in how Ferret handles page interactions.     
 
-Now Ferret performs it in a more advanced way - scrolls down or up to an element, moves the mouse, focuses and types... with a random delay. As a real person!
+Now Ferret interacts with pages in a more advanced way - your script can scrolls down or up to an element, moves the mouse, focuses and types... with random delays. Just like a real person!
 
 ## Other
-There are many other many small changes here and there like adding ``FOCUS``, ``ESCAPE_HTML``, ``UNESCAPE_HTML`` and ``DECODE_URI_COMPONENT`` functions, improving perfomance and changing internal design of some parts of the system.
+There are many other many small changes here and there, like adding ``FOCUS``, ``ESCAPE_HTML``, ``UNESCAPE_HTML`` and ``DECODE_URI_COMPONENT`` functions; improving perfomance; and changing internal design of some parts of the system.
 
 # What's broken
-We are trying to make things compatible between versions, but some features required serious design changes that lead to breaking the compatibility. 
-
-The good news is that as we aproach to release v1.0, the API gets more stable and require less dramatic changes.
+We try to maintain backwards compatibility, but some of the new features required serious design changes that lead to breaking compatibility with previous versions.  As we aproach to release v1.0, the API is becoming more stable and will require fewer dramatic changes.
 
 <div class="notification is-info">
 	Most of the breaking changes will affect only embedded solutions, use of HTML drivers in particular. No changes in the syntax, so no scripts need to change.
@@ -186,7 +182,7 @@ type HTMLPage interface {
 }
 {{</ code >}}
 
-Previously, the role of open page was played by ``HTMLDocument``, but the need of having multiple documents representing ``iframe`` nodes led us to bring a new entity to the structure.
+Previously, ``HTMLDocument`` contained the open page, but ``iframe`` nodes introduce the need to have multiple documents representing each node. This led to a new entity in the structure.
 
 ## Driver API
 
