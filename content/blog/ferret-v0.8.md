@@ -7,7 +7,7 @@ authorLink: "https://www.twitter.com/ziflex"
 date: "2019-07-23"
 ---
 
-Hooray, **[Ferret v0.8](https://github.com/MontFerret/ferret/releases/tag/v0.7.0)** has been released!
+Hooray, **[Ferret v0.8](https://github.com/MontFerret/ferret/releases/tag/v0.8.0)** has been released!
 
 It's been a while since the last release, but we worked hard to bring new and better Ferret.
 
