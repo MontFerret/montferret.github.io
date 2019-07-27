@@ -19,4 +19,4 @@ In 0.8 this logic got broken due to internal refactorings and the check was not 
 In 0.8, we introduct new interaction behavior with forms. Everytime you want to ``INPUT`` or ``CLICK`` Ferret would scroll into a target element before the operation. Unfortunately, we didn't add any checks *whether* the element is in a viewport, which caused weird page jumps.
 
 
-Not that bad so far! If you find any issues, please **[report](https://github.com/MontFerret/ferret/issues)**.
+Not that bad so far! If you find any new issues, please **[report](https://github.com/MontFerret/ferret/issues)**.
