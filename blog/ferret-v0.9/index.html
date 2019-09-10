@@ -141,13 +141,13 @@
         <div class="columns is-centered blog-post-header has-text-centered">
             <div class="column is-10">
                 <p class="title is-2">
-                    Ferret v0.8.1
+                    Ferret v0.9
                 </p>
                 <p class="subtitle is-4">
-                        Hot fixes
+                        Moving forward
                     </p>
                 <p class="subtitle is-6 has-text-grey">
-                    <span>July 26, 2019</span> by <a href="https://www.twitter.com/ziflex">Tim Voronov</a>
+                    <span>September 8, 2019</span> by <a href="https://www.twitter.com/ziflex">Tim Voronov</a>
                 </p>
                 <hr class="is-block-centered" />
             </div>
@@ -156,20 +156,197 @@
             <div class="column is-8">
                 
 
-<p>With all big features, come small bugs. :)</p>
+<p>Hello fellow miners, <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.9.0">Ferret v0.9</a></strong> has been released!</p>
 
-<p>With this new <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.8.1">v0.8.1</a></strong> release we are providing hot fixes for some of these small ones.</p>
+<p>In this release, we mostly focused on bug fixes and filling gaps in user interaction functionality.</p>
 
-<h2 id="broken-click-function">Broken CLICK function</h2>
+<p>Let&rsquo;s see what we&rsquo;ve got.</p>
 
-<p>In 0.7 <code>CLICK</code> and <code>CLICK_ALL</code> functions were doing a check before clicking and was returning a boolean value indicating whether a target element was clicked.
-In 0.8 this logic got broken due to internal refactorings and the check was not performed which led to broken scripts using this returned value.</p>
+<h1 id="what-s-added">What&rsquo;s added</h1>
 
-<h2 id="scroll-jumps">Scroll jumps</h2>
+<h2 id="clearing-input-values">Clearing input values</h2>
 
-<p>In 0.8, we introduct new interaction behavior with forms. Everytime you want to <code>INPUT</code> or <code>CLICK</code> Ferret would scroll into a target element before the operation. Unfortunately, we didn&rsquo;t add any checks <em>whether</em> the element is in a viewport, which caused weird page jumps.</p>
+<p>Since early versions, Ferret has <code>INPUT</code> HTML function that allowed to type any value to input HTML element.
+This works by appending the function parameter to any pre-existing <code>&lt;input&gt;</code> value. While it works fine in many cases, there are some scenarios when a target input field has a preset value which needs to be erased. With this release, Ferret has a new method <code>INPUT_CLEAR</code> that erases any data from a target input.</p>
 
-<p>Not that bad so far! If you find any new issues, please <strong><a href="https://github.com/MontFerret/ferret/issues">report</a></strong>.</p>
+<pre class="hl">
+    <code class="fql">
+        
+LET doc = DOCUMENT(@url, {
+    driver: 'cdp'
+})
+
+RETURN INPUT_CLEAR(doc, '#my-input')
+
+    </code>
+</pre>
+
+<h2 id="double-and-more-click">Double and more click</h2>
+
+<p>Single, double, or more. Now it&rsquo;s possible to specify the number of clicks to <code>CLICK</code> function.</p>
+
+<pre class="hl">
+    <code class="fql">
+        
+LET doc = DOCUMENT(@url, {
+    driver: 'cdp'
+})
+
+RETURN CLICK(doc, '#like', 2)
+
+    </code>
+</pre>
+
+<h2 id="unfocus">Unfocus</h2>
+
+<p><code>BLUR</code> function removes focus from an active input field.</p>
+
+<pre class="hl">
+    <code class="fql">
+        
+LET doc = DOCUMENT(@url, {
+    driver: 'cdp'
+})
+
+FOCUS(doc, '#input')
+BLUR(doc, '#input')
+
+RETURN NONE
+
+    </code>
+</pre>
+
+<h2 id="default-headers-and-cookies">Default headers and cookies</h2>
+
+<p>With this release, you can set default headers and/or cookies to HTML drivers.
+One of the possible use cases is to create drivers with different custom names and pre-defined headers/cookies:</p>
+
+<pre class="hl">
+    <code class="go">
+        
+cdp.NewDriver(
+    cdp.WithCustomName("cdp_headers"),
+    cdp.WithHeader("Single_header", []string{"single_header_value"}),
+    cdp.WithHeaders(drivers.HTTPHeaders{
+        "Multi_set_header":  []string{"multi_set_header_value"},
+        "Multi_set_header2": []string{"multi_set_header2_value"},
+    }),
+)
+
+cdp.NewDriver(
+    cdp.WithCustomName("cdp_cookies"),
+    cdp.WithCookie(drivers.HTTPCookie{
+        Name:     "single_cookie",
+        Value:    "single_cookie_value",
+        Path:     "/",
+        MaxAge:   0,
+        Secure:   false,
+        HTTPOnly: false,
+        SameSite: 0,
+    }),
+    cdp.WithCookies([]drivers.HTTPCookie{
+        {
+            Name:     "multi_set_cookie",
+            Value:    "multi_set_cookie_value",
+            Path:     "/",
+            MaxAge:   0,
+            Secure:   false,
+            HTTPOnly: false,
+            SameSite: 0,
+        },
+        {
+            Name:     "multi_set_cookie2",
+            Value:    "multi_set_cookie2_value",
+            Path:     "/",
+            MaxAge:   0,
+            Secure:   false,
+            HTTPOnly: false,
+            SameSite: 0,
+        },
+    }),
+)
+
+    </code>
+</pre>
+
+<h2 id="params-in-dot-notation">Params in dot notation</h2>
+
+<p>In previous versions of Ferret, it was possible to pass complex types as parameters, but it was impossible to read data from it using dot notation. Now it is possible. But even more - you can use params as dot notation segments:</p>
+
+<pre class="hl">
+    <code class="fql">
+        
+RETURN @one.@two.@three
+
+    </code>
+</pre>
+
+<h2 id="string-literals">String literals</h2>
+
+<p>In addition to defining string literals with quotes (&lsquo;, &ldquo;) and backtick (`), you can now define string literals with the forwardtick (´).</p>
+
+<h1 id="what-s-fixed">What&rsquo;s fixed</h1>
+
+<h2 id="open-tabs-on-error">Open tabs on error</h2>
+
+<p>Ferret didn&rsquo;t close Chrome/Chromium tab if an error occurs during a page load.</p>
+
+<h2 id="click">CLICK</h2>
+
+<p><code>CLICK</code> could not be used with both an element and selector.</p>
+
+<h2 id="dot-notation-after-a-function-call">Dot notation after a function call</h2>
+
+<p>Parser could not properly handle scenarios where dot notation was used right after a function call:</p>
+
+<pre class="hl">
+    <code class="fql">
+        
+LET items = [{name: "foo"}]
+RETURN FIRST(items).name
+
+    </code>
+</pre>
+
+<h1 id="what-s-changed">What&rsquo;s changed</h1>
+
+<h2 id="internal-cleanup-and-refactoring">Internal cleanup and refactoring</h2>
+
+<p>We&rsquo;ve made some internal cleanups and minor refactoring.<br />
+There might be minor breaking changes for those who use HTML drivers directly.</p>
+
+<h4 id="2nd-returned-value">2nd returned value</h4>
+
+<p>The following methods have an error as asecond returned value now:</p>
+
+<ul>
+<li><code>HTMLNode.GetChildNodes</code></li>
+<li><code>HTMLNode.GetChildNode</code></li>
+<li><code>HTMLNode.QuerySelector</code></li>
+<li><code>HTMLNode.QuerySelectorAll</code></li>
+<li><code>HTMLNode.CountBySelector</code></li>
+<li><code>HTMLElement.GetValue</code></li>
+<li><code>HTMLElement.GetAttributes</code></li>
+<li><code>HTMLElement.GetAttribute</code></li>
+</ul>
+
+<h4 id="re-arranged-methods">Re-arranged methods</h4>
+
+<p>The following methods have been moved from <code>HTMLDocument</code> to <code>HTMLElement</code> interface:</p>
+
+<ul>
+<li><code>SelectBySelector</code></li>
+<li><code>FocusBySelector</code></li>
+<li><code>HoverBySelector</code></li>
+</ul>
+
+<h4 id="removed-methods">Removed methods</h4>
+
+<p>The following method(s) have been removed from <code>HTMLDocument</code> interface:</p>
+
+<ul>
+<li><code>MoveMouseBySelector</code></li>
+</ul>
 
             </div>
         </div>
