@@ -15,7 +15,7 @@ Let's see what we've got.
 
 # What's added
 ## Clearing input values
-Since version 0.1.0, Ferret had ``INPUT`` HTML function that allowed to type any value to input HTML element.
+Since early versions, Ferret has ``INPUT`` HTML function that allowed to type any value to input HTML element.
 This works by appending the function parameter to any pre-existing `<input>` value. While it works fine in many cases, there are some scenarios when a target input field has a preset value which needs to be erased. With this release, Ferret has a new method ``INPUT_CLEAR`` that erases any data from a target input.
 
 {{< code fql >}}
