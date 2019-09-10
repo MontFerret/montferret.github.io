@@ -15,8 +15,8 @@ Let's see what we've got.
 
 # What's added
 ## Clearing input values
-Since the version 0.1.0 Ferret had ``INPUT`` HTML function that allowed to type any value to input HTML element.
-But the way how it works is that it appends passed value to already exiting. While it works fine in many cases, there are some scenarious when a target input field has a preset value which needs to be erased. Until now, it was impossible to do. Starting this release, Ferret has a new method ``INPUT_CLEAR`` that erases any data from a target input.
+Since version 0.1.0, Ferret had ``INPUT`` HTML function that allowed to type any value to input HTML element.
+This works by appending the function parameter to any pre-existing `<input>` value. While it works fine in many cases, there are some scenarios when a target input field has a preset value which needs to be erased. With this release, Ferret has a new method ``INPUT_CLEAR`` that erases any data from a target input.
 
 {{< code fql >}}
 LET doc = DOCUMENT(@url, {
@@ -27,7 +27,7 @@ RETURN INPUT_CLEAR(doc, '#my-input')
 {{</ code >}}
 
 ## Double and more click
-Now it's possible to pass amount of clicks that need to be performed to ``CLICK`` function.
+Single, double, or more. Now it's possible to specify the number of clicks to ``CLICK`` function.
 
 {{< code fql >}}
 LET doc = DOCUMENT(@url, {
@@ -38,7 +38,7 @@ RETURN CLICK(doc, '#like', 2)
 {{</ code >}}
 
 ## Unfocus
-``BLUR`` function is added to remove focus from an active input field.
+``BLUR`` function removes focus from an active input field.
 
 {{< code fql >}}
 LET doc = DOCUMENT(@url, {
@@ -100,24 +100,24 @@ cdp.NewDriver(
 {{</ code >}}
 
 ## Params in dot notation
-In previous versions of Ferret, it was possible to pass complex types as parameteres, but it was impossible to read data from it using dot notation. Now it is possible. But even more - you can use params as dot notation segments:
+In previous versions of Ferret, it was possible to pass complex types as parameters, but it was impossible to read data from it using dot notation. Now it is possible. But even more - you can use params as dot notation segments:
 
 {{< code fql >}}
 RETURN @one.@two.@three
 {{</ code >}}
 
-## Tick for string literals
-Now all ticks are supported for string literals.
+## String literals
+In addition to defining string literals with quotes (', ") and backtick (\`), you can now define string literals with the forwardtick (´).
 
 # What's fixed
 ## Open tabs on error
 Ferret didn't close Chrome/Chromium tab if an error occurs during a page load.
 
 ## CLICK
-``CLICK`` did not allow to use with both an element and selector.
+``CLICK`` could not be used with both an element and selector.
 
 ## Dot notation after a function call
-Parser could not handle properly scenarious when dot notation was used right after a function call:
+Parser could not properly handle scenarios where dot notation was used right after a function call:
 
 {{< code fql >}}
 LET items = [{name: "foo"}]
