@@ -36,7 +36,7 @@ LET frame = (
 RETURN INNER_TEXT(FIRST(frame))
 {{</ code >}}
 
-Alternatevley, you can filter them out by url or access to a target iframe by index, if you know it's position.
+Alternatively, you can filter them out by url or access to a target iframe by index, if you know it's position.
 
 <div class="notification is-warning">
   Due to CORS security policies, you still may have issues with iframes if it points to another domain.
@@ -45,7 +45,7 @@ Alternatevley, you can filter them out by url or access to a target iframe by in
 ## Namespaces
 With this release, we introduce a new language feature - **namespaces**.    
 
-Namespaces allow library authors (and us) to isoalate functions into dedicated sub sections.
+Namespaces allow library authors (and us) to isolate functions into dedicated sub sections.
 
 Here is an example:
 
@@ -84,7 +84,7 @@ func main() {
 </div>
 
 ## XPath
-A good web scraping tool needs XPath support, and Ferret finaly has it!   
+A good web scraping tool needs XPath support, and Ferret finally has it!   
 Ferret provides simple interface to XPath engine for both drivers - CDP and HTTP.   
 It automatically detects the output value type and deserializes them accordingly.    
 
@@ -144,10 +144,10 @@ This is a big change in how Ferret handles page interactions.
 Now Ferret interacts with pages in a more advanced way - your script can scrolls down or up to an element, moves the mouse, focuses and types... with random delays. Just like a real person!
 
 ## Other
-There are many other many small changes here and there, like adding ``FOCUS``, ``ESCAPE_HTML``, ``UNESCAPE_HTML`` and ``DECODE_URI_COMPONENT`` functions; improving perfomance; and changing internal design of some parts of the system.
+There are many other many small changes here and there, like adding ``FOCUS``, ``ESCAPE_HTML``, ``UNESCAPE_HTML`` and ``DECODE_URI_COMPONENT`` functions; improving performance; and changing internal design of some parts of the system.
 
 # What's broken
-We try to maintain backwards compatibility, but some of the new features required serious design changes that lead to breaking compatibility with previous versions.  As we aproach to release v1.0, the API is becoming more stable and will require fewer dramatic changes.
+We try to maintain backwards compatibility, but some of the new features required serious design changes that lead to breaking compatibility with previous versions.  As we approach to release v1.0, the API is becoming more stable and will require fewer dramatic changes.
 
 <div class="notification is-info">
 	Most of the breaking changes will affect only embedded solutions, use of HTML drivers in particular. No changes in the syntax, so no scripts need to change.

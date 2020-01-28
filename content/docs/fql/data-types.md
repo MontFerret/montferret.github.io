@@ -219,7 +219,7 @@ u[attr1][0][attr2][ CONCAT("fir", "st") ]
 
 ## Custom types
 Custom types are the values defined by a user or author of a 3rd party library that extends FQL functionality.
-The values can represent either specific primitives or compund types. For example, tt could be http cookies, database records, images and etc. 
+The values can represent either specific primitives or compound types. For example, tt could be http cookies, database records, images and etc. 
 
 <div class="notification is-warning">
   The feature is a runtime specific.

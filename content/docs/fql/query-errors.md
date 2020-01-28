@@ -11,4 +11,4 @@ Under some circumstances, executing a query may also produce run-time errors tha
 
 - Division by zero: Will be triggered when an attempt is made to use the value 0 as the divisor in an arithmetic division or modulus operation
 - Invalid argument types: Some function can return an error if given arguments have invalid type.
-- Timeouts: Intercations with web pages may timeout due to some changes on the pages or invalid query logic or selectors.
+- Timeouts: Interactions with web pages may timeout due to some changes on the pages or invalid query logic or selectors.

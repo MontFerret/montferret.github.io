@@ -102,7 +102,7 @@ In general, names are used to identify objects (properties, variables, and funct
 
 The maximum supported length of any name is 64 bytes. Names in FQL are always case-sensitive.
 
-Keywords must not be used as names. If a reserved keyword should be used as a name, the name must be enclosed in single or dobule quotes. Enclosing a name in quotes makes it possible to use otherwise reserved keywords as names. An example for this is:
+Keywords must not be used as names. If a reserved keyword should be used as a name, the name must be enclosed in single or double quotes. Enclosing a name in quotes makes it possible to use otherwise reserved keywords as names. An example for this is:
 
 {{< code fql >}}
 FOR i IN [{ "RETURN": "foobar" }]
