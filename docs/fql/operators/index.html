@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.58.1" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.77cd0549b6b2bfc0e15396586638adce27cdcacec61f3ac0f86e27978d41b12c.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.6cef5a7fd80ccb3ccbc6a0def5a71e6314d1b0b5fc1e71b7b134cdc89d04e494.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -282,18 +282,11 @@
         </section>
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
-    
-
-<h1 id="operators">Operators</h1>
-
+    <h1 id="operators">Operators</h1>
 <p>FQL supports a number of operators that can be used in expressions. There are comparison, logical, arithmetic, and the ternary operator.</p>
-
 <h2 id="comparison-operators">Comparison operators</h2>
-
 <p>Comparison (or relational) operators compare two operands. They can be used with any input data types, and will return a boolean result value.</p>
-
 <p>The following comparison operators are supported:</p>
-
 <ul>
 <li><code>==</code> equality</li>
 <li><code>!=</code> inequality</li>
@@ -307,13 +300,9 @@
 <li><code>=~</code> tests if a string value matches a regular expression</li>
 <li><code>!~</code> tests if a string value does not match a regular expression</li>
 </ul>
-
 <p>Each of the comparison operators returns a boolean value if the comparison can be evaluated and returns true if the comparison evaluates to true, and false otherwise.</p>
-
 <p>The comparison operators accept any data types for the first and second operands. However, <code>IN</code> and <code>NOT IN</code> will only return a meaningful result if their right-hand operand is an array, and <code>LIKE</code> will only execute if both operands are string values. The comparison operators will not perform any implicit type casts if the compared operands have different or non-sensible types.</p>
-
 <p>Some examples for comparison operations in FQL:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -335,9 +324,7 @@ true != NONE              // true
 
     </code>
 </pre>
-
 <p>The <code>LIKE</code> operator checks whether its left operand matches the pattern specified in its right operand. The pattern can consist of regular characters and wildcards. The supported wildcards are _ to match a single arbitrary character, and % to match any number of arbitrary characters. Literal % and _ need to be escaped with a backslash. Backslashes need to be escaped themselves, which effectively means that two reverse solidus characters need to preceed a literal percent sign or underscore. In arangosh, additional escaping is required, making it four backslashes in total preceeding the to-be-escaped character.</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -347,11 +334,8 @@ true != NONE              // true
 
     </code>
 </pre>
-
 <h2 id="array-comparison-operators">Array comparison operators</h2>
-
 <p>The comparison operators also exist as array variant. In the array variant, the operator is prefixed with one of the keywords <code>ALL</code>, <code>ANY</code> or <code>NONE</code>. Using one of these keywords changes the operator behavior to execute the comparison operation for all, any, or none of its left hand argument values. It is therefore expected that the left hand argument of an array operator is an array.</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -376,37 +360,27 @@ true != NONE              // true
 
     </code>
 </pre>
-
 <h2 id="logical-operators">Logical operators</h2>
-
 <p>The following logical operators are supported in FQL:</p>
-
 <ul>
 <li><code>&amp;&amp;</code> logical and operator</li>
 <li><code>||</code> logical or operator</li>
 <li><code>!</code> logical not/negation operator</li>
 </ul>
-
 <p>FQL also supports the following alternative forms for the logical operators:</p>
-
 <ul>
 <li><code>AND</code> logical and operator</li>
 <li><code>OR</code> logical or operator</li>
 <li><code>NOT</code> logical not/negation operator</li>
 </ul>
-
 <p>The alternative forms are aliases and functionally equivalent to the regular operators.</p>
-
 <p>The two-operand logical operators in FQL will be executed with short-circuit evaluation (except if one of the operands is or includes a subquery. In this case the subquery will be pulled out an evaluated before the logical operator).</p>
-
 <p>The result of the logical operators in FQL is defined as follows:</p>
-
 <ul>
 <li><code>lhs &amp;&amp; rhs</code> will return <code>lhs</code> if it is <code>false</code> or would be <code>false</code> when converted into a boolean. If <code>lhs</code> is <code>true</code> or would be <code>true</code> when converted to a boolean, <code>rhs</code> will be returned.</li>
 <li><code>lhs || rhs</code> will return <code>lhs</code> if it is <code>true</code> or would be <code>true</code> when converted into a boolean. If <code>lhs</code> is <code>false</code> or would be <code>false</code> when converted to a boolean, <code>rhs</code> will be returned.</li>
 <li><code>! value</code> will return the negated value of value converted into a boolean</li>
 </ul>
-
 <pre class="hl">
     <code class="fql">
         
@@ -417,11 +391,8 @@ NOT u.isInvalid
 
     </code>
 </pre>
-
 <p>Passing non-boolean values to a logical operator is allowed. Any non-boolean operands will be casted to boolean implicitly by the operator, without making the query abort.</p>
-
 <p>The conversion to a boolean value works as follows:</p>
-
 <ul>
 <li><code>NONE</code> will be converted to <code>false</code></li>
 <li>boolean values remain unchanged</li>
@@ -429,11 +400,8 @@ NOT u.isInvalid
 <li>an empty string is <code>false</code>, all other strings are <code>true</code></li>
 <li>arrays, objects, binary and custom types are <code>true</code>, regardless of their contents</li>
 </ul>
-
 <p>The result of <em>logical and</em> and <em>logical or</em> operations can now have any data type and is not necessarily a boolean value.</p>
-
 <p>For example, the following logical operations will return boolean values:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -443,9 +411,7 @@ NOT u.isInvalid
 
     </code>
 </pre>
-
 <p>whereas the following logical operations will not return boolean values:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -456,13 +422,9 @@ true && 23                                 // 23
 
     </code>
 </pre>
-
 <h2 id="arithmetic-operators">Arithmetic operators</h2>
-
 <p>Arithmetic operators perform an arithmetic operation on two numeric operands. The result of an arithmetic operation is again a numeric value.</p>
-
 <p>FQL supports the following arithmetic operators:</p>
-
 <ul>
 <li><code>+</code> addition</li>
 <li><code>-</code> subtraction</li>
@@ -470,9 +432,7 @@ true && 23                                 // 23
 <li><code>/</code> division</li>
 <li><code>%</code> modulus</li>
 </ul>
-
 <p>Unary plus and unary minus are supported as well:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -483,11 +443,8 @@ RETURN [-x, +y]
 
     </code>
 </pre>
-
 <p>For exponentiation, there is a numeric function POW(). The syntax base ** exp is not supported.</p>
-
 <p>Some example arithmetic operations:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -501,9 +458,7 @@ RETURN [-x, +y]
 
     </code>
 </pre>
-
 <p>The arithmetic operators accept operands of any type. Passing non-numeric values to an arithmetic operator will cast the operands to numbers:</p>
-
 <ul>
 <li><code>NONE</code> will be converted to <code>0</code></li>
 <li><code>false</code> will be converted to <code>0</code>, <code>true</code> will be converted to <code>1</code></li>
@@ -512,9 +467,7 @@ RETURN [-x, +y]
 <li>an empty array is converted to <code>0</code>, an array with one member is converted to the numeric representation of its sole member. Arrays with more members are converted to the number <code>0</code>.</li>
 <li>objects, binary and custom types are converted to the number <code>0</code>.</li>
 </ul>
-
 <p>Here are a few examples:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -534,11 +487,8 @@ NONE + 1                // 1
 
     </code>
 </pre>
-
 <h2 id="ternary-operator">Ternary operator</h2>
-
 <p>FQL also supports a ternary operator that can be used for conditional evaluation. The ternary operator expects a boolean condition as its first operand, and it returns the result of the second operand if the condition evaluates to true, and the third operand otherwise.</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -546,9 +496,7 @@ u.age > 15 || u.active == true ? u.userId : null
 
     </code>
 </pre>
-
 <p>There is also a shortcut variant of the ternary operator with just two operands. This variant can be used when the expression for the boolean condition and the return value should be the same:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -556,13 +504,9 @@ u.value ? : 'value is null, 0 or not present'
 
     </code>
 </pre>
-
 <h2 id="range-operator">Range operator</h2>
-
 <p>FQL supports expressing simple numeric ranges with the <code>..</code> operator. This operator can be used to easily iterate over a sequence of numeric values.</p>
-
 <p>The <code>..</code> operator will produce an array of the integer values in the defined range, with both bounding values included.</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -570,9 +514,7 @@ u.value ? : 'value is null, 0 or not present'
 
     </code>
 </pre>
-
 <p>will produce the following result:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -580,23 +522,22 @@ u.value ? : 'value is null, 0 or not present'
 
     </code>
 </pre>
-
 <h2 id="operator-precedence">Operator precedence</h2>
-
-<p>The operator precedence in FQL is similar as in other familiar languages (lowest precedence first):
-- <code>? :</code> ternary operator
-- <code>||</code> logical or
-- <code>&amp;&amp;</code> logical and
-- <code>==</code>, <code>!=</code> equality and inequality
-- <code>IN</code> in operator
-- <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&gt;</code> less than, less equal, greater equal, greater than
-- <code>+</code>, <code>-</code> addition, subtraction
-- <code>*</code>, <code>/</code>, <code>%</code> multiplication, division, modulus
-- <code>!</code>, <code>+</code>, <code>-</code> logical negation, unary plus, unary minus
-- <code>()</code> function call
-- <code>.</code> member access
-- <code>[]</code> indexed value access</p>
-
+<p>The operator precedence in FQL is similar as in other familiar languages (lowest precedence first):</p>
+<ul>
+<li><code>? :</code> ternary operator</li>
+<li><code>||</code> logical or</li>
+<li><code>&amp;&amp;</code> logical and</li>
+<li><code>==</code>, <code>!=</code> equality and inequality</li>
+<li><code>IN</code> in operator</li>
+<li><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&gt;</code> less than, less equal, greater equal, greater than</li>
+<li><code>+</code>, <code>-</code> addition, subtraction</li>
+<li><code>*</code>, <code>/</code>, <code>%</code> multiplication, division, modulus</li>
+<li><code>!</code>, <code>+</code>, <code>-</code> logical negation, unary plus, unary minus</li>
+<li><code>()</code> function call</li>
+<li><code>.</code> member access</li>
+<li><code>[]</code> indexed value access</li>
+</ul>
 <p>The parentheses <code>(</code> and <code>)</code> can be used to enforce a different operator evaluation order.</p>
 
 </article>
@@ -608,7 +549,7 @@ u.value ? : 'value is null, 0 or not present'
     <div class="columns">
         <div class="column is-4 is-hidden-mobile">
             <a href="https://github.com/MontFerret">
-                © 2018-2019 MontFerret Team
+                © 2018-2020 MontFerret Team
             </a>
         </div>
         <div class="column is-4 has-text-centered">

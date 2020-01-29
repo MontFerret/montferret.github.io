@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Query language on Ferret</title>
@@ -16,8 +16,8 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/introduction/</guid>
-      <description>What is Ferret Query Language? The Ferret Query Language (FQL) is heavily inspired by the ArangoDB Query Language (AQL) and used as a starting point. But due to the domain specifics, there are some differences in how things work and future lagnuage changes are expected.
-Even though, FQL is used to read data from the websites, it&amp;rsquo;s considered as a general purpose query language. That means that all web related functionality is implemented as functions from the FQL Standard Library.</description>
+      <description>What is Ferret Query Language? The Ferret Query Language (FQL) is heavily inspired by the ArangoDB Query Language (AQL) and used as a starting point. But due to the domain specifics, there are some differences in how things work and future language changes are expected.
+Even though, FQL is used to read data from the websites, it&#39;s considered as a general purpose query language. That means that all web related functionality is implemented as functions from the FQL Standard Library.</description>
     </item>
     
     <item>
@@ -49,7 +49,7 @@ The following comparison operators are supported:
       
       <guid>https://www.montferret.dev/docs/fql/data-types/</guid>
       <description>Data types FQL supports both primitive data types consisting of exactly one value and compound data types comprised of multiple values. The following types are available:
-  Data type Description     none An empty value, also: the absence of a value   boolean Boolean truth value with possible values false and true   integer Signed whole number   float Signed floating point number   string UTF-8 encoded text value   array Sequence of values, referred to by their positions   object Sequence of values, referred to by their names   binary Sequence of binary values   custom User defined types    Primitive types None value A none value can be used to represent an empty or absent value.</description>
+Primitive types None value A none value can be used to represent an empty or absent value. It is different from a numerical value of zero (null != 0) and other falsy values (false, zero-length string, empty array or object). It is also known as nil or null in other languages.</description>
     </item>
     
     <item>
@@ -70,7 +70,8 @@ Using bind parameters, the meaning of an existing query cannot be changed. Bind 
       <guid>https://www.montferret.dev/docs/fql/type-value-order/</guid>
       <description>Type and value order When checking for equality or inequality or when determining the sort order of values, FQL uses a deterministic algorithm that takes both the data types and the actual values into account.
 The compared operands are first compared by their data types, and only by their data values if the operands have the same data types.
-The following type order is used when comparing data types:</description>
+The following type order is used when comparing data types:
+none  This means none is the smallest type in FQL and object is the type with the highest order.</description>
     </item>
     
     <item>
@@ -80,7 +81,7 @@ The following type order is used when comparing data types:</description>
       
       <guid>https://www.montferret.dev/docs/fql/query-results/</guid>
       <description>Query results Unlike AQL, The result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
-For example, when the RETURN statement is used as the last query statment, a values gets returned as it is:
+For example, when the RETURN statement is used as the last query statement, a values gets returned as it is:
 RETURN 1   1 RETURN { foo: &#34;bar&#34; }   { &amp;#34;foo&amp;#34;: &amp;#34;bar&amp;#34; } However, when returning data from an iteration, the result values will be always an array:</description>
     </item>
     

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.58.1" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.77cd0549b6b2bfc0e15396586638adce27cdcacec61f3ac0f86e27978d41b12c.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.6cef5a7fd80ccb3ccbc6a0def5a71e6314d1b0b5fc1e71b7b134cdc89d04e494.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -154,21 +154,13 @@
         </div>
         <div class="columns is-centered blog-post-content has-text-justified">
             <div class="column is-8">
-                
-
-<p>Hello fellow miners, <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.9.0">Ferret v0.9</a></strong> has been released!</p>
-
+                <p>Hello fellow miners, <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.9.0">Ferret v0.9</a></strong> has been released!</p>
 <p>In this release, we mostly focused on bug fixes and filling gaps in user interaction functionality.</p>
-
-<p>Let&rsquo;s see what we&rsquo;ve got.</p>
-
-<h1 id="what-s-added">What&rsquo;s added</h1>
-
+<p>Let's see what we've got.</p>
+<h1 id="whats-added">What's added</h1>
 <h2 id="clearing-input-values">Clearing input values</h2>
-
 <p>Since early versions, Ferret has <code>INPUT</code> HTML function that allowed to type any value to input HTML element.
 This works by appending the function parameter to any pre-existing <code>&lt;input&gt;</code> value. While it works fine in many cases, there are some scenarios when a target input field has a preset value which needs to be erased. With this release, Ferret has a new method <code>INPUT_CLEAR</code> that erases any data from a target input.</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -180,11 +172,8 @@ RETURN INPUT_CLEAR(doc, '#my-input')
 
     </code>
 </pre>
-
 <h2 id="double-and-more-click">Double and more click</h2>
-
-<p>Single, double, or more. Now it&rsquo;s possible to specify the number of clicks to <code>CLICK</code> function.</p>
-
+<p>Single, double, or more. Now it's possible to specify the number of clicks to <code>CLICK</code> function.</p>
 <pre class="hl">
     <code class="fql">
         
@@ -196,11 +185,8 @@ RETURN CLICK(doc, '#like', 2)
 
     </code>
 </pre>
-
 <h2 id="unfocus">Unfocus</h2>
-
 <p><code>BLUR</code> function removes focus from an active input field.</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -215,12 +201,9 @@ RETURN NONE
 
     </code>
 </pre>
-
 <h2 id="default-headers-and-cookies">Default headers and cookies</h2>
-
 <p>With this release, you can set default headers and/or cookies to HTML drivers.
 One of the possible use cases is to create drivers with different custom names and pre-defined headers/cookies:</p>
-
 <pre class="hl">
     <code class="go">
         
@@ -268,11 +251,8 @@ cdp.NewDriver(
 
     </code>
 </pre>
-
 <h2 id="params-in-dot-notation">Params in dot notation</h2>
-
 <p>In previous versions of Ferret, it was possible to pass complex types as parameters, but it was impossible to read data from it using dot notation. Now it is possible. But even more - you can use params as dot notation segments:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -280,25 +260,15 @@ RETURN @one.@two.@three
 
     </code>
 </pre>
-
 <h2 id="string-literals">String literals</h2>
-
-<p>In addition to defining string literals with quotes (&lsquo;, &ldquo;) and backtick (`), you can now define string literals with the forwardtick (´).</p>
-
-<h1 id="what-s-fixed">What&rsquo;s fixed</h1>
-
+<p>In addition to defining string literals with quotes (', &ldquo;) and backtick (`), you can now define string literals with the forwardtick (´).</p>
+<h1 id="whats-fixed">What's fixed</h1>
 <h2 id="open-tabs-on-error">Open tabs on error</h2>
-
-<p>Ferret didn&rsquo;t close Chrome/Chromium tab if an error occurs during a page load.</p>
-
+<p>Ferret didn't close Chrome/Chromium tab if an error occurs during a page load.</p>
 <h2 id="click">CLICK</h2>
-
 <p><code>CLICK</code> could not be used with both an element and selector.</p>
-
 <h2 id="dot-notation-after-a-function-call">Dot notation after a function call</h2>
-
 <p>Parser could not properly handle scenarios where dot notation was used right after a function call:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -307,18 +277,12 @@ RETURN FIRST(items).name
 
     </code>
 </pre>
-
-<h1 id="what-s-changed">What&rsquo;s changed</h1>
-
+<h1 id="whats-changed">What's changed</h1>
 <h2 id="internal-cleanup-and-refactoring">Internal cleanup and refactoring</h2>
-
-<p>We&rsquo;ve made some internal cleanups and minor refactoring.<br />
+<p>We've made some internal cleanups and minor refactoring. <br>
 There might be minor breaking changes for those who use HTML drivers directly.</p>
-
 <h4 id="2nd-returned-value">2nd returned value</h4>
-
 <p>The following methods have an error as asecond returned value now:</p>
-
 <ul>
 <li><code>HTMLNode.GetChildNodes</code></li>
 <li><code>HTMLNode.GetChildNode</code></li>
@@ -329,21 +293,15 @@ There might be minor breaking changes for those who use HTML drivers directly.</
 <li><code>HTMLElement.GetAttributes</code></li>
 <li><code>HTMLElement.GetAttribute</code></li>
 </ul>
-
 <h4 id="re-arranged-methods">Re-arranged methods</h4>
-
 <p>The following methods have been moved from <code>HTMLDocument</code> to <code>HTMLElement</code> interface:</p>
-
 <ul>
 <li><code>SelectBySelector</code></li>
 <li><code>FocusBySelector</code></li>
 <li><code>HoverBySelector</code></li>
 </ul>
-
 <h4 id="removed-methods">Removed methods</h4>
-
 <p>The following method(s) have been removed from <code>HTMLDocument</code> interface:</p>
-
 <ul>
 <li><code>MoveMouseBySelector</code></li>
 </ul>
@@ -356,7 +314,7 @@ There might be minor breaking changes for those who use HTML drivers directly.</
     <div class="columns">
         <div class="column is-4 is-hidden-mobile">
             <a href="https://github.com/MontFerret">
-                © 2018-2019 MontFerret Team
+                © 2018-2020 MontFerret Team
             </a>
         </div>
         <div class="column is-4 has-text-centered">

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.58.1" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.77cd0549b6b2bfc0e15396586638adce27cdcacec61f3ac0f86e27978d41b12c.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.6cef5a7fd80ccb3ccbc6a0def5a71e6314d1b0b5fc1e71b7b134cdc89d04e494.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -282,31 +282,19 @@
         </section>
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
-    
-
-<h1 id="syntax">Syntax</h1>
-
+    <h1 id="syntax">Syntax</h1>
 <h3 id="query-types">Query types</h3>
-
 <p>An FQL query must return a result indicated by usage either of the <code>RETURN</code> or <code>FOR IN</code> keywords. The FQL parser will return an error if it cannot find any of these two statements.</p>
-
 <h3 id="whitespace">Whitespace</h3>
-
 <p>Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces. Whitespace within strings or names must be enclosed in quotes in order to be preserved.</p>
-
 <h3 id="comments">Comments</h3>
-
 <p>Comments can be embedded at any position in a query. The text contained in the comment is ignored by the FQL parser.</p>
-
 <p>Multi-line comments cannot be nested, which means subsequent comment starts within comments are ignored, comment ends will end the comment.</p>
-
 <p>FQL supports two types of comments:</p>
-
 <ul>
 <li>Single line comments: These start with a double forward slash and end at the end of the line, or the end of the query string (whichever is first).</li>
 <li>Multi line comments: These start with a forward slash and asterisk, and end with an asterisk and a following forward slash. They can span as many lines as necessary.</li>
 </ul>
-
 <pre class="hl">
     <code class="fql">
         
@@ -319,11 +307,8 @@
 
     </code>
 </pre>
-
 <h3 id="keywords">Keywords</h3>
-
 <p>On the top level, FQL offers the following operations:</p>
-
 <ul>
 <li><code>FOR</code>: array iteration</li>
 <li><code>RETURN</code>: results projection</li>
@@ -334,11 +319,8 @@
 <li><code>LET</code>: variable assignment</li>
 <li><code>COLLECT</code>: result grouping</li>
 </ul>
-
 <p>Each of the above operations can be initiated in a query by using a keyword of the same name. An FQL query can (and typically does) consist of multiple of the above operations.</p>
-
 <p>An example FQL query may look like this:</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -352,55 +334,15 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
 
     </code>
 </pre>
-
 <p>In this example query, the terms <code>FOR</code>, <code>FILTER</code>, and <code>RETURN</code> initiate the higher-level operation according to their name. These terms are also keywords, meaning that they have a special meaning in the language.</p>
-
 <p>For example, the query parser will use the keywords to find out which high-level operations to execute. That also means keywords can only be used at certain locations in a query. This also makes all keywords reserved words that must not be used for other purposes than they are intended for.</p>
-
 <p>At this moment, keywords are not case-insensitive, meaning they cannot be specified in lower or mixed case in queries.</p>
-
 <p>There are a few more keywords in addition to the higher-level operation keywords. Additional keywords may be added in future versions of Ferret. The complete list of keywords is currently:</p>
-
-<div class="columns">
-    <div class="column">
-    <ul>
-        <li>AGGREGATE</li>
-        <li>ALL</li>
-        <li>AND</li>
-        <li>ANY</li>
-        <li>ASC</li>
-        <li>COLLECT</li>
-        <li>DESC</li>
-        <li>DISTINCT</li>
-        <li>FALSE</li>
-        <li>FILTER</li>
-        <li>FOR</li>
-    </ul>
-    </div>
-    <div class="column">
-        <ul>
-            <li>IN</li>
-            <li>LET</li>
-            <li>LIMIT</li>
-            <li>NONE</li>
-            <li>NOT</li>
-            <li>NULL</li>
-            <li>OR</li>
-            <li>RETURN</li>
-            <li>SORT</li>
-            <li>TRUE</li>
-        </ul>
-    </div>
-</div>
-
+<!-- raw HTML omitted -->
 <h3 id="names">Names</h3>
-
 <p>In general, names are used to identify objects (properties, variables, and functions) in FQL queries.</p>
-
 <p>The maximum supported length of any name is 64 bytes. Names in FQL are always case-sensitive.</p>
-
-<p>Keywords must not be used as names. If a reserved keyword should be used as a name, the name must be enclosed in single or dobule quotes. Enclosing a name in quotes makes it possible to use otherwise reserved keywords as names. An example for this is:</p>
-
+<p>Keywords must not be used as names. If a reserved keyword should be used as a name, the name must be enclosed in single or double quotes. Enclosing a name in quotes makes it possible to use otherwise reserved keywords as names. An example for this is:</p>
 <pre class="hl">
     <code class="fql">
         
@@ -409,11 +351,8 @@ FOR i IN [{ "RETURN": "foobar" }]
 
     </code>
 </pre>
-
 <h4 id="variable-names">Variable names</h4>
-
 <p>FQL allows the user to assign values to additional variables in a query. All variables that are assigned a value must have a name that is unique within the context of the query.</p>
-
 <pre class="hl">
     <code class="fql">
         
@@ -423,7 +362,6 @@ FOR u IN users
 
     </code>
 </pre>
-
 <p>Allowed characters in variable names are the letters a to z (both in lower and upper case), the numbers 0 to 9, the underscore (_) symbol and the dollar ($) sign. A variable name must not start with a number. If a variable name starts with the underscore character, the underscore must be followed by least one letter (a-z or A-Z) or digit (0-9).</p>
 
 </article>
@@ -435,7 +373,7 @@ FOR u IN users
     <div class="columns">
         <div class="column is-4 is-hidden-mobile">
             <a href="https://github.com/MontFerret">
-                © 2018-2019 MontFerret Team
+                © 2018-2020 MontFerret Team
             </a>
         </div>
         <div class="column is-4 has-text-centered">
