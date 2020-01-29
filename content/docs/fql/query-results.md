@@ -8,7 +8,7 @@ draft: false
 
 Unlike AQL, The result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
 
-For example, when the ``RETURN`` statement is used as the last query statment, a values gets returned as it is:
+For example, when the ``RETURN`` statement is used as the last query statement, a values gets returned as it is:
 
 {{< code fql >}}
 RETURN 1
@@ -40,4 +40,4 @@ FOR u IN elements
 ## Result type
 
 The result data type is in JSON format. 
-All binary data gets endcoded into base64 strings.
+All binary data gets encoded into base64 strings.
