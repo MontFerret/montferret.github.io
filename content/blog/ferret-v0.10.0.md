@@ -9,13 +9,12 @@ date: "2020-02-21"
 
 Hello fellow miners, **[Ferret v0.10.0](https://github.com/MontFerret/ferret/releases/tag/v0.10.0)** has been **finally** released!
 
-It's been long and busy 6 months since the last release and many of you might thought that the project bot abandoned.
+It's been long and busy 6 months since the last release and many of you might thought that the project got abandoned.    
 We assure you it's not! But sometimes life happens and slows you down.
 
 But we are back and ready to rock!
 
-This release has many great features and improvements thank to all our contributors.
-
+This release has many great features and improvements thank to all our contributors.    
 Let's take a look at the most important ones. The full changelog you can find [here](https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#0100).
 
 # What's added
