@@ -49,6 +49,7 @@ function registerFQL(hljs) {
   
     return {
       aliases: ['fql'],
+      case_insensitive: true,
       keywords: KEYWORDS,
       contains: [
         hljs.APOS_STRING_MODE,
