@@ -99,7 +99,7 @@
                         </a>
                 
                         
-                        <a href="/blog/" class="navbar-item "
+                        <a href="/blog/" class="navbar-item  active"
                         title=Blog id=blog>
                             Blog
                         </a>
@@ -137,7 +137,126 @@
         })
     })();
 </script><div id="content">
-  
+    <div class="content section blog blog-post">
+        <div class="columns is-centered blog-post-header has-text-centered">
+            <div class="column is-10">
+                <p class="title is-2">
+                    Ferret v0.10.0
+                </p>
+                <p class="subtitle is-4">
+                        Comeback
+                    </p>
+                <p class="subtitle is-6 has-text-grey">
+                    <span>February 21, 2020</span> by <a href="https://www.twitter.com/ziflex">Tim Voronov</a>
+                </p>
+                <hr class="is-block-centered" />
+            </div>
+        </div>
+        <div class="columns is-centered blog-post-content has-text-justified">
+            <div class="column is-8">
+                <p>Hello fellow miners, <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.10.0">Ferret v0.10.0</a></strong> has been <strong>finally</strong> released!</p>
+<p>It&rsquo;s been long and busy 6 months since the last release and many of you might thought that the project got abandoned. <br>
+We assure you it&rsquo;s not! But sometimes life happens and slows you down.</p>
+<p>But we are back and ready to rock!</p>
+<p>This release has many great features and improvements thank to all our contributors. <br>
+Let&rsquo;s take a look at the most important ones. The full changelog you can find <a href="https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#0100">here</a>.</p>
+<h1 id="whats-added">What&rsquo;s added</h1>
+<h2 id="io-functions">I/O functions</h2>
+<p>You asked - we added! Finally, I/O functions have arrived.
+In the beginning of the project, we were concerned about security threats that access to filesystem poses, but seeing how demanded this functionality is we agreed to add it. <br>
+Now, Ferret has new I/O namespaces, with the following functions:</p>
+<ul>
+<li><code>IO::FS::READ</code></li>
+<li><code>IO::FS::WRITE</code></li>
+<li><code>IO::NET::HTTP:GET</code></li>
+<li><code>IO::NET::HTTP:POST</code></li>
+<li><code>IO::NET::HTTP:PUT</code></li>
+<li><code>IO::NET::HTTP:DELETE</code></li>
+<li><code>IO::NET::HTTP:REQUEST</code></li>
+</ul>
+<p>Enjoy!</p>
+<h2 id="loading-html-string-into-memory">Loading HTML string into memory</h2>
+<p>Another popular feature request - possibility to load a prefetched HTML string into Ferret. <br>
+With this release, you can finally do it with <code>HTML_PARSE</code> function.</p>
+<pre class="hl">
+    <code class="fql">
+        
+LET file = IO::FS::READ(@myfile)
+
+LET doc = HTML_PARSE(TO_STRING(file), {
+    driver: 'cdp' // or 'http'
+})
+
+RETURN INNER_TEXT(doc, 'title')
+
+    </code>
+</pre>
+<h2 id="parameter-value-availability-check">Parameter value availability check</h2>
+<p>In this release, we do pre-runtime check whether all values are provided for parameters used by a script. <br>
+It was very frustrating when your script was failing in the middle of its execution just because you forgot to provide a value for one of the paramaters.</p>
+<h1 id="whats-changed">What&rsquo;s changed</h1>
+<h2 id="case-insensitivity">Case insensitivity</h2>
+<p>Finally, FQL keywords are case insensitive!</p>
+<p>That&rsquo;s how Google Search query looks like in lower case now:</p>
+<pre class="hl">
+    <code class="fql">
+        
+let google = document("https://www.google.com/", {
+    driver: "cdp",
+})
+
+input(google, 'input[name="q"]', "ferret")
+click(google, 'input[name="btnK"]')
+
+wait_navigation(google)
+
+for result in elements(google, '.g')
+    filter trim(result.attributes.class) == 'g'
+    return {
+        title: inner_text(result, 'h3'),
+        description: inner_text(result, '.st'),
+        url: inner_text(result, 'cite')
+    }
+
+    </code>
+</pre>
+<h2 id="improved-cdp-driver-performance">Improved CDP driver performance</h2>
+<p>CDP driver performance has been drastically improved that brings CPU usage down from 60% for 3 pages to &lt;1%.</p>
+<h1 id="whats-fixed">What&rsquo;s fixed</h1>
+<h2 id="redirects">Redirects</h2>
+<p>It was a long lasting problem that Ferret could not correctly handle redirects that could occur during a page navigation that was leading to timeouts or corrupt page state.</p>
+<p>Now it has finally been fixed!<br>
+<code>WAIT_NAVIGATION</code> function has 2nd optional parameter that can be an object with the following fields:</p>
+<pre class="hl">
+    <code class="go">
+        
+type Parameters struct {
+    TargetURL string
+    Timeout time.Duration
+}
+
+    </code>
+</pre>
+<p><code>TargetURL</code> is a regexp string that can be used to give Ferret a hint what the destination url is:</p>
+<pre class="hl">
+    <code class="fql">
+        
+LET doc = DOCUMENT("http://waos.ovh/redirect.html", {
+    driver: 'cdp'
+})
+
+CLICK(doc, '.click')
+
+WAIT_NAVIGATION(doc, { targetURL: "redirect2\.html" })
+
+RETURN ELEMENT(doc, '.title')
+
+    </code>
+</pre>
+
+            </div>
+        </div>
+    </div>
 
         </div><footer class="footer">
     <div class="columns">

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.62.2" />
+    <meta name="generator" content="Hugo 0.65.2" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.6cef5a7fd80ccb3ccbc6a0def5a71e6314d1b0b5fc1e71b7b134cdc89d04e494.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.e8072988abf11ab16f93c62483f40e68182f8378472a0d3ab2a6280c0f21451b.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -154,10 +154,10 @@
         </div>
         <div class="columns is-centered blog-post-content has-text-justified">
             <div class="column is-8">
-                <p>As a developer, you've probably created a couple of web scrapers to get some data from the Internet during your career. That data could be images for an AI project or hotel prices from booking websites for a new travel mobile app or something else. But something that needs data.</p>
-<p>It's a relatively easy task to write one or two web scrapers if the amount of required data is small. But it's a completely different level of complexity when you need to scrape big amount of data and, moreover, do it frequently.</p>
-<p>This is what happened to me. A while ago, I started a side project which was heavily data driven. The project required to gather data about cosmetological brands and its products, the ingredients of these products and their effect on human's skin. Not huge, but pretty large data set.
-The first impulse was to write bunch of scrapers using some scraping framework. And this is what was done. After a while, I started facing with issues I'm going to talk about next and came up with a solution you will see after.</p>
+                <p>As a developer, you&rsquo;ve probably created a couple of web scrapers to get some data from the Internet during your career. That data could be images for an AI project or hotel prices from booking websites for a new travel mobile app or something else. But something that needs data.</p>
+<p>It&rsquo;s a relatively easy task to write one or two web scrapers if the amount of required data is small. But it&rsquo;s a completely different level of complexity when you need to scrape big amount of data and, moreover, do it frequently.</p>
+<p>This is what happened to me. A while ago, I started a side project which was heavily data driven. The project required to gather data about cosmetological brands and its products, the ingredients of these products and their effect on human&rsquo;s skin. Not huge, but pretty large data set.
+The first impulse was to write bunch of scrapers using some scraping framework. And this is what was done. After a while, I started facing with issues I&rsquo;m going to talk about next and came up with a solution you will see after.</p>
 <h2 id="the-problem">The problem</h2>
 <p>There are many problems that you need to solve building a solid and scalable scraping system. Thankfully, many of them can be solved by picking a good library or framework. But there are few, that I could not solve and they were pretty important to me:</p>
 <ul>
@@ -165,7 +165,7 @@ The first impulse was to write bunch of scrapers using some scraping framework. 
 <li>Web pages tend to evolve and change their markup. It leads to frequent code updates and re-deploys.</li>
 <li>Nowadays, more and more websites use dynamic page rendering and old plain HTTP GET request is not a solution any more. It gets worse if the pages require some user interaction to get the data you need.</li>
 </ul>
-<p>Of course, these problems are solvable, but wouldn't it be nice if we didn't have to solve them again and again every time we write scraping code?
+<p>Of course, these problems are solvable, but wouldn&rsquo;t it be nice if we didn&rsquo;t have to solve them again and again every time we write scraping code?
 So, I started looking a for a tool that would solve the issues for me, but unfortunately, I could not find any. Instead I created one.</p>
 <h2 id="the-solution">The solution</h2>
 <!-- raw HTML omitted -->
@@ -173,12 +173,12 @@ So, I started looking a for a tool that would solve the issues for me, but unfor
 <p>And this is how Ferret was born, a modern web scraping tool with a declarative query language.</p>
 <p>Ferret is a DSL with a runtime that represents pretty powerful and extensible declarative query language.</p>
 <p>It provides very high level solution that lets users focus on data they are looking for instead of writing all that glue code.</p>
-<p>It's embeddable. Even though, it comes with a CLI, it was designed to be easily embedded into applications from the beginning.</p>
-<p>And of course, it's super extensible. You can register not only your own functions, but also create custom types that Ferret runtime will recognize.</p>
+<p>It&rsquo;s embeddable. Even though, it comes with a CLI, it was designed to be easily embedded into applications from the beginning.</p>
+<p>And of course, it&rsquo;s super extensible. You can register not only your own functions, but also create custom types that Ferret runtime will recognize.</p>
 <p>The overall idea is simple, you write a query using the declarative query language focusing only on data you need, and Ferret handles the rest of the work for you.</p>
 <!-- raw HTML omitted -->
 <h3 id="show-me-thecode">Show me the code</h3>
-<p>Let's see how it works.</p>
+<p>Let&rsquo;s see how it works.</p>
 <p>For example, to scrape a list of trending repositories on GitHub, you can use the following query:</p>
 <pre class="hl">
     <code class="fql">
@@ -194,11 +194,11 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
     </code>
 </pre>
 <p>There are not many things happening above, but they solve 2 of our 3 problems: boilerplate code and frequent markup changes. We will discuss how to solve the 3rd later.</p>
-<p>Let's take a closer look.</p>
+<p>Let&rsquo;s take a closer look.</p>
 <p>The first problem gets solved automatically by the language itself - Ferret abstracts away all infrastructural glue code from a user. All heavy lifting is done under the hood. All a user needs to do is to describe what data they need to scrape, and what shape of the data should be as an output. Declarative languages allow you to express yourself in a very readable way.</p>
 <p>The second problem gets solved by the fact that FQL is an interpreted language. Script updates do not require you to redeploy your host server. You can easily change it on your production server without any harm.</p>
-<p>Now, let's discuss what is happening in our script in order to get better understanding of the tool.</p>
-<p>First of all, we tell Ferret what page to load by calling <code>DOCUMENT</code> function. Ferret loads the page and creates its representation in memory as an object. Then we assigned the returned document object to a variable. Yes, in FQL it's possible to define variables which is an extremely useful feature.</p>
+<p>Now, let&rsquo;s discuss what is happening in our script in order to get better understanding of the tool.</p>
+<p>First of all, we tell Ferret what page to load by calling <code>DOCUMENT</code> function. Ferret loads the page and creates its representation in memory as an object. Then we assigned the returned document object to a variable. Yes, in FQL it&rsquo;s possible to define variables which is an extremely useful feature.</p>
 <p>Once the document is loaded, we use the <code>ELEMENTS</code> function to find all list entries and iterate over them using FQL keywords <code>FOR IN</code>, the construction which is familiar to many developers. Notice, for the search we use regular CSS selector like we would use in a browser.</p>
 <p>Inside the <code>FOR</code> loop body we get inner text of elements of a row using the helper function <code>INNER_TEXT</code>. And again we use variables and CSS selector for simplicity and more efficiency.</p>
 <p>After getting inner text of all elements we are interested in, we use <code>RETURN</code> statement with an object literal. Those who are familiar with JavaScript will recognize the syntax - an object literal with property shorthand. In other words, on each iteration we create an object with 2 properties: name and description. The <code>RETURN</code> statement works as aggregator, and the result of the query is an array of objects.</p>
@@ -345,7 +345,7 @@ RETURN FLATTEN(result)
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@montferret/highlight-fql@1.0.1/index.js"></script>
+    <script src="https://unpkg.com/@montferret/highlight-fql@1.1.0/index.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             
