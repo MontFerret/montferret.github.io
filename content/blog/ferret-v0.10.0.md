@@ -20,8 +20,8 @@ Let's take a look at the most important ones. The full changelog you can find [h
 # What's added
 ## I/O functions
 You asked - we added! Finally, I/O functions have arrived.
-In the beginning of the project, we were concerned about security threats that access to filesystem represents, but seeing how demanded this functionality is we agreed to add it.    
-Now, ferret has new I/O namespaces, with the following functions:
+In the beginning of the project, we were concerned about security threats that access to filesystem poses, but seeing how demanded this functionality is we agreed to add it.    
+Now, Ferret has new I/O namespaces, with the following functions:
 
 - ``IO::FS::READ``
 - ``IO::FS::WRITE``
@@ -33,8 +33,8 @@ Now, ferret has new I/O namespaces, with the following functions:
 
 Enjoy!
 
-## Loading HTML into memory
-Another popular feature request - possibility to load a prefetched HTML document into Ferret.    
+## Loading HTML string into memory
+Another popular feature request - possibility to load a prefetched HTML string into Ferret.    
 With this release, you can finally do it with ``HTML_PARSE`` function.
 
 {{< code fql >}}
@@ -49,13 +49,13 @@ RETURN INNER_TEXT(doc, 'title')
 
 ## Parameter value availability check
 In this release, we do pre-runtime check whether all values are provided for parameters used by a script.    
-It was very frustrating when your script was failing in the middle of the execution just because you forgot to provide a value for one of the paramaters.
+It was very frustrating when your script was failing in the middle of its execution just because you forgot to provide a value for one of the paramaters.
 
 # What's changed
 ## Case insensitivity
 Finally, FQL keywords are case insensitive!
 
-That's how Google Search query looks like in lower case:
+That's how Google Search query looks like in lower case now:
 
 {{< code fql >}}
 let google = document("https://www.google.com/", {
@@ -81,7 +81,8 @@ CDP driver performance has been drastically improved that brings CPU usage down 
 
 # What's fixed
 ## Redirects
-It was a long lasting problem that Ferret could not correctly handle redirects that can occur during page navigation that was leading to timeouts or corrupt page state.    
+It was a long lasting problem that Ferret could not correctly handle redirects that could occur during a page navigation that was leading to timeouts or corrupt page state.    
+
 Now it has finally been fixed!   
 ```WAIT_NAVIGATION``` function has 2nd optional parameter that can be an object with the following fields:
 
@@ -96,11 +97,7 @@ type Parameters struct {
 
 {{< code fql >}}
 LET doc = DOCUMENT("http://waos.ovh/redirect.html", {
-    driver: 'cdp',
-    viewport: {
-        width: 1920,
-        height: 1080
-    }
+    driver: 'cdp'
 })
 
 CLICK(doc, '.click')
