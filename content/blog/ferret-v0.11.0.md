@@ -4,22 +4,20 @@ subtitle: "More features"
 draft: false
 author: "Vladimir Fetisov"
 authorLink: "https://github.com/3timeslazy"
-date: "2020-05-19"
----
-# COVID-19
-Today, there are almost 5 million infected COVID-19 in the world. This disease kills thousands of people every day.
-
-We hope you are healthy and safe.
-
-But just in case: stay home 😷
-
+date: "2020-05-21"
 ---
 
-Hello fellow miners, **[Ferret v0.11.0](https://github.com/MontFerret/ferret/releases/tag/v0.11.0)** has been **finally** released!
+Hello fellow miners,
 
-In this release, we mostly focused on our full-time jobs and families.
+Today, we are living in unprecedented times. There are almost 5 million people infected by COVID-19 and thousands die every day in the world. 
 
-But despite this, we have done a lot of cool features and projects.
+During this time, the highest priority is to stay safe and healthy, take care of family.
+
+---
+
+Ferret team has been locked down in their homes with their families as everyone around the globe, but **still** has managed to make new **[Ferret v0.11.0](https://github.com/MontFerret/ferret/releases/tag/v0.11.0)** release!
+
+We have done a lot of cool features and projects.
 
 Let’s take a look!
 
