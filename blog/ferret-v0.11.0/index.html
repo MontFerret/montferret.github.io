@@ -99,7 +99,7 @@
                         </a>
                 
                         
-                        <a href="/blog/" class="navbar-item "
+                        <a href="/blog/" class="navbar-item  active"
                         title=Blog id=blog>
                             Blog
                         </a>
@@ -137,245 +137,91 @@
         })
     })();
 </script><div id="content">
-    <div class="content section docs">
-    <div class="columns">
-        <section class="column is-2">
-            <aside class="menu">
-    
-    
-
-
-
-
-
-
-
-
-<p class="menu-label">
-    General
-</p>
-<ul class="menu-list">
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/introduction/" class="">
-                Introduction
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/installation/" class="">
-                Installation
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/getting-started/" class="is-active">
-                Getting started
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/" class="">
-                Query language
-            </a>
-        </li>
-    
-
-
-</ul>
-
-
-
-    
-        
-
-        
-            
-
-
-
-
-
-
-
-
-<p class="menu-label">
-    Query language
-</p>
-<ul class="menu-list">
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/introduction/" class="">
-                Introduction
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/syntax/" class="">
-                Syntax
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/operators/" class="">
-                Operators
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/data-types/" class="">
-                Data types
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/bind-parameters/" class="">
-                Bind parameters
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/type-value-order/" class="">
-                Type and value order
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/query-results/" class="">
-                Query results
-            </a>
-        </li>
-    
-        
-        <li>
-            <a href="https://www.montferret.dev/docs/fql/query-errors/" class="">
-                Query errors
-            </a>
-        </li>
-    
-
-
-
-
-
-
-</ul>
-
-        
-    
-
-
-
-</aside>
-
-        </section>
-        <section id="main" class="column is-8">
-            <article id="content" class="has-text-justified">
-    <h1 id="quick-start">Quick start</h1>
-<h3 id="browserless-mode">Browserless mode</h3>
-<p>If you want to play with FQL and check its syntax, you can run CLI with the following commands to run Ferret CLI in REPL mode:</p>
+    <div class="content section blog blog-post">
+        <div class="columns is-centered blog-post-header has-text-centered">
+            <div class="column is-10">
+                <p class="title is-2">
+                    Ferret v0.11.0
+                </p>
+                <p class="subtitle is-4">
+                        More features
+                    </p>
+                <p class="subtitle is-6 has-text-grey">
+                    <span>May 21, 2020</span> by <a href="https://github.com/3timeslazy">Vladimir Fetisov</a>
+                </p>
+                <hr class="is-block-centered" />
+            </div>
+        </div>
+        <div class="columns is-centered blog-post-content has-text-justified">
+            <div class="column is-8">
+                <p>Hello fellow miners,</p>
+<p>Today, we are living in unprecedented times. There are almost 5 million people infected by COVID-19 and thousands die every day in the world.</p>
+<p>During this time, the highest priority is to stay safe and healthy, take care of family.</p>
+<hr>
+<p>Ferret team has been locked down in their homes with their families as everyone around the globe, but <strong>still</strong> has managed to make new <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.11.0">Ferret v0.11.0</a></strong> release!</p>
+<p>Thanks to all our contributors for their help - we have done a lot of cool features.</p>
+<p>So, let’s take a look!</p>
+<hr>
+<h1 id="whats-added">What&rsquo;s added</h1>
+<h2 id="use-statement">USE statement</h2>
+<p>There is no need to write a full function path anymore! Just add <code>USE PATH::TO::PACKAGE</code> at the top of your query.</p>
 <pre class="hl">
-    <code class="bash">
+    <code class="fql">
         
-$ ferret
+USE IO::FS
+
+LET favicon = DOWNLOAD('https://www.google.com/favicon.ico')
+
+// 'WRITE' the same as 'IO::FS::WRITE'.
+// RETURN IO::FS::WRITE('google.favicon.ico', favicon) also valid.
+RETURN WRITE('google.favicon.ico', favicon)
 
     </code>
 </pre>
+<h2 id="path-functions">PATH functions</h2>
+<p>New functions for working with file paths.</p>
 <pre class="hl">
-    <code class="bash">
+    <code class="fql">
         
-Welcome to Ferret REPL
-Please use `exit` or `Ctrl-D` to exit this program.
->%
->LET doc = DOCUMENT('https://news.ycombinator.com/')
->FOR post IN ELEMENTS(doc, '.storylink')
->RETURN post.attributes.href
->%
+LET filename = 'main.go'
+
+RETURN PATH::EXT(filename) == '.go'
 
     </code>
 </pre>
-<p><strong>NOTE</strong>: symbol % is used to start and end multi-line queries. You also can use the heredoc format.</p>
-<p>If you want to execute a query stored in a file, just pass a file name:</p>
+<hr>
+<h1 id="whats-changed">What&rsquo;s changed</h1>
+<h2 id="scroll-options">Scroll options</h2>
+<p>Scroll document&rsquo;s window and elements according to <strong><a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView">MDN</a></strong></p>
 <pre class="hl">
-    <code class="bash">
+    <code class="fql">
         
-$ ferret ./docs/examples/static-page.fql
+LET doc = DOCUMENT(@url, { driver: 'cdp' })
+
+SCROLL_BOTTOM(doc, {
+    behavior: 'auto',
+    block: 'end',
+    inline: 'end'
+})
+
+RETURN 1
 
     </code>
 </pre>
-<pre class="hl">
-    <code class="bash">
-        
-$ cat ./docs/examples/static-page.fql | ferret
+<hr>
+<h1 id="whats-fixed">What&rsquo;s fixed</h1>
+<h2 id="random_token">RANDOM_TOKEN</h2>
+<p><code>RANDOM_TOKEN</code> return random string now! (even on Windows)</p>
+<h2 id="iofswrite">IO::FS::WRITE</h2>
+<p>Now files are created with read access automatically.</p>
+<hr>
+<h1 id="around-the-ferret">Around the Ferret</h1>
+<h2 id="oss-fuzz-platform">OSS-Fuzz platform</h2>
+<p>We have tried to connect Ferret with <a href="https://github.com/google/oss-fuzz">OSS-Fuzz</a> platform. But Google has <a href="https://github.com/google/oss-fuzz/pull/3782">rejected</a> Ferret :(</p>
 
-    </code>
-</pre>
-<pre class="hl">
-    <code class="bash">
-        
-$ ferret < ./docs/examples/static-page.fql
-
-    </code>
-</pre>
-<h3 id="browser-mode">Browser mode</h3>
-<p>By default, Ferret loads HTML pages via HTTP protocol, because it&rsquo;s faster.
-But nowadays, there are more and more websites rendered with JavaScript, and therefore, this &lsquo;old school&rsquo; approach does not really work.
-For such cases, you may fetch documents using Chrome or Chromium via Chrome DevTools protocol (aka CDP).
-First, you need to make sure that you launched Chrome with <code>remote-debugging-port=9222</code> flag.
-Second, you need to pass the address to Ferret CLI.</p>
-<pre class="hl">
-    <code class="bash">
-        
-$ ferret --cdp http://127.0.0.1:9222
-
-    </code>
-</pre>
-<p><strong>NOTE</strong>: By default, Ferret will try to use this local address as a default one, so it makes sense to explicitly pass the parameter only in case of either different port number or remote address.</p>
-<p>Alternatively, you can tell CLI to launch Chrome for you.</p>
-<pre class="hl">
-    <code class="bash">
-        
-$ ferret --cdp-launch
-
-    </code>
-</pre>
-<p>Once Ferret knows how to communicate with Chrome, you can use <code>DOCUMENT(url, opts)</code> function with true boolean value for dynamic pages:</p>
-<pre class="hl">
-    <code class="bash">
-        
-Welcome to Ferret REPL
-Please use `exit` or `Ctrl-D` to exit this program.
->%
->LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
->WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
->LET tracks = ELEMENTS(doc, '.chartTrack__details')
->FOR track IN tracks
->    LET username = ELEMENT(track, '.chartTrack__username')
->    LET title = ELEMENT(track, '.chartTrack__title')
->    RETURN {
->       artist: username.innerText,
->        track: title.innerText
->    }
->%
-
-    </code>
-</pre>
-
-</article>
-        </section>
+            </div>
+        </div>
     </div>
-</div>
 
         </div><footer class="footer">
     <div class="columns">
