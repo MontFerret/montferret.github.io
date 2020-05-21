@@ -17,7 +17,9 @@ During this time, the highest priority is to stay safe and healthy, take care of
 
 Ferret team has been locked down in their homes with their families as everyone around the globe, but **still** has managed to make new **[Ferret v0.11.0](https://github.com/MontFerret/ferret/releases/tag/v0.11.0)** release!
 
-We have done a lot of cool features and projects, so let’s take a look!
+Thanks to all our contributors for their help - we have done a lot of cool features.
+
+So, let’s take a look!
 
 ---
 
