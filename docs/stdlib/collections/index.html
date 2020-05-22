@@ -259,7 +259,7 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/fql/query-results/" class="is-active">
+            <a href="https://www.montferret.dev/docs/fql/query-results/" class="">
                 Query results
             </a>
         </li>
@@ -309,7 +309,7 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/stdlib/collections/" class="">
+            <a href="https://www.montferret.dev/docs/stdlib/collections/" class="is-active">
                 collections
             </a>
         </li>
@@ -402,44 +402,58 @@
         </section>
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
-    <h1 id="query-results">Query results</h1>
-<p>Unlike AQL, The result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.</p>
-<p>For example, when the <code>RETURN</code> statement is used as the last query statement, a values gets returned as it is:</p>
-<pre class="hl">
-    <code class="fql">
-        
-RETURN 1
-
-    </code>
-</pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#ae81ff">1</span></code></pre></div>
-<pre class="hl">
-    <code class="fql">
-        
-RETURN { foo: "bar" }
-
-    </code>
-</pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span> <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#f92672">}</span></code></pre></div>
-<p>However, when returning data from an iteration, the result values will be always an array:</p>
-<pre class="hl">
-    <code class="fql">
-        
-FOR u IN elements
-    RETURN i.href
-
-    </code>
-</pre>
-<pre class="hl">
-    <code class="bash">
-        
-{ "foo": "bar" }
-
-    </code>
-</pre>
-<h2 id="result-type">Result type</h2>
-<p>The result data type is in JSON format.
-All binary data gets encoded into base64 strings.</p>
+    <h2 id="length">LENGTH</h2>
+<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/length.go#L14">Source</a></p>
+<p>Length returns the length of a measurable value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td><code>String</code> <code>Array</code> <code>Object</code> <code>Binary</code></td>
+<td>The value to measure.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Int</code> Returns the length of the value.</p>
+<hr>
+<h2 id="reverse">REVERSE</h2>
+<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/reverse.go#L13">Source</a></p>
+<p>Reverse returns the reverse of a given string or array value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td><code>String</code> <code>Array</code></td>
+<td>The string or array to reverse.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> <code>Array</code> Returns a reversed version of a given value.</p>
+<hr>
 
 </article>
         </section>

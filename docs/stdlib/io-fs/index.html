@@ -259,7 +259,7 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/fql/query-results/" class="is-active">
+            <a href="https://www.montferret.dev/docs/fql/query-results/" class="">
                 Query results
             </a>
         </li>
@@ -330,7 +330,7 @@
     
         
         <li>
-            <a href="https://www.montferret.dev/docs/stdlib/io-fs/" class="">
+            <a href="https://www.montferret.dev/docs/stdlib/io-fs/" class="is-active">
                 io/fs
             </a>
         </li>
@@ -402,44 +402,68 @@
         </section>
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
-    <h1 id="query-results">Query results</h1>
-<p>Unlike AQL, The result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.</p>
-<p>For example, when the <code>RETURN</code> statement is used as the last query statement, a values gets returned as it is:</p>
-<pre class="hl">
-    <code class="fql">
-        
-RETURN 1
-
-    </code>
-</pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#ae81ff">1</span></code></pre></div>
-<pre class="hl">
-    <code class="fql">
-        
-RETURN { foo: "bar" }
-
-    </code>
-</pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">{</span> <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bar&#34;</span> <span style="color:#f92672">}</span></code></pre></div>
-<p>However, when returning data from an iteration, the result values will be always an array:</p>
-<pre class="hl">
-    <code class="fql">
-        
-FOR u IN elements
-    RETURN i.href
-
-    </code>
-</pre>
-<pre class="hl">
-    <code class="bash">
-        
-{ "foo": "bar" }
-
-    </code>
-</pre>
-<h2 id="result-type">Result type</h2>
-<p>The result data type is in JSON format.
-All binary data gets encoded into base64 strings.</p>
+    <h2 id="read">READ</h2>
+<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/fs/read.go#L14">Source</a></p>
+<p>Read reads from a given file.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td><code>String</code></td>
+<td>Path to file to read from.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Binary</code> The read file in binary format.</p>
+<hr>
+<h2 id="write">WRITE</h2>
+<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/fs/write.go#L22">Source</a></p>
+<p>Write writes the given data into the file.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td><code>String</code></td>
+<td>Path to file to write into.</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>Binary</code></td>
+<td>Data to write.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object, optional</code></td>
+<td>Additional parameters: * mode (string): * x - exclusive: returns an error if the file exist. it can be combined with other modes * a - append: will create a file if the specified file does not exist * w - write (default): will create a file if the specified file does not exist</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code> Returns nothing.</p>
+<hr>
 
 </article>
         </section>
