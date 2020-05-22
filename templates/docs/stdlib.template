@@ -1,0 +1,29 @@
+{{- $using := .Env.USING_KEY -}}
+{{- $repo := "https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/" -}}
+---
+title: "{{ $using }}"
+weight: 1
+draft: false
+---
+
+{{ range $key, $value := (index . $using) }}
+## {{ .token }}
+[Source]({{ $repo }}{{ .file_name }}#L{{ .line_number }})
+
+{{ .doc.desc }}
+
+|          |          |          |
+---------- | -------- | ----------
+Argument   | Type     | Description
+{{ range .doc.params -}}
+  `{{- .name }}` | {{ range $val := .type }}`{{ $val }}` {{ end }}| {{ .desc }}
+{{ end }}
+
+**Returns** {{ if .doc.returns }}
+  {{- range $val := .doc.returns.type }}`{{ $val }}` {{ end -}}
+  {{- .doc.returns.desc -}}
+{{- else -}}
+  `None`
+{{- end }}
+- - - -
+{{ end }}
