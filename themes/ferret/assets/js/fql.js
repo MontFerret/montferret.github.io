@@ -6,7 +6,7 @@ function registerFQL(hljs) {
     var IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*';
     var KEYWORDS = {
       keyword:
-        'FOR IN RETURN LET AND OR LIMIT FILTER DISTINCT SORT COLLECT ASC DESC' +
+        'USE FOR IN RETURN LET AND OR LIMIT FILTER DISTINCT SORT COLLECT ASC DESC' +
         'INTO KEEP WITH COUNT ALL ANY AGGREGATE LIKE NOT'
       ,
       literal:
