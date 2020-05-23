@@ -34,6 +34,7 @@ FQL supports two types of comments:
 ### Keywords
 On the top level, FQL offers the following operations:
 
+- ``USE``: allows the use of types in a namespace without typing full type path.
 - ``FOR``: array iteration
 - ``RETURN``: results projection
 - ``FILTER``: non-view results filtering
