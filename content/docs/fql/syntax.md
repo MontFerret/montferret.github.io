@@ -22,7 +22,7 @@ FQL supports two types of comments:
 - Single line comments: These start with a double forward slash and end at the end of the line, or the end of the query string (whichever is first).
 - Multi line comments: These start with a forward slash and asterisk, and end with an asterisk and a following forward slash. They can span as many lines as necessary.
 
-{{< code fql >}}
+{{< code lang="fql" height="170px" >}}
 /* this is a comment */ RETURN 1
 /* these */ RETURN /* are */ 1 /* multiple */ + /* comments */ 1
 /* this is
@@ -48,7 +48,7 @@ Each of the above operations can be initiated in a query by using a keyword of t
 
 An example FQL query may look like this:
 
-{{< code fql >}}
+{{< code lang="fql" height="180px" >}}
 LET page = DOCUMENT("https://github.com/trending")
 
 FOR row IN ELEMENTS(page, "ol.repo-list li")
@@ -105,7 +105,7 @@ The maximum supported length of any name is 64 bytes. Names in FQL are always ca
 
 Keywords must not be used as names. If a reserved keyword should be used as a name, the name must be enclosed in single or double quotes. Enclosing a name in quotes makes it possible to use otherwise reserved keywords as names. An example for this is:
 
-{{< code fql >}}
+{{< code lang="fql" height="100px" >}}
 FOR i IN [{ "RETURN": "foobar" }]
     RETURN i."RETURN"
 {{</ code >}}
@@ -113,7 +113,7 @@ FOR i IN [{ "RETURN": "foobar" }]
 #### Variable names
 FQL allows the user to assign values to additional variables in a query. All variables that are assigned a value must have a name that is unique within the context of the query.
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 LET users = [{ name: "Steve" }]
 FOR u IN users
   RETURN { name : u.name }

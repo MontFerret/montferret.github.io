@@ -16,28 +16,28 @@ You can download latest binaries from [here](https://github.com/MontFerret/ferre
 
 #### From the source
 
-{{< code bash >}}
+```bash
 $ go get github.com/MontFerret/ferret
-{{</ code >}}
+```
 
 ### Library
 
-{{< code bash >}}
+```bash
 $ go get github.com/MontFerret/ferret/pkg/compiler
-{{</ code >}}
+```
 
 <hr />
 
 # Environment
 In order to use all Ferret features, you will need to have Chrome either installed locally or running in Docker. For ease of use we recommend to run Chrome inside a Docker container:
 
-{{< code bash >}}
-$ docker pull alpeware/chrome-headless-stable
-$ docker run -d -p=0.0.0.0:9222:9222 --name=chrome-headless -v /tmp/chromedata/:/data alpeware/chrome-headless-stable
-{{</ code >}}
+```bash
+$ docker run -d -p 9222:9222 -e CHROME_OPTS='--disable-dev-shm-usage --force-gpu-mem-available-mb --full-memory-crash-report' alpeware/chrome-headless-stable:ver-83.0.4103.61
+```
+
 
 But if you want to see what's happening during query execution, just start your Chrome with remote debugging port:
 
-{{< code bash >}}
+```bash
 $ chrome.exe --remote-debugging-port=9222
-{{</ code >}}
+```

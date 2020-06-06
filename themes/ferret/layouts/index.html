@@ -32,7 +32,8 @@
         <div class="column">
             <h3>Dynamic pages support</h3>
             <p>
-                ferret has the ability to scrape JS rendered pages, handle all page events and emulate user interactions.
+                ferret has the ability to scrape JS rendered pages, handle all page events and emulate user
+                interactions.
             </p>
         </div>
         <div class="column">
@@ -54,12 +55,12 @@
             </p>
         </div>
         <div class="column">
-            <pre class="hl">
-                <code class="fql">
+            <div id="demo-1-query" data-type="query" data-lang="aql" class="code-editor-text">
 LET doc = DOCUMENT('https://github.com/topics')
 
 FOR el IN ELEMENTS(doc, '.py-4.border-bottom')
     LIMIT 10
+
     LET url = ELEMENT(el, 'a')
     LET name = ELEMENT(el, '.f3')
     LET description = ELEMENT(el, '.f5')
@@ -69,16 +70,14 @@ FOR el IN ELEMENTS(doc, '.py-4.border-bottom')
         description: TRIM(description.innerText),
         url: 'https://github.com' + url.attributes.href
     }
-                </code>
-            </pre>
+            </div>
         </div>
     </div>
 
     <hr />
     <div class="columns">
         <div class="column">
-            <pre class="hl">
-                <code class="fql">
+            <div id="demo-2-query" data-type="query" data-lang="aql" class="code-editor-text">
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
     driver: 'cdp'
 })
@@ -92,8 +91,7 @@ FOR track IN tracks
         artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
         track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
     }
-                </code>
-            </pre>
+            </div>
         </div>
         <div class="column">
             <h3>Dynamic pages handled easily</h3>
@@ -110,8 +108,7 @@ FOR track IN tracks
             <p>ferret is extremely extensible - creating custom functions and types is super easy</p>
         </div>
         <div class="column">
-            <pre class="hl">
-                <code class="go">
+            <div id="demo-3-query" data-type="query" data-lang="golang" class="code-editor-text">
 transform := func(ctx context.Context, args ...core.Value) (core.Value, error) {
     str := args[0].(values.String)
 
@@ -130,9 +127,27 @@ if err := comp.RegisterFunction("transform", transform); err != nil {
 }
 
 program, err := comp.Compile(query)
-                </code>
-            </pre>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("{{ $.Site.Data.repl.theme }}");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setReadOnly(true);
+
+                return editor;
+            }
+
+            const elements = document.querySelectorAll('[data-type="query"]');
+
+            elements.forEach((el) => {
+                createEditor(el.id, el.attributes['data-lang'].value);
+            });
+        }, false);
+    </script>
 </section>
 {{ end }}

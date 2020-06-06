@@ -1,5 +1,27 @@
-<pre class="hl">
-    <code class="{{ .Get 0 }}">
-        {{ .Inner }}
-    </code>
-</pre>
+{{ $id := printf "%s-%d" "code" (index (seq 1000 | shuffle | first 1) 0) }}
+{{ $lang := default "aql" ( .Get "lang" )}}
+
+{{- if eq $lang "fql" -}}
+{{ $lang = "aql" }}
+{{- end -}}
+{{ $height := default "400px" ( .Get "height" )}}
+{{ $width := default "100%" ( .Get "height" ) }}
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">
+                {{ .Inner }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('{{ $id }}-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + '{{ $lang }}');
+            editor.setReadOnly(true);
+        }, false);
+    </script>
+</div>
