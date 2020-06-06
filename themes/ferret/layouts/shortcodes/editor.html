@@ -1,6 +1,8 @@
 {{ $id := printf "%s-%d" "code-editor" (index (seq 1000 | shuffle | first 1) 0) }}
 {{ $height := default "400px" ( .Get "height" )}}
 {{ $width := default "100%" ( .Get "height" ) }}
+{{ $isReadOnly := default "false" ( .Get "readonly" ) }}
+{{ $params := default "{}" ( .Get "params" ) }}
 
 <div class="code-editor">
     <div class="columns">
@@ -35,16 +37,24 @@
             const resultEditor = createEditor('{{ $id }}-result', 'json');
             resultEditor.setReadOnly(true);
 
+            {{- if eq $isReadOnly "true" -}}
+                textEditor.setReadOnly(true);
+            {{- end -}}
+
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
 
+            let isRunning = false;
+
             function onStart() {
+                isRunning = true;
                 textEditor.setReadOnly(true);
                 btn.classList.add('is-loading');
             }
 
             function onEnd(result) {
+                isRunning = false;
                 textEditor.setReadOnly(false);
                 btn.classList.remove('is-loading');
 
@@ -52,6 +62,15 @@
             }
 
             btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse({{ $params }})
+                };
+
                 onStart();
                 fetch("{{ $.Site.Data.repl.workerURL }}", {
                     method: 'post',
@@ -59,9 +78,7 @@
                     headers: {
                         'Content-Type': 'application/json,encoding=utf-8'
                     },
-                    body: JSON.stringify({
-                        text: textEditor.getValue()
-                    })
+                    body: JSON.stringify(body)
                 })
                     .then(r => r.json())
                     .then((data) => {

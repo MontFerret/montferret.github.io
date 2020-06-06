@@ -54,15 +54,17 @@ Let's see how it works.
 
 For example, to scrape a list of trending repositories on GitHub, you can use the following query:
 
-{{< code fql >}}
+{{< editor height="220px" readonly="true" >}}
 LET page = DOCUMENT("https://github.com/trending")
 
-FOR row IN ELEMENTS(page, "ol.repo-list li")
-    LET name = INNER_TEXT(row, "div:nth-child(1)")
-    LET description = INNER_TEXT(row, "div:nth-child(3)")
+FOR row IN ELEMENTS(page, ".Box-row")
+    LET nameEl = ELEMENT(row, "h1 a")
+    LET descEl = ELEMENT(row, "p")
+    LET name = TRIM(nameEl.innerText)
+    LET description = TRIM(descEl ? descEl.innerText : "")
 
     RETURN { name, description }
-{{</ code >}}
+{{</ editor >}}
 
 There are not many things happening above, but they solve 2 of our 3 problems: boilerplate code and frequent markup changes. We will discuss how to solve the 3rd later.
 
@@ -78,7 +80,7 @@ First of all, we tell Ferret what page to load by calling ``DOCUMENT`` function.
 
 Once the document is loaded, we use the ``ELEMENTS`` function to find all list entries and iterate over them using FQL keywords ``FOR IN``, the construction which is familiar to many developers. Notice, for the search we use regular CSS selector like we would use in a browser.
 
-Inside the ``FOR`` loop body we get inner text of elements of a row using the helper function ``INNER_TEXT``. And again we use variables and CSS selector for simplicity and more efficiency.
+Inside the ``FOR`` loop body we find child elements that represent repository name and description using the ``ELEMENT`` function. And again we use variables and CSS selector for simplicity and more efficiency.
 
 After getting inner text of all elements we are interested in, we use ``RETURN`` statement with an object literal. Those who are familiar with JavaScript will recognize the syntax - an object literal with property shorthand. In other words, on each iteration we create an object with 2 properties: name and description. The ``RETURN`` statement works as aggregator, and the result of the query is an array of objects.
 
@@ -87,7 +89,7 @@ The example above solves only 2 problems, and we still cannot scrape pages that 
 
 What if we need to get a list of top songs from SoundCloud? If we execute the following query, we will get an empty array:
 
-{{< code fql >}}
+{{< editor height="200px" readonly="true" >}}
 LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
 LET tracks = ELEMENTS(doc, ".chartTrack__details")
 
@@ -96,18 +98,17 @@ FOR track IN tracks
         artist: TRIM(INNER_TEXT(track, ".chartTrack__username")),
         track: TRIM(INNER_TEXT(track, ".chartTrack__title"))
     }
-{{</ code >}}
+{{</ editor >}}
 
 In order to fix the query we need to do 2 things:
 
 - Run Chrome or Chromium either in [Docker](https://hub.docker.com/r/alpeware/chrome-headless-stable) or with *--remote-debugging-port=9222* argument.
-- Add a boolean argument to the ``DOCUMENT`` function — this informs Ferret that the page document is dynamic, which causes to use different driver for that.
+- Add CDP driver's name to the ``DOCUMENT`` function — this informs Ferret to use a special driver that allows us to load dynamically rendered (rendered by JavaScript) pages.
 
 Here is an updated version of the query:
 
-{{< code fql >}}
-LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', true)
+{{< editor height="240px" readonly="true" >}}
+LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: 'cdp' })
 
 WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
 
@@ -118,7 +119,7 @@ FOR track IN tracks
         artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
         track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
     }
-{{</ code >}}
+{{</ editor >}}
 
 You may notice, that there is a new line of code: ``WAIT_ELEMENT(doc, ‘.chartTrack__details’, 5000)``. Since everything is dynamically rendered, we need to be sure that the data we need is in place. That’s why we block the execution until the table with tracks appears on the page or the operation times out. The signature is pretty similar to what we have seen above with an extra timeout argument.
 
@@ -144,38 +145,43 @@ In order to get a list of products and their information we need to implement th
 - Move to a next page
 - Repeat step #3
 
-{{< code fql >}}
-LET amazon = DOCUMENT('https://www.amazon.com/', true)
+{{< editor height="680px" readonly="true" params="{ \"criteria\": \"ferret\" }" >}}
+LET baseURL = 'https://www.amazon.com/'
+LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
 INPUT(amazon, '#twotabsearchtextbox', @criteria)
 CLICK(amazon, '.nav-search-submit input[type="submit"]')
 WAIT_NAVIGATION(amazon)
 
-LET resultListSelector = '#s-results-list-atf'
-LET resultItemSelector = '.s-result-item.celwidget'
-LET nextBtnSelector = '#pagnNextLink'
-LET vendorSelector1 = 'div > div:nth-child(3) > div:nth-child(2) > span:nth-child(2)'
-LET vendorSelector2 = 'div > div:nth-child(5) > div:nth-child(2) > span:nth-child(2)'
-LET priceWholeSelector = 'span.sx-price-whole'
-LET priceFracSelector = 'sup.sx-price-fractional'
-LET pages = TO_INT(INNER_TEXT(amazon, '#pagn > span.pagnDisabled'))
+LET resultListSelector = 'div.s-result-list'
+LET resultItemSelector = '[data-component-type="s-search-result"]'
+LET nextBtnSelector = 'ul.a-pagination .a-last a'
+LET priceWholeSelector = '.a-price-whole'
+LET priceFracSelector = '.a-price-fraction'
+LET pagers = ELEMENTS(amazon, 'ul.a-pagination li.a-disabled')
+LET pages = LENGTH(pagers) > 0 ? TO_INT(INNER_TEXT(LAST(pagers))) : 0
 
 LET result = (
     FOR pageNum IN 1..pages
+        LIMIT 2
+
         LET clicked = pageNum == 1 ? false : CLICK(amazon, nextBtnSelector)
-        LET wait = clicked ? WAIT_NAVIGATION(amazon) : false
+        LET wait = clicked ? WAIT_NAVIGATION(amazon, 10000) : false
         LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
+
+        PRINT("page:", pageNum, "clicked", clicked)
 
         LET items = (
             FOR el IN ELEMENTS(amazon, resultItemSelector)
-                LET priceWholeTxt = INNER_TEXT(el, priceWholeSelector)
-                LET priceFracTxt = INNER_TEXT(el, priceFracSelector)
+                LET hasPrice = ELEMENT_EXISTS(el, priceWholeSelector)
+                LET priceWholeTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceWholeSelector), "[0-9]+")) : "0"
+                LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), "[0-9]+")) : "00"
 		        LET price = TO_FLOAT(priceWholeTxt + "." + priceFracTxt)
-                LET vendor = ELEMENT_EXISTS(el, vendorSelector1) ? INNER_TEXT(el, vendorSelector1) : INNER_TEXT(el, vendorSelector2)
+		        LET anchor = ELEMENT(el, "a")
 
                 RETURN {
+                    url: baseURL + anchor.attributes.href,
                     title: INNER_TEXT(el, 'h2'),
-                    vendor,
                     price
                 }
         )
@@ -184,7 +190,7 @@ LET result = (
 )
 
 RETURN FLATTEN(result)
-{{</ code >}}
+{{</ editor >}}
 
 At this point, most of the constructions of the language should be familiar, so I will just highlight what has not been covered before.
 
