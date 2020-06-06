@@ -12,7 +12,7 @@ The compared operands are first compared by their data types, and only by their 
 
 The following type order is used when comparing data types:
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 none < bool < number < string < array/list < object
 {{</ code >}}
 
@@ -20,7 +20,7 @@ This means none is the smallest type in FQL and object is the type with the high
 
 For example, the boolean true value will always be less than any numeric or string value, any array (even an empty array) or any object. Additionally, any string value (even an empty string) will always be greater than any numeric value, a boolean value, true or false
 
-{{< code fql >}}
+{{< code lang="fql" height="730px" >}}
 none < false
 none < true
 none < 0
@@ -81,7 +81,7 @@ Two array values are compared by comparing their individual elements position by
 
 If an array element is itself a compound value (an array or an object), then the comparison algorithm will check the element's sub values recursively. The element's sub-elements are compared recursively.
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 [ ] < [ 0 ]
 [ 1 ] < [ 2 ]
 [ false ] < [ true ]
@@ -91,7 +91,7 @@ Two object operands are compared by checking attribute names and value. The attr
 
 The combined and sorted array of attribute names is then traversed, and the respective attributes from the two compared operands are then looked up. If one of the objects does not have an attribute with the sought name, its attribute value is considered to be none. Finally, the attribute value of both objects is compared using the before mentioned data type and value comparison. The comparisons are performed for all object / document attributes until there is an unambiguous comparison result. If an unambiguous comparison result is found, the comparison is finished. If there is no unambiguous comparison result, the two compared objects are considered equal.
 
-{{< code fql >}}
+{{< code lang="fql" height="200px" >}}
 { } < { "a" : 1 }
 { } < { "a" : none }
 { "a" : 1 } < { "a" : 2 }

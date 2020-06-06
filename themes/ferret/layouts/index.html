@@ -137,7 +137,8 @@ program, err := comp.Compile(query)
                 const editor = ace.edit(id);
                 editor.setTheme("{{ $.Site.Data.repl.theme }}");
                 editor.session.setMode("ace/mode/" + mode);
-                editor.setReadOnly(true);
+                editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+                editor.renderer.$cursorLayer.element.style.display = "none"
 
                 return editor;
             }

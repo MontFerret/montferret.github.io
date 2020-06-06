@@ -12,7 +12,7 @@ Using bind parameters, the meaning of an existing query cannot be changed. Bind 
 
 The syntax for bind parameters is ``@name`` where ``@`` signifies that this is a bind parameter and name is the actual parameter name. Parameter names must start with any of the letters a to z (upper or lower case) or a digit (0 to 9), and can be followed by any letter, digit or the underscore symbol.
 
-{{< code fql >}}
+{{< code lang="fql" height="190px" >}}
 LET google = DOCUMENT("https://www.google.com/", true)
 
 INPUT(google, 'input[name="q"]', @criteria)
@@ -28,20 +28,20 @@ Bind parameters that are declared in the query must also be passed a parameter v
 
 Bind variables represent a value like a string, and must not be put in quotes in the FQL code:
 
-{{< code fql >}}
+{{< code lang="fql" height="100px" >}}
 FILTER u.name == "@name" // wrong
 FILTER u.name == @name   // correct
 {{</ code >}}
 
 If you need to do string processing in the query, you need to use string functions to do so:
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 RETURN CONCAT('prefix', @id, 'suffix')
 {{</ code >}}
 
 Bind parameters can be used for square bracket notation for sub-attribute access. They can also be chained:
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 LET doc = { foo: { bar: "baz" } }
 
 RETURN doc[@attr][@subattr]

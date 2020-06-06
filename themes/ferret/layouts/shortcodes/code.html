@@ -21,7 +21,8 @@
             const editor = ace.edit('{{ $id }}-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + '{{ $lang }}');
-            editor.setReadOnly(true);
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
         }, false);
     </script>
 </div>

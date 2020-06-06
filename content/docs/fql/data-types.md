@@ -66,7 +66,7 @@ The Boolean data type has two possible values, ``true`` and ``false``. They repr
 ### Numeric literals
 Numeric literals can be integers or floating-point numbers. They can optionally be signed with the + or - symbols. A decimal point . is used as separator for the optional fractional part. 
 
-{{< code fql >}}
+{{< code lang="fql" height="200px" >}}
 1
 +1
 42
@@ -80,7 +80,7 @@ Numeric literals can be integers or floating-point numbers. They can optionally 
 ### String literals
 String literals must be enclosed in single or double quotes. If the used quote character is to be used itself within the string literal, it must be escaped using the backslash symbol. A literal backslash also needs to be escaped with a backslash.
 
-{{< code fql >}}
+{{< code lang="fql" height="245px" >}}
 "yikes!"
 "don't know"
 "this is a \"quoted\" word"
@@ -108,13 +108,13 @@ An array declaration starts with a left square bracket ``[`` and ends with a rig
 
 In the easiest case, an array is empty and thus looks like:
 
-{{< code fql >}}
+{{< code lang="fql" height="85px" >}}
 [ ]
 {{</ code >}}
 
 Array elements can be any legal expression values. Nesting of arrays is supported.
 
-{{< code fql >}}
+{{< code lang="fql" height="135px" >}}
 [ true ]
 [ 1, 2, 3 ]
 [ -99, "yikes!", [ false, ["no"], [] ], 1 ]
@@ -123,7 +123,7 @@ Array elements can be any legal expression values. Nesting of arrays is supporte
 
 Individual array values can later be accessed by their positions using the [] accessor. The position of the accessed element must be a numeric value. Positions start at 0.
 
-{{< code fql >}}
+{{< code lang="fql" height="150px" >}}
 // access 1st array element (elements start at index 0)
 u.friends[0]
 
@@ -139,7 +139,7 @@ Object declarations start with a left curly bracket ``{`` and end with a right c
 
 In the simplest case, an object is empty. Its declaration would then be:
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 { }
 {{</ code >}}
 
@@ -147,7 +147,7 @@ Each attribute in an object is a name/value pair. Name and value of an attribute
 
 The attribute name is mandatory - there can't be anonymous values in an object. It can be specified as a quoted or unquoted string:
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 { name: … }    // unquoted
 { 'name': … }  // quoted (apostrophe / "single quote mark")
 { "name": … }  // quoted (quotation mark / "double quote mark")
@@ -157,7 +157,7 @@ It must be quoted if it contains whitespace, escape sequences or characters othe
 
 If a keyword is used as an attribute name then the attribute name must be quoted or escaped by backticks:
 
-{{< code fql >}}
+{{< code lang="fql" height="150px" >}}
 { return: … }    // error, return is a keyword!
 { 'return': … }  // quoted
 { "return": … }  // quoted
@@ -167,13 +167,13 @@ If a keyword is used as an attribute name then the attribute name must be quoted
 
 Attribute names can be computed using dynamic expressions, too. To disambiguate regular attribute names from attribute name expressions, computed attribute names must be enclosed in square brackets ``[ … ]``:
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 { [ CONCAT("test/", "bar") ] : "someValue" }
 {{</ code >}}
 
 There is also shorthand notation for attributes which is handy for returning existing variables easily:
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 LET name = "Peter"
 LET age = 42
 RETURN { name, age }
@@ -181,7 +181,7 @@ RETURN { name, age }
 
 The above is the shorthand equivalent for the generic form:
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 LET name = "Peter"
 LET age = 42
 RETURN { name: name, age: age }
@@ -189,7 +189,7 @@ RETURN { name: name, age: age }
 
 Any valid expression can be used as an attribute value. That also means nested objects can be used as attribute values:
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 { name : "Peter" }
 { "name" : "Vanessa", "age" : 15 }
 { "name" : "John", likes : [ "Swimming", "Skiing" ], "address" : { "street" : "Cucumber lane", "zip" : "94242" } }
@@ -197,21 +197,21 @@ Any valid expression can be used as an attribute value. That also means nested o
 
 Individual object attributes can later be accessed by their names using the dot ``.`` accessor:
 
-{{< code fql >}}
+{{< code lang="fql" height="105px" >}}
 u.address.city.name
 u.friends[0].name.first
 {{</ code >}}
 
 Attributes can also be accessed using the square bracket ``[]`` accessor:
 
-{{< code fql >}}
+{{< code lang="fql" height="105px" >}}
 u["address"]["city"]["name"]
 u["friends"][0]["name"]["first"]
 {{</ code >}}
 
 In contrast to the dot accessor, the square brackets allow for expressions:
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 LET attr1 = "friends"
 LET attr2 = "name"
 u[attr1][0][attr2][ CONCAT("fir", "st") ]
@@ -233,7 +233,7 @@ The values can represent either specific primitives or compound types. For examp
 In order to define a custom value, it needs to have 2 Go types.
 One should implement ``core.Type`` and another ``core.Value``.
 
-{{< code go >}}
+{{< code lang="golang" height="155px" >}}
 type Type interface {
     ID() int64
     String() string
@@ -241,7 +241,7 @@ type Type interface {
 }
 {{</ code >}}
 
-{{< code go >}}
+{{< code lang="golang" height="220px" >}}
 type Value interface {
     json.Marshaler
     Type() Type
@@ -256,13 +256,13 @@ type Value interface {
 
 For simplicity, there is a helper function in ``core`` package, that allows to create a type:
 
-{{< code go >}}
+{{< code lang="golang" height="90px" >}}
 var MyValueType = core.NewType("MyValueType")
 {{</ code >}}
 
 ``core.Value`` interface provides a basic set of functionality which allows the FQL runtime to use a custom value. 
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 LET myType = SOME_FUNC()
 
 RETURN [myType]
@@ -273,7 +273,7 @@ By default, implementing ``core.Value`` gives the FQL runtime just a basic set o
 
 If the underlying data type is compound and there is a need for providing access to underlying data, the type should implement ``core.Getter`` interface:
 
-{{< code go >}}
+{{< code lang="golang" height="120px" >}}
 type Getter interface {
     GetIn(ctx context.Context, path []Value) (Value, error)
 }
@@ -281,7 +281,7 @@ type Getter interface {
 
 After that, it will be possible to use ``.`` or ``[]`` accessors:
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 LET myType = SOME_FUNC()
 
 RETURN myType.someProperty
@@ -290,13 +290,13 @@ RETURN myType.someProperty
 ### Iterations
 In order to use a custom type as source for ``FOR IN`` statement, it must implement ``core.Iterable`` interface:
 
-{{< code go >}}
+{{< code lang="golang" height="120px" >}}
 type Iterable interface {
     Iterate(ctx context.Context) (Iterator, error)
 }
 {{</ code >}}
 
-{{< code go >}}
+{{< code lang="golang" height="120px" >}}
 type Iterator interface {
     Next(ctx context.Context) (value Value, key Value, err error)
 }
