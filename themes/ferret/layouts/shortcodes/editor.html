@@ -1,0 +1,80 @@
+<div class="code-editor">
+    {{ $id := .Get "id" }}
+    {{ $showLines := .Get "lines" }}
+
+    <div class="columns">
+        <div class="column is-1 is-offset-11">
+            <button id="{{ $id }}-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            
+            <div id="{{ $id }}-text" class="code-editor-text">
+                {{ .Inner }}
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="{{ $id }}-result" class="code-editor-result"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace/theme/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                {{- if eq $showLines "false" -}}
+                    editor.renderer.setShowGutter(false);
+                {{- end -}}
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#{{ $id }}-run-button');
+            const textEditor = createEditor('{{ $id }}-text', 'aql');
+            const resultEditor = createEditor('{{ $id }}-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            function onStart() {
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                onStart();
+                fetch("{{ $.Site.Data.repl.workerURL }}", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify({
+                        text: textEditor.getValue()
+                    })
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
