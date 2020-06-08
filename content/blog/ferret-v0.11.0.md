@@ -27,7 +27,7 @@ So, let’s take a look!
 ## USE statement
 There is no need to write a full function path anymore! Just add ``USE PATH::TO::PACKAGE`` at the top of your query.
  
-{{< code fql >}}
+{{< code lang="fql" height="190px" >}}
 USE IO::FS
 
 LET favicon = DOWNLOAD('https://www.google.com/favicon.ico')
@@ -40,7 +40,7 @@ RETURN WRITE('google.favicon.ico', favicon)
 ## PATH functions
 New functions for working with file paths.
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 LET filename = 'main.go'
 
 RETURN PATH::EXT(filename) == '.go'
@@ -52,7 +52,7 @@ RETURN PATH::EXT(filename) == '.go'
 ## Scroll options
 Scroll document's window and elements according to **[MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView)**
 
-{{< code fql >}}
+{{< code lang="fql" height="220px" >}}
 LET doc = DOCUMENT(@url, { driver: 'cdp' })
 
 SCROLL_BOTTOM(doc, {

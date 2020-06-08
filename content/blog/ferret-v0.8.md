@@ -22,19 +22,19 @@ When a page gets loaded, Ferret finds all available elements and provieds an acc
 
 Here's an example of how to find a target frame:
 
-{{< code fql >}}
-LET page = DOCUMENT("https://www.bbc.com/", {
-    driver: "cdp"
+{{< editor height="250px" readonly="true" >}}
+LET page = DOCUMENT("https://www.w3schools.com/html/html_iframe.asp", {
+	driver: "cdp"
 })
 
-LET frame = (
-    FOR frame IN page.frames
-        FILTER frame.name == "smphtml5iframeplayer"
-        RETURN frame
+LET content = (
+    FOR f IN page.frames
+        FILTER f.URL == "https://www.w3schools.com/html/default.asp"
+            RETURN f.head.innerHTML
 )
 
-RETURN INNER_TEXT(FIRST(frame))
-{{</ code >}}
+RETURN FIRST(content)
+{{</ editor >}}
 
 Alternatively, you can filter them out by url or access to a target iframe by index, if you know it's position.
 
@@ -49,7 +49,7 @@ Namespaces allow library authors (and us) to isolate functions into dedicated su
 
 Here is an example:
 
-{{< code fql >}}
+{{< code lang="fql" height="120px" >}}
 LET blob = DOWNLOAD("https://raw.githubusercontent.com/MontFerret/ferret/master/assets/logo.png")
 
 RETURN IO::FS::WRITE("logo.png", blob)
@@ -57,7 +57,7 @@ RETURN IO::FS::WRITE("logo.png", blob)
 
 To namespace a function, use the new ``namespace`` method. The ``namespace`` method is chainable:
 
-{{< code go >}}
+{{< code lang="golang" height="380px" >}}
 package main
 
 import (
@@ -88,11 +88,11 @@ A good web scraping tool needs XPath support, and Ferret finally has it!
 Ferret provides simple interface to XPath engine for both drivers - CDP and HTTP.   
 It automatically detects the output value type and deserializes them accordingly.    
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 {{</ code >}}
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 RETURN XPATH(page, "count(//div)")
 {{</ code >}}
 
@@ -104,18 +104,18 @@ These two queries will return 2 different types:
 ## Regular expression operator
 This release provides a shorthand for using regexp assertions:
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 LET result = "foo" =~ "^f[o].$" // returns "true"
 {{</ code >}}
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 {{</ code >}}
 
 ## New functions to manipulate DOM
 There are some cases when you might need to change the existing DOM. To help with that, we added the ``INNER_HTML_SET`` and ``INNER_TEXT_SET`` functions.
 
-{{< code fql >}}
+{{< code lang="fql" height="185px" >}}
 // Using document and selector
 INNER_HTML_SET(doc, "body", "<span>Hello</span>")
 INNER_TEXT_SET(doc, "body", "Hello")
@@ -128,7 +128,7 @@ INNER_TEXT_SET(doc.body, "Hello")
 ## Viewport settings
 In this release, you can override default values of a viewport in headless mode.
 
-{{< code fql >}}
+{{< code lang="fql" height="185px" >}}
 LET doc = DOCUMENT(@url, {
     driver: 'cdp',
     viewport: {
@@ -156,7 +156,7 @@ We try to maintain backwards compatibility, but some of the new features require
 ## Virtual DOM structure
 Work on ``iframe`` support required us to redesign the structure of the virtual DOM by introducing top level entity called ``HTMLPage``:
 
-{{< code go>}}
+{{< code lang="golang" height="440px" >}}
 type HTMLPage interface {
 	core.Value
 	core.Iterable
@@ -190,7 +190,7 @@ Because of the changes in Virtual DOM structure, the driver API has been changed
 
 ``Driver.LoadDocument`` and ``LoadDocumentParams`` are renamed to ``Driver.Open`` and ``Params``.
 
-{{< code go>}}
+{{< code lang="golang" height="150px" >}}
 type Driver interface {
 	io.Closer
 	Name() string

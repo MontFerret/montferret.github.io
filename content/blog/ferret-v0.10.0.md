@@ -37,7 +37,7 @@ Enjoy!
 Another popular feature request - possibility to load a prefetched HTML string into Ferret.    
 With this release, you can finally do it with ``HTML_PARSE`` function.
 
-{{< code fql >}}
+{{< code lang="fql" height="180px" >}}
 LET file = IO::FS::READ(@myfile)
 
 LET doc = HTML_PARSE(TO_STRING(file), {
@@ -57,7 +57,7 @@ Finally, FQL keywords are case insensitive!
 
 That's how Google Search query looks like in lower case now:
 
-{{< code fql >}}
+{{< code lang="fql" height="330px" >}}
 let google = document("https://www.google.com/", {
     driver: "cdp",
 })
@@ -86,7 +86,7 @@ It was a long lasting problem that Ferret could not correctly handle redirects t
 Now it has finally been fixed!   
 ```WAIT_NAVIGATION``` function has 2nd optional parameter that can be an object with the following fields:
 
-{{< code go >}}
+{{< code lang="golang" height="135px" >}}
 type Parameters struct {
     TargetURL string
     Timeout time.Duration
@@ -95,7 +95,7 @@ type Parameters struct {
 
 ``TargetURL`` is a regexp string that can be used to give Ferret a hint what the destination url is:
 
-{{< code fql >}}
+{{< code lang="fql" height="220px" >}}
 LET doc = DOCUMENT("http://waos.ovh/redirect.html", {
     driver: 'cdp'
 })

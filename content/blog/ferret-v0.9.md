@@ -18,7 +18,7 @@ Let's see what we've got.
 Since early versions, Ferret has ``INPUT`` HTML function that allowed to type any value to input HTML element.
 This works by appending the function parameter to any pre-existing `<input>` value. While it works fine in many cases, there are some scenarios when a target input field has a preset value which needs to be erased. With this release, Ferret has a new method ``INPUT_CLEAR`` that erases any data from a target input.
 
-{{< code fql >}}
+{{< code lang="fql" height="150px" >}}
 LET doc = DOCUMENT(@url, {
     driver: 'cdp'
 })
@@ -29,7 +29,7 @@ RETURN INPUT_CLEAR(doc, '#my-input')
 ## Double and more click
 Single, double, or more. Now it's possible to specify the number of clicks to ``CLICK`` function.
 
-{{< code fql >}}
+{{< code lang="fql" height="150px" >}}
 LET doc = DOCUMENT(@url, {
     driver: 'cdp'
 })
@@ -40,7 +40,7 @@ RETURN CLICK(doc, '#like', 2)
 ## Unfocus
 ``BLUR`` function removes focus from an active input field.
 
-{{< code fql >}}
+{{< code lang="fql" height="200px" >}}
 LET doc = DOCUMENT(@url, {
     driver: 'cdp'
 })
@@ -55,7 +55,7 @@ RETURN NONE
 With this release, you can set default headers and/or cookies to HTML drivers.
 One of the possible use cases is to create drivers with different custom names and pre-defined headers/cookies:
 
-{{< code go>}}
+{{< code lang="golang" height="730px" >}}
 cdp.NewDriver(
     cdp.WithCustomName("cdp_headers"),
     cdp.WithHeader("Single_header", []string{"single_header_value"}),
@@ -102,7 +102,7 @@ cdp.NewDriver(
 ## Params in dot notation
 In previous versions of Ferret, it was possible to pass complex types as parameters, but it was impossible to read data from it using dot notation. Now it is possible. But even more - you can use params as dot notation segments:
 
-{{< code fql >}}
+{{< code lang="fql" height="90px" >}}
 RETURN @one.@two.@three
 {{</ code >}}
 
@@ -119,7 +119,7 @@ Ferret didn't close Chrome/Chromium tab if an error occurs during a page load.
 ## Dot notation after a function call
 Parser could not properly handle scenarios where dot notation was used right after a function call:
 
-{{< code fql >}}
+{{< code lang="fql" height="110px" >}}
 LET items = [{name: "foo"}]
 RETURN FIRST(items).name
 {{</ code >}}
