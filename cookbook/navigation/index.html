@@ -93,7 +93,7 @@
                 
                 
                         
-                        <a href="/try/" class="navbar-item  active"
+                        <a href="/try/" class="navbar-item "
                         title=Try&#32;it id=repl>
                             Try it
                         </a>
@@ -111,7 +111,7 @@
                         </a>
                 
                         
-                        <a href="/cookbook/" class="navbar-item "
+                        <a href="/cookbook/" class="navbar-item  active"
                         title=Cookbook id=cookbook>
                             Cookbook
                         </a>
@@ -149,11 +149,76 @@
         })
     })();
 </script><div id="content">
-    <div class="repl">
-    <div class="hero is-primary">
-    <div class="hero-body">
-        <div class="container repl-content">
+    <div class="content section cookbook">
+    <div class="columns">
+        <section class="column is-2">
+            <aside class="menu">
+    
+    
+
+
+
+
+
+
+
+
+<p class="menu-label">
+    Cookbook
+</p>
+<ul class="menu-list">
+    
+        
             
+            <li>
+                <a href="https://www.montferret.dev/cookbook/google-search/" class="">
+                    Google search
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
+                <a href="https://www.montferret.dev/cookbook/pagination/" class="">
+                    Pagination
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
+                <a href="https://www.montferret.dev/cookbook/iframes/" class="">
+                    iframes
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
+                <a href="https://www.montferret.dev/cookbook/navigation/" class="is-active">
+                    Navigation
+                </a>
+            </li>
+        
+    
+
+
+</ul>
+
+
+
+
+
+</aside>
+
+        </section>
+        <section id="main" class="column is-10">
+            <article id="content" class="has-text-justified">
+    <h3 id="navigate-by-url">Navigate by url</h3>
+
 
 
 
@@ -162,32 +227,27 @@
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-691-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-51-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-691-text" class="code-editor-text" style="height: 400px;">
+            <div id="code-editor-51-text" class="code-editor-text" style="height: 250px;">
                 
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
-    driver: 'cdp'
-})
+LET page = DOCUMENT("https://github.com/", { driver: "cdp" })
+LET header1 = ELEMENT(page, 'meta[name="description"]').attributes.content
 
-WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
+NAVIGATE(page, "https://github.com/features", 10000)
 
-LET tracks = ELEMENTS(doc, '.chartTrack__details')
+LET header2 = ELEMENT(page, 'meta[name="description"]').attributes.content
 
-FOR track IN tracks
-    RETURN {
-        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
-        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
-    }
+RETURN [header1, header2]
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-691-result" class="code-editor-result" style="height: 400px;"></div>
+            <div id="code-editor-51-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
 
@@ -201,9 +261,210 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-691-run-button');
-            const textEditor = createEditor('code-editor-691-text', 'aql');
-            const resultEditor = createEditor('code-editor-691-result', 'json');
+            const btn = document.querySelector('#code-editor-51-run-button');
+            const textEditor = createEditor('code-editor-51-text', 'aql');
+            const resultEditor = createEditor('code-editor-51-result', 'json');
+            resultEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<h3 id="navigate-back">Navigate back</h3>
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns is-mobile">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-583-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-583-text" class="code-editor-text" style="height: 250px;">
+                
+LET page = DOCUMENT("https://github.com/", { driver: "cdp" })
+
+NAVIGATE(page, "https://github.com/features", 10000)
+
+LET header1 = ELEMENT(page, 'meta[name="description"]').attributes.content
+
+NAVIGATE_BACK(page)
+
+LET header2 = ELEMENT(page, 'meta[name="description"]').attributes.content
+
+RETURN [header1, header2]
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-583-result" class="code-editor-result" style="height: 250px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-583-run-button');
+            const textEditor = createEditor('code-editor-583-text', 'aql');
+            const resultEditor = createEditor('code-editor-583-result', 'json');
+            resultEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<h3 id="navigate-forward">Navigate forward</h3>
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns is-mobile">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-995-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-995-text" class="code-editor-text" style="height: 250px;">
+                
+LET page = DOCUMENT("https://github.com/", { driver: "cdp" })
+
+NAVIGATE(page, "https://github.com/features", 10000)
+
+LET header1 = ELEMENT(page, 'meta[name="description"]').attributes.content
+
+NAVIGATE_BACK(page)
+NAVIGATE_FORWARD(page)
+
+LET header2 = ELEMENT(page, 'meta[name="description"]').attributes.content
+
+RETURN [header1, header2]
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-995-result" class="code-editor-result" style="height: 250px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-995-run-button');
+            const textEditor = createEditor('code-editor-995-text', 'aql');
+            const resultEditor = createEditor('code-editor-995-result', 'json');
             resultEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -255,9 +516,9 @@ FOR track IN tracks
     </script>
 </div>
 
-        </div>
+</article>
+        </section>
     </div>
-</div>
 </div>
 
         </div><footer class="footer">

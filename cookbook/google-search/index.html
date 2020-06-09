@@ -110,6 +110,12 @@
                             Blog
                         </a>
                 
+                        
+                        <a href="/cookbook/" class="navbar-item  active"
+                        title=Cookbook id=cookbook>
+                            Cookbook
+                        </a>
+                
             </div>
 
             <div class="navbar-end">
@@ -143,7 +149,192 @@
         })
     })();
 </script><div id="content">
-  
+    <div class="content section cookbook">
+    <div class="columns">
+        <section class="column is-2">
+            <aside class="menu">
+    
+    
+
+
+
+
+
+
+
+
+<p class="menu-label">
+    Cookbook
+</p>
+<ul class="menu-list">
+    
+        
+            
+            <li>
+                <a href="https://www.montferret.dev/cookbook/google-search/" class="is-active">
+                    Google search
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
+                <a href="https://www.montferret.dev/cookbook/pagination/" class="">
+                    Pagination
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
+                <a href="https://www.montferret.dev/cookbook/iframes/" class="">
+                    iframes
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
+                <a href="https://www.montferret.dev/cookbook/navigation/" class="">
+                    Navigation
+                </a>
+            </li>
+        
+    
+
+
+</ul>
+
+
+
+
+
+</aside>
+
+        </section>
+        <section id="main" class="column is-10">
+            <article id="content" class="has-text-justified">
+    
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns is-mobile">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-561-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-561-text" class="code-editor-text" style="height: 450px;">
+                
+LET google = DOCUMENT("https://www.google.com/", {
+    driver: "cdp",
+    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
+})
+
+HOVER(google, 'input[name="q"]')
+WAIT(RAND(100))
+INPUT(google, 'input[name="q"]', "ferret", 30)
+
+WAIT(RAND(100))
+
+WAIT_ELEMENT(google, '.UUbT9')
+WAIT(RAND(100))
+CLICK(google, 'input[name="btnK"]')
+
+WAIT_NAVIGATION(google)
+
+FOR result IN ELEMENTS(google, '.g')
+    // filter out extra elements like videos and 'People also ask'
+    FILTER TRIM(result.attributes.class) == 'g'
+    RETURN {
+        title: INNER_TEXT(result, 'h3'),
+        description: INNER_TEXT(result, '.st'),
+        url: INNER_TEXT(result, 'cite')
+    }
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-561-result" class="code-editor-result" style="height: 450px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-561-run-button');
+            const textEditor = createEditor('code-editor-561-text', 'aql');
+            const resultEditor = createEditor('code-editor-561-result', 'json');
+            resultEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+</article>
+        </section>
+    </div>
+</div>
 
         </div><footer class="footer">
     <div class="columns">

@@ -54,6 +54,15 @@ DateYear returns the year extracted from the given date.
     </item>
     
     <item>
+      <title>Google search</title>
+      <link>https://www.montferret.dev/cookbook/google-search/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.montferret.dev/cookbook/google-search/</guid>
+      <description>Run   LET google = DOCUMENT(&#34;https://www.google.com/&#34;, { driver: &#34;cdp&#34;, userAgent: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36&#34; }) HOVER(google, &#39;input[name=&#34;q&#34;]&#39;) WAIT(RAND(100)) INPUT(google, &#39;input[name=&#34;q&#34;]&#39;, &#34;ferret&#34;, 30) WAIT(RAND(100)) WAIT_ELEMENT(google, &#39;.UUbT9&#39;) WAIT(RAND(100)) CLICK(google, &#39;input[name=&#34;btnK&#34;]&#39;) WAIT_NAVIGATION(google) FOR result IN ELEMENTS(google, &#39;.g&#39;) // filter out extra elements like videos and &#39;People also ask&#39; FILTER TRIM(result.attributes.class) == &#39;g&#39; RETURN { title: INNER_TEXT(result, &#39;h3&#39;), description: INNER_TEXT(result, &#39;.st&#39;), url: INNER_TEXT(result, &#39;cite&#39;) }       document.</description>
+    </item>
+    
+    <item>
       <title>html</title>
       <link>https://www.montferret.dev/docs/stdlib/html/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -208,6 +217,17 @@ From the source $ go get github.com/MontFerret/ferret Library $ go get github.co
     </item>
     
     <item>
+      <title>Pagination</title>
+      <link>https://www.montferret.dev/cookbook/pagination/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.montferret.dev/cookbook/pagination/</guid>
+      <description>There are several way how to implement pagination.
+Controlled In a controlled pagination, we either pass a number of pages to scrape or extract the number from the target page:
+Run   LET baseURL = &#39;https://www.amazon.com/&#39; LET amazon = DOCUMENT(baseURL, { driver: &#34;cdp&#34; }) INPUT(amazon, &#39;#twotabsearchtextbox&#39;, @criteria) CLICK(amazon, &#39;.nav-search-submit input[type=&#34;submit&#34;]&#39;) WAIT_NAVIGATION(amazon) LET resultListSelector = &#39;div.s-result-list&#39; LET resultItemSelector = &#39;[data-component-type=&#34;s-search-result&#34;]&#39; LET nextBtnSelector = &#39;ul.a-pagination .a-last a&#39; LET priceWholeSelector = &#39;.a-price-whole&#39; LET priceFracSelector = &#39;.</description>
+    </item>
+    
+    <item>
       <title>Syntax</title>
       <link>https://www.montferret.dev/docs/fql/syntax/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -225,6 +245,16 @@ Whitespace Whitespaces (blanks, carriage returns, line feeds, and tab stops) can
       <guid>https://www.montferret.dev/docs/getting-started/</guid>
       <description>Quick start Browserless mode If you want to play with FQL and check its syntax, you can run CLI with the following commands to run Ferret CLI in REPL mode:
 $ ferret Welcome to Ferret REPL Please use `exit` or `Ctrl-D` to exit this program. &amp;gt;% &amp;gt;LET doc = DOCUMENT(&amp;#39;https://news.ycombinator.com/&amp;#39;) &amp;gt;FOR post IN ELEMENTS(doc, &amp;#39;.storylink&amp;#39;) &amp;gt;RETURN post.attributes.href &amp;gt;% NOTE: symbol % is used to start and end multi-line queries. You also can use the heredoc format.</description>
+    </item>
+    
+    <item>
+      <title>iframes</title>
+      <link>https://www.montferret.dev/cookbook/iframes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.montferret.dev/cookbook/iframes/</guid>
+      <description>In order to find a particular iframe, you need to find it by its name or src.
+Beware, a target iframe must be in the same domain, otherwise its properties and content will be unavailable.  Run   LET page = DOCUMENT(&#34;https://www.w3schools.com/html/html_iframe.asp&#34;, { driver: &#34;cdp&#34; }) LET content = ( FOR f IN page.frames FILTER f.URL == &#34;https://www.w3schools.com/html/default.asp&#34; RETURN f.head.innerHTML ) RETURN FIRST(content)       document.</description>
     </item>
     
     <item>
@@ -246,7 +276,16 @@ The following comparison operators are supported:
       
       <guid>https://www.montferret.dev/docs/fql/data-types/</guid>
       <description>Data types FQL supports both primitive data types consisting of exactly one value and compound data types comprised of multiple values. The following types are available:
-Primitive types None value A none value can be used to represent an empty or absent value. It is different from a numerical value of zero (null != 0) and other falsy values (false, zero-length string, empty array or object). It is also known as nil or null in other languages.</description>
+  Data type Description     none An empty value, also: the absence of a value   boolean Boolean truth value with possible values false and true   integer Signed whole number   float Signed floating point number   string UTF-8 encoded text value   array Sequence of values, referred to by their positions   object Sequence of values, referred to by their names   binary Sequence of binary values   custom User defined types    Primitive types None value A none value can be used to represent an empty or absent value.</description>
+    </item>
+    
+    <item>
+      <title>Navigation</title>
+      <link>https://www.montferret.dev/cookbook/navigation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.montferret.dev/cookbook/navigation/</guid>
+      <description>Navigate by url Run   LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; }) LET header1 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content NAVIGATE(page, &#34;https://github.com/features&#34;, 10000) LET header2 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content RETURN [header1, header2]       document.addEventListener(&#39;DOMContentLoaded&#39;, function () { function createEditor(id, mode) { const editor = ace.edit(id); editor.setTheme(&#34;ace\/theme\/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + mode); return editor; } const btn = document.querySelector(&#39;#code-editor-51-run-button&#39;); const textEditor = createEditor(&#39;code-editor-51-text&#39;, &#39;aql&#39;); const resultEditor = createEditor(&#39;code-editor-51-result&#39;, &#39;json&#39;); resultEditor.setReadOnly(true);function setContent(editor, content) { editor.</description>
     </item>
     
     <item>
@@ -279,7 +318,7 @@ none    document.</description>
       <guid>https://www.montferret.dev/docs/fql/query-results/</guid>
       <description>Query results Unlike AQL, the result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
 For example, when the RETURN statement is used as the last query statement, a values gets returned as it is:
-RETURN 1     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-95-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false}); editor.</description>
+RETURN 1     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-50-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false}); editor.</description>
     </item>
     
     <item>
@@ -400,7 +439,7 @@ It&amp;rsquo;s a relatively easy task to write one or two web scrapers if the am
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/try/</guid>
-      <description>Run   LET doc = DOCUMENT(&#39;https://soundcloud.com/charts/top&#39;, { driver: &#39;cdp&#39; }) WAIT_ELEMENT(doc, &#39;.chartTrack__details&#39;, 5000) LET tracks = ELEMENTS(doc, &#39;.chartTrack__details&#39;) FOR track IN tracks RETURN { artist: TRIM(INNER_TEXT(track, &#39;.chartTrack__username&#39;)), track: TRIM(INNER_TEXT(track, &#39;.chartTrack__title&#39;)) }       document.addEventListener(&#39;DOMContentLoaded&#39;, function () { function createEditor(id, mode) { const editor = ace.edit(id); editor.setTheme(&#34;ace\/theme\/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + mode); return editor; } const btn = document.querySelector(&#39;#code-editor-609-run-button&#39;); const textEditor = createEditor(&#39;code-editor-609-text&#39;, &#39;aql&#39;); const resultEditor = createEditor(&#39;code-editor-609-result&#39;, &#39;json&#39;); resultEditor.</description>
+      <description>Run   LET doc = DOCUMENT(&#39;https://soundcloud.com/charts/top&#39;, { driver: &#39;cdp&#39; }) WAIT_ELEMENT(doc, &#39;.chartTrack__details&#39;, 5000) LET tracks = ELEMENTS(doc, &#39;.chartTrack__details&#39;) FOR track IN tracks RETURN { artist: TRIM(INNER_TEXT(track, &#39;.chartTrack__username&#39;)), track: TRIM(INNER_TEXT(track, &#39;.chartTrack__title&#39;)) }       document.addEventListener(&#39;DOMContentLoaded&#39;, function () { function createEditor(id, mode) { const editor = ace.edit(id); editor.setTheme(&#34;ace\/theme\/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + mode); return editor; } const btn = document.querySelector(&#39;#code-editor-691-run-button&#39;); const textEditor = createEditor(&#39;code-editor-691-text&#39;, &#39;aql&#39;); const resultEditor = createEditor(&#39;code-editor-691-result&#39;, &#39;json&#39;); resultEditor.</description>
     </item>
     
   </channel>

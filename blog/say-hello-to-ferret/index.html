@@ -110,6 +110,12 @@
                             Blog
                         </a>
                 
+                        
+                        <a href="/cookbook/" class="navbar-item "
+                        title=Cookbook id=cookbook>
+                            Cookbook
+                        </a>
+                
             </div>
 
             <div class="navbar-end">
@@ -174,15 +180,21 @@ The first impulse was to write bunch of scrapers using some scraping framework. 
 <p>Of course, these problems are solvable, but wouldn&rsquo;t it be nice if we didn&rsquo;t have to solve them again and again every time we write scraping code?
 So, I started looking a for a tool that would solve the issues for me, but unfortunately, I could not find any. Instead I created one.</p>
 <h2 id="the-solution">The solution</h2>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<figure class="image is-128x128" style="margin: 0 auto;">
+    <img src="https://cdn-images-1.medium.com/max/1600/0*06mYhTdfqmr4QI_K" />
+</figure>
+<p class="subtitle is-7 has-text-centered has-text-grey" style="margin-bottom: 2em;">
+    Logo by Chris Friel
+</p>
 <p>And this is how Ferret was born, a modern web scraping tool with a declarative query language.</p>
 <p>Ferret is a DSL with a runtime that represents pretty powerful and extensible declarative query language.</p>
 <p>It provides very high level solution that lets users focus on data they are looking for instead of writing all that glue code.</p>
 <p>It&rsquo;s embeddable. Even though, it comes with a CLI, it was designed to be easily embedded into applications from the beginning.</p>
 <p>And of course, it&rsquo;s super extensible. You can register not only your own functions, but also create custom types that Ferret runtime will recognize.</p>
 <p>The overall idea is simple, you write a query using the declarative query language focusing only on data you need, and Ferret handles the rest of the work for you.</p>
-<!-- raw HTML omitted -->
+<div style="width: 700px;margin: 0 auto;">
+    <iframe style="width: 700px; height:525px" src="https://www.youtube.com/embed/g9gWv1PODi8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 <h3 id="show-me-thecode">Show me the code</h3>
 <p>Let&rsquo;s see how it works.</p>
 <p>For example, to scrape a list of trending repositories on GitHub, you can use the following query:</p>
@@ -195,13 +207,13 @@ So, I started looking a for a tool that would solve the issues for me, but unfor
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-893-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-257-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-893-text" class="code-editor-text" style="height: 220px;">
+            <div id="code-editor-257-text" class="code-editor-text" style="height: 220px;">
                 
 LET page = DOCUMENT("https://github.com/trending")
 
@@ -216,7 +228,7 @@ FOR row IN ELEMENTS(page, ".Box-row")
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-893-result" class="code-editor-result" style="height: 220px;"></div>
+            <div id="code-editor-257-result" class="code-editor-result" style="height: 220px;"></div>
         </div>
     </div>
 
@@ -230,9 +242,9 @@ FOR row IN ELEMENTS(page, ".Box-row")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-893-run-button');
-            const textEditor = createEditor('code-editor-893-text', 'aql');
-            const resultEditor = createEditor('code-editor-893-result', 'json');
+            const btn = document.querySelector('#code-editor-257-run-button');
+            const textEditor = createEditor('code-editor-257-text', 'aql');
+            const resultEditor = createEditor('code-editor-257-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -304,13 +316,13 @@ FOR row IN ELEMENTS(page, ".Box-row")
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-760-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-213-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-760-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-213-text" class="code-editor-text" style="height: 200px;">
                 
 LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
 LET tracks = ELEMENTS(doc, ".chartTrack__details")
@@ -324,7 +336,7 @@ FOR track IN tracks
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-760-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-213-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
 
@@ -338,9 +350,9 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-760-run-button');
-            const textEditor = createEditor('code-editor-760-text', 'aql');
-            const resultEditor = createEditor('code-editor-760-result', 'json');
+            const btn = document.querySelector('#code-editor-213-run-button');
+            const textEditor = createEditor('code-editor-213-text', 'aql');
+            const resultEditor = createEditor('code-editor-213-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -406,13 +418,13 @@ FOR track IN tracks
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-373-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-255-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-373-text" class="code-editor-text" style="height: 240px;">
+            <div id="code-editor-255-text" class="code-editor-text" style="height: 240px;">
                 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: 'cdp' })
 
@@ -429,7 +441,7 @@ FOR track IN tracks
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-373-result" class="code-editor-result" style="height: 240px;"></div>
+            <div id="code-editor-255-result" class="code-editor-result" style="height: 240px;"></div>
         </div>
     </div>
 
@@ -443,9 +455,9 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-373-run-button');
-            const textEditor = createEditor('code-editor-373-text', 'aql');
-            const resultEditor = createEditor('code-editor-373-result', 'json');
+            const btn = document.querySelector('#code-editor-255-run-button');
+            const textEditor = createEditor('code-editor-255-text', 'aql');
+            const resultEditor = createEditor('code-editor-255-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -522,13 +534,13 @@ FOR track IN tracks
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-453-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-669-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-453-text" class="code-editor-text" style="height: 680px;">
+            <div id="code-editor-669-text" class="code-editor-text" style="height: 680px;">
                 
 LET baseURL = 'https://www.amazon.com/'
 LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
@@ -578,7 +590,7 @@ RETURN FLATTEN(result)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-453-result" class="code-editor-result" style="height: 680px;"></div>
+            <div id="code-editor-669-result" class="code-editor-result" style="height: 680px;"></div>
         </div>
     </div>
 
@@ -592,9 +604,9 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-453-run-button');
-            const textEditor = createEditor('code-editor-453-text', 'aql');
-            const resultEditor = createEditor('code-editor-453-result', 'json');
+            const btn = document.querySelector('#code-editor-669-run-button');
+            const textEditor = createEditor('code-editor-669-text', 'aql');
+            const resultEditor = createEditor('code-editor-669-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -657,10 +669,28 @@ RETURN FLATTEN(result)
 <p>As for others, I can only suggest that this tool <strong>might be</strong> useful for data scientists, ML/AI researchers, QA specialists and anyone who needs to scrape a website without setting up a new Python/Node/etc project.</p>
 <h2 id="what-next">What next?</h2>
 <p>The project is still growing and one of the main milestones is to stabilize API and provide rich functionality out of the box. Besides the Ferret itself, there are some other projects that are planned to be built:</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<h4>
+    <a href="https://github.com/MontFerret/ferret-server">
+    Ferret Server
+    </a>
+</h4>
+As you may noticed, Ferret is just a library that comes with a handy CLI. But it does not yet provide a production grade solution for complex scraping. That’s what Ferret Server aims to solve — provide a web scraping platform. The platform that would allows you to persists scripts and scraped data in a database, executes scripts manually or with a scheduler, notify 3rd party systems and etc. The project has started but it’s in very early stage.
+<h4>
+    <a href="https://github.com/MontFerret/ferret/issues?utf8=%E2%9C%93&q=is%3Aopen+label%3Aarea%2Fdrivers+Create+in%3Atitle+">
+    More HTML drivers
+    </a>
+</h4>
+Having more HTML drivers will let QA and developers easily test their web apps in different web browsers using same query.
+<h4>
+    <a href="https://github.com/MontFerret/ferret-registry">
+    Ferret Registry
+    </a>
+</h4>
+See it as NPM registry for FQL scripts where people can share and explore scripts which will make data scraping even easier!
+<h4>
+    Jupyter kernel
+</h4>
+I’m not really well familiar with Jupyter, but I know that many data scientists use it, so I figured that it could be useful to integrate Ferret with it.
 <p>So, if you have some spare time and want to contribute to an open source project — you are very welcome!</p>
 
             </div>
