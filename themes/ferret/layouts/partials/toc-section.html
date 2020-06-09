@@ -12,12 +12,14 @@
 </p>
 <ul class="menu-list">
     {{ range .Page.Pages.ByWeight}}
-        {{ $isActive := (eq $active.Permalink .Permalink) }}
-        <li>
-            <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
-                {{ .Title }}
-            </a>
-        </li>
+        {{ if .IsPage }}
+            {{ $isActive := (eq $active.Permalink .Permalink) }}
+            <li>
+                <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
+                    {{ .Title }}
+                </a>
+            </li>
+        {{ end }}
     {{ end }}
 
 {{ if $isTopLevel }}
