@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.69.2" />
+    <meta name="generator" content="Hugo 0.71.1" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -93,6 +93,12 @@
                 
                 
                         
+                        <a href="/try/" class="navbar-item "
+                        title=Try&#32;it id=repl>
+                            Try it
+                        </a>
+                
+                        
                         <a href="/docs/introduction" class="navbar-item "
                         title=Project&#32;documentation id=docs>
                             Docs
@@ -170,7 +176,8 @@
         <div class="column">
             <h3>Dynamic pages support</h3>
             <p>
-                ferret has the ability to scrape JS rendered pages, handle all page events and emulate user interactions.
+                ferret has the ability to scrape JS rendered pages, handle all page events and emulate user
+                interactions.
             </p>
         </div>
         <div class="column">
@@ -192,12 +199,12 @@
             </p>
         </div>
         <div class="column">
-            <pre class="hl">
-                <code class="fql">
+            <div id="demo-1-query" data-type="query" data-lang="aql" class="code-editor-text">
 LET doc = DOCUMENT('https://github.com/topics')
 
 FOR el IN ELEMENTS(doc, '.py-4.border-bottom')
     LIMIT 10
+
     LET url = ELEMENT(el, 'a')
     LET name = ELEMENT(el, '.f3')
     LET description = ELEMENT(el, '.f5')
@@ -207,16 +214,14 @@ FOR el IN ELEMENTS(doc, '.py-4.border-bottom')
         description: TRIM(description.innerText),
         url: 'https://github.com' + url.attributes.href
     }
-                </code>
-            </pre>
+            </div>
         </div>
     </div>
 
     <hr />
     <div class="columns">
         <div class="column">
-            <pre class="hl">
-                <code class="fql">
+            <div id="demo-2-query" data-type="query" data-lang="aql" class="code-editor-text">
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
     driver: 'cdp'
 })
@@ -230,8 +235,7 @@ FOR track IN tracks
         artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
         track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
     }
-                </code>
-            </pre>
+            </div>
         </div>
         <div class="column">
             <h3>Dynamic pages handled easily</h3>
@@ -248,8 +252,7 @@ FOR track IN tracks
             <p>ferret is extremely extensible - creating custom functions and types is super easy</p>
         </div>
         <div class="column">
-            <pre class="hl">
-                <code class="go">
+            <div id="demo-3-query" data-type="query" data-lang="golang" class="code-editor-text">
 transform := func(ctx context.Context, args ...core.Value) (core.Value, error) {
     str := args[0].(values.String)
 
@@ -268,10 +271,29 @@ if err := comp.RegisterFunction("transform", transform); err != nil {
 }
 
 program, err := comp.Compile(query)
-                </code>
-            </pre>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+                editor.renderer.$cursorLayer.element.style.display = "none"
+
+                return editor;
+            }
+
+            const elements = document.querySelectorAll('[data-type="query"]');
+
+            elements.forEach((el) => {
+                createEditor(el.id, el.attributes['data-lang'].value);
+            });
+        }, false);
+    </script>
 </section>
 
         </div><footer class="footer">
@@ -289,17 +311,12 @@ program, err := comp.Compile(query)
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@montferret/highlight-fql@1.2.0/index.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            
-            hljs.registerLanguage('fql', registerFQL);
-            hljs.initHighlighting();
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js" integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js" integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js" integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js" integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js" integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
 </footer>
 </body>
 </html>

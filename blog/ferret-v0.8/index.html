@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.69.2" />
+    <meta name="generator" content="Hugo 0.71.1" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -93,6 +93,12 @@
                 
                 
                         
+                        <a href="/try/" class="navbar-item "
+                        title=Try&#32;it id=repl>
+                            Try it
+                        </a>
+                
+                        
                         <a href="/docs/introduction" class="navbar-item "
                         title=Project&#32;documentation id=docs>
                             Docs
@@ -163,42 +169,148 @@
 <p>Ferret <em>finally</em> supports <code>iframe</code> elements. <br>
 When a page gets loaded, Ferret finds all available elements and provieds an access to them via the <code>.frames</code> property of a page object.</p>
 <p>Here&rsquo;s an example of how to find a target frame:</p>
-<pre class="hl">
-    <code class="fql">
-        
-LET page = DOCUMENT("https://www.bbc.com/", {
-    driver: "cdp"
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-889-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-889-text" class="code-editor-text" style="height: 250px;">
+                
+LET page = DOCUMENT("https://www.w3schools.com/html/html_iframe.asp", {
+	driver: "cdp"
 })
 
-LET frame = (
-    FOR frame IN page.frames
-        FILTER frame.name == "smphtml5iframeplayer"
-        RETURN frame
+LET content = (
+    FOR f IN page.frames
+        FILTER f.URL == "https://www.w3schools.com/html/default.asp"
+            RETURN f.head.innerHTML
 )
 
-RETURN INNER_TEXT(FIRST(frame))
+RETURN FIRST(content)
 
-    </code>
-</pre>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-889-result" class="code-editor-result" style="height: 250px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-889-run-button');
+            const textEditor = createEditor('code-editor-889-text', 'aql');
+            const resultEditor = createEditor('code-editor-889-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
 <p>Alternatively, you can filter them out by url or access to a target iframe by index, if you know it&rsquo;s position.</p>
 <!-- raw HTML omitted -->
 <h2 id="namespaces">Namespaces</h2>
 <p>With this release, we introduce a new language feature - <strong>namespaces</strong>.</p>
 <p>Namespaces allow library authors (and us) to isolate functions into dedicated sub sections.</p>
 <p>Here is an example:</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-283-text" class="code-editor-text" style="height: 120px;">
+                
 LET blob = DOWNLOAD("https://raw.githubusercontent.com/MontFerret/ferret/master/assets/logo.png")
 
 RETURN IO::FS::WRITE("logo.png", blob)
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-283-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <p>To namespace a function, use the new <code>namespace</code> method. The <code>namespace</code> method is chainable:</p>
-<pre class="hl">
-    <code class="go">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-713-text" class="code-editor-text" style="height: 380px;">
+                
 package main
 
 import (
@@ -219,27 +331,75 @@ func main() {
     c.Namespace("IO").Namespace("FS").RegisterFunction("Read", fs.Read)
 }
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-713-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <!-- raw HTML omitted -->
 <h2 id="xpath">XPath</h2>
 <p>A good web scraping tool needs XPath support, and Ferret finally has it!<br>
 Ferret provides simple interface to XPath engine for both drivers - CDP and HTTP.<br>
 It automatically detects the output value type and deserializes them accordingly.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-672-text" class="code-editor-text" style="height: 90px;">
+                
 RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 
-    </code>
-</pre>
-<pre class="hl">
-    <code class="fql">
-        
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-672-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-989-text" class="code-editor-text" style="height: 90px;">
+                
 RETURN XPATH(page, "count(//div)")
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-989-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <p>These two queries will return 2 different types:</p>
 <ol>
 <li>Returns an array of serialized elements (their inner HTML)</li>
@@ -247,25 +407,67 @@ RETURN XPATH(page, "count(//div)")
 </ol>
 <h2 id="regular-expression-operator">Regular expression operator</h2>
 <p>This release provides a shorthand for using regexp assertions:</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-396-text" class="code-editor-text" style="height: 90px;">
+                
 LET result = "foo" =~ "^f[o].$" // returns "true"
 
-    </code>
-</pre>
-<pre class="hl">
-    <code class="fql">
-        
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-396-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-83-text" class="code-editor-text" style="height: 90px;">
+                
 LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-83-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="new-functions-to-manipulate-dom">New functions to manipulate DOM</h2>
 <p>There are some cases when you might need to change the existing DOM. To help with that, we added the <code>INNER_HTML_SET</code> and <code>INNER_TEXT_SET</code> functions.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-27-text" class="code-editor-text" style="height: 185px;">
+                
 // Using document and selector
 INNER_HTML_SET(doc, "body", "<span>Hello</span>")
 INNER_TEXT_SET(doc, "body", "Hello")
@@ -274,13 +476,31 @@ INNER_TEXT_SET(doc, "body", "Hello")
 INNER_HTML_SET(doc.body, "<span>Hello</span>")
 INNER_TEXT_SET(doc.body, "Hello")
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-27-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="viewport-settings">Viewport settings</h2>
 <p>In this release, you can override default values of a viewport in headless mode.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-121-text" class="code-editor-text" style="height: 185px;">
+                
 LET doc = DOCUMENT(@url, {
     driver: 'cdp',
     viewport: {
@@ -289,8 +509,20 @@ LET doc = DOCUMENT(@url, {
     }
 })
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-121-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="better-emulation-of-user-interaction">Better emulation of user interaction</h2>
 <p>This is a big change in how Ferret handles page interactions.</p>
 <p>Now Ferret interacts with pages in a more advanced way - your script can scrolls down or up to an element, moves the mouse, focuses and types&hellip; with random delays. Just like a real person!</p>
@@ -301,9 +533,15 @@ LET doc = DOCUMENT(@url, {
 <!-- raw HTML omitted -->
 <h2 id="virtual-dom-structure">Virtual DOM structure</h2>
 <p>Work on <code>iframe</code> support required us to redesign the structure of the virtual DOM by introducing top level entity called <code>HTMLPage</code>:</p>
-<pre class="hl">
-    <code class="go">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-100-text" class="code-editor-text" style="height: 440px;">
+                
 type HTMLPage interface {
 	core.Value
 	core.Iterable
@@ -328,23 +566,53 @@ type HTMLPage interface {
 	NavigateForward(ctx context.Context, skip values.Int) (values.Boolean, error)
 }
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-100-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <p>Previously, <code>HTMLDocument</code> contained the open page, but <code>iframe</code> nodes introduce the need to have multiple documents representing each node. This led to a new entity in the structure.</p>
 <h2 id="driver-api">Driver API</h2>
 <p>Because of the changes in Virtual DOM structure, the driver API has been changed as well in order to be reasonable.</p>
 <p><code>Driver.LoadDocument</code> and <code>LoadDocumentParams</code> are renamed to <code>Driver.Open</code> and <code>Params</code>.</p>
-<pre class="hl">
-    <code class="go">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-857-text" class="code-editor-text" style="height: 150px;">
+                
 type Driver interface {
 	io.Closer
 	Name() string
 	Open(ctx context.Context, params Params) (HTMLPage, error)
 }
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-857-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="other-1">Other</h2>
 <p>In the context of API stabilization and consistency, there are some other minor changes in vDOM elements like extra returned value (usually an error) or <code>Get</code> prefix in some methods.</p>
 
@@ -367,17 +635,12 @@ type Driver interface {
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@montferret/highlight-fql@1.2.0/index.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            
-            hljs.registerLanguage('fql', registerFQL);
-            hljs.initHighlighting();
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js" integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js" integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js" integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js" integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js" integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
 </footer>
 </body>
 </html>

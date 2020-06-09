@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.69.2" />
+    <meta name="generator" content="Hugo 0.71.1" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -93,6 +93,12 @@
                 
                 
                         
+                        <a href="/try/" class="navbar-item "
+                        title=Try&#32;it id=repl>
+                            Try it
+                        </a>
+                
+                        
                         <a href="/docs/introduction" class="navbar-item "
                         title=Project&#32;documentation id=docs>
                             Docs
@@ -165,9 +171,15 @@
 <h1 id="whats-added">What&rsquo;s added</h1>
 <h2 id="use-statement">USE statement</h2>
 <p>There is no need to write a full function path anymore! Just add <code>USE PATH::TO::PACKAGE</code> at the top of your query.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-77-text" class="code-editor-text" style="height: 190px;">
+                
 USE IO::FS
 
 LET favicon = DOWNLOAD('https://www.google.com/favicon.ico')
@@ -176,26 +188,62 @@ LET favicon = DOWNLOAD('https://www.google.com/favicon.ico')
 // RETURN IO::FS::WRITE('google.favicon.ico', favicon) also valid.
 RETURN WRITE('google.favicon.ico', favicon)
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-77-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="path-functions">PATH functions</h2>
 <p>New functions for working with file paths.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-594-text" class="code-editor-text" style="height: 90px;">
+                
 LET filename = 'main.go'
 
 RETURN PATH::EXT(filename) == '.go'
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-594-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <hr>
 <h1 id="whats-changed">What&rsquo;s changed</h1>
 <h2 id="scroll-options">Scroll options</h2>
 <p>Scroll document&rsquo;s window and elements according to <strong><a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView">MDN</a></strong></p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-83-text" class="code-editor-text" style="height: 220px;">
+                
 LET doc = DOCUMENT(@url, { driver: 'cdp' })
 
 SCROLL_BOTTOM(doc, {
@@ -206,8 +254,20 @@ SCROLL_BOTTOM(doc, {
 
 RETURN 1
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-83-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <hr>
 <h1 id="whats-fixed">What&rsquo;s fixed</h1>
 <h2 id="random_token">RANDOM_TOKEN</h2>
@@ -238,17 +298,12 @@ RETURN 1
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@montferret/highlight-fql@1.2.0/index.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            
-            hljs.registerLanguage('fql', registerFQL);
-            hljs.initHighlighting();
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js" integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js" integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js" integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js" integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js" integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
 </footer>
 </body>
 </html>

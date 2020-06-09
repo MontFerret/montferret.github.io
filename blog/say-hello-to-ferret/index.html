@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.69.2" />
+    <meta name="generator" content="Hugo 0.71.1" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -91,6 +91,12 @@
             <div class="navbar-start">
                 
                 
+                
+                        
+                        <a href="/try/" class="navbar-item "
+                        title=Try&#32;it id=repl>
+                            Try it
+                        </a>
                 
                         
                         <a href="/docs/introduction" class="navbar-item "
@@ -180,19 +186,103 @@ So, I started looking a for a tool that would solve the issues for me, but unfor
 <h3 id="show-me-thecode">Show me the code</h3>
 <p>Let&rsquo;s see how it works.</p>
 <p>For example, to scrape a list of trending repositories on GitHub, you can use the following query:</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-792-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-792-text" class="code-editor-text" style="height: 220px;">
+                
 LET page = DOCUMENT("https://github.com/trending")
 
-FOR row IN ELEMENTS(page, "ol.repo-list li")
-    LET name = INNER_TEXT(row, "div:nth-child(1)")
-    LET description = INNER_TEXT(row, "div:nth-child(3)")
+FOR row IN ELEMENTS(page, ".Box-row")
+    LET nameEl = ELEMENT(row, "h1 a")
+    LET descEl = ELEMENT(row, "p")
+    LET name = TRIM(nameEl.innerText)
+    LET description = TRIM(descEl ? descEl.innerText : "")
 
     RETURN { name, description }
 
-    </code>
-</pre>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-792-result" class="code-editor-result" style="height: 220px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-792-run-button');
+            const textEditor = createEditor('code-editor-792-text', 'aql');
+            const resultEditor = createEditor('code-editor-792-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
 <p>There are not many things happening above, but they solve 2 of our 3 problems: boilerplate code and frequent markup changes. We will discuss how to solve the 3rd later.</p>
 <p>Let&rsquo;s take a closer look.</p>
 <p>The first problem gets solved automatically by the language itself - Ferret abstracts away all infrastructural glue code from a user. All heavy lifting is done under the hood. All a user needs to do is to describe what data they need to scrape, and what shape of the data should be as an output. Declarative languages allow you to express yourself in a very readable way.</p>
@@ -200,14 +290,28 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
 <p>Now, let&rsquo;s discuss what is happening in our script in order to get better understanding of the tool.</p>
 <p>First of all, we tell Ferret what page to load by calling <code>DOCUMENT</code> function. Ferret loads the page and creates its representation in memory as an object. Then we assigned the returned document object to a variable. Yes, in FQL it&rsquo;s possible to define variables which is an extremely useful feature.</p>
 <p>Once the document is loaded, we use the <code>ELEMENTS</code> function to find all list entries and iterate over them using FQL keywords <code>FOR IN</code>, the construction which is familiar to many developers. Notice, for the search we use regular CSS selector like we would use in a browser.</p>
-<p>Inside the <code>FOR</code> loop body we get inner text of elements of a row using the helper function <code>INNER_TEXT</code>. And again we use variables and CSS selector for simplicity and more efficiency.</p>
+<p>Inside the <code>FOR</code> loop body we find child elements that represent repository name and description using the <code>ELEMENT</code> function. And again we use variables and CSS selector for simplicity and more efficiency.</p>
 <p>After getting inner text of all elements we are interested in, we use <code>RETURN</code> statement with an object literal. Those who are familiar with JavaScript will recognize the syntax - an object literal with property shorthand. In other words, on each iteration we create an object with 2 properties: name and description. The <code>RETURN</code> statement works as aggregator, and the result of the query is an array of objects.</p>
 <h3 id="dynamic-pages">Dynamic pages</h3>
 <p>The example above solves only 2 problems, and we still cannot scrape pages that are rendered dynamically.</p>
 <p>What if we need to get a list of top songs from SoundCloud? If we execute the following query, we will get an empty array:</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-455-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-455-text" class="code-editor-text" style="height: 200px;">
+                
 LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
 LET tracks = ELEMENTS(doc, ".chartTrack__details")
 
@@ -217,19 +321,100 @@ FOR track IN tracks
         track: TRIM(INNER_TEXT(track, ".chartTrack__title"))
     }
 
-    </code>
-</pre>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-455-result" class="code-editor-result" style="height: 200px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-455-run-button');
+            const textEditor = createEditor('code-editor-455-text', 'aql');
+            const resultEditor = createEditor('code-editor-455-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
 <p>In order to fix the query we need to do 2 things:</p>
 <ul>
 <li>Run Chrome or Chromium either in <a href="https://hub.docker.com/r/alpeware/chrome-headless-stable">Docker</a> or with <em>&ndash;remote-debugging-port=9222</em> argument.</li>
-<li>Add a boolean argument to the <code>DOCUMENT</code> function — this informs Ferret that the page document is dynamic, which causes to use different driver for that.</li>
+<li>Add CDP driver&rsquo;s name to the <code>DOCUMENT</code> function — this informs Ferret to use a special driver that allows us to load dynamically rendered (rendered by JavaScript) pages.</li>
 </ul>
 <p>Here is an updated version of the query:</p>
-<pre class="hl">
-    <code class="fql">
-        
-LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', true)
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-257-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-257-text" class="code-editor-text" style="height: 240px;">
+                
+LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: 'cdp' })
 
 WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
 
@@ -241,8 +426,76 @@ FOR track IN tracks
         track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
     }
 
-    </code>
-</pre>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-257-result" class="code-editor-result" style="height: 240px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-257-run-button');
+            const textEditor = createEditor('code-editor-257-text', 'aql');
+            const resultEditor = createEditor('code-editor-257-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
 <p>You may notice, that there is a new line of code: <code>WAIT_ELEMENT(doc, ‘.chartTrack__details’, 5000)</code>. Since everything is dynamically rendered, we need to be sure that the data we need is in place. That’s why we block the execution until the table with tracks appears on the page or the operation times out. The signature is pretty similar to what we have seen above with an extra timeout argument.</p>
 <p>Once the data is loaded and rendered, we are ready to iterate over all table rows and parse them.</p>
 <p>As you can see, the way how we had written the query didn’t change much, but at the same time we need to take into consideration some nuances of dynamic pages and give Ferret some hints how to handle them.</p>
@@ -260,40 +513,59 @@ FOR track IN tracks
 <li>Move to a next page</li>
 <li>Repeat step #3</li>
 </ul>
-<pre class="hl">
-    <code class="fql">
-        
-LET amazon = DOCUMENT('https://www.amazon.com/', true)
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-469-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-469-text" class="code-editor-text" style="height: 680px;">
+                
+LET baseURL = 'https://www.amazon.com/'
+LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
 INPUT(amazon, '#twotabsearchtextbox', @criteria)
 CLICK(amazon, '.nav-search-submit input[type="submit"]')
 WAIT_NAVIGATION(amazon)
 
-LET resultListSelector = '#s-results-list-atf'
-LET resultItemSelector = '.s-result-item.celwidget'
-LET nextBtnSelector = '#pagnNextLink'
-LET vendorSelector1 = 'div > div:nth-child(3) > div:nth-child(2) > span:nth-child(2)'
-LET vendorSelector2 = 'div > div:nth-child(5) > div:nth-child(2) > span:nth-child(2)'
-LET priceWholeSelector = 'span.sx-price-whole'
-LET priceFracSelector = 'sup.sx-price-fractional'
-LET pages = TO_INT(INNER_TEXT(amazon, '#pagn > span.pagnDisabled'))
+LET resultListSelector = 'div.s-result-list'
+LET resultItemSelector = '[data-component-type="s-search-result"]'
+LET nextBtnSelector = 'ul.a-pagination .a-last a'
+LET priceWholeSelector = '.a-price-whole'
+LET priceFracSelector = '.a-price-fraction'
+LET pagers = ELEMENTS(amazon, 'ul.a-pagination li.a-disabled')
+LET pages = LENGTH(pagers) > 0 ? TO_INT(INNER_TEXT(LAST(pagers))) : 0
 
 LET result = (
     FOR pageNum IN 1..pages
+        LIMIT 2
+
         LET clicked = pageNum == 1 ? false : CLICK(amazon, nextBtnSelector)
-        LET wait = clicked ? WAIT_NAVIGATION(amazon) : false
+        LET wait = clicked ? WAIT_NAVIGATION(amazon, 10000) : false
         LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
+
+        PRINT("page:", pageNum, "clicked", clicked)
 
         LET items = (
             FOR el IN ELEMENTS(amazon, resultItemSelector)
-                LET priceWholeTxt = INNER_TEXT(el, priceWholeSelector)
-                LET priceFracTxt = INNER_TEXT(el, priceFracSelector)
+                LET hasPrice = ELEMENT_EXISTS(el, priceWholeSelector)
+                LET priceWholeTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceWholeSelector), "[0-9]+")) : "0"
+                LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), "[0-9]+")) : "00"
 		        LET price = TO_FLOAT(priceWholeTxt + "." + priceFracTxt)
-                LET vendor = ELEMENT_EXISTS(el, vendorSelector1) ? INNER_TEXT(el, vendorSelector1) : INNER_TEXT(el, vendorSelector2)
+		        LET anchor = ELEMENT(el, "a")
 
                 RETURN {
+                    url: baseURL + anchor.attributes.href,
                     title: INNER_TEXT(el, 'h2'),
-                    vendor,
                     price
                 }
         )
@@ -303,8 +575,76 @@ LET result = (
 
 RETURN FLATTEN(result)
 
-    </code>
-</pre>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-469-result" class="code-editor-result" style="height: 680px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-469-run-button');
+            const textEditor = createEditor('code-editor-469-text', 'aql');
+            const resultEditor = createEditor('code-editor-469-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{ \"criteria\": \"ferret\" }")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
 <p>At this point, most of the constructions of the language should be familiar, so I will just highlight what has not been covered before.</p>
 <p>First of all, it’s data input and submitting the form by clicking the search button. Notice, we use parameters (words starting with @ symbol) in this script which. Their values are define either via CLI or a context in embedded mode (I will cover how to embed Ferret to you application in next blog post).</p>
 <p>Once the results page gets loaded, we iterate over a range of page numbers, using another parameter. Ideally, you need to extrapolate amount of pages and use this number, but I use the parameter here for simplicity.</p>
@@ -342,17 +682,12 @@ RETURN FLATTEN(result)
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@montferret/highlight-fql@1.2.0/index.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            
-            hljs.registerLanguage('fql', registerFQL);
-            hljs.initHighlighting();
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js" integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js" integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js" integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js" integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js" integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
 </footer>
 </body>
 </html>

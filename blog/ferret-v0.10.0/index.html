@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.69.2" />
+    <meta name="generator" content="Hugo 0.71.1" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -93,6 +93,12 @@
                 
                 
                         
+                        <a href="/try/" class="navbar-item "
+                        title=Try&#32;it id=repl>
+                            Try it
+                        </a>
+                
+                        
                         <a href="/docs/introduction" class="navbar-item "
                         title=Project&#32;documentation id=docs>
                             Docs
@@ -178,9 +184,15 @@ Now, Ferret has new I/O namespaces, with the following functions:</p>
 <h2 id="loading-html-string-into-memory">Loading HTML string into memory</h2>
 <p>Another popular feature request - possibility to load a prefetched HTML string into Ferret. <br>
 With this release, you can finally do it with <code>HTML_PARSE</code> function.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-140-text" class="code-editor-text" style="height: 180px;">
+                
 LET file = IO::FS::READ(@myfile)
 
 LET doc = HTML_PARSE(TO_STRING(file), {
@@ -189,8 +201,20 @@ LET doc = HTML_PARSE(TO_STRING(file), {
 
 RETURN INNER_TEXT(doc, 'title')
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-140-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="parameter-value-availability-check">Parameter value availability check</h2>
 <p>In this release, we do pre-runtime check whether all values are provided for parameters used by a script. <br>
 It was very frustrating when your script was failing in the middle of its execution just because you forgot to provide a value for one of the paramaters.</p>
@@ -198,9 +222,15 @@ It was very frustrating when your script was failing in the middle of its execut
 <h2 id="case-insensitivity">Case insensitivity</h2>
 <p>Finally, FQL keywords are case insensitive!</p>
 <p>That&rsquo;s how Google Search query looks like in lower case now:</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-211-text" class="code-editor-text" style="height: 330px;">
+                
 let google = document("https://www.google.com/", {
     driver: "cdp",
 })
@@ -218,8 +248,20 @@ for result in elements(google, '.g')
         url: inner_text(result, 'cite')
     }
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-211-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="improved-cdp-driver-performance">Improved CDP driver performance</h2>
 <p>CDP driver performance has been drastically improved that brings CPU usage down from 60% for 3 pages to &lt;1%.</p>
 <h1 id="whats-fixed">What&rsquo;s fixed</h1>
@@ -227,20 +269,44 @@ for result in elements(google, '.g')
 <p>It was a long lasting problem that Ferret could not correctly handle redirects that could occur during a page navigation that was leading to timeouts or corrupt page state.</p>
 <p>Now it has finally been fixed!<br>
 <code>WAIT_NAVIGATION</code> function has 2nd optional parameter that can be an object with the following fields:</p>
-<pre class="hl">
-    <code class="go">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-241-text" class="code-editor-text" style="height: 135px;">
+                
 type Parameters struct {
     TargetURL string
     Timeout time.Duration
 }
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-241-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <p><code>TargetURL</code> is a regexp string that can be used to give Ferret a hint what the destination url is:</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-211-text" class="code-editor-text" style="height: 220px;">
+                
 LET doc = DOCUMENT("http://waos.ovh/redirect.html", {
     driver: 'cdp'
 })
@@ -251,8 +317,20 @@ WAIT_NAVIGATION(doc, { targetURL: "redirect2\.html" })
 
 RETURN ELEMENT(doc, '.title')
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-211-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 
             </div>
         </div>
@@ -273,17 +351,12 @@ RETURN ELEMENT(doc, '.title')
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@montferret/highlight-fql@1.2.0/index.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            
-            hljs.registerLanguage('fql', registerFQL);
-            hljs.initHighlighting();
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js" integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js" integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js" integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js" integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js" integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
 </footer>
 </body>
 </html>

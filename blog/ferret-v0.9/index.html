@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.69.2" />
+    <meta name="generator" content="Hugo 0.71.1" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -93,6 +93,12 @@
                 
                 
                         
+                        <a href="/try/" class="navbar-item "
+                        title=Try&#32;it id=repl>
+                            Try it
+                        </a>
+                
+                        
                         <a href="/docs/introduction" class="navbar-item "
                         title=Project&#32;documentation id=docs>
                             Docs
@@ -161,35 +167,77 @@
 <h2 id="clearing-input-values">Clearing input values</h2>
 <p>Since early versions, Ferret has <code>INPUT</code> HTML function that allowed to type any value to input HTML element.
 This works by appending the function parameter to any pre-existing <code>&lt;input&gt;</code> value. While it works fine in many cases, there are some scenarios when a target input field has a preset value which needs to be erased. With this release, Ferret has a new method <code>INPUT_CLEAR</code> that erases any data from a target input.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-773-text" class="code-editor-text" style="height: 150px;">
+                
 LET doc = DOCUMENT(@url, {
     driver: 'cdp'
 })
 
 RETURN INPUT_CLEAR(doc, '#my-input')
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-773-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="double-and-more-click">Double and more click</h2>
 <p>Single, double, or more. Now it&rsquo;s possible to specify the number of clicks to <code>CLICK</code> function.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-933-text" class="code-editor-text" style="height: 150px;">
+                
 LET doc = DOCUMENT(@url, {
     driver: 'cdp'
 })
 
 RETURN CLICK(doc, '#like', 2)
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-933-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="unfocus">Unfocus</h2>
 <p><code>BLUR</code> function removes focus from an active input field.</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-960-text" class="code-editor-text" style="height: 200px;">
+                
 LET doc = DOCUMENT(@url, {
     driver: 'cdp'
 })
@@ -199,14 +247,32 @@ BLUR(doc, '#input')
 
 RETURN NONE
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-960-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="default-headers-and-cookies">Default headers and cookies</h2>
 <p>With this release, you can set default headers and/or cookies to HTML drivers.
 One of the possible use cases is to create drivers with different custom names and pre-defined headers/cookies:</p>
-<pre class="hl">
-    <code class="go">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-463-text" class="code-editor-text" style="height: 730px;">
+                
 cdp.NewDriver(
     cdp.WithCustomName("cdp_headers"),
     cdp.WithHeader("Single_header", []string{"single_header_value"}),
@@ -249,17 +315,47 @@ cdp.NewDriver(
     }),
 )
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-463-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="params-in-dot-notation">Params in dot notation</h2>
 <p>In previous versions of Ferret, it was possible to pass complex types as parameters, but it was impossible to read data from it using dot notation. Now it is possible. But even more - you can use params as dot notation segments:</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-939-text" class="code-editor-text" style="height: 90px;">
+                
 RETURN @one.@two.@three
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-939-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h2 id="string-literals">String literals</h2>
 <p>In addition to defining string literals with quotes (', &ldquo;) and backtick (`), you can now define string literals with the forwardtick (´).</p>
 <h1 id="whats-fixed">What&rsquo;s fixed</h1>
@@ -269,14 +365,32 @@ RETURN @one.@two.@three
 <p><code>CLICK</code> could not be used with both an element and selector.</p>
 <h2 id="dot-notation-after-a-function-call">Dot notation after a function call</h2>
 <p>Parser could not properly handle scenarios where dot notation was used right after a function call:</p>
-<pre class="hl">
-    <code class="fql">
-        
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-391-text" class="code-editor-text" style="height: 110px;">
+                
 LET items = [{name: "foo"}]
 RETURN FIRST(items).name
 
-    </code>
-</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-391-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
 <h1 id="whats-changed">What&rsquo;s changed</h1>
 <h2 id="internal-cleanup-and-refactoring">Internal cleanup and refactoring</h2>
 <p>We&rsquo;ve made some internal cleanups and minor refactoring. <br>
@@ -325,17 +439,12 @@ There might be minor breaking changes for those who use HTML drivers directly.</
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js" integrity="sha256-js+I1fdbke/DJrW2qXQlrw7VUEqmdeFeOW37UC0bEiU=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/bash.min.js" integrity="sha256-zXrlim8wsIvcEFjsD3THiAfTvtPZifqx8q0rxegiWQc=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/languages/go.min.js" integrity="sha256-LVuWfOU0rWFMCJNl1xb3K2HSWfxtK4IPbqEerP1P83M=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@montferret/highlight-fql@1.2.0/index.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            
-            hljs.registerLanguage('fql', registerFQL);
-            hljs.initHighlighting();
-        });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js" integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js" integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js" integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js" integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js" integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
 </footer>
 </body>
 </html>
