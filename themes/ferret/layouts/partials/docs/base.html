@@ -12,7 +12,7 @@
             <section id="menu" class="column is-2">
                 {{- $links := split "" "" }}
                 {{- range .Params.menu -}}
-                    {{ $link := (dict "title" . "url" (printf "#%s" .))}}
+                    {{ $link := (dict "title" (. | upper) "url" (printf "#%s" .))}}
                     {{ $links = $links | append  $link }}
                 {{- end -}}
                 {{- $menu := (dict "items" $links "title" .Params.menuTitle) -}}
