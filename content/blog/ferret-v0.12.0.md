@@ -30,7 +30,7 @@ T::TRUE(ELEMENT_EXISTS(doc, "#user[login]"))
 T::TRUE(ELEMENT_EXISTS(doc, "#user[email]"))
 T::TRUE(ELEMENT_EXISTS(doc, "#user[password]"))
 
-RETURN data
+RETURN NONE
 
 {{</ editor >}}
 
@@ -45,7 +45,7 @@ LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
     driver: 'cdp'
 })
 
-LET frame = FRAMES(page, "src", "/")
+LET frame = FRAMES(page, "src", "https://www.montferret.dev/")
 
 RETURN FIRST(frame).url
 
@@ -59,7 +59,7 @@ LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
     driver: 'cdp'
 })
 
-LET innerPage = FIRST(FRAMES(page, "src", "/"))
+LET innerPage = FIRST(FRAMES(page, "src", "https://www.montferret.dev/"))
 
 T::NOT::NONE(innerPage)
 
