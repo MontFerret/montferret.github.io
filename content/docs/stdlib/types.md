@@ -8,7 +8,7 @@ menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_
 
 
 
-{{< header >}}
+{{< header href="is_array" >}}
 
 IS_ARRAY
 
@@ -27,7 +27,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_binary" >}}
 
 IS_BINARY
 
@@ -46,7 +46,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_bool" >}}
 
 IS_BOOL
 
@@ -65,7 +65,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_datetime" >}}
 
 IS_DATETIME
 
@@ -84,7 +84,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_float" >}}
 
 IS_FLOAT
 
@@ -103,7 +103,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_html_document" >}}
 
 IS_HTML_DOCUMENT
 
@@ -122,7 +122,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_html_element" >}}
 
 IS_HTML_ELEMENT
 
@@ -141,7 +141,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_int" >}}
 
 IS_INT
 
@@ -160,7 +160,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_nan" >}}
 
 IS_NAN
 
@@ -179,7 +179,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_none" >}}
 
 IS_NONE
 
@@ -198,7 +198,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_object" >}}
 
 IS_OBJECT
 
@@ -217,7 +217,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_string" >}}
 
 IS_STRING
 
@@ -236,7 +236,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="to_array" >}}
 
 TO_ARRAY
 
@@ -255,7 +255,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="to_bool" >}}
 
 TO_BOOL
 
@@ -274,7 +274,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="to_datetime" >}}
 
 TO_DATETIME
 
@@ -293,7 +293,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="to_float" >}}
 
 TO_FLOAT
 
@@ -312,7 +312,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="to_int" >}}
 
 TO_INT
 
@@ -331,7 +331,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="to_string" >}}
 
 TO_STRING
 
@@ -350,7 +350,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="typename" >}}
 
 TYPENAME
 

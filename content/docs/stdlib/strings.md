@@ -8,7 +8,7 @@ menu: [CONCAT,CONCAT_SEPARATOR,CONTAINS,DECODE_URI_COMPONENT,ENCODE_URI_COMPONEN
 
 
 
-{{< header >}}
+{{< header href="concat" >}}
 
 CONCAT
 
@@ -27,7 +27,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="concat_separator" >}}
 
 CONCAT_SEPARATOR
 
@@ -47,7 +47,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="contains" >}}
 
 CONTAINS
 
@@ -68,7 +68,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="decode_uri_component" >}}
 
 DECODE_URI_COMPONENT
 
@@ -87,7 +87,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="encode_uri_component" >}}
 
 ENCODE_URI_COMPONENT
 
@@ -106,7 +106,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="escape_html" >}}
 
 ESCAPE_HTML
 
@@ -125,7 +125,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="find_first" >}}
 
 FIND_FIRST
 
@@ -147,7 +147,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="find_last" >}}
 
 FIND_LAST
 
@@ -169,7 +169,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="fmt" >}}
 
 FMT
 
@@ -189,7 +189,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="from_base64" >}}
 
 FROM_BASE64
 
@@ -208,7 +208,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="json_parse" >}}
 
 JSON_PARSE
 
@@ -227,7 +227,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="json_stringify" >}}
 
 JSON_STRINGIFY
 
@@ -246,7 +246,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="left" >}}
 
 LEFT
 
@@ -266,7 +266,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="like" >}}
 
 LIKE
 
@@ -287,7 +287,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="lower" >}}
 
 LOWER
 
@@ -306,7 +306,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="ltrim" >}}
 
 LTRIM
 
@@ -326,7 +326,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="md5" >}}
 
 MD5
 
@@ -345,7 +345,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="random_token" >}}
 
 RANDOM_TOKEN
 
@@ -364,7 +364,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="regex_match" >}}
 
 REGEX_MATCH
 
@@ -385,7 +385,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="regex_replace" >}}
 
 REGEX_REPLACE
 
@@ -407,7 +407,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="regex_split" >}}
 
 REGEX_SPLIT
 
@@ -429,7 +429,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="regex_test" >}}
 
 REGEX_TEST
 
@@ -450,7 +450,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="right" >}}
 
 RIGHT
 
@@ -470,7 +470,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="rtrim" >}}
 
 RTRIM
 
@@ -490,7 +490,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="sha1" >}}
 
 SHA1
 
@@ -509,7 +509,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="sha512" >}}
 
 SHA512
 
@@ -528,7 +528,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="split" >}}
 
 SPLIT
 
@@ -549,7 +549,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="substitute" >}}
 
 SUBSTITUTE
 
@@ -571,7 +571,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="substring" >}}
 
 SUBSTRING
 
@@ -592,7 +592,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="to_base64" >}}
 
 TO_BASE64
 
@@ -611,7 +611,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="trim" >}}
 
 TRIM
 
@@ -631,7 +631,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="unescape_html" >}}
 
 UNESCAPE_HTML
 
@@ -650,7 +650,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="upper" >}}
 
 UPPER
 

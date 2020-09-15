@@ -8,7 +8,7 @@ menu: [READ,WRITE,]
 
 
 
-{{< header >}}
+{{< header href="read" >}}
 
 IO::FS::READ
 
@@ -27,7 +27,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="write" >}}
 
 IO::FS::WRITE
 

@@ -8,7 +8,7 @@ menu: [APPEND,FIRST,FLATTEN,INTERSECTION,LAST,MINUS,NTH,OUTERSECTION,POP,POSITIO
 
 
 
-{{< header >}}
+{{< header href="append" >}}
 
 APPEND
 
@@ -28,7 +28,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="first" >}}
 
 FIRST
 
@@ -47,7 +47,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="flatten" >}}
 
 FLATTEN
 
@@ -67,7 +67,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="intersection" >}}
 
 INTERSECTION
 
@@ -86,7 +86,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="last" >}}
 
 LAST
 
@@ -105,7 +105,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="minus" >}}
 
 MINUS
 
@@ -124,7 +124,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="nth" >}}
 
 NTH
 
@@ -144,7 +144,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="outersection" >}}
 
 OUTERSECTION
 
@@ -163,7 +163,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="pop" >}}
 
 POP
 
@@ -182,7 +182,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="position" >}}
 
 POSITION
 
@@ -203,7 +203,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="push" >}}
 
 PUSH
 
@@ -224,7 +224,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="remove_nth" >}}
 
 REMOVE_NTH
 
@@ -244,7 +244,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="remove_value" >}}
 
 REMOVE_VALUE
 
@@ -265,7 +265,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="remove_values" >}}
 
 REMOVE_VALUES
 
@@ -285,7 +285,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="shift" >}}
 
 SHIFT
 
@@ -304,7 +304,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="slice" >}}
 
 SLICE
 
@@ -325,7 +325,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="sorted" >}}
 
 SORTED
 
@@ -344,7 +344,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="sorted_unique" >}}
 
 SORTED_UNIQUE
 
@@ -363,7 +363,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="union" >}}
 
 UNION
 
@@ -382,7 +382,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="union_distinct" >}}
 
 UNION_DISTINCT
 
@@ -401,7 +401,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="unique" >}}
 
 UNIQUE
 
@@ -420,7 +420,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="unshift" >}}
 
 UNSHIFT
 

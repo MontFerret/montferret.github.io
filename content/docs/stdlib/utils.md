@@ -8,7 +8,7 @@ menu: [PRINT,WAIT,]
 
 
 
-{{< header >}}
+{{< header href="print" >}}
 
 PRINT
 
@@ -27,7 +27,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait" >}}
 
 WAIT
 

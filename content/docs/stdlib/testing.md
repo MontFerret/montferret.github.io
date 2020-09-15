@@ -8,7 +8,7 @@ menu: [ARRAY,BINARY,DATETIME,EMPTY,EQUAL,FAIL,FALSE,FLOAT,GT,GTE,INCLUDE,INT,LEN
 
 
 
-{{< header >}}
+{{< header href="array" >}}
 
 T::ARRAY
 
@@ -28,7 +28,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="binary" >}}
 
 T::BINARY
 
@@ -48,7 +48,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="datetime" >}}
 
 T::DATETIME
 
@@ -68,7 +68,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="empty" >}}
 
 T::EMPTY
 
@@ -88,7 +88,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="equal" >}}
 
 T::EQUAL
 
@@ -109,7 +109,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="fail" >}}
 
 T::FAIL
 
@@ -128,7 +128,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="false" >}}
 
 T::FALSE
 
@@ -148,7 +148,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="float" >}}
 
 T::FLOAT
 
@@ -168,7 +168,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="gt" >}}
 
 T::GT
 
@@ -189,7 +189,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="gte" >}}
 
 T::GTE
 
@@ -210,7 +210,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="include" >}}
 
 T::INCLUDE
 
@@ -231,7 +231,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="int" >}}
 
 T::INT
 
@@ -251,7 +251,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="len" >}}
 
 T::LEN
 
@@ -272,7 +272,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="lt" >}}
 
 T::LT
 
@@ -293,7 +293,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="lte" >}}
 
 T::LTE
 
@@ -314,7 +314,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="match" >}}
 
 T::MATCH
 
@@ -335,7 +335,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="none" >}}
 
 T::NONE
 
@@ -355,7 +355,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="object" >}}
 
 T::OBJECT
 
@@ -375,7 +375,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="string" >}}
 
 T::STRING
 
@@ -395,7 +395,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="true" >}}
 
 T::TRUE
 

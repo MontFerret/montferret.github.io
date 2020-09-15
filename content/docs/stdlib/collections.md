@@ -8,7 +8,7 @@ menu: [INCLUDES,LENGTH,REVERSE,]
 
 
 
-{{< header >}}
+{{< header href="includes" >}}
 
 INCLUDES
 
@@ -28,7 +28,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="length" >}}
 
 LENGTH
 
@@ -47,7 +47,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="reverse" >}}
 
 REVERSE
 

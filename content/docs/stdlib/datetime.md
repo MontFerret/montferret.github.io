@@ -8,7 +8,7 @@ menu: [DATE,DATE_ADD,DATE_COMPARE,DATE_DAY,DATE_DAYOFWEEK,DATE_DAYOFYEAR,DATE_DA
 
 
 
-{{< header >}}
+{{< header href="date" >}}
 
 DATE
 
@@ -27,7 +27,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_add" >}}
 
 DATE_ADD
 
@@ -48,7 +48,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_compare" >}}
 
 DATE_COMPARE
 
@@ -70,7 +70,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_day" >}}
 
 DATE_DAY
 
@@ -89,7 +89,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_dayofweek" >}}
 
 DATE_DAYOFWEEK
 
@@ -108,7 +108,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_dayofyear" >}}
 
 DATE_DAYOFYEAR
 
@@ -127,7 +127,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_days_in_month" >}}
 
 DATE_DAYS_IN_MONTH
 
@@ -146,7 +146,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_diff" >}}
 
 DATE_DIFF
 
@@ -168,7 +168,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_format" >}}
 
 DATE_FORMAT
 
@@ -187,7 +187,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_hour" >}}
 
 DATE_HOUR
 
@@ -206,7 +206,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_leapyear" >}}
 
 DATE_LEAPYEAR
 
@@ -225,7 +225,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_millisecond" >}}
 
 DATE_MILLISECOND
 
@@ -244,7 +244,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_minute" >}}
 
 DATE_MINUTE
 
@@ -263,7 +263,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_month" >}}
 
 DATE_MONTH
 
@@ -282,7 +282,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_quarter" >}}
 
 DATE_QUARTER
 
@@ -301,7 +301,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_second" >}}
 
 DATE_SECOND
 
@@ -320,7 +320,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_subtract" >}}
 
 DATE_SUBTRACT
 
@@ -341,7 +341,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="date_year" >}}
 
 DATE_YEAR
 
@@ -360,7 +360,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="now" >}}
 
 NOW
 

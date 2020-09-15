@@ -8,7 +8,7 @@ menu: [ABS,ACOS,ASIN,ATAN,ATAN2,AVERAGE,CEIL,COS,DEGREES,EXP,EXP2,FLOOR,LOG,LOG1
 
 
 
-{{< header >}}
+{{< header href="abs" >}}
 
 ABS
 
@@ -27,7 +27,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="acos" >}}
 
 ACOS
 
@@ -46,7 +46,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="asin" >}}
 
 ASIN
 
@@ -65,7 +65,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="atan" >}}
 
 ATAN
 
@@ -84,7 +84,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="atan2" >}}
 
 ATAN2
 
@@ -104,7 +104,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="average" >}}
 
 AVERAGE
 
@@ -123,7 +123,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="ceil" >}}
 
 CEIL
 
@@ -142,7 +142,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="cos" >}}
 
 COS
 
@@ -161,7 +161,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="degrees" >}}
 
 DEGREES
 
@@ -180,7 +180,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="exp" >}}
 
 EXP
 
@@ -199,7 +199,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="exp2" >}}
 
 EXP2
 
@@ -218,7 +218,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="floor" >}}
 
 FLOOR
 
@@ -237,7 +237,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="log" >}}
 
 LOG
 
@@ -256,7 +256,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="log10" >}}
 
 LOG10
 
@@ -275,7 +275,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="log2" >}}
 
 LOG2
 
@@ -294,7 +294,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="max" >}}
 
 MAX
 
@@ -313,7 +313,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="median" >}}
 
 MEDIAN
 
@@ -332,7 +332,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="min" >}}
 
 MIN
 
@@ -351,7 +351,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="percentile" >}}
 
 PERCENTILE
 
@@ -372,7 +372,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="pi" >}}
 
 PI
 
@@ -390,7 +390,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="pow" >}}
 
 POW
 
@@ -410,7 +410,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="radians" >}}
 
 RADIANS
 
@@ -429,7 +429,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="rand" >}}
 
 RAND
 
@@ -449,7 +449,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="range" >}}
 
 RANGE
 
@@ -470,7 +470,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="round" >}}
 
 ROUND
 
@@ -489,7 +489,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="sin" >}}
 
 SIN
 
@@ -508,7 +508,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="sqrt" >}}
 
 SQRT
 
@@ -527,7 +527,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="stddev_population" >}}
 
 STDDEV_POPULATION
 
@@ -546,7 +546,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="stddev_sample" >}}
 
 STDDEV_SAMPLE
 
@@ -565,7 +565,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="sum" >}}
 
 SUM
 
@@ -584,7 +584,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="tan" >}}
 
 TAN
 
@@ -603,7 +603,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="variance_population" >}}
 
 VARIANCE_POPULATION
 
@@ -622,7 +622,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="variance_sample" >}}
 
 VARIANCE_SAMPLE
 

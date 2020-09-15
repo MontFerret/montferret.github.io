@@ -8,7 +8,7 @@ menu: [DELETE,DO,GET,POST,PUT,]
 
 
 
-{{< header >}}
+{{< header href="delete" >}}
 
 IO::NET::HTTP::DELETE
 
@@ -30,7 +30,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="do" >}}
 
 IO::NET::HTTP::DO
 
@@ -53,7 +53,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="get" >}}
 
 IO::NET::HTTP::GET
 
@@ -74,7 +74,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="post" >}}
 
 IO::NET::HTTP::POST
 
@@ -96,7 +96,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="put" >}}
 
 IO::NET::HTTP::PUT
 

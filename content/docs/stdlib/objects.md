@@ -8,7 +8,7 @@ menu: [HAS,KEEP_KEYS,KEYS,MERGE,MERGE_RECURSIVE,VALUES,ZIP,]
 
 
 
-{{< header >}}
+{{< header href="has" >}}
 
 HAS
 
@@ -27,7 +27,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="keep_keys" >}}
 
 KEEP_KEYS
 
@@ -47,7 +47,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="keys" >}}
 
 KEYS
 
@@ -67,7 +67,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="merge" >}}
 
 MERGE
 
@@ -86,7 +86,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="merge_recursive" >}}
 
 MERGE_RECURSIVE
 
@@ -105,7 +105,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="values" >}}
 
 VALUES
 
@@ -124,7 +124,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="zip" >}}
 
 ZIP
 

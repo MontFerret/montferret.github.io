@@ -8,7 +8,7 @@ menu: [ATTR_GET,ATTR_REMOVE,ATTR_SET,BLUR,CLICK,CLICK_ALL,COOKIE_DEL,COOKIE_GET,
 
 
 
-{{< header >}}
+{{< header href="attr_get" >}}
 
 ATTR_GET
 
@@ -28,7 +28,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="attr_remove" >}}
 
 ATTR_REMOVE
 
@@ -48,7 +48,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="attr_set" >}}
 
 ATTR_SET
 
@@ -69,7 +69,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="blur" >}}
 
 BLUR
 
@@ -89,7 +89,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="click" >}}
 
 CLICK
 
@@ -110,7 +110,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="click_all" >}}
 
 CLICK_ALL
 
@@ -131,7 +131,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="cookie_del" >}}
 
 COOKIE_DEL
 
@@ -151,7 +151,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="cookie_get" >}}
 
 COOKIE_GET
 
@@ -171,7 +171,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="cookie_set" >}}
 
 COOKIE_SET
 
@@ -191,7 +191,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="document" >}}
 
 DOCUMENT
 
@@ -222,7 +222,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="download" >}}
 
 DOWNLOAD
 
@@ -241,7 +241,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="element" >}}
 
 ELEMENT
 
@@ -261,7 +261,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="elements" >}}
 
 ELEMENTS
 
@@ -281,7 +281,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="elements_count" >}}
 
 ELEMENTS_COUNT
 
@@ -301,7 +301,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="element_exists" >}}
 
 ELEMENT_EXISTS
 
@@ -321,7 +321,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="focus" >}}
 
 FOCUS
 
@@ -341,7 +341,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="frames" >}}
 
 FRAMES
 
@@ -362,7 +362,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="hover" >}}
 
 HOVER
 
@@ -382,7 +382,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="inner_html" >}}
 
 INNER_HTML
 
@@ -402,7 +402,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="inner_html_all" >}}
 
 INNER_HTML_ALL
 
@@ -422,7 +422,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="inner_html_set" >}}
 
 INNER_HTML_SET
 
@@ -443,7 +443,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="inner_text" >}}
 
 INNER_TEXT
 
@@ -463,7 +463,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="inner_text_all" >}}
 
 INNER_TEXT_ALL
 
@@ -483,7 +483,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="inner_text_set" >}}
 
 INNER_TEXT_SET
 
@@ -504,7 +504,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="input" >}}
 
 INPUT
 
@@ -526,7 +526,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="input_clear" >}}
 
 INPUT_CLEAR
 
@@ -546,7 +546,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="mouse" >}}
 
 MOUSE
 
@@ -567,7 +567,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="navigate" >}}
 
 NAVIGATE
 
@@ -588,7 +588,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="navigate_back" >}}
 
 NAVIGATE_BACK
 
@@ -609,7 +609,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="navigate_forward" >}}
 
 NAVIGATE_FORWARD
 
@@ -630,7 +630,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="pagination" >}}
 
 PAGINATION
 
@@ -650,7 +650,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="parse" >}}
 
 PARSE
 
@@ -680,7 +680,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="pdf" >}}
 
 PDF
 
@@ -715,7 +715,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="screenshot" >}}
 
 SCREENSHOT
 
@@ -741,7 +741,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="scroll" >}}
 
 SCROLL
 
@@ -766,7 +766,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="scroll_bottom" >}}
 
 SCROLL_BOTTOM
 
@@ -791,7 +791,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="scroll_element" >}}
 
 SCROLL_ELEMENT
 
@@ -815,7 +815,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="scroll_top" >}}
 
 SCROLL_TOP
 
@@ -840,7 +840,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="select" >}}
 
 SELECT
 
@@ -861,7 +861,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="style_get" >}}
 
 STYLE_GET
 
@@ -881,7 +881,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="style_remove" >}}
 
 STYLE_REMOVE
 
@@ -901,7 +901,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="style_set" >}}
 
 STYLE_SET
 
@@ -922,7 +922,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_attr" >}}
 
 WAIT_ATTR
 
@@ -945,7 +945,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_attr_all" >}}
 
 WAIT_ATTR_ALL
 
@@ -967,7 +967,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_class" >}}
 
 WAIT_CLASS
 
@@ -989,7 +989,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_class_all" >}}
 
 WAIT_CLASS_ALL
 
@@ -1011,7 +1011,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_element" >}}
 
 WAIT_ELEMENT
 
@@ -1032,7 +1032,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_navigation" >}}
 
 WAIT_NAVIGATION
 
@@ -1056,7 +1056,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_no_attr" >}}
 
 WAIT_NO_ATTR
 
@@ -1079,7 +1079,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_no_attr_all" >}}
 
 WAIT_NO_ATTR_ALL
 
@@ -1101,7 +1101,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_no_class" >}}
 
 WAIT_NO_CLASS
 
@@ -1123,7 +1123,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_no_class_all" >}}
 
 WAIT_NO_CLASS_ALL
 
@@ -1145,7 +1145,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_no_element" >}}
 
 WAIT_NO_ELEMENT
 
@@ -1166,7 +1166,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_no_style" >}}
 
 WAIT_NO_STYLE
 
@@ -1189,7 +1189,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_no_style_all" >}}
 
 WAIT_NO_STYLE_ALL
 
@@ -1212,7 +1212,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_style" >}}
 
 WAIT_STYLE
 
@@ -1235,7 +1235,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="wait_style_all" >}}
 
 WAIT_STYLE_ALL
 
@@ -1258,7 +1258,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="xpath" >}}
 
 XPATH
 

@@ -8,7 +8,7 @@ menu: [BASE,CLEAN,DIR,EXT,IS_ABS,JOIN,MATCH,SEPARATE,]
 
 
 
-{{< header >}}
+{{< header href="base" >}}
 
 PATH::BASE
 
@@ -27,7 +27,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="clean" >}}
 
 PATH::CLEAN
 
@@ -46,7 +46,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="dir" >}}
 
 PATH::DIR
 
@@ -65,7 +65,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="ext" >}}
 
 PATH::EXT
 
@@ -84,7 +84,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="is_abs" >}}
 
 PATH::IS_ABS
 
@@ -103,7 +103,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="join" >}}
 
 PATH::JOIN
 
@@ -122,7 +122,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="match" >}}
 
 PATH::MATCH
 
@@ -142,7 +142,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header >}}
+{{< header href="separate" >}}
 
 PATH::SEPARATE
 
