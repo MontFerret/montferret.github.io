@@ -184,13 +184,13 @@ The functions can be used to test UI, validate data and ensure the correctnes of
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-402-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-680-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-402-text" class="code-editor-text" style="height: 190px;">
+            <div id="code-editor-680-text" class="code-editor-text" style="height: 190px;">
                 
 
 LET doc = DOCUMENT('https://github.com/', { driver: "cdp" })
@@ -205,7 +205,7 @@ RETURN NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-402-result" class="code-editor-result" style="height: 190px;"></div>
+            <div id="code-editor-680-result" class="code-editor-result" style="height: 190px;"></div>
         </div>
     </div>
 
@@ -219,9 +219,9 @@ RETURN NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-402-run-button');
-            const textEditor = createEditor('code-editor-402-text', 'aql');
-            const resultEditor = createEditor('code-editor-402-result', 'json');
+            const btn = document.querySelector('#code-editor-680-run-button');
+            const textEditor = createEditor('code-editor-680-text', 'aql');
+            const resultEditor = createEditor('code-editor-680-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -284,20 +284,20 @@ RETURN NONE
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-962-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-439-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-962-text" class="code-editor-text" style="height: 190px;">
+            <div id="code-editor-439-text" class="code-editor-text" style="height: 190px;">
                 
 
 LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
     driver: 'cdp'
 })
 
-LET frame = FRAMES(page, "src", "https://www.montferret.dev/")
+LET frame = FRAMES(page, "url", "https://www.montferret.dev/")
 
 RETURN FIRST(frame).url
 
@@ -305,7 +305,7 @@ RETURN FIRST(frame).url
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-962-result" class="code-editor-result" style="height: 190px;"></div>
+            <div id="code-editor-439-result" class="code-editor-result" style="height: 190px;"></div>
         </div>
     </div>
 
@@ -319,9 +319,9 @@ RETURN FIRST(frame).url
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-962-run-button');
-            const textEditor = createEditor('code-editor-962-text', 'aql');
-            const resultEditor = createEditor('code-editor-962-result', 'json');
+            const btn = document.querySelector('#code-editor-439-run-button');
+            const textEditor = createEditor('code-editor-439-text', 'aql');
+            const resultEditor = createEditor('code-editor-439-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -383,44 +383,53 @@ RETURN FIRST(frame).url
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-408-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-627-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-408-text" class="code-editor-text" style="height: 580px;">
+            <div id="code-editor-627-text" class="code-editor-text" style="height: 580px;">
                 
 LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
     driver: 'cdp'
 })
 
-LET innerPage = FIRST(FRAMES(page, "src", "https://www.montferret.dev/"))
+LET innerPage = FIRST(FRAMES(page, "url", "https://www.montferret.dev/"))
 
 T::NOT::NONE(innerPage)
 
-SCROLL_ELEMENT(innerPage)
-
 CLICK(innerPage, "#navbar-burger")
 WAIT_CLASS(innerPage, "#primary-nav", "is-active")
-
 CLICK(innerPage, "#blog")
 
-WAIT_NAVIGATION(innerPage)
+WAIT_NAVIGATION(page, {
+    frame: innerPage
+})
 
-WAIT_ELEMENT(innerPage, ".right-menu .mui-dropdown .login")
+LET innerPage2 = FIRST(FRAMES(page, "url", "https://www.montferret.dev/blog/"))
 
-CLICK(ELEMENT(innerPage, ".blog-post a"))
+WAIT_ELEMENT(innerPage2, ".blog")
 
-WAIT_NAVIGATION(innerPage)
+LET item = ELEMENT(innerPage2, ".blog-post a")
+LET targetURL = item.attributes.href
 
+CLICK(item)
 
-RETURN INNER_TEXT(innerPage, ".content")
+PRINT(targetURL)
+
+WAIT_NAVIGATION(page, {
+	frame: innerPage2
+})
+
+LET innerPage3 = FIRST(FRAMES(page, "url", targetURL))
+
+RETURN INNER_TEXT(innerPage3, ".content")
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-408-result" class="code-editor-result" style="height: 580px;"></div>
+            <div id="code-editor-627-result" class="code-editor-result" style="height: 580px;"></div>
         </div>
     </div>
 
@@ -434,9 +443,9 @@ RETURN INNER_TEXT(innerPage, ".content")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-408-run-button');
-            const textEditor = createEditor('code-editor-408-text', 'aql');
-            const resultEditor = createEditor('code-editor-408-result', 'json');
+            const btn = document.querySelector('#code-editor-627-run-button');
+            const textEditor = createEditor('code-editor-627-text', 'aql');
+            const resultEditor = createEditor('code-editor-627-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
