@@ -22,7 +22,7 @@ Argument   | Type     | Default value  | Description
 `params` | `Object`  |  | Request parameters.
 `params.url` | `String`  |  | Target url
 `params.body` | `Binary`  |  | Request data
-`params` | `Object`  | `.headers` | Http headers
+`params.headers` | `Object`  |  | Http headers
 
 
 **Returns** `Binary` Response in binary format
@@ -43,7 +43,7 @@ Argument   | Type     | Default value  | Description
 `params.method` | `String`  |  | Http method
 `params.url` | `String`  |  | Target url
 `params.body` | `Binary`  |  | Request data
-`params` | `Object`  | `.headers` | Http headers
+`params.headers` | `Object`  |  | Http headers
 
 
 **Returns** `Binary` Response in binary format
@@ -61,8 +61,8 @@ GET makes a HTTP GET request.
 ---------- | -------- | -------------- | ----------
 Argument   | Type     | Default value  | Description
 `urlOrParam` | `Object` `String`  |  | Target url or parameters.
-`param` | `String`  | `.url` | Target url or parameters.
-`param` | `Object`  | `.headers` | Http headers
+`param.url` | `String`  |  | Target url or parameters.
+`param.headers` | `Object`  |  | Http headers
 
 
 **Returns** `Binary` Response in binary format
@@ -82,7 +82,7 @@ Argument   | Type     | Default value  | Description
 `params` | `Object`  |  | Request parameters.
 `params.url` | `String`  |  | Target url
 `params.body` | `Binary`  |  | Request data
-`params` | `Object`  | `.headers` | Http headers
+`params.headers` | `Object`  |  | Http headers
 
 
 **Returns** `Binary` Response in binary format
@@ -102,7 +102,7 @@ Argument   | Type     | Default value  | Description
 `params` | `Object`  |  | Request parameters.
 `params.url` | `String`  |  | Target url
 `params.body` | `Binary`  |  | Request data
-`params` | `Object`  | `.headers` | Http headers
+`params.headers` | `Object`  |  | Http headers
 
 
 **Returns** `Binary` Response in binary format

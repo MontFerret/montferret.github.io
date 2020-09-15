@@ -185,18 +185,18 @@ DOCUMENT opens an HTML page by a given url. By default, loads a page by http cal
 ---------- | -------- | -------------- | ----------
 Argument   | Type     | Default value  | Description
 `params` | `Object`  |  | An object containing the following properties :
-`params` | `String`  | `.driver` | Driver name to use.
-`params` | `Int`  | `.timeout=60000` | Page load timeout.
-`params` | `String`  | `.userAgent` | Custom user agent.
-`params` | `Boolean`  | `.keepCookies=False` | Boolean value indicating whether to use cookies from previous sessions i.e. not to open a page in the incognito mode.
-`params` | `HTTPCookies`  | `.cookies` | Set of http cookies to use during page loading.
-`params` | `HTTPHeaders`  | `.headers` | Set of http headers to use during page loading.
-`params` | `Object`  | `.viewport` | Viewport params.
-`params` | `Int`  | `.viewport.height` | Viewport height.
-`params` | `Int`  | `.viewport.width` | Viewport width.
-`params` | `Float`  | `.viewport.scaleFactor` | Viewport scale factor.
-`params` | `Boolean`  | `.viewport.mobile` | Value that indicates whether to emulate mobile device.
-`params` | `Boolean`  | `.viewport.landscape` | Value that indicates whether to render a page in landscape position.
+`params.driver` | `String`  |  | Driver name to use.
+`params.timeout` | `Int`  | `60000` | Page load timeout.
+`params.userAgent` | `String`  |  | Custom user agent.
+`params.keepCookies` | `Boolean`  | `False` | Boolean value indicating whether to use cookies from previous sessions i.e. not to open a page in the incognito mode.
+`params.cookies` | `HTTPCookies`  |  | Set of http cookies to use during page loading.
+`params.headers` | `HTTPHeaders`  |  | Set of http headers to use during page loading.
+`params.viewport` | `Object`  |  | Viewport params.
+`params.viewport.height` | `Int`  |  | Viewport height.
+`params.viewport.width` | `Int`  |  | Viewport width.
+`params.viewport.scaleFactor` | `Float`  |  | Viewport scale factor.
+`params.viewport.mobile` | `Boolean`  |  | Value that indicates whether to emulate mobile device.
+`params.viewport.landscape` | `Boolean`  |  | Value that indicates whether to render a page in landscape position.
 
 
 **Returns** `HTMLPage` Loaded html page.
@@ -601,16 +601,16 @@ PARSE loads an HTML page from a given string or byte array
 Argument   | Type     | Default value  | Description
 `html` | `String`  |  | Html string to parse.
 `params` | `Object`  |  | An object containing the following properties:
-`params` | `String`  | `.driver` | Name of a driver to parse with.
-`params` | `Boolean`  | `.keepCookies=False` | Boolean value indicating whether to use cookies from previous sessions i.e. not to open a page in the incognito mode.
-`params` | `HTTPCookies`  | `.cookies` | Set of http cookies to use during page loading.
-`params` | `HTTPHeaders`  | `.headers` | Set of http headers to use during page loading.
-`params` | `Object`  | `.viewport` | Viewport params.
-`params` | `Int`  | `.viewport.height` | Viewport height.
-`params` | `Int`  | `.viewport.width` | Viewport width.
-`params` | `Float`  | `.viewport.scaleFactor` | Viewport scale factor.
-`params` | `Boolean`  | `.viewport.mobile` | Value that indicates whether to emulate mobile device.
-`params` | `Boolean`  | `.viewport.landscape` | Value that indicates whether to render a page in landscape position.
+`params.driver` | `String`  |  | Name of a driver to parse with.
+`params.keepCookies` | `Boolean`  | `False` | Boolean value indicating whether to use cookies from previous sessions i.e. not to open a page in the incognito mode.
+`params.cookies` | `HTTPCookies`  |  | Set of http cookies to use during page loading.
+`params.headers` | `HTTPHeaders`  |  | Set of http headers to use during page loading.
+`params.viewport` | `Object`  |  | Viewport params.
+`params.viewport.height` | `Int`  |  | Viewport height.
+`params.viewport.width` | `Int`  |  | Viewport width.
+`params.viewport.scaleFactor` | `Float`  |  | Viewport scale factor.
+`params.viewport.mobile` | `Boolean`  |  | Value that indicates whether to emulate mobile device.
+`params.viewport.landscape` | `Boolean`  |  | Value that indicates whether to render a page in landscape position.
 
 
 **Returns** `HTMLPage` Returns parsed and loaded html page.
@@ -629,21 +629,21 @@ PDF prints a PDF of the current page.
 Argument   | Type     | Default value  | Description
 `target` | `HTMLPage` `String`  |  | Target page or url.
 `params` | `Object`  |  | An object containing the following properties:
-`params` | `Bool`  | `.landscape=False` | Paper orientation.
-`params` | `Bool`  | `.displayHeaderFooter=False` | Display header and footer.
-`params` | `Bool`  | `.printBackground=False` | Print background graphics.
-`params` | `Float`  | `.scale=1` | Scale of the webpage rendering.
-`params` | `Float`  | `.paperWidth=22` | Paper width in inches.
-`params` | `Float`  | `.paperHeight=28` | Paper height in inches.
-`params` | `Float`  | `.marginTo=1` | Top margin in inches.
-`params` | `Float`  | `.marginBottom=1` | Bottom margin in inches.
-`params` | `Float`  | `.marginLeft=1` | Left margin in inches.
-`params` | `Float`  | `.marginRight=1` | Right margin in inches.
-`params` | `String`  | `.pageRanges` | 13'.
-`params` | `Bool`  | `.ignoreInvalidPageRanges=False` | 2'.
-`params` | `String`  | `.headerTemplate` | `totalpages`: total pages in the document for example, `<span class=title></span>` would generate span containing the title.
-`params` | `String`  | `.footerTemplate` | Html template for the print footer. should use the same format as the `headertemplate`.
-`params` | `Bool`  | `.preferCSSPageSize=False` | Whether or not to prefer page size as defined by css. defaults to false, in which case the content will be scaled to fit the paper size. *
+`params.landscape` | `Bool`  | `False` | Paper orientation.
+`params.displayHeaderFooter` | `Bool`  | `False` | Display header and footer.
+`params.printBackground` | `Bool`  | `False` | Print background graphics.
+`params.scale` | `Float`  | `1` | Scale of the webpage rendering.
+`params.paperWidth` | `Float`  | `22` | Paper width in inches.
+`params.paperHeight` | `Float`  | `28` | Paper height in inches.
+`params.marginTo` | `Float`  | `1` | Top margin in inches.
+`params.marginBottom` | `Float`  | `1` | Bottom margin in inches.
+`params.marginLeft` | `Float`  | `1` | Left margin in inches.
+`params.marginRight` | `Float`  | `1` | Right margin in inches.
+`params.pageRanges` | `String`  |  | 13'.
+`params.ignoreInvalidPageRanges` | `Bool`  | `False` | 2'.
+`params.headerTemplate` | `String`  |  | `totalpages`: total pages in the document for example, `<span class=title></span>` would generate span containing the title.
+`params.footerTemplate` | `String`  |  | Html template for the print footer. should use the same format as the `headertemplate`.
+`params.preferCSSPageSize` | `Bool`  | `False` | Whether or not to prefer page size as defined by css. defaults to false, in which case the content will be scaled to fit the paper size. *
 
 
 **Returns** `Binary` Pdf document in binary format.
@@ -662,12 +662,12 @@ SCREENSHOT takes a screenshot of a given page.
 Argument   | Type     | Default value  | Description
 `target` | `HTMLPage` `String`  |  | Target page or url.
 `params` | `Object`  |  | An object containing the following properties :
-`params` | `Float` `Int`  | `.x=0` | X position of the viewport.
-`params` | `Float` `Int`  | `.y=0` | Y position of the viewport.
-`params` | `Float` `Int`  | `.width` | Width of the viewport.
-`params` | `Float` `Int`  | `.height` | Height of the viewport.
-`params` | `String`  | `.format="jpeg"` | Either "jpeg" or "png".
-`params` | `Int`  | `.quality=100` | Quality, in [0, 100], only for jpeg format.
+`params.x` | `Float` `Int`  | `0` | X position of the viewport.
+`params.y` | `Float` `Int`  | `0` | Y position of the viewport.
+`params.width` | `Float` `Int`  |  | Width of the viewport.
+`params.height` | `Float` `Int`  |  | Height of the viewport.
+`params.format` | `String`  | `"jpeg"` | Either "jpeg" or "png".
+`params.quality` | `Int`  | `100` | Quality, in [0, 100], only for jpeg format.
 
 
 **Returns** `Binary` Screenshot in binary format.
@@ -688,9 +688,9 @@ Argument   | Type     | Default value  | Description
 `x` | `Int` `Float`  |  | X coordinate.
 `true` | `Int` `Float`  |  | Y coordinate.
 `params` | `Object`  |  | Scroll params.
-`params` | `String`  | `.behavior="instant"` | Scroll behavior
-`params` | `String`  | `.block="center"` | Scroll vertical alignment.
-`params` | `String`  | `.inline="center"` | Scroll horizontal alignment.
+`params.behavior` | `String`  | `"instant"` | Scroll behavior
+`params.block` | `String`  | `"center"` | Scroll vertical alignment.
+`params.inline` | `String`  | `"center"` | Scroll horizontal alignment.
 
 
 **Returns** `None`
@@ -711,9 +711,9 @@ Argument   | Type     | Default value  | Description
 `x` | `Int` `Float`  |  | X coordinate.
 `true` | `Int` `Float`  |  | Y coordinate.
 `params` | `Object`  |  | Scroll params.
-`params` | `String`  | `.behavior="instant"` | Scroll behavior
-`params` | `String`  | `.block="center"` | Scroll vertical alignment.
-`params` | `String`  | `.inline="center"` | Scroll horizontal alignment.
+`params.behavior` | `String`  | `"instant"` | Scroll behavior
+`params.block` | `String`  | `"center"` | Scroll vertical alignment.
+`params.inline` | `String`  | `"center"` | Scroll horizontal alignment.
 
 
 **Returns** `None`
@@ -733,9 +733,9 @@ Argument   | Type     | Default value  | Description
 `node` | `HTMLPage` `HTMLDocument` `HTMLElement`  |  | Target html node.
 `selector` | `String`  |  | If document is passed, this param must represent an element selector.
 `params` | `Object`  |  | Scroll params.
-`params` | `String`  | `.behavior="instant"` | Scroll behavior
-`params` | `String`  | `.block="center"` | Scroll vertical alignment.
-`params` | `String`  | `.inline="center"` | Scroll horizontal alignment.
+`params.behavior` | `String`  | `"instant"` | Scroll behavior
+`params.block` | `String`  | `"center"` | Scroll vertical alignment.
+`params.inline` | `String`  | `"center"` | Scroll horizontal alignment.
 
 
 **Returns** `None`
@@ -756,9 +756,9 @@ Argument   | Type     | Default value  | Description
 `x` | `Int` `Float`  |  | X coordinate.
 `true` | `Int` `Float`  |  | Y coordinate.
 `params` | `Object`  |  | Scroll params.
-`params` | `String`  | `.behavior="instant"` | Scroll behavior
-`params` | `String`  | `.block="center"` | Scroll vertical alignment.
-`params` | `String`  | `.inline="center"` | Scroll horizontal alignment.
+`params.behavior` | `String`  | `"instant"` | Scroll behavior
+`params.block` | `String`  | `"center"` | Scroll vertical alignment.
+`params.inline` | `String`  | `"center"` | Scroll horizontal alignment.
 
 
 **Returns** `None`
@@ -952,9 +952,9 @@ Argument   | Type     | Default value  | Description
 `page` | `HTMLPage`  |  | Target page.
 `timeout` | `Int`  | `5000` | Navigation timeout.
 `params` | `Object`  | `None` | Navigation parameters.
-`params` | `Int`  | `.timeout=5000` | Navigation timeout.
-`params` | `Int`  | `.target` | Navigation target url.
-`params` | `HTMLDocument`  | `.frame` | Navigation frame.
+`params.timeout` | `Int`  | `5000` | Navigation timeout.
+`params.target` | `Int`  |  | Navigation target url.
+`params.frame` | `HTMLDocument`  |  | Navigation frame.
 
 
 **Returns** `None`

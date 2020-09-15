@@ -39,7 +39,7 @@ Argument   | Type     | Default value  | Description
 `path` | `String`  |  | File path to write into.
 `data` | `Binary`  |  | Data to write.
 `params` | `Object`  |  | Additional parameters:
-`params` | `String`  | `.mode` | Write (default): will create a file if the specified file does not exist
+`params.mode` | `String`  |  | Write (default): will create a file if the specified file does not exist
 
 
 **Returns** `None`
