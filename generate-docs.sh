@@ -9,10 +9,10 @@ if [ ! -f $data_source ]; then
   exit 255;
 fi
 
-for package in $(grep -E '^[a-z/]+:' $data_source | sed 's/://'); do
-  safe_package="$(echo "${package}" | sed 's/\//-/g')"
+for module in $(yq read $data_source 'modules[*].name'); do
+  safe_package="$(echo "${module}" | sed 's/\//-/g')"
 
-  USING_KEY="$package" frep \
+  USING_KEY="$module" frep \
     --load "$data_source" \
     --overwrite \
     "$stdlib_template":"${stdlib_target}${safe_package}.md"

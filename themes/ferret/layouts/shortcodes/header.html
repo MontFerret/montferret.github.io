@@ -1,0 +1,6 @@
+{{ $size := default "2" ( .Get "size" ) }}
+{{ $href := default (replace (trim .Inner "\n" | lower) " " "-") ( .Get "href" ) }}
+
+<h{{ $size }} id="{{$href}}">
+<a href="#{{ $href }}">{{.Inner}}</a>
+</h{{ $size }}>

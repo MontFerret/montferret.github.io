@@ -42,7 +42,21 @@ $ ferret < ./docs/examples/static-page.fql
 By default, Ferret loads HTML pages via HTTP protocol, because it's faster.
 But nowadays, there are more and more websites rendered with JavaScript, and therefore, this 'old school' approach does not really work.
 For such cases, you may fetch documents using Chrome or Chromium via Chrome DevTools protocol (aka CDP).
-First, you need to make sure that you launched Chrome with ``remote-debugging-port=9222`` flag.
+First, you need to make sure that you launched a Chrome instance with open debugging port.
+
+You can use your local installation:
+
+```bash
+$ chrome.exe --remote-debugging-port=9222 --headless
+```
+
+Or use [Docker](https://www.docker.com/):
+
+```bash
+$ docker pull montferret/chromium
+$ docker run -d -p 9222:9222 montferret/chromium
+```
+
 Second, you need to pass the address to Ferret CLI.
 
 ```bash

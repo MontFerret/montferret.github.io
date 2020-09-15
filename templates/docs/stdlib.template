@@ -1,22 +1,38 @@
 {{- $using := .Env.USING_KEY -}}
 {{- $repo := "https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/" -}}
+{{ $module := index . "modules" $using}}
+{{ $moduleFuncs := index $module "functions" }}
 ---
 title: "{{ $using }}"
 weight: 1
 draft: false
+menu: [
+{{- range $key, $value := $moduleFuncs }}
+  {{- .token -}},
+{{- end }}
+{{- printf "%s" "]" }}
 ---
 
-{{ range $key, $value := (index . $using) }}
-## {{ .token }}
+{{ range $key, $value := $moduleFuncs }}
+
+{{ printf "{{%s}}" "< header >" }}
+{{ .token }}
+{{ printf "{{%s}}" "</ header >" }}
 [Source]({{ $repo }}{{ .file_name }}#L{{ .line_number }})
 
 {{ .doc.desc }}
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
 {{ range .doc.params -}}
-  `{{- .name }}` | {{ range $val := .type }}`{{ $val }}` {{ end }}| {{ .desc }}
+  {{- $default_value := "" -}}
+
+  {{- if .default_value -}}
+  {{- $default_value = printf "`%s`" .default_value  -}}
+  {{- end -}}
+
+  `{{- .name }}` | {{ range $val := .type }}`{{ $val }}` {{ end }} | {{$default_value}} | {{ .desc }}
 {{ end }}
 
 **Returns** {{ if .doc.returns }}

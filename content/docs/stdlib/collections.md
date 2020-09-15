@@ -1,34 +1,61 @@
+
+
 ---
 title: "collections"
 weight: 1
 draft: false
+menu: [INCLUDES,LENGTH,REVERSE,]
 ---
 
 
-## LENGTH
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/length.go#L14)
 
-Length returns the length of a measurable value.
+{{< header >}}
+INCLUDES
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/include.go#L14)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`value` | `String` `Array` `Object` `Binary` | The value to measure.
+INCLUDES checks whether a container includes a given value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`haystack` | `String` `Any[]` `Object` `Iterable`  |  | The value container.
+`needle` | `Any`  |  | The target value to assert.
 
 
-**Returns** `Int` Returns the length of the value.
+**Returns** `Boolean` A boolean value that indicates whether a container contains a given value.
 - - - -
 
-## REVERSE
+
+{{< header >}}
+LENGTH
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/length.go#L14)
+
+LENGTH returns the length of a measurable value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `Measurable`  |  | The value to measure.
+
+
+**Returns** `Int` The length of the value.
+- - - -
+
+
+{{< header >}}
+REVERSE
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/reverse.go#L13)
 
-Reverse returns the reverse of a given string or array value.
+REVERSE returns the reverse of a given string or array value.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` `Array` | The string or array to reverse.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `String` `Any[]`  |  | The string or array to reverse.
 
 
-**Returns** `String` `Array` Returns a reversed version of a given value.
+**Returns** `String` `Any[]` A reversed version of a given value.
 - - - -

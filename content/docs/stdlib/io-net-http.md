@@ -1,76 +1,109 @@
+
+
 ---
 title: "io/net/http"
 weight: 1
 draft: false
+menu: [DELETE,DO,GET,POST,PUT,]
 ---
 
 
-## POST
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/post.go#L14)
 
-POST makes a POST request.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`params (Object) - request parameters. * url (String) - Target url * body` | `Binary` | Post data * headers (object) optional - http headers
-
-
-**Returns** `None`
-- - - -
-
-## DELETE
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/delete.go#L14)
+{{< header >}}
+DELETE
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/delete.go#L15)
 
 DELETE makes a HTTP DELETE request.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`params (Object) - request parameters. * url (String) - Target url * body` | `Binary` | Post data * headers (object) optional - http headers
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`params` | `Object`  |  | Request parameters.
+`params.url` | `String`  |  | Target url
+`params.body` | `Binary`  |  | Request data
+`params` | `Object`  | `.headers` | Http headers
 
 
-**Returns** `None`
+**Returns** `Binary` Response in binary format
 - - - -
 
-## PUT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/put.go#L14)
 
-PUT makes a PUT HTTP request.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`params (Object) - request parameters. * url (String) - Target url. * body` | `Binary` | Post data. * headers (object) optional - http headers.
-
-
-**Returns** `None`
-- - - -
-
-## GET
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/get.go#L15)
-
-GET makes a HTTP GET request.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`url or  (String) - target url or parameters. * url` | `String` | Target url * headers (object) optional - http headers
-
-
-**Returns** `None`
-- - - -
-
-## DO
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/request.go#L26)
+{{< header >}}
+DO
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/request.go#L27)
 
 REQUEST makes a HTTP request.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`params (Object) - request parameters. * method (String) - HTTP method. * url (String) - Target url. * body` | `Binary` | Post data. * headers (object) optional - http headers.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`params` | `Object`  |  | Request parameters.
+`params.method` | `String`  |  | Http method
+`params.url` | `String`  |  | Target url
+`params.body` | `Binary`  |  | Request data
+`params` | `Object`  | `.headers` | Http headers
 
 
-**Returns** `None`
+**Returns** `Binary` Response in binary format
+- - - -
+
+
+{{< header >}}
+GET
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/get.go#L16)
+
+GET makes a HTTP GET request.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`urlOrParam` | `Object` `String`  |  | Target url or parameters.
+`param` | `String`  | `.url` | Target url or parameters.
+`param` | `Object`  | `.headers` | Http headers
+
+
+**Returns** `Binary` Response in binary format
+- - - -
+
+
+{{< header >}}
+POST
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/post.go#L15)
+
+POST makes a POST request.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`params` | `Object`  |  | Request parameters.
+`params.url` | `String`  |  | Target url
+`params.body` | `Binary`  |  | Request data
+`params` | `Object`  | `.headers` | Http headers
+
+
+**Returns** `Binary` Response in binary format
+- - - -
+
+
+{{< header >}}
+PUT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/put.go#L15)
+
+PUT makes a PUT HTTP request.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`params` | `Object`  |  | Request parameters.
+`params.url` | `String`  |  | Target url
+`params.body` | `Binary`  |  | Request data
+`params` | `Object`  | `.headers` | Http headers
+
+
+**Returns** `Binary` Response in binary format
 - - - -

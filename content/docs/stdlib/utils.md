@@ -1,33 +1,43 @@
+
+
 ---
 title: "utils"
 weight: 1
 draft: false
+menu: [PRINT,WAIT,]
 ---
 
 
-## WAIT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/utils/wait.go#L12)
 
-Wait pauses the execution for a given period.
+{{< header >}}
+PRINT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/utils/log.go#L12)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`timeout` | `Float` `Int` | Number value which indicates for how long to stop an execution.
+PRINT writes messages into the system log.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`message` | `Value, repeated`  |  | Print message.
 
 
 **Returns** `None`
 - - - -
 
-## PRINT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/utils/log.go#L12)
 
-Print writes messages into the system log.
+{{< header >}}
+WAIT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/utils/wait.go#L12)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
+WAIT pauses the execution for a given period.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`timeout` | `Int` `Float`  |  | Number value which indicates for how long to stop an execution.
 
 
-**Returns** `None` Returns none
+**Returns** `None`
 - - - -

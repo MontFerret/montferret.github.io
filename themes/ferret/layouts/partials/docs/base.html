@@ -3,8 +3,22 @@
         <section class="column is-2">
             {{ partial "toc.html" (dict "Dir" "/docs" "Page" .) }}
         </section>
+
         <section id="main" class="column is-8">
             {{ partial "docs/content.html" . }}
         </section>
+        
+        {{ if .Params.menu }}
+            <section id="menu" class="column is-2">
+                {{- $links := split "" "" }}
+                {{- range .Params.menu -}}
+                    {{ $link := (dict "title" . "url" (printf "#%s" .))}}
+                    {{ $links = $links | append  $link }}
+                {{- end -}}
+
+                {{ partial "menu.html" $links }}
+        </section>
+        {{ end }}
+
     </div>
 </div>

@@ -1,502 +1,604 @@
+
+
 ---
 title: "strings"
 weight: 1
 draft: false
+menu: [CONCAT,CONCAT_SEPARATOR,CONTAINS,DECODE_URI_COMPONENT,ENCODE_URI_COMPONENT,ESCAPE_HTML,FIND_FIRST,FIND_LAST,FMT,FROM_BASE64,JSON_PARSE,JSON_STRINGIFY,LEFT,LIKE,LOWER,LTRIM,MD5,RANDOM_TOKEN,REGEX_MATCH,REGEX_REPLACE,REGEX_SPLIT,REGEX_TEST,RIGHT,RTRIM,SHA1,SHA512,SPLIT,SUBSTITUTE,SUBSTRING,TO_BASE64,TRIM,UNESCAPE_HTML,UPPER,]
 ---
 
 
-## LIKE
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/like.go#L15)
 
-Like checks whether the pattern search is contained in the string text, using wildcard matching.
+{{< header >}}
+CONCAT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L13)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to search in.
-`search` | `String` | A search pattern that can contain the wildcard characters.
-`caseInsensitive` | `Boolean` | If set to true, the matching will be case-insensitive. the default is false.
+CONCAT concatenates one or more instances of String, or an Array.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`src` | `String, repeated` `String[]`  |  | The source string / array.
 
 
-**Returns** `Boolean` Returns true if the pattern is contained in text, and false otherwise.
+**Returns** `String` A string value.
 - - - -
 
-## TRIM
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L14)
 
-Trim returns the string value with whitespace stripped from the start and/or end.
+{{< header >}}
+CONCAT_SEPARATOR
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L47)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`value` | `String` | The string.
-`chars` | `String` | Overrides the characters that should be removed from the string. it defaults to \r\n \t.
+CONCAT_SEPARATOR concatenates one or more instances of String, or an Array with a given separator.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`separator` | `String`  |  | The separator string.
+`src` | `String, repeated` `String[]`  |  | The source string / array.
 
 
-**Returns** `String` The string without chars on both sides.
+**Returns** `String` Concatenated string.
 - - - -
 
-## LTRIM
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L34)
 
-LTrim returns the string value with whitespace stripped from the start only.
+{{< header >}}
+CONTAINS
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/contains.go#L15)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`value` | `String` | The string.
-`chars` | `String` | Overrides the characters that should be removed from the string. it defaults to \r\n \t.
+CONTAINS returns a value indicating whether a specified substring occurs within a string.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The source string.
+`search` | `String`  |  | The string to seek.
+`returnIndex` | `Boolean`  | `False` | Values which indicates whether to return the character position of the match is returned instead of a boolean.
 
 
-**Returns** `String` The string without chars at the left-hand side.
+**Returns** `Boolean` `Int` A value indicating whether a specified substring occurs within a string.
 - - - -
 
-## RTRIM
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L55)
 
-RTrim returns the string value with whitespace stripped from the end only.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`value` | `String` | The string.
-`chars` | `String` | Overrides the characters that should be removed from the string. it defaults to \r\n \t.
-
-
-**Returns** `String` The string without chars at the right-hand side.
-- - - -
-
-## FROM_BASE64
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L16)
-
-FromBase64 returns the value of a base64 representation.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`base64String` | `String` | The string to decode.
-
-
-**Returns** `String` The decoded string.
-- - - -
-
-## DECODE_URI_COMPONENT
+{{< header >}}
+DECODE_URI_COMPONENT
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L36)
 
-DecodeURIComponent returns the decoded String of uri.
+DECODE_URI_COMPONENT returns the decoded String of uri.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`uri` | `String` | Uri to decode.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`uri` | `String`  |  | Uri to decode.
 
 
 **Returns** `String` Decoded string.
 - - - -
 
-## CONCAT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L13)
 
-Concat concatenates one or more instances of Read, or an Array.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `String...` `Array` | The source string / array.
-
-
-**Returns** `String` Returns the concatenated string.
-- - - -
-
-## CONCAT_SEPARATOR
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L47)
-
-ConcatWithSeparator concatenates one or more instances of Read, or an Array with a given separator.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`separator` | `string` | The separator string.
-`src` | `string...` `array` | The source string / array.
-
-
-**Returns** `String` Returns the concatenated string.
-- - - -
-
-## LOWER
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L13)
-
-Lower converts strings to their lower-case counterparts. All other characters are returned unchanged.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `String` | The source string.
-
-
-**Returns** `String` This string in lower case.
-- - - -
-
-## UPPER
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L28)
-
-Upper converts strings to their upper-case counterparts. All other characters are returned unchanged.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `String` | The source string.
-
-
-**Returns** `String` This string in upper case.
-- - - -
-
-## JSON_PARSE
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L13)
-
-JSONParse returns a FQL value described by the JSON-encoded input string.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to parse as json.
-
-
-**Returns** `Value` Returns fql value
-- - - -
-
-## JSON_STRINGIFY
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L34)
-
-JSONStringify returns a JSON string representation of the input value.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`value` | `Value` | The input value to serialize.
-
-
-**Returns** `String` Returns json string
-- - - -
-
-## FMT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/fmt.go#L18)
-
-Fmt formats the template using these arguments.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`template` | `String` | Template.
-`args` | `Any Values` | Template arguments.
-
-
-**Returns** `String` String formed by template using arguments.
-- - - -
-
-## RANDOM_TOKEN
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/random.go#L26)
-
-RandomToken generates a pseudo-random token string with the specified length. The algorithm for token generation should be treated as opaque.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`length` | `Int` | The desired string length for the token. it must be greater than 0 and at most 65536.
-
-
-**Returns** `String` A generated token consisting of lowercase letters, uppercase letters and numbers.
-- - - -
-
-## CONTAINS
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/contains.go#L16)
-
-Contains returns a value indicating whether a specified substring occurs within a string.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `String` | The source string.
-`search` | `String` | The string to seek.
-`returnIndex` | `Boolean` | Values which indicates whether to return the character position of the match is returned instead of a boolean. the default is false.
-
-
-**Returns** `Boolean` `Int` Returns index or a boolean value depending on returnindex.
-- - - -
-
-## ENCODE_URI_COMPONENT
+{{< header >}}
+ENCODE_URI_COMPONENT
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L17)
 
-EncodeURIComponent returns the encoded String of uri.
+ENCODE_URI_COMPONENT returns the encoded String of uri.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`uri` | `String` | Uri to encode.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`uri` | `String`  |  | Uri to encode.
 
 
 **Returns** `String` Encoded string.
 - - - -
 
-## MD5
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L32)
 
-Md5 calculates the MD5 checksum for text and return it in a hexadecimal string representation.
+{{< header >}}
+ESCAPE_HTML
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/escape.go#L16)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to do calculations against to.
+ESCAPE_HTML escapes special characters like "<" to become "&lt;". It escapes only five such characters: <, >, &, ' and ". UnescapeString(EscapeString(s)) == s always holds, but the converse isn't always true.
 
-
-**Returns** `String` Md5 checksum as hex string.
-- - - -
-
-## SHA1
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L48)
-
-Sha1 calculates the SHA1 checksum for text and returns it in a hexadecimal string representation.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to do calculations against to.
-
-
-**Returns** `String` Sha1 checksum as hex string.
-- - - -
-
-## SHA512
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L64)
-
-Sha512 calculates the SHA512 checksum for text and returns it in a hexadecimal string representation.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to do calculations against to.
-
-
-**Returns** `String` Sha512 checksum as hex string.
-- - - -
-
-## TO_BASE64
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L80)
-
-ToBase64 returns the base64 representation of value.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`value` | `string` | The string to encode.
-
-
-**Returns** `String` A base64 representation of the string.
-- - - -
-
-## FIND_FIRST
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L18)
-
-FindFirst returns the position of the first occurrence of the string search inside the string text. Positions start at 0.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `String` | The source string.
-`search` | `String` | The string to seek.
-`start` | `Int, optional` | Limit the search to a subset of the text, beginning at start.
-`end` | `Int, optional` | Limit the search to a subset of the text, ending at end
-
-
-**Returns** `Int` The character position of the match. if search is not contained in text, -1 is returned. if search is empty, start is returned.
-- - - -
-
-## FIND_LAST
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L65)
-
-FindLast returns the position of the last occurrence of the string search inside the string text. Positions start at 0.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `String` | The source string.
-`search` | `String` | The string to seek.
-`start` | `Int, optional` | Limit the search to a subset of the text, beginning at start.
-`end` | `Int, optional` | Limit the search to a subset of the text, ending at end
-
-
-**Returns** `Int` The character position of the match. if search is not contained in text, -1 is returned. if search is empty, start is returned.
-- - - -
-
-## SUBSTRING
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L15)
-
-Substring returns a substring of value.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`value` | `String` | The source string.
-`offset` | `Int` | Start at offset, offsets start at position 0.
-`length` | `Int, optional` | At most length characters, omit to get the substring from offset to the end of the string. optional.
-
-
-**Returns** `String` A substring of value.
-- - - -
-
-## LEFT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L61)
-
-Left returns the leftmost characters of the string value by index.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `String` | The source string.
-`length` | `Int` | The amount of characters to return.
-
-
-**Returns** `String` Returns the left substring.
-- - - -
-
-## RIGHT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L88)
-
-Right returns the rightmost characters of the string value.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `String` | The source string.
-`length` | `Int` | The amount of characters to return.
-
-
-**Returns** `String` Returns the right substring.
-- - - -
-
-## UNESCAPE_HTML
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/unescape.go#L17)
-
-UnescapeHTML unescapes entities like "&lt;" to become "<". It unescapes a larger range of entities than EscapeString escapes. For example, "&aacute;" unescapes to "á", as does "&#225;" and "&#xE1;". UnescapeString(EscapeString(s)) == s always holds, but the converse isn't always true.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`string` | `String` | Uri to unescape.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`uri` | `String`  |  | Uri to escape.
 
 
 **Returns** `String` Escaped string.
 - - - -
 
-## SPLIT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/split.go#L16)
 
-Split splits the given string value into a list of strings, using the separator.
+{{< header >}}
+FIND_FIRST
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L17)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to split.
-`separator` | `String` | The separator.
-`limit` | `Int` | Limit the number of split values in the result. if no limit is given, the number of splits returned is not bounded.
+FIND_FIRST returns the position of the first occurrence of the string search inside the string text. Positions start at 0.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The source string.
+`search` | `String`  |  | The string to seek.
+`start` | `Int`  |  | Limit the search to a subset of the text, beginning at start.
+`end` | `Int`  |  | Limit the search to a subset of the text, ending at end
 
 
-**Returns** `Array<String>` Array of strings.
+**Returns** `Int` The character position of the match. if search is not contained in text, -1 is returned. if search is empty, start is returned.
 - - - -
 
-## REGEX_MATCH
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L16)
 
-RegexMatch returns the matches in the given string text, using the regex.
+{{< header >}}
+FIND_LAST
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L63)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to search in.
-`regex` | `String` | A regular expression to use for matching the text.
-`caseInsensitive` | `Boolean` | If set to true, the matching will be case-insensitive. the default is false.
+FIND_LAST returns the position of the last occurrence of the string search inside the string text. Positions start at 0.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`src` | `String`  |  | The source string.
+`search` | `String`  |  | The string to seek.
+`start` | `Int`  |  | Limit the search to a subset of the text, beginning at start.
+`end` | `Int`  |  | Limit the search to a subset of the text, ending at end
 
 
-**Returns** `Array` An array of strings containing the matches.
+**Returns** `Int` The character position of the match. if search is not contained in text, -1 is returned. if search is empty, start is returned.
 - - - -
 
-## REGEX_SPLIT
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L58)
 
-RegexSplit splits the given string text into a list of strings, using the separator.
+{{< header >}}
+FMT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/fmt.go#L18)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to split.
-`regex` | `String` | A regular expression to use for splitting the text.
-`caseInsensitive` | `Boolean` | If set to true, the matching will be case-insensitive. the default is false.
-`limit` | `Int` | Limit the number of split values in the result. if no limit is given, the number of splits returned is not bounded.
+FMT formats the template using these arguments.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`template` | `String`  |  | Template.
+`args` | `Any, repeated`  |  | Template arguments.
 
 
-**Returns** `Array` An array of strings splited by the expression.
+**Returns** `String` String formed by template using arguments.
 - - - -
 
-## REGEX_TEST
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L100)
 
-RegexTest test whether the regexp has at least one match in the given text.
+{{< header >}}
+FROM_BASE64
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L16)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to split.
-`regex` | `String` | A regular expression to use for splitting the text.
-`caseInsensitive` | `Boolean` | If set to true, the matching will be case-insensitive. the default is false.
+FROM_BASE64 returns the value of a base64 representation.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to decode.
+
+
+**Returns** `String` The decoded string.
+- - - -
+
+
+{{< header >}}
+JSON_PARSE
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L13)
+
+JSON_PARSE returns a value described by the JSON-encoded input string.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to parse as json.
+
+
+**Returns** `Any` Parsed value.
+- - - -
+
+
+{{< header >}}
+JSON_STRINGIFY
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L34)
+
+JSON_STRINGIFY returns a JSON string representation of the input value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `Any`  |  | The input value to serialize.
+
+
+**Returns** `String` Json string.
+- - - -
+
+
+{{< header >}}
+LEFT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L61)
+
+LEFT returns the leftmost characters of the string value by index.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The source string.
+`length` | `Int`  |  | The amount of characters to return.
+
+
+**Returns** `String` The leftmost characters of the string value by index.
+- - - -
+
+
+{{< header >}}
+LIKE
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/like.go#L15)
+
+LIKE checks whether the pattern search is contained in the string text, using wildcard matching.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to search in.
+`search` | `String`  |  | A search pattern that can contain the wildcard characters.
+`caseInsensitive - If set to true, the matching will be case` | `Boolean`  |  | Insensitive. the default is false.
 
 
 **Returns** `Boolean` Returns true if the pattern is contained in text, and false otherwise.
 - - - -
 
-## REGEX_REPLACE
+
+{{< header >}}
+LOWER
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L13)
+
+LOWER converts strings to their lower-case counterparts. All other characters are returned unchanged.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The source string.
+
+
+**Returns** `String` This string in lower case.
+- - - -
+
+
+{{< header >}}
+LTRIM
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L34)
+
+LTRIM returns the string value with whitespace stripped from the start only.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string.
+`chars` | `String`  |  | Overrides the characters that should be removed from the string. it defaults to \r\n \t.
+
+
+**Returns** `String` The string without chars at the left-hand side.
+- - - -
+
+
+{{< header >}}
+MD5
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L32)
+
+MD5 calculates the MD5 checksum for text and return it in a hexadecimal string representation.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to do calculations against to.
+
+
+**Returns** `String` Md5 checksum as hex string.
+- - - -
+
+
+{{< header >}}
+RANDOM_TOKEN
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/random.go#L26)
+
+RANDOM_TOKEN generates a pseudo-random token string with the specified length. The algorithm for token generation should be treated as opaque.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`len` | `Int`  |  | The desired string length for the token. it must be greater than 0 and at most 65536.
+
+
+**Returns** `String` A generated token consisting of lowercase letters, uppercase letters and numbers.
+- - - -
+
+
+{{< header >}}
+REGEX_MATCH
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L16)
+
+REGEX_MATCH returns the matches in the given string text, using the regex.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to search in.
+`expression` | `String`  |  | A regular expression to use for matching the text.
+`caseInsensitive - If set to true, the matching will be case` | `Boolean`  |  | Insensitive. the default is false.
+
+
+**Returns** `Any[]` An array of strings containing the matches.
+- - - -
+
+
+{{< header >}}
+REGEX_REPLACE
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L133)
 
-RegexReplace replace every substring matched with the regexp with a given string.
+REGEX_REPLACE replace every substring matched with the regexp with a given string.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to split.
-`regex` | `String` | A regular expression search pattern.
-`replacement` | `String` | The string to replace the search pattern with
-`caseInsensitive` | `Boolean` | If set to true, the matching will be case-insensitive. the default is false.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to split.
+`expression` | `String`  |  | A regular expression search pattern.
+`replacement` | `String`  |  | The string to replace the search pattern with
+`caseInsensitive` | `Boolean`  | `False` | Insensitive.
 
 
 **Returns** `String` Returns the string text with the search regex pattern replaced with the replacement string wherever the pattern exists in text
 - - - -
 
-## ESCAPE_HTML
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/escape.go#L16)
 
-EscapeHTML escapes special characters like "<" to become "&lt;". It escapes only five such characters: <, >, &, ' and ". UnescapeString(EscapeString(s)) == s always holds, but the converse isn't always true.
+{{< header >}}
+REGEX_SPLIT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L58)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`string` | `String` | Uri to escape.
+REGEX_SPLIT splits the given string text into a list of strings, using the separator.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to split.
+`expression` | `String`  |  | A regular expression to use for splitting the text.
+`caseInsensitive - If set to true, the matching will be case` | `Boolean`  |  | Insensitive. the default is false.
+`limit` | `Int`  |  | Limit the number of split values in the result. if no limit is given, the number of splits returned is not bounded.
+
+
+**Returns** `Any[]` An array of strings splitted by the expression.
+- - - -
+
+
+{{< header >}}
+REGEX_TEST
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L100)
+
+REGEX_TEST test whether the regexp has at least one match in the given text.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to test.
+`expression` | `String`  |  | A regular expression to use for splitting the text.
+`caseInsensitive` | `Boolean`  | `False` | Insensitive.
+
+
+**Returns** `Boolean` Returns true if the pattern is contained in text, and false otherwise.
+- - - -
+
+
+{{< header >}}
+RIGHT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L88)
+
+RIGHT returns the rightmost characters of the string value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The source string.
+`length` | `Int`  |  | The amount of characters to return.
+
+
+**Returns** `String` The rightmost characters of the string value.
+- - - -
+
+
+{{< header >}}
+RTRIM
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L55)
+
+RTRIM returns the string value with whitespace stripped from the end only.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string.
+`chars` | `String`  |  | Overrides the characters that should be removed from the string. it defaults to \r\n \t.
+
+
+**Returns** `String` The string without chars at the right-hand side.
+- - - -
+
+
+{{< header >}}
+SHA1
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L48)
+
+SHA1 calculates the SHA1 checksum for text and returns it in a hexadecimal string representation.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to do calculations against to.
+
+
+**Returns** `String` Sha1 checksum as hex string.
+- - - -
+
+
+{{< header >}}
+SHA512
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L64)
+
+SHA512 calculates the SHA512 checksum for text and returns it in a hexadecimal string representation.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to do calculations against to.
+
+
+**Returns** `String` Sha512 checksum as hex string.
+- - - -
+
+
+{{< header >}}
+SPLIT
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/split.go#L16)
+
+SPLIT splits the given string value into a list of strings, using the separator.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to split.
+`separator` | `String`  |  | The separator.
+`limit` | `Int`  |  | Limit the number of split values in the result. if no limit is given, the number of splits returned is not bounded.
+
+
+**Returns** `String[]` Array of strings.
+- - - -
+
+
+{{< header >}}
+SUBSTITUTE
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substitute.go#L17)
+
+SUBSTITUTE replaces search values in the string value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to modify
+`search` | `String`  |  | The string representing a search pattern
+`replace` | `String`  |  | The string representing a replace value
+`limit` | `Int`  |  | The cap the number of replacements to this value.
+
+
+**Returns** `String` Returns a string with replace substring.
+- - - -
+
+
+{{< header >}}
+SUBSTRING
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L15)
+
+SUBSTRING returns a substring of value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The source string.
+`offset` | `Int`  |  | Start at offset, offsets start at position 0.
+`length` | `Int`  |  | At most length characters, omit to get the substring from offset to the end of the string.
+
+
+**Returns** `String` A substring of value.
+- - - -
+
+
+{{< header >}}
+TO_BASE64
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L80)
+
+TO_BASE64 returns the base64 representation of value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string to encode.
+
+
+**Returns** `String` A base64 representation of the string.
+- - - -
+
+
+{{< header >}}
+TRIM
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L14)
+
+TRIM returns the string value with whitespace stripped from the start and/or end.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The string.
+`chars` | `String`  |  | Overrides the characters that should be removed from the string. it defaults to \r\n \t.
+
+
+**Returns** `String` The string without chars on both sides.
+- - - -
+
+
+{{< header >}}
+UNESCAPE_HTML
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/unescape.go#L17)
+
+UNESCAPE_HTML unescapes entities like "&lt;" to become "<". It unescapes a larger range of entities than EscapeString escapes. For example, "&aacute;" unescapes to "á", as does "&#225;" and "&#xE1;". UnescapeString(EscapeString(s)) == s always holds, but the converse isn't always true.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`uri` | `String`  |  | Uri to escape.
 
 
 **Returns** `String` Escaped string.
 - - - -
 
-## SUBSTITUTE
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substitute.go#L17)
 
-Substitute replaces search values in the string value.
+{{< header >}}
+UPPER
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L28)
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`text` | `String` | The string to modify
-`search` | `String` | The string representing a search pattern
-`replace` | `String` | The string representing a replace value
-`limit` | `Int` | The cap the number of replacements to this value.
+UPPER converts strings to their upper-case counterparts. All other characters are returned unchanged.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`str` | `String`  |  | The source string.
 
 
-**Returns** `String` Returns a string with replace substring.
+**Returns** `String` This string in upper case.
 - - - -

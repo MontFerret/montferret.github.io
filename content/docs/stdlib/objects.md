@@ -1,106 +1,130 @@
+
+
 ---
 title: "objects"
 weight: 1
 draft: false
+menu: [HAS,KEEP_KEYS,KEYS,MERGE,MERGE_RECURSIVE,VALUES,ZIP,]
 ---
 
 
-## KEYS
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keys.go#L15)
 
-Keys returns string array of object's keys
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`obj` | `Object` | The object whose keys you want to extract
-`sort` | `Boolean, optional` | If sort is true, then the returned keys will be sorted.
-
-
-**Returns** `Array of String` Array that contains object keys.
-- - - -
-
-## HAS
+{{< header >}}
+HAS
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/has.go#L13)
 
-Has returns the value stored by the given key.
+HAS returns the value stored by the given key.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`key` | `String` | The key name string.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`key` | `String`  |  | The key name string.
 
 
 **Returns** `Boolean` True if the key exists else false.
 - - - -
 
-## VALUES
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/values.go#L13)
 
-Values return the attribute values of the object as an array.
-
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`obj` | `Object` | An object.
-
-
-**Returns** `Array of Value` The values of document returned in any order.
-- - - -
-
-## KEEP_KEYS
+{{< header >}}
+KEEP_KEYS
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keep_keys.go#L14)
 
-KeepKeys returns a new object with only given keys.
+KEEP_KEYS returns a new object with only given keys.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`src` | `Object` | Source object.
-`keys` | `Array Of String OR Strings` | Keys that need to be keeped.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`obj` | `Object`  |  | Source object.
+`keys` | `String, repeated`  |  | Keys that need to be kept.
 
 
 **Returns** `Object` New object with only given keys.
 - - - -
 
-## MERGE
+
+{{< header >}}
+KEYS
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keys.go#L15)
+
+KEYS returns string array of object's keys
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`obj` | `Object`  |  | The object whose keys you want to extract
+`sort` | `Boolean`  | `False` | If sort is true, then the returned keys will be sorted.
+
+
+**Returns** `String[]` Array that contains object keys.
+- - - -
+
+
+{{< header >}}
+MERGE
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge.go#L13)
 
-Merge merge the given objects into a single object.
+MERGE merge the given objects into a single object.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`objs` | `Array Of Object OR Objects` | Objects to merge.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`objects` | `Object, repeated`  |  | Objects to merge.
 
 
 **Returns** `Object` Object created by merging.
 - - - -
 
-## MERGE_RECURSIVE
+
+{{< header >}}
+MERGE_RECURSIVE
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge_recursive.go#L13)
 
-MergeRecursive recursively merge the given objects into a single object.
+MERGE_RECURSIVE recursively merge the given objects into a single object.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`objs` | `Objects` | Objects to merge.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`objects` | `Objects, repeated`  |  | Objects to merge.
 
 
 **Returns** `Object` Object created by merging.
 - - - -
 
-## ZIP
+
+{{< header >}}
+VALUES
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/values.go#L13)
+
+VALUES return the attribute values of the object as an array.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`object` | `Object`  |  | Target object.
+
+
+**Returns** `Any[]` Values of document returned in any order.
+- - - -
+
+
+{{< header >}}
+ZIP
+{{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/zip.go#L16)
 
-Zip returns an object assembled from the separate parameters keys and values. Keys and values must be arrays and have the same length.
+ZIP returns an object assembled from the separate parameters keys and values. Keys and values must be arrays and have the same length.
 
-|          |          |          |
----------- | -------- | ----------
-Argument   | Type     | Description
-`keys` | `Array of Strings` | An array of strings, to be used as key names in the result.
-`values` | `Array of Objects` | An array of core.value, to be used as key values.
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`keys` | `String[]`  |  | An array of strings, to be used as key names in the result.
+`values` | `Object[]`  |  | An array of core.value, to be used as key values.
 
 
 **Returns** `Object` An object with the keys and values assembled.
