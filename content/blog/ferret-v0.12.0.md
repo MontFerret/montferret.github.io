@@ -71,6 +71,7 @@ WAIT_NAVIGATION(page, {
     frame: innerPage
 })
 
+// We need to get a new document that we have navigated to
 LET innerPage2 = FIRST(FRAMES(page, "url", "https://www.montferret.dev/blog/"))
 
 WAIT_ELEMENT(innerPage2, ".blog")
@@ -80,12 +81,11 @@ LET targetURL = item.attributes.href
 
 CLICK(item)
 
-PRINT(targetURL)
-
 WAIT_NAVIGATION(page, {
 	frame: innerPage2
 })
 
+// We need to get a new document that we have navigated to
 LET innerPage3 = FIRST(FRAMES(page, "url", targetURL))
 
 RETURN INNER_TEXT(innerPage3, ".content")
