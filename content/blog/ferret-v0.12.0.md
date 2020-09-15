@@ -22,7 +22,7 @@ Let's dig in. The full changelog you can find [here](https://github.com/MontFerr
 A new ``T`` namespace has been added to the standard library that provides some helpful methods for making assertions.     
 The functions can be used to test UI, validate data and ensure the correctnes of a script.
 
-{{< editor lang="fql" height="190px" >}}
+{{< editor lang="fql" height="190px" readonly="true" >}}
 
 LET doc = DOCUMENT('https://github.com/', { driver: "cdp" })
 
@@ -36,8 +36,51 @@ RETURN data
 
 Read about available functions [here](https://www.montferret.dev/docs/stdlib/testing).
 
+## New FRAMES function
+A new helper function that finds HTML frames by a given property selector.
+
+{{< editor lang="fql" height="190px" readonly="true" >}}
+
+LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
+    driver: 'cdp'
+})
+
+LET frame = FRAMES(page, "src", "/")
+
+RETURN FIRST(frame).url
+
+{{</ editor >}}
+
 ## iFrame navigation handling
 Finally, we can control navigation of nested iframes! Whenever your page has a nested iframe that performs some nested navigation, you can tell Ferret to wait for its completion.
+
+{{< editor lang="fql" height="580px" readonly="true" >}}
+LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
+    driver: 'cdp'
+})
+
+LET innerPage = FIRST(FRAMES(page, "src", "/"))
+
+T::NOT::NONE(innerPage)
+
+SCROLL_ELEMENT(innerPage)
+
+CLICK(innerPage, "#navbar-burger")
+WAIT_CLASS(innerPage, "#primary-nav", "is-active")
+
+CLICK(innerPage, "#blog")
+
+WAIT_NAVIGATION(innerPage)
+
+WAIT_ELEMENT(innerPage, ".right-menu .mui-dropdown .login")
+
+CLICK(ELEMENT(innerPage, ".blog-post a"))
+
+WAIT_NAVIGATION(innerPage)
+
+
+RETURN INNER_TEXT(innerPage, ".content")
+{{</ editor >}}
 
 # What's changed
 ## Removed property caching and tracking
