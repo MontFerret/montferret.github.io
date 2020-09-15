@@ -45,7 +45,7 @@ LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
     driver: 'cdp'
 })
 
-LET frame = FRAMES(page, "src", "https://www.montferret.dev/")
+LET frame = FRAMES(page, "url", "https://www.montferret.dev/")
 
 RETURN FIRST(frame).url
 
@@ -59,27 +59,36 @@ LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
     driver: 'cdp'
 })
 
-LET innerPage = FIRST(FRAMES(page, "src", "https://www.montferret.dev/"))
+LET innerPage = FIRST(FRAMES(page, "url", "https://www.montferret.dev/"))
 
 T::NOT::NONE(innerPage)
 
-SCROLL_ELEMENT(innerPage)
-
 CLICK(innerPage, "#navbar-burger")
 WAIT_CLASS(innerPage, "#primary-nav", "is-active")
-
 CLICK(innerPage, "#blog")
 
-WAIT_NAVIGATION(innerPage)
+WAIT_NAVIGATION(page, {
+    frame: innerPage
+})
 
-WAIT_ELEMENT(innerPage, ".right-menu .mui-dropdown .login")
+LET innerPage2 = FIRST(FRAMES(page, "url", "https://www.montferret.dev/blog/"))
 
-CLICK(ELEMENT(innerPage, ".blog-post a"))
+WAIT_ELEMENT(innerPage2, ".blog")
 
-WAIT_NAVIGATION(innerPage)
+LET item = ELEMENT(innerPage2, ".blog-post a")
+LET targetURL = item.attributes.href
 
+CLICK(item)
 
-RETURN INNER_TEXT(innerPage, ".content")
+PRINT(targetURL)
+
+WAIT_NAVIGATION(page, {
+	frame: innerPage2
+})
+
+LET innerPage3 = FIRST(FRAMES(page, "url", targetURL))
+
+RETURN INNER_TEXT(innerPage3, ".content")
 {{</ editor >}}
 
 # What's changed
