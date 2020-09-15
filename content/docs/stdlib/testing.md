@@ -1,16 +1,17 @@
-
-
 ---
 title: "testing"
 weight: 1
 draft: false
+menuTitle: T
 menu: [ARRAY,BINARY,DATETIME,EMPTY,EQUAL,FAIL,FALSE,FLOAT,GT,GTE,INCLUDE,INT,LEN,LT,LTE,MATCH,NONE,OBJECT,STRING,TRUE,]
 ---
 
 
 
 {{< header >}}
-ARRAY
+
+T::ARRAY
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/array.go#L13)
 
@@ -28,7 +29,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-BINARY
+
+T::BINARY
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/binary.go#L13)
 
@@ -46,7 +49,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-DATETIME
+
+T::DATETIME
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/datetime.go#L13)
 
@@ -64,7 +69,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-EMPTY
+
+T::EMPTY
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/empty.go#L14)
 
@@ -82,7 +89,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-EQUAL
+
+T::EQUAL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/equal.go#L14)
 
@@ -101,7 +110,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-FAIL
+
+T::FAIL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/fail.go#L11)
 
@@ -118,7 +129,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-FALSE
+
+T::FALSE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/false.go#L14)
 
@@ -136,7 +149,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-FLOAT
+
+T::FLOAT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/float.go#L13)
 
@@ -154,7 +169,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-GT
+
+T::GT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/gt.go#L14)
 
@@ -173,7 +190,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-GTE
+
+T::GTE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/gte.go#L14)
 
@@ -192,7 +211,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-INCLUDE
+
+T::INCLUDE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/include.go#L16)
 
@@ -211,7 +232,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-INT
+
+T::INT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/int.go#L13)
 
@@ -229,7 +252,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-LEN
+
+T::LEN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/len.go#L15)
 
@@ -248,7 +273,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-LT
+
+T::LT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/lt.go#L14)
 
@@ -267,7 +294,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-LTE
+
+T::LTE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/lte.go#L14)
 
@@ -286,7 +315,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-MATCH
+
+T::MATCH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/match.go#L15)
 
@@ -305,7 +336,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-NONE
+
+T::NONE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/none.go#L14)
 
@@ -323,7 +356,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-OBJECT
+
+T::OBJECT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/object.go#L13)
 
@@ -341,7 +376,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-STRING
+
+T::STRING
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/string.go#L13)
 
@@ -359,7 +396,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-TRUE
+
+T::TRUE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/true.go#L14)
 

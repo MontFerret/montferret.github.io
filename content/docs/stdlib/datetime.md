@@ -1,16 +1,17 @@
-
-
 ---
 title: "datetime"
 weight: 1
 draft: false
+menuTitle: 
 menu: [DATE,DATE_ADD,DATE_COMPARE,DATE_DAY,DATE_DAYOFWEEK,DATE_DAYOFYEAR,DATE_DAYS_IN_MONTH,DATE_DIFF,DATE_FORMAT,DATE_HOUR,DATE_LEAPYEAR,DATE_MILLISECOND,DATE_MINUTE,DATE_MONTH,DATE_QUARTER,DATE_SECOND,DATE_SUBTRACT,DATE_YEAR,NOW,]
 ---
 
 
 
 {{< header >}}
+
 DATE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/date.go#L14)
 
@@ -27,7 +28,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_ADD
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/add_subtract.go#L30)
 
@@ -46,7 +49,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_COMPARE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/compare.go#L17)
 
@@ -66,7 +71,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_DAY
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/day.go#L13)
 
@@ -83,7 +90,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_DAYOFWEEK
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/dayofweek.go#L13)
 
@@ -100,7 +109,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_DAYOFYEAR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/dayofyear.go#L14)
 
@@ -117,7 +128,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_DAYS_IN_MONTH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/daysinmonth.go#L29)
 
@@ -134,7 +147,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_DIFF
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/diff.go#L16)
 
@@ -154,7 +169,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_FORMAT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/format.go#L13)
 
@@ -171,7 +188,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_HOUR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/hour.go#L13)
 
@@ -188,7 +207,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_LEAPYEAR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/leapyear.go#L13)
 
@@ -205,7 +226,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_MILLISECOND
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/millisecond.go#L13)
 
@@ -222,7 +245,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_MINUTE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/minute.go#L13)
 
@@ -239,7 +264,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_MONTH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/month.go#L13)
 
@@ -256,7 +283,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_QUARTER
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/quarter.go#L14)
 
@@ -273,7 +302,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_SECOND
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/second.go#L13)
 
@@ -290,7 +321,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_SUBTRACT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/add_subtract.go#L60)
 
@@ -309,7 +342,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DATE_YEAR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/year.go#L13)
 
@@ -326,7 +361,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 NOW
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/datetime/now.go#L12)
 

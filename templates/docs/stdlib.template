@@ -1,11 +1,13 @@
 {{- $using := .Env.USING_KEY -}}
 {{- $repo := "https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/" -}}
-{{ $module := index . "modules" $using}}
-{{ $moduleFuncs := index $module "functions" }}
+{{- $module := index . "modules" $using -}}
+{{- $moduleFuncs := index $module "functions" -}}
+{{- $namespace := index $module "namespace" -}}
 ---
 title: "{{ $using }}"
 weight: 1
 draft: false
+menuTitle: {{ default "" $namespace }}
 menu: [
 {{- range $key, $value := $moduleFuncs }}
   {{- .token | upper -}},
@@ -16,7 +18,11 @@ menu: [
 {{ range $key, $value := $moduleFuncs }}
 
 {{ printf "{{%s}}" "< header >" }}
+{{ if $namespace }}
+{{ printf "%s::%s" $namespace .token | upper }}
+{{ else }}
 {{ .token | upper }}
+{{ end }}
 {{ printf "{{%s}}" "</ header >" }}
 [Source]({{ $repo }}{{ .file_name }}#L{{ .line_number }})
 

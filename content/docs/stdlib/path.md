@@ -1,16 +1,17 @@
-
-
 ---
 title: "path"
 weight: 1
 draft: false
+menuTitle: PATH
 menu: [BASE,CLEAN,DIR,EXT,IS_ABS,JOIN,MATCH,SEPARATE,]
 ---
 
 
 
 {{< header >}}
-BASE
+
+PATH::BASE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/base.go#L14)
 
@@ -27,7 +28,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-CLEAN
+
+PATH::CLEAN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/clean.go#L14)
 
@@ -44,7 +47,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-DIR
+
+PATH::DIR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/dir.go#L14)
 
@@ -61,7 +66,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-EXT
+
+PATH::EXT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/ext.go#L14)
 
@@ -78,7 +85,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-IS_ABS
+
+PATH::IS_ABS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/is_abs.go#L14)
 
@@ -95,7 +104,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-JOIN
+
+PATH::JOIN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/join.go#L14)
 
@@ -112,7 +123,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-MATCH
+
+PATH::MATCH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/match.go#L15)
 
@@ -130,7 +143,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-SEPARATE
+
+PATH::SEPARATE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/separate.go#L14)
 

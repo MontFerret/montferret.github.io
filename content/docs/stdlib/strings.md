@@ -1,16 +1,17 @@
-
-
 ---
 title: "strings"
 weight: 1
 draft: false
+menuTitle: 
 menu: [CONCAT,CONCAT_SEPARATOR,CONTAINS,DECODE_URI_COMPONENT,ENCODE_URI_COMPONENT,ESCAPE_HTML,FIND_FIRST,FIND_LAST,FMT,FROM_BASE64,JSON_PARSE,JSON_STRINGIFY,LEFT,LIKE,LOWER,LTRIM,MD5,RANDOM_TOKEN,REGEX_MATCH,REGEX_REPLACE,REGEX_SPLIT,REGEX_TEST,RIGHT,RTRIM,SHA1,SHA512,SPLIT,SUBSTITUTE,SUBSTRING,TO_BASE64,TRIM,UNESCAPE_HTML,UPPER,]
 ---
 
 
 
 {{< header >}}
+
 CONCAT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L13)
 
@@ -27,7 +28,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 CONCAT_SEPARATOR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L47)
 
@@ -45,7 +48,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 CONTAINS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/contains.go#L15)
 
@@ -64,7 +69,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DECODE_URI_COMPONENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L36)
 
@@ -81,7 +88,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ENCODE_URI_COMPONENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L17)
 
@@ -98,7 +107,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ESCAPE_HTML
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/escape.go#L16)
 
@@ -115,7 +126,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FIND_FIRST
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L17)
 
@@ -135,7 +148,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FIND_LAST
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L63)
 
@@ -155,7 +170,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FMT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/fmt.go#L18)
 
@@ -173,7 +190,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FROM_BASE64
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L16)
 
@@ -190,7 +209,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 JSON_PARSE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L13)
 
@@ -207,7 +228,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 JSON_STRINGIFY
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L34)
 
@@ -224,7 +247,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LEFT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L61)
 
@@ -242,7 +267,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LIKE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/like.go#L15)
 
@@ -261,7 +288,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LOWER
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L13)
 
@@ -278,7 +307,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LTRIM
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L34)
 
@@ -296,7 +327,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 MD5
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L32)
 
@@ -313,7 +346,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 RANDOM_TOKEN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/random.go#L26)
 
@@ -330,7 +365,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 REGEX_MATCH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L16)
 
@@ -349,7 +386,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 REGEX_REPLACE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L133)
 
@@ -369,7 +408,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 REGEX_SPLIT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L58)
 
@@ -389,7 +430,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 REGEX_TEST
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L100)
 
@@ -408,7 +451,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 RIGHT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L88)
 
@@ -426,7 +471,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 RTRIM
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L55)
 
@@ -444,7 +491,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SHA1
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L48)
 
@@ -461,7 +510,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SHA512
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L64)
 
@@ -478,7 +529,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SPLIT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/split.go#L16)
 
@@ -497,7 +550,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SUBSTITUTE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substitute.go#L17)
 
@@ -517,7 +572,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SUBSTRING
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L15)
 
@@ -536,7 +593,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TO_BASE64
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L80)
 
@@ -553,7 +612,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TRIM
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L14)
 
@@ -571,7 +632,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 UNESCAPE_HTML
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/unescape.go#L17)
 
@@ -588,7 +651,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 UPPER
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L28)
 

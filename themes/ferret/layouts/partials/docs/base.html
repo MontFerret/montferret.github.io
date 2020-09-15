@@ -15,8 +15,9 @@
                     {{ $link := (dict "title" . "url" (printf "#%s" .))}}
                     {{ $links = $links | append  $link }}
                 {{- end -}}
+                {{- $menu := (dict "items" $links "title" .Params.menuTitle) -}}
 
-                {{ partial "menu.html" $links }}
+                {{ partial "menu.html" $menu }}
         </section>
         {{ end }}
 

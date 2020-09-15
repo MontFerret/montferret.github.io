@@ -1,16 +1,17 @@
-
-
 ---
 title: "io/fs"
 weight: 1
 draft: false
+menuTitle: IO::FS
 menu: [READ,WRITE,]
 ---
 
 
 
 {{< header >}}
-READ
+
+IO::FS::READ
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/fs/read.go#L14)
 
@@ -27,7 +28,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-WRITE
+
+IO::FS::WRITE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/fs/write.go#L20)
 

@@ -1,16 +1,17 @@
-
-
 ---
 title: "collections"
 weight: 1
 draft: false
+menuTitle: 
 menu: [INCLUDES,LENGTH,REVERSE,]
 ---
 
 
 
 {{< header >}}
+
 INCLUDES
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/include.go#L14)
 
@@ -28,7 +29,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LENGTH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/length.go#L14)
 
@@ -45,7 +48,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 REVERSE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/reverse.go#L13)
 

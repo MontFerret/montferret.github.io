@@ -1,16 +1,17 @@
-
-
 ---
 title: "utils"
 weight: 1
 draft: false
+menuTitle: 
 menu: [PRINT,WAIT,]
 ---
 
 
 
 {{< header >}}
+
 PRINT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/utils/log.go#L12)
 
@@ -27,7 +28,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/utils/wait.go#L12)
 

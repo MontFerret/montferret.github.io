@@ -1,16 +1,17 @@
-
-
 ---
 title: "io/net/http"
 weight: 1
 draft: false
+menuTitle: IO::NET::HTTP
 menu: [DELETE,DO,GET,POST,PUT,]
 ---
 
 
 
 {{< header >}}
-DELETE
+
+IO::NET::HTTP::DELETE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/delete.go#L15)
 
@@ -30,7 +31,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-DO
+
+IO::NET::HTTP::DO
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/request.go#L27)
 
@@ -51,7 +54,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-GET
+
+IO::NET::HTTP::GET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/get.go#L16)
 
@@ -70,7 +75,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-POST
+
+IO::NET::HTTP::POST
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/post.go#L15)
 
@@ -90,7 +97,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
-PUT
+
+IO::NET::HTTP::PUT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/put.go#L15)
 

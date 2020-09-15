@@ -1,16 +1,17 @@
-
-
 ---
 title: "math"
 weight: 1
 draft: false
+menuTitle: 
 menu: [ABS,ACOS,ASIN,ATAN,ATAN2,AVERAGE,CEIL,COS,DEGREES,EXP,EXP2,FLOOR,LOG,LOG10,LOG2,MAX,MEDIAN,MIN,PERCENTILE,PI,POW,RADIANS,RAND,RANGE,ROUND,SIN,SQRT,STDDEV_POPULATION,STDDEV_SAMPLE,SUM,TAN,VARIANCE_POPULATION,VARIANCE_SAMPLE,]
 ---
 
 
 
 {{< header >}}
+
 ABS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/abs.go#L14)
 
@@ -27,7 +28,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ACOS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/acos.go#L14)
 
@@ -44,7 +47,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ASIN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/asin.go#L14)
 
@@ -61,7 +66,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ATAN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/atan.go#L14)
 
@@ -78,7 +85,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ATAN2
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/atan2.go#L15)
 
@@ -96,7 +105,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 AVERAGE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/average.go#L13)
 
@@ -113,7 +124,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 CEIL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/ceil.go#L14)
 
@@ -130,7 +143,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 COS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/cos.go#L14)
 
@@ -147,7 +162,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DEGREES
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/degrees.go#L13)
 
@@ -164,7 +181,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 EXP
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/exp.go#L14)
 
@@ -181,7 +200,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 EXP2
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/exp2.go#L14)
 
@@ -198,7 +219,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FLOOR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/floor.go#L14)
 
@@ -215,7 +238,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LOG
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/log.go#L14)
 
@@ -232,7 +257,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LOG10
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/log10.go#L14)
 
@@ -249,7 +276,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LOG2
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/log2.go#L14)
 
@@ -266,7 +295,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 MAX
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/max.go#L13)
 
@@ -283,7 +314,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 MEDIAN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/median.go#L14)
 
@@ -300,7 +333,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 MIN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/min.go#L13)
 
@@ -317,7 +352,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 PERCENTILE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/percentile.go#L17)
 
@@ -336,7 +373,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 PI
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/pi.go#L12)
 
@@ -352,7 +391,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 POW
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/pow.go#L15)
 
@@ -370,7 +411,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 RADIANS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/radians.go#L13)
 
@@ -387,7 +430,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 RAND
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/rand.go#L15)
 
@@ -405,7 +450,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 RANGE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/range.go#L15)
 
@@ -424,7 +471,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ROUND
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/round.go#L14)
 
@@ -441,7 +490,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SIN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/sin.go#L14)
 
@@ -458,7 +509,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SQRT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/sqrt.go#L14)
 
@@ -475,7 +528,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 STDDEV_POPULATION
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/stddev_population.go#L14)
 
@@ -492,7 +547,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 STDDEV_SAMPLE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/stddev_sample.go#L14)
 
@@ -509,7 +566,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SUM
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/sum.go#L13)
 
@@ -526,7 +585,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TAN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/tan.go#L14)
 
@@ -543,7 +604,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 VARIANCE_POPULATION
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/variance_population.go#L14)
 
@@ -560,7 +623,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 VARIANCE_SAMPLE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/variance_sample.go#L14)
 

@@ -1,16 +1,17 @@
-
-
 ---
 title: "html"
 weight: 1
 draft: false
+menuTitle: 
 menu: [ATTR_GET,ATTR_REMOVE,ATTR_SET,BLUR,CLICK,CLICK_ALL,COOKIE_DEL,COOKIE_GET,COOKIE_SET,DOCUMENT,DOWNLOAD,ELEMENT,ELEMENTS,ELEMENTS_COUNT,ELEMENT_EXISTS,FOCUS,FRAMES,HOVER,INNER_HTML,INNER_HTML_ALL,INNER_HTML_SET,INNER_TEXT,INNER_TEXT_ALL,INNER_TEXT_SET,INPUT,INPUT_CLEAR,MOUSE,NAVIGATE,NAVIGATE_BACK,NAVIGATE_FORWARD,PAGINATION,PARSE,PDF,SCREENSHOT,SCROLL,SCROLL_BOTTOM,SCROLL_ELEMENT,SCROLL_TOP,SELECT,STYLE_GET,STYLE_REMOVE,STYLE_SET,WAIT_ATTR,WAIT_ATTR_ALL,WAIT_CLASS,WAIT_CLASS_ALL,WAIT_ELEMENT,WAIT_NAVIGATION,WAIT_NO_ATTR,WAIT_NO_ATTR_ALL,WAIT_NO_CLASS,WAIT_NO_CLASS_ALL,WAIT_NO_ELEMENT,WAIT_NO_STYLE,WAIT_NO_STYLE_ALL,WAIT_STYLE,WAIT_STYLE_ALL,XPATH,]
 ---
 
 
 
 {{< header >}}
+
 ATTR_GET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_get.go#L14)
 
@@ -28,7 +29,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ATTR_REMOVE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_remove.go#L14)
 
@@ -46,7 +49,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ATTR_SET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_set.go#L15)
 
@@ -65,7 +70,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 BLUR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/blur.go#L13)
 
@@ -83,7 +90,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 CLICK
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/click.go#L15)
 
@@ -102,7 +111,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 CLICK_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/click_all.go#L16)
 
@@ -121,7 +132,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 COOKIE_DEL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_del.go#L14)
 
@@ -139,7 +152,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 COOKIE_GET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_get.go#L15)
 
@@ -157,7 +172,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 COOKIE_SET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_set.go#L13)
 
@@ -175,7 +192,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DOCUMENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/document.go#L36)
 
@@ -204,7 +223,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 DOWNLOAD
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/download.go#L15)
 
@@ -221,7 +242,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ELEMENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element.go#L16)
 
@@ -239,7 +262,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ELEMENTS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/elements.go#L14)
 
@@ -257,7 +282,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ELEMENTS_COUNT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/elements_count.go#L14)
 
@@ -275,7 +302,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ELEMENT_EXISTS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element_exists.go#L13)
 
@@ -293,7 +322,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FOCUS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/focus.go#L13)
 
@@ -311,7 +342,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FRAMES
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/find_frames.go#L15)
 
@@ -330,7 +363,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 HOVER
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/hover.go#L15)
 
@@ -348,7 +383,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INNER_HTML
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_html.go#L15)
 
@@ -366,7 +403,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INNER_HTML_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_html_all.go#L15)
 
@@ -384,7 +423,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INNER_HTML_SET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/set_inner_html.go#L15)
 
@@ -403,7 +444,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INNER_TEXT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_text.go#L15)
 
@@ -421,7 +464,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INNER_TEXT_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_text_all.go#L15)
 
@@ -439,7 +484,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INNER_TEXT_SET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/set_inner_text.go#L15)
 
@@ -458,7 +505,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INPUT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/input.go#L16)
 
@@ -478,7 +527,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INPUT_CLEAR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/clear.go#L13)
 
@@ -496,7 +547,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 MOUSE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/mouse_xy.go#L15)
 
@@ -515,7 +568,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 NAVIGATE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate.go#L17)
 
@@ -534,7 +589,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 NAVIGATE_BACK
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_back.go#L18)
 
@@ -553,7 +610,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 NAVIGATE_FORWARD
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_forward.go#L18)
 
@@ -572,7 +631,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 PAGINATION
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pagination.go#L16)
 
@@ -590,7 +651,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 PARSE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/parse.go#L31)
 
@@ -618,7 +681,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 PDF
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pdf.go#L42)
 
@@ -651,7 +716,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SCREENSHOT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/screenshot.go#L22)
 
@@ -675,7 +742,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SCROLL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_xy.go#L19)
 
@@ -698,7 +767,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SCROLL_BOTTOM
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_bottom.go#L18)
 
@@ -721,7 +792,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SCROLL_ELEMENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_element.go#L20)
 
@@ -743,7 +816,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SCROLL_TOP
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_top.go#L18)
 
@@ -766,7 +841,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SELECT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/select.go#L15)
 
@@ -785,7 +862,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 STYLE_GET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_get.go#L14)
 
@@ -803,7 +882,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 STYLE_REMOVE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_remove.go#L14)
 
@@ -821,7 +902,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 STYLE_SET
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_set.go#L15)
 
@@ -840,7 +923,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_ATTR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr.go#L17)
 
@@ -861,7 +946,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_ATTR_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr_all.go#L17)
 
@@ -881,7 +968,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_CLASS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class.go#L17)
 
@@ -901,7 +990,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_CLASS_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class_all.go#L17)
 
@@ -921,7 +1012,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_ELEMENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_element.go#L16)
 
@@ -940,7 +1033,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_NAVIGATION
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_navigation.go#L26)
 
@@ -962,7 +1057,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_NO_ATTR
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr.go#L27)
 
@@ -983,7 +1080,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_NO_ATTR_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr_all.go#L27)
 
@@ -1003,7 +1102,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_NO_CLASS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class.go#L27)
 
@@ -1023,7 +1124,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_NO_CLASS_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class_all.go#L27)
 
@@ -1043,7 +1146,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_NO_ELEMENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_element.go#L25)
 
@@ -1062,7 +1167,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_NO_STYLE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style.go#L27)
 
@@ -1083,7 +1190,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_NO_STYLE_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style_all.go#L27)
 
@@ -1104,7 +1213,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_STYLE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style.go#L17)
 
@@ -1125,7 +1236,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 WAIT_STYLE_ALL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style_all.go#L17)
 
@@ -1146,7 +1259,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 XPATH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/xpath.go#L14)
 

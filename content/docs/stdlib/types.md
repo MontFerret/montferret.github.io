@@ -1,16 +1,17 @@
-
-
 ---
 title: "types"
 weight: 1
 draft: false
+menuTitle: 
 menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BOOL,TO_DATETIME,TO_FLOAT,TO_INT,TO_STRING,TYPENAME,]
 ---
 
 
 
 {{< header >}}
+
 IS_ARRAY
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_array.go#L13)
 
@@ -27,7 +28,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_BINARY
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_binary.go#L13)
 
@@ -44,7 +47,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_BOOL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_boolean.go#L13)
 
@@ -61,7 +66,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_DATETIME
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_date_time.go#L13)
 
@@ -78,7 +85,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_FLOAT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_float.go#L13)
 
@@ -95,7 +104,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_HTML_DOCUMENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_html_document.go#L13)
 
@@ -112,7 +123,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_HTML_ELEMENT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_html_element.go#L13)
 
@@ -129,7 +142,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_INT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_int.go#L13)
 
@@ -146,7 +161,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_NAN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_nan.go#L13)
 
@@ -163,7 +180,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_NONE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_none.go#L13)
 
@@ -180,7 +199,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_OBJECT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_object.go#L13)
 
@@ -197,7 +218,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 IS_STRING
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_string.go#L13)
 
@@ -214,7 +237,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TO_ARRAY
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_array.go#L15)
 
@@ -231,7 +256,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TO_BOOL
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_boolean.go#L18)
 
@@ -248,7 +275,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TO_DATETIME
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_date_time.go#L12)
 
@@ -265,7 +294,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TO_FLOAT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_float.go#L20)
 
@@ -282,7 +313,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TO_INT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_int.go#L20)
 
@@ -299,7 +332,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TO_STRING
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_string.go#L12)
 
@@ -316,7 +351,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 TYPENAME
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/type_name.go#L12)
 

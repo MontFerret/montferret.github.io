@@ -1,16 +1,17 @@
-
-
 ---
 title: "objects"
 weight: 1
 draft: false
+menuTitle: 
 menu: [HAS,KEEP_KEYS,KEYS,MERGE,MERGE_RECURSIVE,VALUES,ZIP,]
 ---
 
 
 
 {{< header >}}
+
 HAS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/has.go#L13)
 
@@ -27,7 +28,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 KEEP_KEYS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keep_keys.go#L14)
 
@@ -45,7 +48,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 KEYS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keys.go#L15)
 
@@ -63,7 +68,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 MERGE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge.go#L13)
 
@@ -80,7 +87,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 MERGE_RECURSIVE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge_recursive.go#L13)
 
@@ -97,7 +106,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 VALUES
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/values.go#L13)
 
@@ -114,7 +125,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 ZIP
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/zip.go#L16)
 

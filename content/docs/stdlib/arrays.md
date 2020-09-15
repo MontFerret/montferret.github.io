@@ -1,16 +1,17 @@
-
-
 ---
 title: "arrays"
 weight: 1
 draft: false
+menuTitle: 
 menu: [APPEND,FIRST,FLATTEN,INTERSECTION,LAST,MINUS,NTH,OUTERSECTION,POP,POSITION,PUSH,REMOVE_NTH,REMOVE_VALUE,REMOVE_VALUES,SHIFT,SLICE,SORTED,SORTED_UNIQUE,UNION,UNION_DISTINCT,UNIQUE,UNSHIFT,]
 ---
 
 
 
 {{< header >}}
+
 APPEND
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/append.go#L15)
 
@@ -28,7 +29,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FIRST
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/first.go#L13)
 
@@ -45,7 +48,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 FLATTEN
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/flatten.go#L18)
 
@@ -63,7 +68,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 INTERSECTION
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/intersection.go#L15)
 
@@ -80,7 +87,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 LAST
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/last.go#L13)
 
@@ -97,7 +106,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 MINUS
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/minus.go#L14)
 
@@ -114,7 +125,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 NTH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/nth.go#L16)
 
@@ -132,7 +145,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 OUTERSECTION
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/outersection.go#L12)
 
@@ -149,7 +164,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 POP
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/pop.go#L13)
 
@@ -166,7 +183,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 POSITION
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/position.go#L15)
 
@@ -185,7 +204,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 PUSH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/push.go#L15)
 
@@ -204,7 +225,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 REMOVE_NTH
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/remove_nth.go#L14)
 
@@ -222,7 +245,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 REMOVE_VALUE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/remove_value.go#L16)
 
@@ -241,7 +266,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 REMOVE_VALUES
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/remove_values.go#L14)
 
@@ -259,7 +286,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SHIFT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/shift.go#L13)
 
@@ -276,7 +305,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SLICE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/slice.go#L15)
 
@@ -295,7 +326,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SORTED
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/sorted.go#L14)
 
@@ -312,7 +345,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 SORTED_UNIQUE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/sorted_unique.go#L15)
 
@@ -329,7 +364,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 UNION
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/union.go#L13)
 
@@ -346,7 +383,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 UNION_DISTINCT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/union_distinct.go#L13)
 
@@ -363,7 +402,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 UNIQUE
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/unique.go#L13)
 
@@ -380,7 +421,9 @@ Argument   | Type     | Default value  | Description
 
 
 {{< header >}}
+
 UNSHIFT
+
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/unshift.go#L15)
 
