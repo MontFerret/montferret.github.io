@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.71.1" />
+    <meta name="generator" content="Hugo 0.75.0" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.48b041b6e146d095d6e4a662e7c547d0558fdec6514b321e45529462c0efd2b2.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.64f1f7a6c5e475867d245403cd132b96cb35a0f513fdae841e901a1feac0734c.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -417,6 +417,15 @@
         
             
             <li>
+                <a href="https://www.montferret.dev/docs/stdlib/testing/" class="">
+                    testing
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
                 <a href="https://www.montferret.dev/docs/stdlib/types/" class="">
                     types
                 </a>
@@ -448,14 +457,23 @@
 </aside>
 
         </section>
+
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
-    <h2 id="like">LIKE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/like.go#L15">Source</a></p>
-<p>Like checks whether the pattern search is contained in the string text, using wildcard matching.</p>
+    <p>
+
+
+<h2 id="concat">
+<a href="#concat">
+CONCAT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L13">Source</a></p>
+<p>CONCAT concatenates one or more instances of String, or an Array.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -465,33 +483,123 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>text</code></td>
+<td><code>src</code></td>
+<td><code>String, repeated</code> <code>String[]</code></td>
+<td></td>
+<td>The source string / array.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> A string value.</p>
+<hr>
+<p>
+
+
+<h2 id="concat_separator">
+<a href="#concat_separator">
+CONCAT_SEPARATOR
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L47">Source</a></p>
+<p>CONCAT_SEPARATOR concatenates one or more instances of String, or an Array with a given separator.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>separator</code></td>
 <td><code>String</code></td>
-<td>The string to search in.</td>
+<td></td>
+<td>The separator string.</td>
+</tr>
+<tr>
+<td><code>src</code></td>
+<td><code>String, repeated</code> <code>String[]</code></td>
+<td></td>
+<td>The source string / array.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Concatenated string.</p>
+<hr>
+<p>
+
+
+<h2 id="contains">
+<a href="#contains">
+CONTAINS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/contains.go#L15">Source</a></p>
+<p>CONTAINS returns a value indicating whether a specified substring occurs within a string.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The source string.</td>
 </tr>
 <tr>
 <td><code>search</code></td>
 <td><code>String</code></td>
-<td>A search pattern that can contain the wildcard characters.</td>
+<td></td>
+<td>The string to seek.</td>
 </tr>
 <tr>
-<td><code>caseInsensitive</code></td>
+<td><code>returnIndex</code></td>
 <td><code>Boolean</code></td>
-<td>If set to true, the matching will be case-insensitive. the default is false.</td>
+<td><code>False</code></td>
+<td>Values which indicates whether to return the character position of the match is returned instead of a boolean.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns</strong> <code>Boolean</code> Returns true if the pattern is contained in text, and false otherwise.</p>
+<p><strong>Returns</strong> <code>Boolean</code> <code>Int</code> A value indicating whether a specified substring occurs within a string.</p>
 <hr>
-<h2 id="trim">TRIM</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L14">Source</a></p>
-<p>Trim returns the string value with whitespace stripped from the start and/or end.</p>
+<p>
+
+
+<h2 id="decode_uri_component">
+<a href="#decode_uri_component">
+DECODE_URI_COMPONENT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L36">Source</a></p>
+<p>DECODE_URI_COMPONENT returns the decoded String of uri.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -501,142 +609,33 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>String</code></td>
-<td>The string.</td>
-</tr>
-<tr>
-<td><code>chars</code></td>
-<td><code>String</code></td>
-<td>Overrides the characters that should be removed from the string. it defaults to \r\n \t.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> The string without chars on both sides.</p>
-<hr>
-<h2 id="ltrim">LTRIM</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L34">Source</a></p>
-<p>LTrim returns the string value with whitespace stripped from the start only.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>String</code></td>
-<td>The string.</td>
-</tr>
-<tr>
-<td><code>chars</code></td>
-<td><code>String</code></td>
-<td>Overrides the characters that should be removed from the string. it defaults to \r\n \t.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> The string without chars at the left-hand side.</p>
-<hr>
-<h2 id="rtrim">RTRIM</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L55">Source</a></p>
-<p>RTrim returns the string value with whitespace stripped from the end only.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>String</code></td>
-<td>The string.</td>
-</tr>
-<tr>
-<td><code>chars</code></td>
-<td><code>String</code></td>
-<td>Overrides the characters that should be removed from the string. it defaults to \r\n \t.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> The string without chars at the right-hand side.</p>
-<hr>
-<h2 id="from_base64">FROM_BASE64</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L16">Source</a></p>
-<p>FromBase64 returns the value of a base64 representation.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>base64String</code></td>
-<td><code>String</code></td>
-<td>The string to decode.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> The decoded string.</p>
-<hr>
-<h2 id="decode_uri_component">DECODE_URI_COMPONENT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L36">Source</a></p>
-<p>DecodeURIComponent returns the decoded String of uri.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
 <td><code>uri</code></td>
 <td><code>String</code></td>
+<td></td>
 <td>Uri to decode.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>String</code> Decoded string.</p>
 <hr>
-<h2 id="concat">CONCAT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L13">Source</a></p>
-<p>Concat concatenates one or more instances of Read, or an Array.</p>
+<p>
+
+
+<h2 id="encode_uri_component">
+<a href="#encode_uri_component">
+ENCODE_URI_COMPONENT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L17">Source</a></p>
+<p>ENCODE_URI_COMPONENT returns the encoded String of uri.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -646,277 +645,33 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>String...</code> <code>Array</code></td>
-<td>The source string / array.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Returns the concatenated string.</p>
-<hr>
-<h2 id="concat_separator">CONCAT_SEPARATOR</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L47">Source</a></p>
-<p>ConcatWithSeparator concatenates one or more instances of Read, or an Array with a given separator.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>separator</code></td>
-<td><code>string</code></td>
-<td>The separator string.</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>string...</code> <code>array</code></td>
-<td>The source string / array.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Returns the concatenated string.</p>
-<hr>
-<h2 id="lower">LOWER</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L13">Source</a></p>
-<p>Lower converts strings to their lower-case counterparts. All other characters are returned unchanged.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>String</code></td>
-<td>The source string.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> This string in lower case.</p>
-<hr>
-<h2 id="upper">UPPER</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L28">Source</a></p>
-<p>Upper converts strings to their upper-case counterparts. All other characters are returned unchanged.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>String</code></td>
-<td>The source string.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> This string in upper case.</p>
-<hr>
-<h2 id="json_parse">JSON_PARSE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L13">Source</a></p>
-<p>JSONParse returns a FQL value described by the JSON-encoded input string.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>String</code></td>
-<td>The string to parse as json.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Value</code> Returns fql value</p>
-<hr>
-<h2 id="json_stringify">JSON_STRINGIFY</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L34">Source</a></p>
-<p>JSONStringify returns a JSON string representation of the input value.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>Value</code></td>
-<td>The input value to serialize.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Returns json string</p>
-<hr>
-<h2 id="fmt">FMT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/fmt.go#L18">Source</a></p>
-<p>Fmt formats the template using these arguments.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>template</code></td>
-<td><code>String</code></td>
-<td>Template.</td>
-</tr>
-<tr>
-<td><code>args</code></td>
-<td><code>Any Values</code></td>
-<td>Template arguments.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> String formed by template using arguments.</p>
-<hr>
-<h2 id="random_token">RANDOM_TOKEN</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/random.go#L26">Source</a></p>
-<p>RandomToken generates a pseudo-random token string with the specified length. The algorithm for token generation should be treated as opaque.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>length</code></td>
-<td><code>Int</code></td>
-<td>The desired string length for the token. it must be greater than 0 and at most 65536.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> A generated token consisting of lowercase letters, uppercase letters and numbers.</p>
-<hr>
-<h2 id="contains">CONTAINS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/contains.go#L16">Source</a></p>
-<p>Contains returns a value indicating whether a specified substring occurs within a string.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>String</code></td>
-<td>The source string.</td>
-</tr>
-<tr>
-<td><code>search</code></td>
-<td><code>String</code></td>
-<td>The string to seek.</td>
-</tr>
-<tr>
-<td><code>returnIndex</code></td>
-<td><code>Boolean</code></td>
-<td>Values which indicates whether to return the character position of the match is returned instead of a boolean. the default is false.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Boolean</code> <code>Int</code> Returns index or a boolean value depending on returnindex.</p>
-<hr>
-<h2 id="encode_uri_component">ENCODE_URI_COMPONENT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L17">Source</a></p>
-<p>EncodeURIComponent returns the encoded String of uri.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
 <td><code>uri</code></td>
 <td><code>String</code></td>
+<td></td>
 <td>Uri to encode.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>String</code> Encoded string.</p>
 <hr>
-<h2 id="md5">MD5</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L32">Source</a></p>
-<p>Md5 calculates the MD5 checksum for text and return it in a hexadecimal string representation.</p>
+<p>
+
+
+<h2 id="escape_html">
+<a href="#escape_html">
+ESCAPE_HTML
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/escape.go#L16">Source</a></p>
+<p>ESCAPE_HTML escapes special characters like &ldquo;&lt;&rdquo; to become &ldquo;&lt;&rdquo;. It escapes only five such characters: &lt;, &gt;, &amp;, ' and &ldquo;. UnescapeString(EscapeString(s)) == s always holds, but the converse isn&rsquo;t always true.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -926,523 +681,33 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>text</code></td>
+<td><code>uri</code></td>
 <td><code>String</code></td>
-<td>The string to do calculations against to.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Md5 checksum as hex string.</p>
-<hr>
-<h2 id="sha1">SHA1</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L48">Source</a></p>
-<p>Sha1 calculates the SHA1 checksum for text and returns it in a hexadecimal string representation.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>String</code></td>
-<td>The string to do calculations against to.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Sha1 checksum as hex string.</p>
-<hr>
-<h2 id="sha512">SHA512</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L64">Source</a></p>
-<p>Sha512 calculates the SHA512 checksum for text and returns it in a hexadecimal string representation.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>String</code></td>
-<td>The string to do calculations against to.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Sha512 checksum as hex string.</p>
-<hr>
-<h2 id="to_base64">TO_BASE64</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L80">Source</a></p>
-<p>ToBase64 returns the base64 representation of value.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>string</code></td>
-<td>The string to encode.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> A base64 representation of the string.</p>
-<hr>
-<h2 id="find_first">FIND_FIRST</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L18">Source</a></p>
-<p>FindFirst returns the position of the first occurrence of the string search inside the string text. Positions start at 0.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>String</code></td>
-<td>The source string.</td>
-</tr>
-<tr>
-<td><code>search</code></td>
-<td><code>String</code></td>
-<td>The string to seek.</td>
-</tr>
-<tr>
-<td><code>start</code></td>
-<td><code>Int, optional</code></td>
-<td>Limit the search to a subset of the text, beginning at start.</td>
-</tr>
-<tr>
-<td><code>end</code></td>
-<td><code>Int, optional</code></td>
-<td>Limit the search to a subset of the text, ending at end</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Int</code> The character position of the match. if search is not contained in text, -1 is returned. if search is empty, start is returned.</p>
-<hr>
-<h2 id="find_last">FIND_LAST</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L65">Source</a></p>
-<p>FindLast returns the position of the last occurrence of the string search inside the string text. Positions start at 0.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>String</code></td>
-<td>The source string.</td>
-</tr>
-<tr>
-<td><code>search</code></td>
-<td><code>String</code></td>
-<td>The string to seek.</td>
-</tr>
-<tr>
-<td><code>start</code></td>
-<td><code>Int, optional</code></td>
-<td>Limit the search to a subset of the text, beginning at start.</td>
-</tr>
-<tr>
-<td><code>end</code></td>
-<td><code>Int, optional</code></td>
-<td>Limit the search to a subset of the text, ending at end</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Int</code> The character position of the match. if search is not contained in text, -1 is returned. if search is empty, start is returned.</p>
-<hr>
-<h2 id="substring">SUBSTRING</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L15">Source</a></p>
-<p>Substring returns a substring of value.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>String</code></td>
-<td>The source string.</td>
-</tr>
-<tr>
-<td><code>offset</code></td>
-<td><code>Int</code></td>
-<td>Start at offset, offsets start at position 0.</td>
-</tr>
-<tr>
-<td><code>length</code></td>
-<td><code>Int, optional</code></td>
-<td>At most length characters, omit to get the substring from offset to the end of the string. optional.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> A substring of value.</p>
-<hr>
-<h2 id="left">LEFT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L61">Source</a></p>
-<p>Left returns the leftmost characters of the string value by index.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>String</code></td>
-<td>The source string.</td>
-</tr>
-<tr>
-<td><code>length</code></td>
-<td><code>Int</code></td>
-<td>The amount of characters to return.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Returns the left substring.</p>
-<hr>
-<h2 id="right">RIGHT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L88">Source</a></p>
-<p>Right returns the rightmost characters of the string value.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>String</code></td>
-<td>The source string.</td>
-</tr>
-<tr>
-<td><code>length</code></td>
-<td><code>Int</code></td>
-<td>The amount of characters to return.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Returns the right substring.</p>
-<hr>
-<h2 id="unescape_html">UNESCAPE_HTML</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/unescape.go#L17">Source</a></p>
-<p>UnescapeHTML unescapes entities like &ldquo;&lt;&rdquo; to become &ldquo;&lt;&rdquo;. It unescapes a larger range of entities than EscapeString escapes. For example, &ldquo;á&rdquo; unescapes to &ldquo;á&rdquo;, as does &ldquo;á&rdquo; and &ldquo;á&quot;. UnescapeString(EscapeString(s)) == s always holds, but the converse isn&rsquo;t always true.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>string</code></td>
-<td><code>String</code></td>
-<td>Uri to unescape.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Escaped string.</p>
-<hr>
-<h2 id="split">SPLIT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/split.go#L16">Source</a></p>
-<p>Split splits the given string value into a list of strings, using the separator.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>String</code></td>
-<td>The string to split.</td>
-</tr>
-<tr>
-<td><code>separator</code></td>
-<td><code>String</code></td>
-<td>The separator.</td>
-</tr>
-<tr>
-<td><code>limit</code></td>
-<td><code>Int</code></td>
-<td>Limit the number of split values in the result. if no limit is given, the number of splits returned is not bounded.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Array&lt;String&gt;</code> Array of strings.</p>
-<hr>
-<h2 id="regex_match">REGEX_MATCH</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L16">Source</a></p>
-<p>RegexMatch returns the matches in the given string text, using the regex.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>String</code></td>
-<td>The string to search in.</td>
-</tr>
-<tr>
-<td><code>regex</code></td>
-<td><code>String</code></td>
-<td>A regular expression to use for matching the text.</td>
-</tr>
-<tr>
-<td><code>caseInsensitive</code></td>
-<td><code>Boolean</code></td>
-<td>If set to true, the matching will be case-insensitive. the default is false.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Array</code> An array of strings containing the matches.</p>
-<hr>
-<h2 id="regex_split">REGEX_SPLIT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L58">Source</a></p>
-<p>RegexSplit splits the given string text into a list of strings, using the separator.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>String</code></td>
-<td>The string to split.</td>
-</tr>
-<tr>
-<td><code>regex</code></td>
-<td><code>String</code></td>
-<td>A regular expression to use for splitting the text.</td>
-</tr>
-<tr>
-<td><code>caseInsensitive</code></td>
-<td><code>Boolean</code></td>
-<td>If set to true, the matching will be case-insensitive. the default is false.</td>
-</tr>
-<tr>
-<td><code>limit</code></td>
-<td><code>Int</code></td>
-<td>Limit the number of split values in the result. if no limit is given, the number of splits returned is not bounded.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Array</code> An array of strings splited by the expression.</p>
-<hr>
-<h2 id="regex_test">REGEX_TEST</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L100">Source</a></p>
-<p>RegexTest test whether the regexp has at least one match in the given text.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>String</code></td>
-<td>The string to split.</td>
-</tr>
-<tr>
-<td><code>regex</code></td>
-<td><code>String</code></td>
-<td>A regular expression to use for splitting the text.</td>
-</tr>
-<tr>
-<td><code>caseInsensitive</code></td>
-<td><code>Boolean</code></td>
-<td>If set to true, the matching will be case-insensitive. the default is false.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Boolean</code> Returns true if the pattern is contained in text, and false otherwise.</p>
-<hr>
-<h2 id="regex_replace">REGEX_REPLACE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L133">Source</a></p>
-<p>RegexReplace replace every substring matched with the regexp with a given string.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>text</code></td>
-<td><code>String</code></td>
-<td>The string to split.</td>
-</tr>
-<tr>
-<td><code>regex</code></td>
-<td><code>String</code></td>
-<td>A regular expression search pattern.</td>
-</tr>
-<tr>
-<td><code>replacement</code></td>
-<td><code>String</code></td>
-<td>The string to replace the search pattern with</td>
-</tr>
-<tr>
-<td><code>caseInsensitive</code></td>
-<td><code>Boolean</code></td>
-<td>If set to true, the matching will be case-insensitive. the default is false.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Returns the string text with the search regex pattern replaced with the replacement string wherever the pattern exists in text</p>
-<hr>
-<h2 id="escape_html">ESCAPE_HTML</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/escape.go#L16">Source</a></p>
-<p>EscapeHTML escapes special characters like &ldquo;&lt;&rdquo; to become &ldquo;&lt;&quot;. It escapes only five such characters: &lt;, &gt;, &amp;, ' and &ldquo;. UnescapeString(EscapeString(s)) == s always holds, but the converse isn&rsquo;t always true.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>string</code></td>
-<td><code>String</code></td>
+<td></td>
 <td>Uri to escape.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>String</code> Escaped string.</p>
 <hr>
-<h2 id="substitute">SUBSTITUTE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substitute.go#L17">Source</a></p>
-<p>Substitute replaces search values in the string value.</p>
+<p>
+
+
+<h2 id="find_first">
+<a href="#find_first">
+FIND_FIRST
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L17">Source</a></p>
+<p>FIND_FIRST returns the position of the first occurrence of the string search inside the string text. Positions start at 0.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -1452,35 +717,1253 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>text</code></td>
+<td><code>str</code></td>
 <td><code>String</code></td>
+<td></td>
+<td>The source string.</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to seek.</td>
+</tr>
+<tr>
+<td><code>start</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>Limit the search to a subset of the text, beginning at start.</td>
+</tr>
+<tr>
+<td><code>end</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>Limit the search to a subset of the text, ending at end</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Int</code> The character position of the match. if search is not contained in text, -1 is returned. if search is empty, start is returned.</p>
+<hr>
+<p>
+
+
+<h2 id="find_last">
+<a href="#find_last">
+FIND_LAST
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L63">Source</a></p>
+<p>FIND_LAST returns the position of the last occurrence of the string search inside the string text. Positions start at 0.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>src</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The source string.</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to seek.</td>
+</tr>
+<tr>
+<td><code>start</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>Limit the search to a subset of the text, beginning at start.</td>
+</tr>
+<tr>
+<td><code>end</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>Limit the search to a subset of the text, ending at end</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Int</code> The character position of the match. if search is not contained in text, -1 is returned. if search is empty, start is returned.</p>
+<hr>
+<p>
+
+
+<h2 id="fmt">
+<a href="#fmt">
+FMT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/fmt.go#L18">Source</a></p>
+<p>FMT formats the template using these arguments.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>template</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Template.</td>
+</tr>
+<tr>
+<td><code>args</code></td>
+<td><code>Any, repeated</code></td>
+<td></td>
+<td>Template arguments.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> String formed by template using arguments.</p>
+<hr>
+<p>
+
+
+<h2 id="from_base64">
+<a href="#from_base64">
+FROM_BASE64
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L16">Source</a></p>
+<p>FROM_BASE64 returns the value of a base64 representation.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to decode.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> The decoded string.</p>
+<hr>
+<p>
+
+
+<h2 id="json_parse">
+<a href="#json_parse">
+JSON_PARSE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L13">Source</a></p>
+<p>JSON_PARSE returns a value described by the JSON-encoded input string.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to parse as json.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Any</code> Parsed value.</p>
+<hr>
+<p>
+
+
+<h2 id="json_stringify">
+<a href="#json_stringify">
+JSON_STRINGIFY
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L34">Source</a></p>
+<p>JSON_STRINGIFY returns a JSON string representation of the input value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>Any</code></td>
+<td></td>
+<td>The input value to serialize.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Json string.</p>
+<hr>
+<p>
+
+
+<h2 id="left">
+<a href="#left">
+LEFT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L61">Source</a></p>
+<p>LEFT returns the leftmost characters of the string value by index.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The source string.</td>
+</tr>
+<tr>
+<td><code>length</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>The amount of characters to return.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> The leftmost characters of the string value by index.</p>
+<hr>
+<p>
+
+
+<h2 id="like">
+<a href="#like">
+LIKE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/like.go#L15">Source</a></p>
+<p>LIKE checks whether the pattern search is contained in the string text, using wildcard matching.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to search in.</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>A search pattern that can contain the wildcard characters.</td>
+</tr>
+<tr>
+<td><code>caseInsensitive - If set to true, the matching will be case</code></td>
+<td><code>Boolean</code></td>
+<td></td>
+<td>Insensitive. the default is false.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Boolean</code> Returns true if the pattern is contained in text, and false otherwise.</p>
+<hr>
+<p>
+
+
+<h2 id="lower">
+<a href="#lower">
+LOWER
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L13">Source</a></p>
+<p>LOWER converts strings to their lower-case counterparts. All other characters are returned unchanged.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The source string.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> This string in lower case.</p>
+<hr>
+<p>
+
+
+<h2 id="ltrim">
+<a href="#ltrim">
+LTRIM
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L34">Source</a></p>
+<p>LTRIM returns the string value with whitespace stripped from the start only.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string.</td>
+</tr>
+<tr>
+<td><code>chars</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Overrides the characters that should be removed from the string. it defaults to \r\n \t.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> The string without chars at the left-hand side.</p>
+<hr>
+<p>
+
+
+<h2 id="md5">
+<a href="#md5">
+MD5
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L32">Source</a></p>
+<p>MD5 calculates the MD5 checksum for text and return it in a hexadecimal string representation.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to do calculations against to.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Md5 checksum as hex string.</p>
+<hr>
+<p>
+
+
+<h2 id="random_token">
+<a href="#random_token">
+RANDOM_TOKEN
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/random.go#L26">Source</a></p>
+<p>RANDOM_TOKEN generates a pseudo-random token string with the specified length. The algorithm for token generation should be treated as opaque.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>len</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>The desired string length for the token. it must be greater than 0 and at most 65536.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> A generated token consisting of lowercase letters, uppercase letters and numbers.</p>
+<hr>
+<p>
+
+
+<h2 id="regex_match">
+<a href="#regex_match">
+REGEX_MATCH
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L16">Source</a></p>
+<p>REGEX_MATCH returns the matches in the given string text, using the regex.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to search in.</td>
+</tr>
+<tr>
+<td><code>expression</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>A regular expression to use for matching the text.</td>
+</tr>
+<tr>
+<td><code>caseInsensitive - If set to true, the matching will be case</code></td>
+<td><code>Boolean</code></td>
+<td></td>
+<td>Insensitive. the default is false.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Any[]</code> An array of strings containing the matches.</p>
+<hr>
+<p>
+
+
+<h2 id="regex_replace">
+<a href="#regex_replace">
+REGEX_REPLACE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L133">Source</a></p>
+<p>REGEX_REPLACE replace every substring matched with the regexp with a given string.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to split.</td>
+</tr>
+<tr>
+<td><code>expression</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>A regular expression search pattern.</td>
+</tr>
+<tr>
+<td><code>replacement</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to replace the search pattern with</td>
+</tr>
+<tr>
+<td><code>caseInsensitive</code></td>
+<td><code>Boolean</code></td>
+<td><code>False</code></td>
+<td>Insensitive.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Returns the string text with the search regex pattern replaced with the replacement string wherever the pattern exists in text</p>
+<hr>
+<p>
+
+
+<h2 id="regex_split">
+<a href="#regex_split">
+REGEX_SPLIT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L58">Source</a></p>
+<p>REGEX_SPLIT splits the given string text into a list of strings, using the separator.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to split.</td>
+</tr>
+<tr>
+<td><code>expression</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>A regular expression to use for splitting the text.</td>
+</tr>
+<tr>
+<td><code>caseInsensitive - If set to true, the matching will be case</code></td>
+<td><code>Boolean</code></td>
+<td></td>
+<td>Insensitive. the default is false.</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>Limit the number of split values in the result. if no limit is given, the number of splits returned is not bounded.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Any[]</code> An array of strings splitted by the expression.</p>
+<hr>
+<p>
+
+
+<h2 id="regex_test">
+<a href="#regex_test">
+REGEX_TEST
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L100">Source</a></p>
+<p>REGEX_TEST test whether the regexp has at least one match in the given text.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to test.</td>
+</tr>
+<tr>
+<td><code>expression</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>A regular expression to use for splitting the text.</td>
+</tr>
+<tr>
+<td><code>caseInsensitive</code></td>
+<td><code>Boolean</code></td>
+<td><code>False</code></td>
+<td>Insensitive.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Boolean</code> Returns true if the pattern is contained in text, and false otherwise.</p>
+<hr>
+<p>
+
+
+<h2 id="right">
+<a href="#right">
+RIGHT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L88">Source</a></p>
+<p>RIGHT returns the rightmost characters of the string value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The source string.</td>
+</tr>
+<tr>
+<td><code>length</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>The amount of characters to return.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> The rightmost characters of the string value.</p>
+<hr>
+<p>
+
+
+<h2 id="rtrim">
+<a href="#rtrim">
+RTRIM
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L55">Source</a></p>
+<p>RTRIM returns the string value with whitespace stripped from the end only.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string.</td>
+</tr>
+<tr>
+<td><code>chars</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Overrides the characters that should be removed from the string. it defaults to \r\n \t.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> The string without chars at the right-hand side.</p>
+<hr>
+<p>
+
+
+<h2 id="sha1">
+<a href="#sha1">
+SHA1
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L48">Source</a></p>
+<p>SHA1 calculates the SHA1 checksum for text and returns it in a hexadecimal string representation.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to do calculations against to.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Sha1 checksum as hex string.</p>
+<hr>
+<p>
+
+
+<h2 id="sha512">
+<a href="#sha512">
+SHA512
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L64">Source</a></p>
+<p>SHA512 calculates the SHA512 checksum for text and returns it in a hexadecimal string representation.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to do calculations against to.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Sha512 checksum as hex string.</p>
+<hr>
+<p>
+
+
+<h2 id="split">
+<a href="#split">
+SPLIT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/split.go#L16">Source</a></p>
+<p>SPLIT splits the given string value into a list of strings, using the separator.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to split.</td>
+</tr>
+<tr>
+<td><code>separator</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The separator.</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>Limit the number of split values in the result. if no limit is given, the number of splits returned is not bounded.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String[]</code> Array of strings.</p>
+<hr>
+<p>
+
+
+<h2 id="substitute">
+<a href="#substitute">
+SUBSTITUTE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substitute.go#L17">Source</a></p>
+<p>SUBSTITUTE replaces search values in the string value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
 <td>The string to modify</td>
 </tr>
 <tr>
 <td><code>search</code></td>
 <td><code>String</code></td>
+<td></td>
 <td>The string representing a search pattern</td>
 </tr>
 <tr>
 <td><code>replace</code></td>
 <td><code>String</code></td>
+<td></td>
 <td>The string representing a replace value</td>
 </tr>
 <tr>
 <td><code>limit</code></td>
 <td><code>Int</code></td>
+<td></td>
 <td>The cap the number of replacements to this value.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>String</code> Returns a string with replace substring.</p>
 <hr>
+<p>
+
+
+<h2 id="substring">
+<a href="#substring">
+SUBSTRING
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L15">Source</a></p>
+<p>SUBSTRING returns a substring of value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The source string.</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>Start at offset, offsets start at position 0.</td>
+</tr>
+<tr>
+<td><code>length</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>At most length characters, omit to get the substring from offset to the end of the string.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> A substring of value.</p>
+<hr>
+<p>
+
+
+<h2 id="to_base64">
+<a href="#to_base64">
+TO_BASE64
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L80">Source</a></p>
+<p>TO_BASE64 returns the base64 representation of value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string to encode.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> A base64 representation of the string.</p>
+<hr>
+<p>
+
+
+<h2 id="trim">
+<a href="#trim">
+TRIM
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L14">Source</a></p>
+<p>TRIM returns the string value with whitespace stripped from the start and/or end.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The string.</td>
+</tr>
+<tr>
+<td><code>chars</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Overrides the characters that should be removed from the string. it defaults to \r\n \t.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> The string without chars on both sides.</p>
+<hr>
+<p>
+
+
+<h2 id="unescape_html">
+<a href="#unescape_html">
+UNESCAPE_HTML
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/unescape.go#L17">Source</a></p>
+<p>UNESCAPE_HTML unescapes entities like &ldquo;&lt;&rdquo; to become &ldquo;&lt;&rdquo;. It unescapes a larger range of entities than EscapeString escapes. For example, &ldquo;á&rdquo; unescapes to &ldquo;á&rdquo;, as does &ldquo;á&rdquo; and &ldquo;á&rdquo;. UnescapeString(EscapeString(s)) == s always holds, but the converse isn&rsquo;t always true.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>uri</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Uri to escape.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Escaped string.</p>
+<hr>
+<p>
+
+
+<h2 id="upper">
+<a href="#upper">
+UPPER
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L28">Source</a></p>
+<p>UPPER converts strings to their upper-case counterparts. All other characters are returned unchanged.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>The source string.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> This string in upper case.</p>
+<hr>
 
 </article>
         </section>
+        
+        
+            <section id="menu" class="column is-2">
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <aside class="menu" style="position: sticky; top: 63px;">
+    <ul class="menu-list">
+        
+        <li><a href="#concat"> CONCAT </a></li>
+        
+        <li><a href="#concat_separator"> CONCAT_SEPARATOR </a></li>
+        
+        <li><a href="#contains"> CONTAINS </a></li>
+        
+        <li><a href="#decode_uri_component"> DECODE_URI_COMPONENT </a></li>
+        
+        <li><a href="#encode_uri_component"> ENCODE_URI_COMPONENT </a></li>
+        
+        <li><a href="#escape_html"> ESCAPE_HTML </a></li>
+        
+        <li><a href="#find_first"> FIND_FIRST </a></li>
+        
+        <li><a href="#find_last"> FIND_LAST </a></li>
+        
+        <li><a href="#fmt"> FMT </a></li>
+        
+        <li><a href="#from_base64"> FROM_BASE64 </a></li>
+        
+        <li><a href="#json_parse"> JSON_PARSE </a></li>
+        
+        <li><a href="#json_stringify"> JSON_STRINGIFY </a></li>
+        
+        <li><a href="#left"> LEFT </a></li>
+        
+        <li><a href="#like"> LIKE </a></li>
+        
+        <li><a href="#lower"> LOWER </a></li>
+        
+        <li><a href="#ltrim"> LTRIM </a></li>
+        
+        <li><a href="#md5"> MD5 </a></li>
+        
+        <li><a href="#random_token"> RANDOM_TOKEN </a></li>
+        
+        <li><a href="#regex_match"> REGEX_MATCH </a></li>
+        
+        <li><a href="#regex_replace"> REGEX_REPLACE </a></li>
+        
+        <li><a href="#regex_split"> REGEX_SPLIT </a></li>
+        
+        <li><a href="#regex_test"> REGEX_TEST </a></li>
+        
+        <li><a href="#right"> RIGHT </a></li>
+        
+        <li><a href="#rtrim"> RTRIM </a></li>
+        
+        <li><a href="#sha1"> SHA1 </a></li>
+        
+        <li><a href="#sha512"> SHA512 </a></li>
+        
+        <li><a href="#split"> SPLIT </a></li>
+        
+        <li><a href="#substitute"> SUBSTITUTE </a></li>
+        
+        <li><a href="#substring"> SUBSTRING </a></li>
+        
+        <li><a href="#to_base64"> TO_BASE64 </a></li>
+        
+        <li><a href="#trim"> TRIM </a></li>
+        
+        <li><a href="#unescape_html"> UNESCAPE_HTML </a></li>
+        
+        <li><a href="#upper"> UPPER </a></li>
+        
+    </ul>
+</aside>
+        </section>
+        
+
     </div>
 </div>
 

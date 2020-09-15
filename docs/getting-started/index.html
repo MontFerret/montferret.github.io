@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.71.1" />
+    <meta name="generator" content="Hugo 0.75.0" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.48b041b6e146d095d6e4a662e7c547d0558fdec6514b321e45529462c0efd2b2.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.64f1f7a6c5e475867d245403cd132b96cb35a0f513fdae841e901a1feac0734c.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -417,6 +417,15 @@
         
             
             <li>
+                <a href="https://www.montferret.dev/docs/stdlib/testing/" class="">
+                    testing
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
                 <a href="https://www.montferret.dev/docs/stdlib/types/" class="">
                     types
                 </a>
@@ -448,6 +457,7 @@
 </aside>
 
         </section>
+
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
     <h1 id="quick-start">Quick start</h1>
@@ -470,8 +480,13 @@ Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`
 <p>By default, Ferret loads HTML pages via HTTP protocol, because it&rsquo;s faster.
 But nowadays, there are more and more websites rendered with JavaScript, and therefore, this &lsquo;old school&rsquo; approach does not really work.
 For such cases, you may fetch documents using Chrome or Chromium via Chrome DevTools protocol (aka CDP).
-First, you need to make sure that you launched Chrome with <code>remote-debugging-port=9222</code> flag.
-Second, you need to pass the address to Ferret CLI.</p>
+First, you need to make sure that you launched a Chrome instance with open debugging port.</p>
+<p>You can use your local installation:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ chrome.exe --remote-debugging-port<span style="color:#f92672">=</span><span style="color:#ae81ff">9222</span> --headless
+</code></pre></div><p>Or use <a href="https://www.docker.com/">Docker</a>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker pull montferret/chromium
+$ docker run -d -p 9222:9222 montferret/chromium
+</code></pre></div><p>Second, you need to pass the address to Ferret CLI.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret --cdp http://127.0.0.1:9222
 </code></pre></div><p><strong>NOTE</strong>: By default, Ferret will try to use this local address as a default one, so it makes sense to explicitly pass the parameter only in case of either different port number or remote address.</p>
 <p>Alternatively, you can tell CLI to launch Chrome for you.</p>
@@ -494,6 +509,9 @@ Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`
 </code></pre></div>
 </article>
         </section>
+        
+        
+
     </div>
 </div>
 

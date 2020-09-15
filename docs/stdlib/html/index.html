@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.71.1" />
+    <meta name="generator" content="Hugo 0.75.0" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.48b041b6e146d095d6e4a662e7c547d0558fdec6514b321e45529462c0efd2b2.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.64f1f7a6c5e475867d245403cd132b96cb35a0f513fdae841e901a1feac0734c.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -417,6 +417,15 @@
         
             
             <li>
+                <a href="https://www.montferret.dev/docs/stdlib/testing/" class="">
+                    testing
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
                 <a href="https://www.montferret.dev/docs/stdlib/types/" class="">
                     types
                 </a>
@@ -448,1103 +457,18 @@
 </aside>
 
         </section>
+
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
-    <h2 id="element_exists">ELEMENT_EXISTS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element_exists.go#L13">Source</a></p>
-<p>ELEMENT_EXISTS returns a boolean value indicating whether there is an element matched by selector.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>docOrEl</code></td>
-<td><code>HTMLDocument</code> <code>HTMLNode</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>Css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Boolean</code> A boolean value indicating whether there is an element matched by selector.</p>
-<hr>
-<h2 id="blur">BLUR</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/blur.go#L13">Source</a></p>
-<p>BLUR Calls blur on the element.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>target</code></td>
-<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Target node.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String, optional</code></td>
-<td>Optional css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="inner_text_all">INNER_TEXT_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_text_all.go#L15">Source</a></p>
-<p>INNER_TEXT_ALL returns an array of inner text of matched elements.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>String of css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> An array of inner text if any element found, otherwise empty array.</p>
-<hr>
-<h2 id="elements">ELEMENTS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/elements.go#L14">Source</a></p>
-<p>ELEMENTS finds HTML elements by a given CSS selector. Returns an empty array if element not found.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>docOrEl</code></td>
-<td><code>HTMLDocument</code> <code>HTMLNode</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>Css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Array</code> Returns an array of found html element.</p>
-<hr>
-<h2 id="wait_element">WAIT_ELEMENT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_element.go#L16">Source</a></p>
-<p>WAIT_ELEMENT waits for element to appear in the DOM. Stops the execution until it finds an element or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>false</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Driver htmldocument.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>Target element&rsquo;s selector.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout. default 5000 ms.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_no_element">WAIT_NO_ELEMENT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_element.go#L25">Source</a></p>
-<p>WAIT_NO_ELEMENT waits for element to disappear in the DOM. Stops the execution until it does not find an element or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Driver htmldocument.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>Target element&rsquo;s selector.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout. default 5000 ms.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="navigate_back">NAVIGATE_BACK</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_back.go#L18">Source</a></p>
-<p>NAVIGATE_BACK navigates a given page back within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns FALSE.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>page</code></td>
-<td><code>HTMLPage</code></td>
-<td>Target page.</td>
-</tr>
-<tr>
-<td><code>entry</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional value indicating how many pages to skip. default 1.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout. default is 5000.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Boolean</code> Returns true if history exists and the operation succeeded, otherwise false.</p>
-<hr>
-<h2 id="input_clear">INPUT_CLEAR</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/clear.go#L13">Source</a></p>
-<p>INPUT_CLEAR clears a value from an underlying input element.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>source</code></td>
-<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Event target.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String, options</code></td>
-<td>Selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="select">SELECT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/select.go#L15">Source</a></p>
-<p>SELECT selects a value from an underlying select element.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>source</code></td>
-<td><code>Open</code> <code>GetElement</code></td>
-<td>Event target.</td>
-</tr>
-<tr>
-<td><code>valueOrSelector</code></td>
-<td><code>String</code> <code>Array&lt;String&gt;</code></td>
-<td>Selector or a an array of strings as a value.</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>Array&lt;String</code></td>
-<td>Target value. optional.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Array&lt;String&gt;</code> Returns an array of selected values.</p>
-<hr>
-<h2 id="wait_navigation">WAIT_NAVIGATION</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_navigation.go#L21">Source</a></p>
-<p>WAIT_NAVIGATION waits for a given page to navigate to a new url. Stops the execution until the navigation ends or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>page</code></td>
-<td><code>HTMLPage</code></td>
-<td>Target page.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout. default 5000 ms.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="pdf">PDF</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pdf.go#L42">Source</a></p>
-<p>PDF prints a PDF of the current page.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>target</code></td>
-<td><code>HTMLPage</code> <code>String</code></td>
-<td>Target page or url.</td>
-</tr>
-<tr>
-<td><code>params (Object) - Optional, An object containing the following properties : Landscape (Bool) - Paper orientation. Defaults to false. DisplayHeaderFooter (Bool) - Display header and footer. Defaults to false. PrintBackground (Bool) - Print background graphics. Defaults to false. Scale (Float64) - Scale of the webpage rendering. Defaults to 1. PaperWidth (Float64) - Paper width in inches. Defaults to 8.5 inches. PaperHeight (Float64) - Paper height in inches. Defaults to 11 inches. MarginTop (Float64) - Top margin in inches. Defaults to 1cm (~0.4 inches). MarginBottom (Float64) - Bottom margin in inches. Defaults to 1cm (~0.4 inches). MarginLeft (Float64) - Left margin in inches. Defaults to 1cm (~0.4 inches). MarginRight (Float64) - Right margin in inches. Defaults to 1cm (~0.4 inches). PageRanges (String) - Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages. IgnoreInvalidPageRanges (Bool) - to silently ignore invalid but successfully parsed page ranges, such as '3-2'. Defaults to false. HeaderTemplate (String) - HTML template for the print header. Should be valid HTML markup with following classes used to inject printing values into them: - </code>date<code>: formatted print date - </code>title<code>: document title - </code>url<code>: document location - </code>pageNumber<code>: current page number - </code>totalPages<code>: total pages in the document For example, </code><span class=title></span><code>would generate span containing the title. FooterTemplate (String) - HTML template for the print footer. Should use the same format as the</code>headerTemplate<code>. PreferCSSPageSize</code></td>
-<td><code>Bool</code></td>
-<td>Whether or not to prefer page size as defined by css. defaults to false, in which case the content will be scaled to fit the paper size. *</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Binary</code> Returns a base64 encoded string in binary format.</p>
-<hr>
-<h2 id="pagination">PAGINATION</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pagination.go#L16">Source</a></p>
-<p>PAGINATION creates an iterator that goes through pages using CSS selector. The iterator starts from the current page i.e. it does not change the page on 1st iteration. That allows you to keep scraping logic inside FOR loop.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>Open</code></td>
-<td>Target document.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>Css selector for a pagination on the page.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="style_get">STYLE_GET</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_get.go#L14">Source</a></p>
-<p>STYLE_GET gets single or more style attribute value(s) of a given element.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>el</code></td>
-<td><code>HTMLElement</code></td>
-<td>Target element.</td>
-</tr>
-<tr>
-<td><code>names</code></td>
-<td><code>...String</code></td>
-<td>Style name(s).</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Object</code> Key-value pairs of style values.</p>
-<hr>
-<h2 id="scroll">SCROLL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_xy.go#L16">Source</a></p>
-<p>SCROLL scrolls by given coordinates.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Html document.</td>
-</tr>
-<tr>
-<td><code>x</code></td>
-<td><code>Int</code> <code>Float</code></td>
-<td>X coordinate.</td>
-</tr>
-<tr>
-<td><code>true</code></td>
-<td><code>Int</code> <code>Float</code></td>
-<td>Y coordinate.</td>
-</tr>
-<tr>
-<td><code>options</code></td>
-<td><code>ScrollOptions</code></td>
-<td>Scroll options. optional.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="attr_remove">ATTR_REMOVE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_remove.go#L14">Source</a></p>
-<p>ATTR_REMOVE removes single or more attribute(s) of a given element.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>el</code></td>
-<td><code>HTMLElement</code></td>
-<td>Target element.</td>
-</tr>
-<tr>
-<td><code>names</code></td>
-<td><code>...String</code></td>
-<td>Attribute name(s).</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="attr_set">ATTR_SET</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_set.go#L15">Source</a></p>
-<p>ATTR_SET sets or updates a single or more attribute(s) of a given element.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>el</code></td>
-<td><code>HTMLElement</code></td>
-<td>Target element.</td>
-</tr>
-<tr>
-<td><code>nameOrObj</code></td>
-<td><code>String</code> <code>Object</code></td>
-<td>Attribute name or an object representing a key-value pair of attributes.</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>String</code></td>
-<td>If a second parameter is a string value, this parameter represent an attribute value.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_style">WAIT_STYLE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style.go#L12">Source</a></p>
-<p>WAIT_STYLE</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_no_style">WAIT_NO_STYLE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style.go#L17">Source</a></p>
-<p>WAIT_NO_STYLE</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_attr_all">WAIT_ATTR_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr_all.go#L17">Source</a></p>
-<p>WAIT_ATTR_ALL waits for an attribute to appear on all matched elements with a given value. Stops the execution until the navigation ends or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Parent document.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>String of css selector.</td>
-</tr>
-<tr>
-<td><code>class</code></td>
-<td><code>String</code></td>
-<td>String of target css class.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_no_attr_all">WAIT_NO_ATTR_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr_all.go#L27">Source</a></p>
-<p>WAIT_NO_ATTR_ALL waits for an attribute to disappear on all matched elements by a given value. Stops the execution until the navigation ends or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Parent document.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>String of css selector.</td>
-</tr>
-<tr>
-<td><code>class</code></td>
-<td><code>String</code></td>
-<td>String of target css class.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="cookie_del">COOKIE_DEL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_del.go#L14">Source</a></p>
-<p>COOKIE_DEL gets a cookie from a given page by name.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>page</code></td>
-<td><code>HTMLPage</code></td>
-<td>Target page.</td>
-</tr>
-<tr>
-<td><code>cookie</code></td>
-<td><code>...HTTPCookie</code> <code>String</code></td>
-<td>Cookie or cookie name to delete.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="hover">HOVER</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/hover.go#L15">Source</a></p>
-<p>HOVER fetches an element with selector, scrolls it into view if needed, and then uses page.mouse to hover over the center of the element. If there&rsquo;s no element matching selector, the method returns an error.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>docOrEl</code></td>
-<td><code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Target document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String, options</code></td>
-<td>If document is passed, this param must represent an element selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="inner_html">INNER_HTML</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_html.go#L15">Source</a></p>
-<p>INNER_HTML returns inner HTML string of a given or matched by CSS selector element</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>Open</code> <code>GetElement</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String, optional</code></td>
-<td>String of css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Inner html string if an element found, otherwise empty string.</p>
-<hr>
-<h2 id="inner_html_set">INNER_HTML_SET</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/set_inner_html.go#L15">Source</a></p>
-<p>INNER_HTML_SET sets inner HTML string to a given or matched by CSS selector element</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>Open</code> <code>GetElement</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String, optional</code></td>
-<td>String of css selector.</td>
-</tr>
-<tr>
-<td><code>innerHTML</code></td>
-<td><code>String</code></td>
-<td>String of inner html.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="elements_count">ELEMENTS_COUNT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/elements_count.go#L14">Source</a></p>
-<p>ELEMENTS_COUNT returns a number of found HTML elements by a given CSS selector. Returns an empty array if element not found.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>docOrEl</code></td>
-<td><code>HTMLDocument</code> <code>HTMLNode</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>Css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Int</code> A number of found html elements by a given css selector.</p>
-<hr>
-<h2 id="navigate_forward">NAVIGATE_FORWARD</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_forward.go#L18">Source</a></p>
-<p>NAVIGATE_FORWARD navigates a given page forward within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns FALSE.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>page</code></td>
-<td><code>HTMLPage</code></td>
-<td>Target page.</td>
-</tr>
-<tr>
-<td><code>entry</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional value indicating how many pages to skip. default 1.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout. default is 5000.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Boolean</code> Returns true if history exists and the operation succeeded, otherwise false.</p>
-<hr>
-<h2 id="mouse">MOUSE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/mouse_xy.go#L15">Source</a></p>
-<p>MOUSE moves mouse by given coordinates.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Html document.</td>
-</tr>
-<tr>
-<td><code>x</code></td>
-<td><code>Int</code> <code>Float</code></td>
-<td>X coordinate.</td>
-</tr>
-<tr>
-<td><code>true</code></td>
-<td><code>Int</code> <code>Float</code></td>
-<td>Y coordinate.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="screenshot">SCREENSHOT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/screenshot.go#L22">Source</a></p>
-<p>SCREENSHOT takes a screenshot of a given page.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>target</code></td>
-<td><code>HTMLPage</code> <code>String</code></td>
-<td>Target page or url.</td>
-</tr>
-<tr>
-<td><code>params (Object) - Optional, An object containing the following properties : x (Float|Int) - Optional, X position of the viewport. x (Float|Int) - Optional,Y position of the viewport. width (Float|Int) - Optional, Width of the viewport. height (Float|Int) - Optional, Height of the viewport. format (String) - Optional, Either &quot;jpeg&quot; or &quot;png&quot;. quality</code></td>
-<td><code>Int</code></td>
-<td>Optional, quality, in [0, 100], only for jpeg format.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Binary</code> Returns a base64 encoded string in binary format.</p>
-<hr>
-<h2 id="style_remove">STYLE_REMOVE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_remove.go#L14">Source</a></p>
-<p>STYLE_REMOVE removes single or more style attribute value(s) of a given element.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>el</code></td>
-<td><code>HTMLElement</code></td>
-<td>Target element.</td>
-</tr>
-<tr>
-<td><code>names</code></td>
-<td><code>...String</code></td>
-<td>Style name(s).</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_class">WAIT_CLASS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class.go#L20">Source</a></p>
-<p>WAIT_CLASS waits for a class to appear on a given element. Stops the execution until the navigation ends or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>node</code></td>
-<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Target node.</td>
-</tr>
-<tr>
-<td><code>selectorOrClass</code></td>
-<td><code>String</code></td>
-<td>If document is passed, this param must represent an element selector. otherwise target class.</td>
-</tr>
-<tr>
-<td><code>classOrTimeout</code></td>
-<td><code>String</code> <code>Int, optional</code></td>
-<td>If document is passed, this param must represent target class name. otherwise timeout.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>If document is passed, this param must represent timeout. otherwise not passed.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_no_class">WAIT_NO_CLASS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class.go#L33">Source</a></p>
-<p>WAIT_NO_CLASS waits for a class to disappear on a given element. Stops the execution until the navigation ends or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>node</code></td>
-<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Target node.</td>
-</tr>
-<tr>
-<td><code>selectorOrClass</code></td>
-<td><code>String</code></td>
-<td>If document is passed, this param must represent an element selector. otherwise target class.</td>
-</tr>
-<tr>
-<td><code>classOrTimeout</code></td>
-<td><code>String</code> <code>Int, optional</code></td>
-<td>If document is passed, this param must represent target class name. otherwise timeout.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>If document is passed, this param must represent timeout. otherwise not passed.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="scroll_top">SCROLL_TOP</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_top.go#L13">Source</a></p>
-<p>SCROLL_TOP scrolls the document&rsquo;s window to its top.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Target document.</td>
-</tr>
-<tr>
-<td><code>options</code></td>
-<td><code>ScrollOptions</code></td>
-<td>Scroll options. optional.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="inner_text">INNER_TEXT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_text.go#L15">Source</a></p>
-<p>INNER_TEXT returns inner text string of a given or matched by CSS selector element</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String, optional</code></td>
-<td>String of css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> Inner text if an element found, otherwise empty string.</p>
-<hr>
-<h2 id="attr_get">ATTR_GET</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_get.go#L14">Source</a></p>
+    <p>
+
+
+<h2 id="attr_get">
+<a href="#attr_get">
+ATTR_GET
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_get.go#L14">Source</a></p>
 <p>ATTR_GET gets single or more attribute(s) of a given element.</p>
 <table>
 <thead>
@@ -1552,34 +476,46 @@
 <th></th>
 <th></th>
 <th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>el</code></td>
-<td><code>HTMLElement</code></td>
-<td>Target element.</td>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target node.</td>
 </tr>
 <tr>
-<td><code>names</code></td>
-<td><code>...String</code></td>
+<td><code>attrNames</code></td>
+<td><code>String, repeated</code></td>
+<td></td>
 <td>Attribute name(s).</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>Object</code> Key-value pairs of attribute values.</p>
 <hr>
-<h2 id="focus">FOCUS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/focus.go#L13">Source</a></p>
-<p>FOCUS Sets focus on the element.</p>
+<p>
+
+
+<h2 id="attr_remove">
+<a href="#attr_remove">
+ATTR_REMOVE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_remove.go#L14">Source</a></p>
+<p>ATTR_REMOVE removes single or more attribute(s) of a given element.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -1589,396 +525,124 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>target</code></td>
+<td><code>node</code></td>
 <td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target node.</td>
+</tr>
+<tr>
+<td><code>attrNames</code></td>
+<td><code>String, repeated</code></td>
+<td></td>
+<td>Attribute name(s).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="attr_set">
+<a href="#attr_set">
+ATTR_SET
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_set.go#L15">Source</a></p>
+<p>ATTR_SET sets or updates a single or more attribute(s) of a given element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target node.</td>
+</tr>
+<tr>
+<td><code>nameOrObj - Attribute name or an object representing a key</code></td>
+<td><code>String</code> <code>Object</code></td>
+<td></td>
+<td>Value pair of attributes.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>If a second parameter is a string value, this parameter represent an attribute value.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="blur">
+<a href="#blur">
+BLUR
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/blur.go#L13">Source</a></p>
+<p>BLUR Calls blur on the element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
 <td>Target node.</td>
 </tr>
 <tr>
 <td><code>selector</code></td>
-<td><code>String, optional</code></td>
-<td>Optional css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="inner_html_all">INNER_HTML_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_html_all.go#L15">Source</a></p>
-<p>INNER_HTML_ALL returns an array of inner HTML strings of matched elements.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
 <td><code>String</code></td>
-<td>String of css selector.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>String</code> An array of inner html strings if any element found, otherwise empty array.</p>
-<hr>
-<h2 id="scroll_bottom">SCROLL_BOTTOM</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_bottom.go#L13">Source</a></p>
-<p>SCROLL_BOTTOM scrolls the document&rsquo;s window to its bottom.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Target document.</td>
-</tr>
-<tr>
-<td><code>options</code></td>
-<td><code>ScrollOptions</code></td>
-<td>Scroll options. optional.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="cookie_set">COOKIE_SET</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_set.go#L13">Source</a></p>
-<p>COOKIE_SET sets cookies to a given page</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>page</code></td>
-<td><code>HTMLPage</code></td>
-<td>Target page.</td>
-</tr>
-<tr>
-<td><code>cookie...</code></td>
-<td><code>HTTPCookie</code></td>
-<td>Target cookies.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_class_all">WAIT_CLASS_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class_all.go#L17">Source</a></p>
-<p>WAIT_CLASS_ALL waits for a class to appear on all matched elements. Stops the execution until the navigation ends or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Parent document.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>String of css selector.</td>
-</tr>
-<tr>
-<td><code>class</code></td>
-<td><code>String</code></td>
-<td>String of target css class.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_no_class_all">WAIT_NO_CLASS_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class_all.go#L27">Source</a></p>
-<p>WAIT_NO_CLASS_ALL waits for a class to disappear on all matched elements. Stops the execution until the navigation ends or operation times out.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>HTMLDocument</code></td>
-<td>Parent document.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
-<td>String of css selector.</td>
-</tr>
-<tr>
-<td><code>class</code></td>
-<td><code>String</code></td>
-<td>String of target css class.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_style_all">WAIT_STYLE_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style_all.go#L12">Source</a></p>
-<p>WAIT_STYLE_ALL</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="wait_no_style_all">WAIT_NO_STYLE_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style_all.go#L17">Source</a></p>
-<p>WAIT_NO_STYLE_ALL</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="cookie_get">COOKIE_GET</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_get.go#L14">Source</a></p>
-<p>COOKIE_GET gets a cookie from a given page by name.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>page</code></td>
-<td><code>HTMLPage</code></td>
-<td>Target page.</td>
-</tr>
-<tr>
-<td><code>name</code></td>
-<td><code>String</code></td>
-<td>Cookie or cookie name to delete.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="xpath">XPATH</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/xpath.go#L14">Source</a></p>
-<p>XPATH evaluates the XPath expression.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>source</code></td>
-<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Target html object.</td>
-</tr>
-<tr>
-<td><code>expression</code></td>
-<td><code>String</code></td>
-<td>Xpath expression.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Value</code> Returns result of a given xpath expression.</p>
-<hr>
-<h2 id="parse">PARSE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/parse.go#L26">Source</a></p>
-<p>PARSE loads an HTML page from a given string or byte array</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>params (Object) - Optional, an object containing the following properties : driver (String) - Optional, driver name. keepCookies (Boolean) - Optional, boolean value indicating whether to use cookies from previous sessions. i.e. not to open a page in the Incognito mode. cookies (HTTPCookies) - Optional, set of HTTP cookies. headers (HTTPHeaders) - Optional, HTTP headers. viewport</code></td>
-<td><code>Viewport</code></td>
-<td>Optional, viewport params.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>HTMLPage</code> Returns parsed and loaded html page.</p>
-<hr>
-<h2 id="inner_text_set">INNER_TEXT_SET</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/set_inner_text.go#L15">Source</a></p>
-<p>INNER_TEXT_SET sets inner text string to a given or matched by CSS selector element</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td><code>Open</code> <code>GetElement</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String, optional</code></td>
-<td>String of css selector.</td>
-</tr>
-<tr>
-<td><code>innerText</code></td>
-<td><code>String</code></td>
-<td>String of inner text.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="element">ELEMENT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element.go#L16">Source</a></p>
-<p>ELEMENT finds an element by a given CSS selector. Returns NONE if element not found.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>docOrEl</code></td>
-<td><code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Parent document or element.</td>
-</tr>
-<tr>
-<td><code>selector</code></td>
-<td><code>String</code></td>
+<td></td>
 <td>Css selector.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns</strong> <code>HTMLElement</code> <code>None</code> Returns an htmlelement if found, otherwise none.</p>
+<p><strong>Returns</strong> <code>None</code></p>
 <hr>
-<h2 id="click">CLICK</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/click.go#L15">Source</a></p>
+<p>
+
+
+<h2 id="click">
+<a href="#click">
+CLICK
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/click.go#L15">Source</a></p>
 <p>CLICK dispatches click event on a given element</p>
 <table>
 <thead>
@@ -1986,35 +650,47 @@
 <th></th>
 <th></th>
 <th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>source</code></td>
-<td><code>Open</code> <code>GetElement</code></td>
-<td>Event source.</td>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
 </tr>
 <tr>
-<td><code>selectorOrCount</code></td>
-<td><code>String</code> <code>Int, optional</code></td>
-<td>Optional selector or count of clicks.</td>
+<td><code>cssSelectorOrClicks</code></td>
+<td><code>String</code> <code>Int</code></td>
+<td></td>
+<td>Css selector or count of clicks.</td>
 </tr>
 <tr>
-<td><code>count</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional count of clicks.</td>
+<td><code>clicks</code></td>
+<td><code>Int</code></td>
+<td><code>1</code></td>
+<td>Count of clicks.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>None</code></p>
 <hr>
-<h2 id="click_all">CLICK_ALL</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/click_all.go#L16">Source</a></p>
+<p>
+
+
+<h2 id="click_all">
+<a href="#click_all">
+CLICK_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/click_all.go#L16">Source</a></p>
 <p>CLICK_ALL dispatches click event on all matched element</p>
 <table>
 <thead>
@@ -2022,39 +698,52 @@
 <th></th>
 <th></th>
 <th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>source</code></td>
-<td><code>Open</code></td>
-<td>Open.</td>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
 </tr>
 <tr>
 <td><code>selector</code></td>
 <td><code>String</code></td>
-<td>Selector.</td>
+<td></td>
+<td>Css selector.</td>
 </tr>
 <tr>
-<td><code>count</code></td>
-<td><code>Int, optional</code></td>
+<td><code>clicks</code></td>
+<td><code>Int</code></td>
+<td><code>1</code></td>
 <td>Optional count of clicks.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns</strong> <code>Boolean</code> Returns true if matched at least one element.</p>
+<p><strong>Returns</strong> <code>Boolean</code> True if matched at least one element.</p>
 <hr>
-<h2 id="download">DOWNLOAD</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/download.go#L15">Source</a></p>
-<p>Download downloads a resource from the given GetURL.</p>
+<p>
+
+
+<h2 id="cookie_del">
+<a href="#cookie_del">
+COOKIE_DEL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_del.go#L14">Source</a></p>
+<p>COOKIE_DEL gets a cookie from a given page by name.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -2064,100 +753,39 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>GetURL</code></td>
-<td><code>String</code></td>
-<td>Geturl to download.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Binary</code> Returns a base64 encoded string in binary format.</p>
-<hr>
-<h2 id="input">INPUT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/input.go#L16">Source</a></p>
-<p>INPUT types a value to an underlying input element.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>source</code></td>
-<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Event target.</td>
-</tr>
-<tr>
-<td><code>valueOrSelector</code></td>
-<td><code>String</code></td>
-<td>Selector or a value.</td>
-</tr>
-<tr>
-<td><code>value</code></td>
-<td><code>String</code></td>
-<td>Target value.</td>
-</tr>
-<tr>
-<td><code>delay</code></td>
-<td><code>Int, optional</code></td>
-<td>Target value.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Boolean</code> Returns true if an element was found.</p>
-<hr>
-<h2 id="navigate">NAVIGATE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate.go#L17">Source</a></p>
-<p>NAVIGATE navigates a given page to a new resource. The operation blocks the execution until the page gets loaded. Which means there is no need in WAIT_NAVIGATION function.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
 <td><code>page</code></td>
 <td><code>HTMLPage</code></td>
+<td></td>
 <td>Target page.</td>
 </tr>
 <tr>
-<td><code>url</code></td>
-<td><code>String</code></td>
-<td>Target url to navigate.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout. default is 5000.</td>
+<td><code>cookiesOrNames</code></td>
+<td><code>HTTPCookie, repeated</code> <code>String, repeated</code></td>
+<td></td>
+<td>Cookie or cookie name to delete.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>None</code></p>
 <hr>
-<h2 id="style_set">STYLE_SET</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_set.go#L15">Source</a></p>
-<p>STYLE_SET sets or updates a single or more style attribute value of a given element.</p>
+<p>
+
+
+<h2 id="cookie_get">
+<a href="#cookie_get">
+COOKIE_GET
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_get.go#L15">Source</a></p>
+<p>COOKIE_GET gets a cookie from a given page by name.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -2167,33 +795,39 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>el</code></td>
-<td><code>HTMLElement</code></td>
-<td>Target element.</td>
+<td><code>page</code></td>
+<td><code>HTMLPage</code></td>
+<td></td>
+<td>Target page.</td>
 </tr>
 <tr>
-<td><code>nameOrObj</code></td>
-<td><code>String</code> <code>Object</code></td>
-<td>Style name or an object representing a key-value pair of attributes.</td>
-</tr>
-<tr>
-<td><code>value</code></td>
+<td><code>name</code></td>
 <td><code>String</code></td>
-<td>If a second parameter is a string value, this parameter represent a style value.</td>
+<td></td>
+<td>Cookie or cookie name to delete.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns</strong> <code>None</code></p>
+<p><strong>Returns</strong> <code>HTTPCookie</code> Cookie if found, otherwise none.</p>
 <hr>
-<h2 id="wait_attr">WAIT_ATTR</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr.go#L17">Source</a></p>
-<p>WAIT_ATTR waits until a target attribute&rsquo;s value appears</p>
+<p>
+
+
+<h2 id="cookie_set">
+<a href="#cookie_set">
+COOKIE_SET
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_set.go#L13">Source</a></p>
+<p>COOKIE_SET sets cookies to a given page</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -2203,85 +837,34 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>node</code></td>
-<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Parent document.</td>
+<td><code>page</code></td>
+<td><code>HTMLPage</code></td>
+<td></td>
+<td>Target page.</td>
 </tr>
 <tr>
-<td><code>attrNameOrSelector</code></td>
-<td><code>String</code></td>
-<td>String of an attr name or css selector.</td>
-</tr>
-<tr>
-<td><code>attrValueOrAttrName</code></td>
-<td><code>String</code> <code>Any</code></td>
-<td>Attr value or name.</td>
-</tr>
-<tr>
-<td><code>attrValueOrTimeout</code></td>
-<td><code>Any</code> <code>Int, optional</code></td>
-<td>Attr value or an optional timeout.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout.</td>
+<td><code>cookies</code></td>
+<td><code>HTTPCookie, repeated</code></td>
+<td></td>
+<td>Target cookies.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>None</code></p>
 <hr>
-<h2 id="wait_no_attr">WAIT_NO_ATTR</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr.go#L27">Source</a></p>
-<p>WAIT_NO_ATTR waits until a target attribute&rsquo;s value disappears</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>node</code></td>
-<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Parent document.</td>
-</tr>
-<tr>
-<td><code>attrNameOrSelector</code></td>
-<td><code>String</code></td>
-<td>String of an attr name or css selector.</td>
-</tr>
-<tr>
-<td><code>attrValueOrAttrName</code></td>
-<td><code>String</code> <code>Any</code></td>
-<td>Attr value or name.</td>
-</tr>
-<tr>
-<td><code>attrValueOrTimeout</code></td>
-<td><code>Any</code> <code>Int, optional</code></td>
-<td>Attr value or an optional timeout.</td>
-</tr>
-<tr>
-<td><code>timeout</code></td>
-<td><code>Int, optional</code></td>
-<td>Optional timeout.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>None</code></p>
-<hr>
-<h2 id="document">DOCUMENT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/document.go#L32">Source</a></p>
+<p>
+
+
+<h2 id="document">
+<a href="#document">
+DOCUMENT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/document.go#L36">Source</a></p>
 <p>DOCUMENT opens an HTML page by a given url. By default, loads a page by http call - resulted page does not support any interactions.</p>
 <table>
 <thead>
@@ -2289,25 +872,1493 @@
 <th></th>
 <th></th>
 <th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>params (Object) - Optional, An object containing the following properties : driver (String) - Optional, driver name. timeout (Int) - Optional, timeout. userAgent (String) - Optional, user agent. keepCookies (Boolean) - Optional, boolean value indicating whether to use cookies from previous sessions. i.e. not to open a page in the Incognito mode. cookies (HTTPCookies) - Optional, set of HTTP cookies. headers (HTTPHeaders) - Optional, HTTP headers. viewport</code></td>
-<td><code>Viewport</code></td>
-<td>Optional, viewport params.</td>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>An object containing the following properties :</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.driver</code></td>
+<td>Driver name to use.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Int</code></td>
+<td><code>.timeout=60000</code></td>
+<td>Page load timeout.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.userAgent</code></td>
+<td>Custom user agent.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Boolean</code></td>
+<td><code>.keepCookies=False</code></td>
+<td>Boolean value indicating whether to use cookies from previous sessions i.e. not to open a page in the incognito mode.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>HTTPCookies</code></td>
+<td><code>.cookies</code></td>
+<td>Set of http cookies to use during page loading.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>HTTPHeaders</code></td>
+<td><code>.headers</code></td>
+<td>Set of http headers to use during page loading.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td><code>.viewport</code></td>
+<td>Viewport params.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Int</code></td>
+<td><code>.viewport.height</code></td>
+<td>Viewport height.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Int</code></td>
+<td><code>.viewport.width</code></td>
+<td>Viewport width.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.viewport.scaleFactor</code></td>
+<td>Viewport scale factor.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Boolean</code></td>
+<td><code>.viewport.mobile</code></td>
+<td>Value that indicates whether to emulate mobile device.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Boolean</code></td>
+<td><code>.viewport.landscape</code></td>
+<td>Value that indicates whether to render a page in landscape position.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns</strong> <code>HTMLPage</code> Returns loaded html page.</p>
+<p><strong>Returns</strong> <code>HTMLPage</code> Loaded html page.</p>
 <hr>
-<h2 id="scroll_element">SCROLL_ELEMENT</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_element.go#L17">Source</a></p>
+<p>
+
+
+<h2 id="download">
+<a href="#download">
+DOWNLOAD
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/download.go#L15">Source</a></p>
+<p>DOWNLOAD downloads a resource from the given GetURL.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Url to download.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Binary</code> A base64 encoded string in binary format.</p>
+<hr>
+<p>
+
+
+<h2 id="element">
+<a href="#element">
+ELEMENT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element.go#L16">Source</a></p>
+<p>ELEMENT finds an element by a given CSS selector. Returns NONE if element not found.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>HTMLElement</code> A matched html element</p>
+<hr>
+<p>
+
+
+<h2 id="elements">
+<a href="#elements">
+ELEMENTS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/elements.go#L14">Source</a></p>
+<p>ELEMENTS finds HTML elements by a given CSS selector. Returns an empty array if element not found.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>HTMLElement[]</code> An array of matched html elements.</p>
+<hr>
+<p>
+
+
+<h2 id="elements_count">
+<a href="#elements_count">
+ELEMENTS_COUNT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/elements_count.go#L14">Source</a></p>
+<p>ELEMENTS_COUNT returns a number of found HTML elements by a given CSS selector. Returns an empty array if element not found.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Int</code> A number of matched html elements by a given css selector.</p>
+<hr>
+<p>
+
+
+<h2 id="element_exists">
+<a href="#element_exists">
+ELEMENT_EXISTS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element_exists.go#L13">Source</a></p>
+<p>ELEMENT_EXISTS returns a boolean value indicating whether there is an element matched by selector.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Boolean</code> A boolean value indicating whether there is an element matched by selector.</p>
+<hr>
+<p>
+
+
+<h2 id="focus">
+<a href="#focus">
+FOCUS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/focus.go#L13">Source</a></p>
+<p>FOCUS Sets focus on the element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="frames">
+<a href="#frames">
+FRAMES
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/find_frames.go#L15">Source</a></p>
+<p>FRAMES finds HTML frames by a given property selector. Returns an empty array if frames not found.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>HTMLPage</code></td>
+<td></td>
+<td>Html page.</td>
+</tr>
+<tr>
+<td><code>property</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Property selector.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td><code>Any</code></td>
+<td></td>
+<td>Property value.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>HTMLDocument[]</code> Returns an array of found html frames.</p>
+<hr>
+<p>
+
+
+<h2 id="hover">
+<a href="#hover">
+HOVER
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/hover.go#L15">Source</a></p>
+<p>HOVER fetches an element with selector, scrolls it into view if needed, and then uses page.mouse to hover over the center of the element. If there&rsquo;s no element matching selector, the method returns an error.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>If document is passed, this param must represent an element selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="inner_html">
+<a href="#inner_html">
+INNER_HTML
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_html.go#L15">Source</a></p>
+<p>INNER_HTML returns inner HTML string of a given or matched by CSS selector element</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Inner html string if a matched element, otherwise empty string.</p>
+<hr>
+<p>
+
+
+<h2 id="inner_html_all">
+<a href="#inner_html_all">
+INNER_HTML_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_html_all.go#L15">Source</a></p>
+<p>INNER_HTML_ALL returns an array of inner HTML strings of matched elements.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String[]</code> An array of inner html strings if all matched elements, otherwise empty array.</p>
+<hr>
+<p>
+
+
+<h2 id="inner_html_set">
+<a href="#inner_html_set">
+INNER_HTML_SET
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/set_inner_html.go#L15">Source</a></p>
+<p>INNER_HTML_SET sets inner HTML string to a given or matched by CSS selector element</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>htmlOrSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Html or css selector.</td>
+</tr>
+<tr>
+<td><code>html</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of inner html.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="inner_text">
+<a href="#inner_text">
+INNER_TEXT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_text.go#L15">Source</a></p>
+<p>INNER_TEXT returns inner text string of a given or matched by CSS selector element</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String</code> Inner text if a matched element, otherwise empty string.</p>
+<hr>
+<p>
+
+
+<h2 id="inner_text_all">
+<a href="#inner_text_all">
+INNER_TEXT_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_text_all.go#L15">Source</a></p>
+<p>INNER_TEXT_ALL returns an array of inner text of matched elements.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String[]</code> An array of inner text if all matched elements, otherwise empty array.</p>
+<hr>
+<p>
+
+
+<h2 id="inner_text_set">
+<a href="#inner_text_set">
+INNER_TEXT_SET
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/set_inner_text.go#L15">Source</a></p>
+<p>INNER_TEXT_SET sets inner text string to a given or matched by CSS selector element</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>textOrCssSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of inner text.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="input">
+<a href="#input">
+INPUT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/input.go#L16">Source</a></p>
+<p>INPUT types a value to an underlying input element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>valueOrSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Css selector or a value.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Target value.</td>
+</tr>
+<tr>
+<td><code>delay</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>Target value.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Boolean</code> Returns true if an element was found.</p>
+<hr>
+<p>
+
+
+<h2 id="input_clear">
+<a href="#input_clear">
+INPUT_CLEAR
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/clear.go#L13">Source</a></p>
+<p>INPUT_CLEAR clears a value from an underlying input element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Css selector.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="mouse">
+<a href="#mouse">
+MOUSE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/mouse_xy.go#L15">Source</a></p>
+<p>MOUSE moves mouse by given coordinates.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>document</code></td>
+<td><code>HTMLDocument</code></td>
+<td></td>
+<td>Html document.</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td><code>Int</code> <code>Float</code></td>
+<td></td>
+<td>X coordinate.</td>
+</tr>
+<tr>
+<td><code>true</code></td>
+<td><code>Int</code> <code>Float</code></td>
+<td></td>
+<td>Y coordinate.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="navigate">
+<a href="#navigate">
+NAVIGATE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate.go#L17">Source</a></p>
+<p>NAVIGATE navigates a given page to a new resource. The operation blocks the execution until the page gets loaded. Which means there is no need in WAIT_NAVIGATION function.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>HTMLPage</code></td>
+<td></td>
+<td>Target page.</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Target url to navigate.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Navigation timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="navigate_back">
+<a href="#navigate_back">
+NAVIGATE_BACK
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_back.go#L18">Source</a></p>
+<p>NAVIGATE_BACK navigates a given page back within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns FALSE.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>HTMLPage</code></td>
+<td></td>
+<td>Target page.</td>
+</tr>
+<tr>
+<td><code>entry</code></td>
+<td><code>Int</code></td>
+<td><code>1</code></td>
+<td>An integer value indicating how many pages to skip.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Navigation timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Boolean</code> True if history exists and the operation succeeded, otherwise false.</p>
+<hr>
+<p>
+
+
+<h2 id="navigate_forward">
+<a href="#navigate_forward">
+NAVIGATE_FORWARD
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_forward.go#L18">Source</a></p>
+<p>NAVIGATE_FORWARD navigates a given page forward within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns FALSE.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>HTMLPage</code></td>
+<td></td>
+<td>Target page.</td>
+</tr>
+<tr>
+<td><code>entry</code></td>
+<td><code>Int</code></td>
+<td><code>1</code></td>
+<td>An integer value indicating how many pages to skip.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Navigation timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Boolean</code> True if history exists and the operation succeeded, otherwise false.</p>
+<hr>
+<p>
+
+
+<h2 id="pagination">
+<a href="#pagination">
+PAGINATION
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pagination.go#L16">Source</a></p>
+<p>PAGINATION creates an iterator that goes through pages using CSS selector. The iterator starts from the current page i.e. it does not change the page on 1st iteration. That allows you to keep scraping logic inside FOR loop.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Css selector for a pagination on the page.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="parse">
+<a href="#parse">
+PARSE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/parse.go#L31">Source</a></p>
+<p>PARSE loads an HTML page from a given string or byte array</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>html</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Html string to parse.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>An object containing the following properties:</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.driver</code></td>
+<td>Name of a driver to parse with.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Boolean</code></td>
+<td><code>.keepCookies=False</code></td>
+<td>Boolean value indicating whether to use cookies from previous sessions i.e. not to open a page in the incognito mode.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>HTTPCookies</code></td>
+<td><code>.cookies</code></td>
+<td>Set of http cookies to use during page loading.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>HTTPHeaders</code></td>
+<td><code>.headers</code></td>
+<td>Set of http headers to use during page loading.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td><code>.viewport</code></td>
+<td>Viewport params.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Int</code></td>
+<td><code>.viewport.height</code></td>
+<td>Viewport height.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Int</code></td>
+<td><code>.viewport.width</code></td>
+<td>Viewport width.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.viewport.scaleFactor</code></td>
+<td>Viewport scale factor.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Boolean</code></td>
+<td><code>.viewport.mobile</code></td>
+<td>Value that indicates whether to emulate mobile device.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Boolean</code></td>
+<td><code>.viewport.landscape</code></td>
+<td>Value that indicates whether to render a page in landscape position.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>HTMLPage</code> Returns parsed and loaded html page.</p>
+<hr>
+<p>
+
+
+<h2 id="pdf">
+<a href="#pdf">
+PDF
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pdf.go#L42">Source</a></p>
+<p>PDF prints a PDF of the current page.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code>HTMLPage</code> <code>String</code></td>
+<td></td>
+<td>Target page or url.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>An object containing the following properties:</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Bool</code></td>
+<td><code>.landscape=False</code></td>
+<td>Paper orientation.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Bool</code></td>
+<td><code>.displayHeaderFooter=False</code></td>
+<td>Display header and footer.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Bool</code></td>
+<td><code>.printBackground=False</code></td>
+<td>Print background graphics.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.scale=1</code></td>
+<td>Scale of the webpage rendering.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.paperWidth=22</code></td>
+<td>Paper width in inches.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.paperHeight=28</code></td>
+<td>Paper height in inches.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.marginTo=1</code></td>
+<td>Top margin in inches.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.marginBottom=1</code></td>
+<td>Bottom margin in inches.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.marginLeft=1</code></td>
+<td>Left margin in inches.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code></td>
+<td><code>.marginRight=1</code></td>
+<td>Right margin in inches.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.pageRanges</code></td>
+<td>13'.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Bool</code></td>
+<td><code>.ignoreInvalidPageRanges=False</code></td>
+<td>2'.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.headerTemplate</code></td>
+<td><code>totalpages</code>: total pages in the document for example, <code>&lt;span class=title&gt;&lt;/span&gt;</code> would generate span containing the title.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.footerTemplate</code></td>
+<td>Html template for the print footer. should use the same format as the <code>headertemplate</code>.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Bool</code></td>
+<td><code>.preferCSSPageSize=False</code></td>
+<td>Whether or not to prefer page size as defined by css. defaults to false, in which case the content will be scaled to fit the paper size. *</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Binary</code> Pdf document in binary format.</p>
+<hr>
+<p>
+
+
+<h2 id="screenshot">
+<a href="#screenshot">
+SCREENSHOT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/screenshot.go#L22">Source</a></p>
+<p>SCREENSHOT takes a screenshot of a given page.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code>HTMLPage</code> <code>String</code></td>
+<td></td>
+<td>Target page or url.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>An object containing the following properties :</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code> <code>Int</code></td>
+<td><code>.x=0</code></td>
+<td>X position of the viewport.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code> <code>Int</code></td>
+<td><code>.y=0</code></td>
+<td>Y position of the viewport.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code> <code>Int</code></td>
+<td><code>.width</code></td>
+<td>Width of the viewport.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Float</code> <code>Int</code></td>
+<td><code>.height</code></td>
+<td>Height of the viewport.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.format=&quot;jpeg&quot;</code></td>
+<td>Either &ldquo;jpeg&rdquo; or &ldquo;png&rdquo;.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Int</code></td>
+<td><code>.quality=100</code></td>
+<td>Quality, in [0, 100], only for jpeg format.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Binary</code> Screenshot in binary format.</p>
+<hr>
+<p>
+
+
+<h2 id="scroll">
+<a href="#scroll">
+SCROLL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_xy.go#L19">Source</a></p>
+<p>SCROLL scrolls by given coordinates.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>document</code></td>
+<td><code>HTMLDocument</code></td>
+<td></td>
+<td>Html document.</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td><code>Int</code> <code>Float</code></td>
+<td></td>
+<td>X coordinate.</td>
+</tr>
+<tr>
+<td><code>true</code></td>
+<td><code>Int</code> <code>Float</code></td>
+<td></td>
+<td>Y coordinate.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>Scroll params.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.behavior=&quot;instant&quot;</code></td>
+<td>Scroll behavior</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.block=&quot;center&quot;</code></td>
+<td>Scroll vertical alignment.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.inline=&quot;center&quot;</code></td>
+<td>Scroll horizontal alignment.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="scroll_bottom">
+<a href="#scroll_bottom">
+SCROLL_BOTTOM
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_bottom.go#L18">Source</a></p>
+<p>SCROLL_BOTTOM scrolls the document&rsquo;s window to its bottom.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>document</code></td>
+<td><code>HTMLDocument</code></td>
+<td></td>
+<td>Html document.</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td><code>Int</code> <code>Float</code></td>
+<td></td>
+<td>X coordinate.</td>
+</tr>
+<tr>
+<td><code>true</code></td>
+<td><code>Int</code> <code>Float</code></td>
+<td></td>
+<td>Y coordinate.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>Scroll params.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.behavior=&quot;instant&quot;</code></td>
+<td>Scroll behavior</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.block=&quot;center&quot;</code></td>
+<td>Scroll vertical alignment.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.inline=&quot;center&quot;</code></td>
+<td>Scroll horizontal alignment.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="scroll_element">
+<a href="#scroll_element">
+SCROLL_ELEMENT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_element.go#L20">Source</a></p>
 <p>SCROLL_ELEMENT scrolls an element on.</p>
 <table>
 <thead>
@@ -2315,36 +2366,1383 @@
 <th></th>
 <th></th>
 <th></th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>docOrEl</code></td>
-<td><code>HTMLDocument</code> <code>HTMLElement</code></td>
-<td>Target document or element.</td>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
 </tr>
 <tr>
 <td><code>selector</code></td>
 <td><code>String</code></td>
+<td></td>
 <td>If document is passed, this param must represent an element selector.</td>
 </tr>
 <tr>
-<td><code>options</code></td>
-<td><code>ScrollOptions</code></td>
-<td>Scroll options. optional.</td>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>Scroll params.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.behavior=&quot;instant&quot;</code></td>
+<td>Scroll behavior</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.block=&quot;center&quot;</code></td>
+<td>Scroll vertical alignment.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.inline=&quot;center&quot;</code></td>
+<td>Scroll horizontal alignment.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>None</code></p>
 <hr>
+<p>
+
+
+<h2 id="scroll_top">
+<a href="#scroll_top">
+SCROLL_TOP
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_top.go#L18">Source</a></p>
+<p>SCROLL_TOP scrolls the document&rsquo;s window to its top.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>document</code></td>
+<td><code>HTMLDocument</code></td>
+<td></td>
+<td>Html document.</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td><code>Int</code> <code>Float</code></td>
+<td></td>
+<td>X coordinate.</td>
+</tr>
+<tr>
+<td><code>true</code></td>
+<td><code>Int</code> <code>Float</code></td>
+<td></td>
+<td>Y coordinate.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>Scroll params.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.behavior=&quot;instant&quot;</code></td>
+<td>Scroll behavior</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.block=&quot;center&quot;</code></td>
+<td>Scroll vertical alignment.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>String</code></td>
+<td><code>.inline=&quot;center&quot;</code></td>
+<td>Scroll horizontal alignment.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="select">
+<a href="#select">
+SELECT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/select.go#L15">Source</a></p>
+<p>SELECT selects a value from an underlying select element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>element</code></td>
+<td><code>HTMLElement</code></td>
+<td></td>
+<td>Target html element.</td>
+</tr>
+<tr>
+<td><code>valueOrSelector</code></td>
+<td><code>String</code> <code>String[]</code></td>
+<td></td>
+<td>Selector or a an array of strings as a value.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td><code>String[]</code></td>
+<td></td>
+<td>Target value. optional.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String[]</code> Array of selected values.</p>
+<hr>
+<p>
+
+
+<h2 id="style_get">
+<a href="#style_get">
+STYLE_GET
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_get.go#L14">Source</a></p>
+<p>STYLE_GET gets single or more style attribute value(s) of a given element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>element</code></td>
+<td><code>HTMLElement</code></td>
+<td></td>
+<td>Target html element.</td>
+</tr>
+<tr>
+<td><code>names</code></td>
+<td><code>String, repeated</code></td>
+<td></td>
+<td>Style name(s).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Object</code> Collection of key-value pairs of style values.</p>
+<hr>
+<p>
+
+
+<h2 id="style_remove">
+<a href="#style_remove">
+STYLE_REMOVE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_remove.go#L14">Source</a></p>
+<p>STYLE_REMOVE removes single or more style attribute value(s) of a given element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>element</code></td>
+<td><code>HTMLElement</code></td>
+<td></td>
+<td>Target html element.</td>
+</tr>
+<tr>
+<td><code>names</code></td>
+<td><code>String, repeated</code></td>
+<td></td>
+<td>Style name(s).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="style_set">
+<a href="#style_set">
+STYLE_SET
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_set.go#L15">Source</a></p>
+<p>STYLE_SET sets or updates a single or more style attribute value of a given element.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>element</code></td>
+<td><code>HTMLElement</code></td>
+<td></td>
+<td>Target html element.</td>
+</tr>
+<tr>
+<td><code>nameOrObj - Style name or an object representing a key</code></td>
+<td><code>String</code> <code>Object</code></td>
+<td></td>
+<td>Value pair of attributes.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>If a second parameter is a string value, this parameter represent a style value.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_attr">
+<a href="#wait_attr">
+WAIT_ATTR
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr.go#L17">Source</a></p>
+<p>WAIT_ATTR waits until a target attribute&rsquo;s value appears</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>attrNameOrSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of an attr name or css selector.</td>
+</tr>
+<tr>
+<td><code>attrValueOrAttrName</code></td>
+<td><code>String</code> <code>Any</code></td>
+<td></td>
+<td>Attr value or name.</td>
+</tr>
+<tr>
+<td><code>attrValueOrTimeout</code></td>
+<td><code>Any</code> <code>Int</code></td>
+<td></td>
+<td>Attr value or a timeout.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_attr_all">
+<a href="#wait_attr_all">
+WAIT_ATTR_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr_all.go#L17">Source</a></p>
+<p>WAIT_ATTR_ALL waits for an attribute to appear on all matched elements with a given value. Stops the execution until the navigation ends or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+<tr>
+<td><code>class</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of target css class.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_class">
+<a href="#wait_class">
+WAIT_CLASS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class.go#L17">Source</a></p>
+<p>WAIT_CLASS waits for a class to appear on a given element. Stops the execution until the navigation ends or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selectorOrClass</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>If document is passed, this param must represent an element selector. otherwise target class.</td>
+</tr>
+<tr>
+<td><code>classOrTimeout</code></td>
+<td><code>String</code> <code>Int</code></td>
+<td></td>
+<td>If document is passed, this param must represent target class name. otherwise timeout.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>If document is passed, this param must represent timeout. otherwise not passed.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_class_all">
+<a href="#wait_class_all">
+WAIT_CLASS_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class_all.go#L17">Source</a></p>
+<p>WAIT_CLASS_ALL waits for a class to appear on all matched elements. Stops the execution until the navigation ends or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+<tr>
+<td><code>class</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of target css class.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_element">
+<a href="#wait_element">
+WAIT_ELEMENT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_element.go#L16">Source</a></p>
+<p>WAIT_ELEMENT waits for element to appear in the DOM. Stops the execution until it finds an element or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Target element&rsquo;s selector.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_navigation">
+<a href="#wait_navigation">
+WAIT_NAVIGATION
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_navigation.go#L26">Source</a></p>
+<p>WAIT_NAVIGATION waits for a given page to navigate to a new url. Stops the execution until the navigation ends or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>HTMLPage</code></td>
+<td></td>
+<td>Target page.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Navigation timeout.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Object</code></td>
+<td><code>None</code></td>
+<td>Navigation parameters.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Int</code></td>
+<td><code>.timeout=5000</code></td>
+<td>Navigation timeout.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>Int</code></td>
+<td><code>.target</code></td>
+<td>Navigation target url.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>HTMLDocument</code></td>
+<td><code>.frame</code></td>
+<td>Navigation frame.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_no_attr">
+<a href="#wait_no_attr">
+WAIT_NO_ATTR
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr.go#L27">Source</a></p>
+<p>WAIT_NO_ATTR waits until a target attribute&rsquo;s value disappears</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>attrNameOrSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of an attr name or css selector.</td>
+</tr>
+<tr>
+<td><code>attrValueOrAttrName</code></td>
+<td><code>String</code> <code>Any</code></td>
+<td></td>
+<td>Attr value or name.</td>
+</tr>
+<tr>
+<td><code>attrValueOrTimeout</code></td>
+<td><code>Any</code> <code>Int</code></td>
+<td></td>
+<td>Attr value or wait timeout.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_no_attr_all">
+<a href="#wait_no_attr_all">
+WAIT_NO_ATTR_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr_all.go#L27">Source</a></p>
+<p>WAIT_NO_ATTR_ALL waits for an attribute to disappear on all matched elements by a given value. Stops the execution until the navigation ends or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+<tr>
+<td><code>class</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of target css class.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_no_class">
+<a href="#wait_no_class">
+WAIT_NO_CLASS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class.go#L27">Source</a></p>
+<p>WAIT_NO_CLASS waits for a class to disappear on a given element. Stops the execution until the navigation ends or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selectorOrClass</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>If document is passed, this param must represent an element selector. otherwise target class.</td>
+</tr>
+<tr>
+<td><code>classOrTimeout</code></td>
+<td><code>String</code> <code>Int</code></td>
+<td></td>
+<td>If document is passed, this param must represent target class name. otherwise timeout.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td></td>
+<td>If document is passed, this param must represent timeout. otherwise not passed.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_no_class_all">
+<a href="#wait_no_class_all">
+WAIT_NO_CLASS_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class_all.go#L27">Source</a></p>
+<p>WAIT_NO_CLASS_ALL waits for a class to disappear on all matched elements. Stops the execution until the navigation ends or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of css selector.</td>
+</tr>
+<tr>
+<td><code>class</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>String of target css class.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_no_element">
+<a href="#wait_no_element">
+WAIT_NO_ELEMENT
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_element.go#L25">Source</a></p>
+<p>WAIT_NO_ELEMENT waits for element to disappear in the DOM. Stops the execution until it does not find an element or operation times out.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Target element&rsquo;s selector.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_no_style">
+<a href="#wait_no_style">
+WAIT_NO_STYLE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style.go#L27">Source</a></p>
+<p>WAIT_NO_STYLE waits until a target style value disappears</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>styleNameOrSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Style name or css selector.</td>
+</tr>
+<tr>
+<td><code>valueOrStyleName</code></td>
+<td><code>String</code> <code>Any</code></td>
+<td></td>
+<td>Style value or name.</td>
+</tr>
+<tr>
+<td><code>valueOrTimeout</code></td>
+<td><code>Any</code> <code>Int</code></td>
+<td></td>
+<td>Style value or wait timeout.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_no_style_all">
+<a href="#wait_no_style_all">
+WAIT_NO_STYLE_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style_all.go#L27">Source</a></p>
+<p>WAIT_NO_STYLE_ALL waits until a target style value disappears on all matched elements with a given value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>styleNameOrSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Style name or css selector.</td>
+</tr>
+<tr>
+<td><code>valueOrStyleName</code></td>
+<td><code>String</code> <code>Any</code></td>
+<td></td>
+<td>Style value or name.</td>
+</tr>
+<tr>
+<td><code>valueOrTimeout</code></td>
+<td><code>Any</code> <code>Int</code></td>
+<td></td>
+<td>Style value or wait timeout.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_style">
+<a href="#wait_style">
+WAIT_STYLE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style.go#L17">Source</a></p>
+<p>WAIT_STYLE waits until a target style value appears</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>styleNameOrSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Style name or css selector.</td>
+</tr>
+<tr>
+<td><code>valueOrStyleName</code></td>
+<td><code>String</code> <code>Any</code></td>
+<td></td>
+<td>Style value or name.</td>
+</tr>
+<tr>
+<td><code>valueOrTimeout</code></td>
+<td><code>Any</code> <code>Int</code></td>
+<td></td>
+<td>Style value or wait timeout.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Wait timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="wait_style_all">
+<a href="#wait_style_all">
+WAIT_STYLE_ALL
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style_all.go#L17">Source</a></p>
+<p>WAIT_STYLE_ALL waits until a target style value appears on all matched elements with a given value.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>styleNameOrSelector</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Style name or css selector.</td>
+</tr>
+<tr>
+<td><code>valueOrStyleName</code></td>
+<td><code>String</code> <code>Any</code></td>
+<td></td>
+<td>Style value or name.</td>
+</tr>
+<tr>
+<td><code>valueOrTimeout</code></td>
+<td><code>Any</code> <code>Int</code></td>
+<td></td>
+<td>Style value or wait timeout.</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>Int</code></td>
+<td><code>5000</code></td>
+<td>Timeout.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>None</code></p>
+<hr>
+<p>
+
+
+<h2 id="xpath">
+<a href="#xpath">
+XPATH
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/xpath.go#L14">Source</a></p>
+<p>XPATH evaluates the XPath expression.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>HTMLPage</code> <code>HTMLDocument</code> <code>HTMLElement</code></td>
+<td></td>
+<td>Target html node.</td>
+</tr>
+<tr>
+<td><code>expression</code></td>
+<td><code>String</code></td>
+<td></td>
+<td>Xpath expression.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Any</code> Returns result of a given xpath expression.</p>
+<hr>
 
 </article>
         </section>
+        
+        
+            <section id="menu" class="column is-2">
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <aside class="menu" style="position: sticky; top: 63px;">
+    <ul class="menu-list">
+        
+        <li><a href="#attr_get"> ATTR_GET </a></li>
+        
+        <li><a href="#attr_remove"> ATTR_REMOVE </a></li>
+        
+        <li><a href="#attr_set"> ATTR_SET </a></li>
+        
+        <li><a href="#blur"> BLUR </a></li>
+        
+        <li><a href="#click"> CLICK </a></li>
+        
+        <li><a href="#click_all"> CLICK_ALL </a></li>
+        
+        <li><a href="#cookie_del"> COOKIE_DEL </a></li>
+        
+        <li><a href="#cookie_get"> COOKIE_GET </a></li>
+        
+        <li><a href="#cookie_set"> COOKIE_SET </a></li>
+        
+        <li><a href="#document"> DOCUMENT </a></li>
+        
+        <li><a href="#download"> DOWNLOAD </a></li>
+        
+        <li><a href="#element"> ELEMENT </a></li>
+        
+        <li><a href="#elements"> ELEMENTS </a></li>
+        
+        <li><a href="#elements_count"> ELEMENTS_COUNT </a></li>
+        
+        <li><a href="#element_exists"> ELEMENT_EXISTS </a></li>
+        
+        <li><a href="#focus"> FOCUS </a></li>
+        
+        <li><a href="#frames"> FRAMES </a></li>
+        
+        <li><a href="#hover"> HOVER </a></li>
+        
+        <li><a href="#inner_html"> INNER_HTML </a></li>
+        
+        <li><a href="#inner_html_all"> INNER_HTML_ALL </a></li>
+        
+        <li><a href="#inner_html_set"> INNER_HTML_SET </a></li>
+        
+        <li><a href="#inner_text"> INNER_TEXT </a></li>
+        
+        <li><a href="#inner_text_all"> INNER_TEXT_ALL </a></li>
+        
+        <li><a href="#inner_text_set"> INNER_TEXT_SET </a></li>
+        
+        <li><a href="#input"> INPUT </a></li>
+        
+        <li><a href="#input_clear"> INPUT_CLEAR </a></li>
+        
+        <li><a href="#mouse"> MOUSE </a></li>
+        
+        <li><a href="#navigate"> NAVIGATE </a></li>
+        
+        <li><a href="#navigate_back"> NAVIGATE_BACK </a></li>
+        
+        <li><a href="#navigate_forward"> NAVIGATE_FORWARD </a></li>
+        
+        <li><a href="#pagination"> PAGINATION </a></li>
+        
+        <li><a href="#parse"> PARSE </a></li>
+        
+        <li><a href="#pdf"> PDF </a></li>
+        
+        <li><a href="#screenshot"> SCREENSHOT </a></li>
+        
+        <li><a href="#scroll"> SCROLL </a></li>
+        
+        <li><a href="#scroll_bottom"> SCROLL_BOTTOM </a></li>
+        
+        <li><a href="#scroll_element"> SCROLL_ELEMENT </a></li>
+        
+        <li><a href="#scroll_top"> SCROLL_TOP </a></li>
+        
+        <li><a href="#select"> SELECT </a></li>
+        
+        <li><a href="#style_get"> STYLE_GET </a></li>
+        
+        <li><a href="#style_remove"> STYLE_REMOVE </a></li>
+        
+        <li><a href="#style_set"> STYLE_SET </a></li>
+        
+        <li><a href="#wait_attr"> WAIT_ATTR </a></li>
+        
+        <li><a href="#wait_attr_all"> WAIT_ATTR_ALL </a></li>
+        
+        <li><a href="#wait_class"> WAIT_CLASS </a></li>
+        
+        <li><a href="#wait_class_all"> WAIT_CLASS_ALL </a></li>
+        
+        <li><a href="#wait_element"> WAIT_ELEMENT </a></li>
+        
+        <li><a href="#wait_navigation"> WAIT_NAVIGATION </a></li>
+        
+        <li><a href="#wait_no_attr"> WAIT_NO_ATTR </a></li>
+        
+        <li><a href="#wait_no_attr_all"> WAIT_NO_ATTR_ALL </a></li>
+        
+        <li><a href="#wait_no_class"> WAIT_NO_CLASS </a></li>
+        
+        <li><a href="#wait_no_class_all"> WAIT_NO_CLASS_ALL </a></li>
+        
+        <li><a href="#wait_no_element"> WAIT_NO_ELEMENT </a></li>
+        
+        <li><a href="#wait_no_style"> WAIT_NO_STYLE </a></li>
+        
+        <li><a href="#wait_no_style_all"> WAIT_NO_STYLE_ALL </a></li>
+        
+        <li><a href="#wait_style"> WAIT_STYLE </a></li>
+        
+        <li><a href="#wait_style_all"> WAIT_STYLE_ALL </a></li>
+        
+        <li><a href="#xpath"> XPATH </a></li>
+        
+    </ul>
+</aside>
+        </section>
+        
+
     </div>
 </div>
 

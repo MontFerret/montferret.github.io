@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.71.1" />
+    <meta name="generator" content="Hugo 0.75.0" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.48b041b6e146d095d6e4a662e7c547d0558fdec6514b321e45529462c0efd2b2.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.64f1f7a6c5e475867d245403cd132b96cb35a0f513fdae841e901a1feac0734c.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -417,6 +417,15 @@
         
             
             <li>
+                <a href="https://www.montferret.dev/docs/stdlib/testing/" class="">
+                    testing
+                </a>
+            </li>
+        
+    
+        
+            
+            <li>
                 <a href="https://www.montferret.dev/docs/stdlib/types/" class="">
                     types
                 </a>
@@ -448,14 +457,23 @@
 </aside>
 
         </section>
+
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
-    <h2 id="keys">KEYS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keys.go#L15">Source</a></p>
-<p>Keys returns string array of object&rsquo;s keys</p>
+    <p>
+
+
+<h2 id="has">
+<a href="#has">
+HAS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/has.go#L13">Source</a></p>
+<p>HAS returns the value stored by the given key.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -465,54 +483,33 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>obj</code></td>
-<td><code>Object</code></td>
-<td>The object whose keys you want to extract</td>
-</tr>
-<tr>
-<td><code>sort</code></td>
-<td><code>Boolean, optional</code></td>
-<td>If sort is true, then the returned keys will be sorted.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Array of String</code> Array that contains object keys.</p>
-<hr>
-<h2 id="has">HAS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/has.go#L13">Source</a></p>
-<p>Has returns the value stored by the given key.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
 <td><code>key</code></td>
 <td><code>String</code></td>
+<td></td>
 <td>The key name string.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>Boolean</code> True if the key exists else false.</p>
 <hr>
-<h2 id="values">VALUES</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/values.go#L13">Source</a></p>
-<p>Values return the attribute values of the object as an array.</p>
+<p>
+
+
+<h2 id="keep_keys">
+<a href="#keep_keys">
+KEEP_KEYS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keep_keys.go#L14">Source</a></p>
+<p>KEEP_KEYS returns a new object with only given keys.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -522,54 +519,39 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
 <td><code>obj</code></td>
 <td><code>Object</code></td>
-<td>An object.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Returns</strong> <code>Array of Value</code> The values of document returned in any order.</p>
-<hr>
-<h2 id="keep_keys">KEEP_KEYS</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keep_keys.go#L14">Source</a></p>
-<p>KeepKeys returns a new object with only given keys.</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Argument</td>
-<td>Type</td>
-<td>Description</td>
-</tr>
-<tr>
-<td><code>src</code></td>
-<td><code>Object</code></td>
+<td></td>
 <td>Source object.</td>
 </tr>
 <tr>
 <td><code>keys</code></td>
-<td><code>Array Of String OR Strings</code></td>
-<td>Keys that need to be keeped.</td>
+<td><code>String, repeated</code></td>
+<td></td>
+<td>Keys that need to be kept.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>Object</code> New object with only given keys.</p>
 <hr>
-<h2 id="merge">MERGE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge.go#L13">Source</a></p>
-<p>Merge merge the given objects into a single object.</p>
+<p>
+
+
+<h2 id="keys">
+<a href="#keys">
+KEYS
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keys.go#L15">Source</a></p>
+<p>KEYS returns string array of object&rsquo;s keys</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -579,23 +561,75 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>objs</code></td>
-<td><code>Array Of Object OR Objects</code></td>
+<td><code>obj</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>The object whose keys you want to extract</td>
+</tr>
+<tr>
+<td><code>sort</code></td>
+<td><code>Boolean</code></td>
+<td><code>False</code></td>
+<td>If sort is true, then the returned keys will be sorted.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>String[]</code> Array that contains object keys.</p>
+<hr>
+<p>
+
+
+<h2 id="merge">
+<a href="#merge">
+MERGE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge.go#L13">Source</a></p>
+<p>MERGE merge the given objects into a single object.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>objects</code></td>
+<td><code>Object, repeated</code></td>
+<td></td>
 <td>Objects to merge.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>Object</code> Object created by merging.</p>
 <hr>
-<h2 id="merge_recursive">MERGE_RECURSIVE</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge_recursive.go#L13">Source</a></p>
-<p>MergeRecursive recursively merge the given objects into a single object.</p>
+<p>
+
+
+<h2 id="merge_recursive">
+<a href="#merge_recursive">
+MERGE_RECURSIVE
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge_recursive.go#L13">Source</a></p>
+<p>MERGE_RECURSIVE recursively merge the given objects into a single object.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -605,23 +639,33 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
-<td><code>objs</code></td>
-<td><code>Objects</code></td>
+<td><code>objects</code></td>
+<td><code>Objects, repeated</code></td>
+<td></td>
 <td>Objects to merge.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>Object</code> Object created by merging.</p>
 <hr>
-<h2 id="zip">ZIP</h2>
-<p><a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/zip.go#L16">Source</a></p>
-<p>Zip returns an object assembled from the separate parameters keys and values. Keys and values must be arrays and have the same length.</p>
+<p>
+
+
+<h2 id="values">
+<a href="#values">
+VALUES
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/values.go#L13">Source</a></p>
+<p>VALUES return the attribute values of the object as an array.</p>
 <table>
 <thead>
 <tr>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -631,16 +675,55 @@
 <tr>
 <td>Argument</td>
 <td>Type</td>
+<td>Default value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>object</code></td>
+<td><code>Object</code></td>
+<td></td>
+<td>Target object.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>Any[]</code> Values of document returned in any order.</p>
+<hr>
+<p>
+
+
+<h2 id="zip">
+<a href="#zip">
+ZIP
+</a>
+</h2>
+<a href="https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/zip.go#L16">Source</a></p>
+<p>ZIP returns an object assembled from the separate parameters keys and values. Keys and values must be arrays and have the same length.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument</td>
+<td>Type</td>
+<td>Default value</td>
 <td>Description</td>
 </tr>
 <tr>
 <td><code>keys</code></td>
-<td><code>Array of Strings</code></td>
+<td><code>String[]</code></td>
+<td></td>
 <td>An array of strings, to be used as key names in the result.</td>
 </tr>
 <tr>
 <td><code>values</code></td>
-<td><code>Array of Objects</code></td>
+<td><code>Object[]</code></td>
+<td></td>
 <td>An array of core.value, to be used as key values.</td>
 </tr>
 </tbody>
@@ -650,6 +733,37 @@
 
 </article>
         </section>
+        
+        
+            <section id="menu" class="column is-2">
+                    
+                    
+                    
+                    
+                    
+                    
+                    <aside class="menu" style="position: sticky; top: 63px;">
+    <ul class="menu-list">
+        
+        <li><a href="#has"> HAS </a></li>
+        
+        <li><a href="#keep_keys"> KEEP_KEYS </a></li>
+        
+        <li><a href="#keys"> KEYS </a></li>
+        
+        <li><a href="#merge"> MERGE </a></li>
+        
+        <li><a href="#merge_recursive"> MERGE_RECURSIVE </a></li>
+        
+        <li><a href="#values"> VALUES </a></li>
+        
+        <li><a href="#zip"> ZIP </a></li>
+        
+    </ul>
+</aside>
+        </section>
+        
+
     </div>
 </div>
 

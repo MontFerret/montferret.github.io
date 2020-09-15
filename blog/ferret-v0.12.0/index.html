@@ -105,7 +105,7 @@
                         </a>
                 
                         
-                        <a href="/blog/" class="navbar-item "
+                        <a href="/blog/" class="navbar-item  active"
                         title=Blog id=blog>
                             Blog
                         </a>
@@ -149,77 +149,32 @@
         })
     })();
 </script><div id="content">
-    <div class="content section cookbook">
-    <div class="columns">
-        <section class="column is-2">
-            <aside class="menu">
-    
-    
-
-
-
-
-
-
-
-
-<p class="menu-label">
-    Cookbook
-</p>
-<ul class="menu-list">
-    
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/google-search/" class="">
-                    Google search
-                </a>
-            </li>
-        
-    
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/pagination/" class="is-active">
-                    Pagination
-                </a>
-            </li>
-        
-    
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/iframes/" class="">
-                    iframes
-                </a>
-            </li>
-        
-    
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/navigation/" class="">
-                    Navigation
-                </a>
-            </li>
-        
-    
-
-
-</ul>
-
-
-
-
-
-</aside>
-
-        </section>
-        <section id="main" class="column is-10">
-            <article id="content" class="has-text-justified">
-    <p>There are several way how to implement pagination.</p>
-<h3 id="controlled">Controlled</h3>
-<p>In a controlled pagination, we either pass a number of pages to scrape or extract the number from the target page:</p>
+    <div class="content section blog blog-post">
+        <div class="columns is-centered blog-post-header has-text-centered">
+            <div class="column is-10">
+                <p class="title is-2">
+                    Ferret v0.12.0
+                </p>
+                <p class="subtitle is-4">
+                        More stability
+                    </p>
+                <p class="subtitle is-6 has-text-grey">
+                    <span>September 3, 2020</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
+                </p>
+                <hr class="is-block-centered" />
+            </div>
+        </div>
+        <div class="columns is-centered blog-post-content has-text-justified">
+            <div class="column is-8">
+                <p>Hello fellow miners,</p>
+<p>We are happy to announce a new Ferret release - <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.12.0">Ferret v0.12.0</a></strong>.</p>
+<p>This release has a new useful module in the standard library - testing!<br>
+Let&rsquo;s dig in. The full changelog you can find <a href="https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#0120">here</a>.</p>
+<hr>
+<h1 id="whats-added">What&rsquo;s added</h1>
+<h2 id="assertion-library">Assertion library</h2>
+<p>A new <code>T</code> namespace has been added to the standard library that provides some helpful methods for making assertions.  <br>
+The functions can be used to test UI, validate data and ensure the correctnes of a script.</p>
 
 
 
@@ -229,62 +184,28 @@
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-851-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-120-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-851-text" class="code-editor-text" style="height: 600px;">
+            <div id="code-editor-120-text" class="code-editor-text" style="height: 190px;">
                 
-LET baseURL = 'https://www.amazon.com/'
-LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
-INPUT(amazon, '#twotabsearchtextbox', @criteria)
-CLICK(amazon, '.nav-search-submit input[type="submit"]')
-WAIT_NAVIGATION(amazon)
+LET doc = DOCUMENT('https://github.com/', { driver: "cdp" })
 
-LET resultListSelector = 'div.s-result-list'
-LET resultItemSelector = '[data-component-type="s-search-result"]'
-LET nextBtnSelector = 'ul.a-pagination .a-last a'
-LET priceWholeSelector = '.a-price-whole'
-LET priceFracSelector = '.a-price-fraction'
-LET pagers = ELEMENTS(amazon, 'ul.a-pagination li.a-disabled')
-LET pages = LENGTH(pagers) > 0 ? TO_INT(INNER_TEXT(LAST(pagers))) : 0
+T::TRUE(ELEMENT_EXISTS(doc, "#user[login]"))
+T::TRUE(ELEMENT_EXISTS(doc, "#user[email]"))
+T::TRUE(ELEMENT_EXISTS(doc, "#user[password]"))
 
-LET result = (
-    FOR pageNum IN 1..pages
+RETURN data
 
-        LET clicked = pageNum == 1 ? false : CLICK(amazon, nextBtnSelector)
-        LET wait = clicked ? WAIT_NAVIGATION(amazon, 10000) : false
-        LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
-
-        PRINT("page:", pageNum, "clicked", clicked)
-
-        LET items = (
-            FOR el IN ELEMENTS(amazon, resultItemSelector)
-                LET hasPrice = ELEMENT_EXISTS(el, priceWholeSelector)
-                LET priceWholeTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceWholeSelector), "[0-9]+")) : "0"
-                LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), "[0-9]+")) : "00"
-		        LET price = TO_FLOAT(priceWholeTxt + "." + priceFracTxt)
-		        LET anchor = ELEMENT(el, "a")
-
-                RETURN {
-                    url: baseURL + anchor.attributes.href,
-                    title: INNER_TEXT(el, 'h2'),
-                    price
-                }
-        )
-
-        RETURN items
-)
-
-RETURN FLATTEN(result)
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-851-result" class="code-editor-result" style="height: 600px;"></div>
+            <div id="code-editor-120-result" class="code-editor-result" style="height: 190px;"></div>
         </div>
     </div>
 
@@ -298,10 +219,10 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-851-run-button');
-            const textEditor = createEditor('code-editor-851-text', 'aql');
-            const resultEditor = createEditor('code-editor-851-result', 'json');
-            resultEditor.setReadOnly(true);function setContent(editor, content) {
+            const btn = document.querySelector('#code-editor-120-run-button');
+            const textEditor = createEditor('code-editor-120-text', 'aql');
+            const resultEditor = createEditor('code-editor-120-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
 
@@ -351,15 +272,9 @@ RETURN FLATTEN(result)
         }, false);
     </script>
 </div>
-<h3 id="uncontrolled">Uncontrolled</h3>
-<p>In turn, in uncontrolled pagination, we use a helper function <a href="/docs/stdlib/html/#pagination">PAGINATION</a>. The functions accepts an HTML element and a CSS selector for &ldquo;Next&rdquo; button. Once the the given selector returns empty result, iteration ends.</p>
-
-
-<div class="notification is-info">
-    
-Iteration always starts with a current page.
-
-</div>
+<p>Read about available functions <a href="https://www.montferret.dev/docs/stdlib/testing">here</a>.</p>
+<h2 id="new-frames-function">New FRAMES function</h2>
+<p>A new helper function that finds HTML frames by a given property selector.</p>
 
 
 
@@ -369,60 +284,28 @@ Iteration always starts with a current page.
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-1000-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-807-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-1000-text" class="code-editor-text" style="height: 600px;">
+            <div id="code-editor-807-text" class="code-editor-text" style="height: 190px;">
                 
-LET baseURL = 'https://www.amazon.com/'
-LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
-INPUT(amazon, '#twotabsearchtextbox', @criteria)
-CLICK(amazon, '.nav-search-submit input[type="submit"]')
-WAIT_NAVIGATION(amazon)
+LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
+    driver: 'cdp'
+})
 
-LET resultListSelector = '#s-results-list-atf'
-LET resultItemSelector = '[data-component-type="s-search-result"]'
-LET nextBtnSelector = 'ul.a-pagination .a-last a'
-LET priceWholeSelector = '.a-price-whole'
-LET priceFracSelector = '.a-price-fraction'
+LET frame = FRAMES(page, "src", "/")
 
-LET result = (
-    FOR pageNum IN PAGINATION(amazon, nextBtnSelector)
-        LIMIT @pages
+RETURN FIRST(frame).url
 
-        LET wait = pageNum > 0 ? WAIT_NAVIGATION(amazon, 20000) : false
-        LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
-
-        LET items = (
-            FOR el IN ELEMENTS(amazon, resultItemSelector)
-                LET hasPrice = ELEMENT_EXISTS(el, priceWholeSelector)
-                LET priceWholeTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceWholeSelector), "[0-9]+")) : "0"
-                LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), "[0-9]+")) : "00"
-		        LET price = TO_FLOAT(priceWholeTxt + "." + priceFracTxt)
-		        LET anchor = ELEMENT(el, "a")
-
-		        PRINT(priceWholeTxt, priceFracTxt)
-
-                RETURN {
-                    url: baseURL + anchor.attributes.href,
-                    title: INNER_TEXT(el, 'h2'),
-                    price
-                }
-        )
-
-        RETURN items
-)
-
-RETURN FLATTEN(result)
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-1000-result" class="code-editor-result" style="height: 600px;"></div>
+            <div id="code-editor-807-result" class="code-editor-result" style="height: 190px;"></div>
         </div>
     </div>
 
@@ -436,10 +319,10 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-1000-run-button');
-            const textEditor = createEditor('code-editor-1000-text', 'aql');
-            const resultEditor = createEditor('code-editor-1000-result', 'json');
-            resultEditor.setReadOnly(true);function setContent(editor, content) {
+            const btn = document.querySelector('#code-editor-807-run-button');
+            const textEditor = createEditor('code-editor-807-text', 'aql');
+            const resultEditor = createEditor('code-editor-807-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
 
@@ -489,11 +372,130 @@ RETURN FLATTEN(result)
         }, false);
     </script>
 </div>
+<h2 id="iframe-navigation-handling">iFrame navigation handling</h2>
+<p>Finally, we can control navigation of nested iframes! Whenever your page has a nested iframe that performs some nested navigation, you can tell Ferret to wait for its completion.</p>
 
-</article>
-        </section>
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns is-mobile">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-680-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+        </div>
     </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-680-text" class="code-editor-text" style="height: 580px;">
+                
+LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
+    driver: 'cdp'
+})
+
+LET innerPage = FIRST(FRAMES(page, "src", "/"))
+
+T::NOT::NONE(innerPage)
+
+SCROLL_ELEMENT(innerPage)
+
+CLICK(innerPage, "#navbar-burger")
+WAIT_CLASS(innerPage, "#primary-nav", "is-active")
+
+CLICK(innerPage, "#blog")
+
+WAIT_NAVIGATION(innerPage)
+
+WAIT_ELEMENT(innerPage, ".right-menu .mui-dropdown .login")
+
+CLICK(ELEMENT(innerPage, ".blog-post a"))
+
+WAIT_NAVIGATION(innerPage)
+
+
+RETURN INNER_TEXT(innerPage, ".content")
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-680-result" class="code-editor-result" style="height: 580px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-680-run-button');
+            const textEditor = createEditor('code-editor-680-text', 'aql');
+            const resultEditor = createEditor('code-editor-680-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
 </div>
+<h1 id="whats-changed">What&rsquo;s changed</h1>
+<h2 id="removed-property-caching-and-tracking">Removed property caching and tracking</h2>
+<p>This <strong>could be</strong> a breaking change, so, please, test your scripts.
+In previous versions, the CDP driver used aggressive caching and changes tracking on properties like <code>.class</code>, <code>.attributes</code> and etc., in order to redcue amount of calls to a browser, which led to high CPU usage when a runtime held a big amount of elements in memory.<br>
+To tackle the problem, the caching and tracking were removed and thus, every time element&rsquo;s property is accessed, a latest value gets retrived from a browser, without any further caching. If something needs to be cahced, it&rsquo;s user&rsquo;s responsibility to chace it in local variable.</p>
+
+            </div>
+        </div>
+    </div>
 
         </div><footer class="footer">
     <div class="columns">
