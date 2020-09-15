@@ -4,7 +4,7 @@ subtitle: "More stability"
 draft: false
 author: "Tim Voronov"
 authorLink: "https://github.com/ziflex"
-date: "2020-09-03"
+date: "2020-09-14"
 ---
 
 Hello fellow miners,
