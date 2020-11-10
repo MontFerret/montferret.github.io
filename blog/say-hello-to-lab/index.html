@@ -186,7 +186,7 @@
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-650-text" class="code-editor-text" style="height: 280px;">
+            <div id="code-635-text" class="code-editor-text" style="height: 280px;">
                 
 LET github = DOCUMENT("https://github.com/trending")
 
@@ -208,7 +208,7 @@ FOR project IN ELEMENTS(github, ".Box-row")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-650-text');
+            const editor = ace.edit('code-635-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
@@ -222,7 +222,7 @@ Now we can the query with <code>lab</code>:</p>
 9:04PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
 9:04PM INF Passed Duration<span style="color:#f92672">=</span>1.32741042s File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/trending.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
 9:04PM INF Done Duration<span style="color:#f92672">=</span>1.32741042s Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
-</code></pre></div><p><code>lab</code> has successfully executed the given script! Even though, it might not look very impressive, it is pretty useful when you write scripts that test UI, like this:</p>
+</code></pre></div><p><code>lab</code> has successfully executed the given script! Even though it might not look very impressive, it is pretty useful when you write scripts to test a UI, like this:</p>
 
 
 
@@ -230,7 +230,7 @@ Now we can the query with <code>lab</code>:</p>
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-616-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-69-text" class="code-editor-text" style="height: 250px;">
                 
 LET github = DOCUMENT("https://github.com/trending")
 LET emailBtnSelector = 'a[href="/explore/email"]'
@@ -250,7 +250,7 @@ RETURN TRUE
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-616-text');
+            const editor = ace.edit('code-69-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
@@ -271,23 +271,23 @@ RETURN TRUE
 9:07PM INF Passed Duration<span style="color:#f92672">=</span>134.648972ms File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/trending.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
 9:07PM INF Done Duration<span style="color:#f92672">=</span>1.537551539s Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>
 </code></pre></div><h2 id="suite-files">Suite files</h2>
-<p>All that good, but why would we bother writing something that can be achieved fairly easy by Ferret alone?</p>
+<p>All that good, but why would we bother writing something that can be achieved by Ferret alone?</p>
 <p>The answer is suite files.</p>
-<p>Till this moment, we were using plain FQL files which <code>lab</code> directly executed using <code>ferret</code> without possibility to validate correctness of returned data.</p>
+<p>Till this moment, we&rsquo;ve used plain FQL files which <code>lab</code> directly executed using <code>ferret</code> without possibility to validate correctness of returned data.</p>
 <p>Here come suite files:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">query</span>:
   <span style="color:#f92672">ref</span>: <span style="color:#ae81ff">trending.fql</span>
 <span style="color:#f92672">assert</span>:
   <span style="color:#f92672">text</span>: |<span style="color:#e6db74">
 </span><span style="color:#e6db74">    </span>    <span style="color:#ae81ff">RETURN T::LEN(@lab.data.query.result, 25)</span>
-</code></pre></div><p>Ok, what happening here is that we have decoupled our query from assertion. <code>lab</code> executes a query from <code>query</code> section and then validates returned data by executing another query from <code>assert</code> section.</p>
-<p>The used <code>@lab</code> parameter is a built-in parameter that holds some runtime information like query results and <code>cdn</code> endpoints which we will discuss later.</p>
+</code></pre></div><p>Ok, what&rsquo;s happening here is that we have decoupled our query from the assertions. <code>lab</code> executes a query from the <code>query</code> section and then validates returned data by executing another query from the <code>assert</code> section.</p>
+<p>The <code>@lab</code> parameter is a built-in parameter that holds runtime information, like query results and <code>cdn</code> endpoints, which we will discuss later.</p>
 <div class="notification is-info">
   We are using ``ref`` keyword here to point to a external file, but we could also use ``text`` in there as we do in assertion section.
 </div>
 <h2 id="serving-static-files">Serving static files</h2>
-<p>One of the features that <code>lab</code> provides is static files server called <code>cdn</code>. <code>cdn</code> endpoint allows you to serve any static files or web apps during tests execution.</p>
-<p>Let&rsquo;s create a plain text file and simple query that will download a it using <code>cdn</code> endpoint.</p>
+<p>One of the features that <code>lab</code> provides is static files server called <code>cdn</code>. The <code>cdn</code> endpoint allows you to serve any static files or web apps during execution of the tests.</p>
+<p>Let&rsquo;s create a plain text file and simple query that will download a it using the <code>cdn</code> endpoint.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ mkdir content
 $ echo <span style="color:#e6db74">&#34;Hello world&#34;</span> &gt; content/readme.txt
 $ touch cdn-example.fql
@@ -298,7 +298,7 @@ $ touch cdn-example.fql
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-362-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-493-text" class="code-editor-text" style="height: 90px;">
                 
 RETURN IO::NET::HTTP::GET(@lab.cdn.content)
 
@@ -308,7 +308,7 @@ RETURN IO::NET::HTTP::GET(@lab.cdn.content)
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-362-text');
+            const editor = ace.edit('code-493-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
@@ -316,27 +316,27 @@ RETURN IO::NET::HTTP::GET(@lab.cdn.content)
         }, false);
     </script>
 </div>
-<p>As you have alredy seen before, we are using <code>@lab</code> param to get access to available cdn endpoints.
+<p>As you have alredy seen before, we are using the <code>@lab</code> param to get access to available cdn endpoints.
 <code>content</code> is a directory name that is used for static files.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab --cdn<span style="color:#f92672">=</span>./content cdn-example.fql
 ⇨ http server started on <span style="color:#f92672">[</span>::<span style="color:#f92672">]</span>:57150
 9:10PM INF Passed Duration<span style="color:#f92672">=</span>13.387547ms File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/cdn-example.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
 9:10PM INF Done Duration<span style="color:#f92672">=</span>13.387547ms Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
-</code></pre></div><p>As you might noticed, we see in the logs that before scripts execution, <code>lab</code> launched a web server on port 57150, in order to server static files we pointed to.</p>
+</code></pre></div><p>In the logs before script execution, we see that <code>lab</code> launched a web server on port 57150 in order to serve static files.</p>
 <div class="notification is-info">
   You can serve as many folders as you want.
 </div>
 <h2 id="parallel-execution">Parallel execution</h2>
-<p>By default, <code>lab</code> executes queries sequentially, but you can make it run in parallel, by setting <code>concurrency</code> parameter to a required level of parallelism:</p>
+<p>By default, <code>lab</code> executes queries sequentially, but you can make it run in parallel by setting <code>concurrency</code> parameter to the required level of parallelism:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab --concurrency<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span> .
 </code></pre></div><h2 id="docker">Docker</h2>
-<p>Additionally to binary files <code>lab</code> is also distributed as Docker images via <a href="https://github.com/orgs/MontFerret/packages/container/package/lab">GitHub</a> and <a href="https://hub.docker.com/repository/docker/montferret/lab">Docker Hub</a> that have both <code>lab</code> binary and headless <code>Chromium</code>:</p>
+<p>Aside from binary files, <code>lab</code> is also distributed as Docker images via <a href="https://github.com/orgs/MontFerret/packages/container/package/lab">GitHub</a> and <a href="https://hub.docker.com/repository/docker/montferret/lab">Docker Hub</a> that have both <code>lab</code> binaries and headless <code>Chromium</code>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run --rm -v $PWD:/test montferret/lab:1.2.0
 </code></pre></div><h2 id="summary">Summary</h2>
 <p>Let&rsquo;s summarize what we&rsquo;ve learned.</p>
 <p><code>lab</code> can be useful to test correctness of your scraping queries by running them and validating their outputs.</p>
-<p>Also, <code>lab</code> can help in testing UI by using new <a href="https://www.montferret.dev/docs/stdlib/testing/">assertion library</a>.</p>
-<p>In some scenarios, it can be used as a batch script runner, that can execute your scripts in parallel that will simplify your infrastructure.</p>
+<p>Also, <code>lab</code> can help in testing UI by using the new <a href="https://www.montferret.dev/docs/stdlib/testing/">assertion library</a>.</p>
+<p>In some scenarios, it can be used as a batch script runner that can execute your scripts in parallel that will simplify your infrastructure.</p>
 
             </div>
         </div>
