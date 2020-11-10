@@ -1,0 +1,21 @@
+{{- $src := .Get "src" -}}
+{{- $size := default "" ( .Get "size" ) -}}
+{{- $transform := default "true" ( .Get "transform" ) -}}
+{{- $img := $.Page.Resources.GetMatch $src -}}
+{{- $height := "" -}}
+{{- $width := "" -}}
+
+<figure class="image">
+    {{- if $size -}}
+        {{- if eq $transform "true" -}}
+        {{- $img = $img.Resize $size -}}
+        {{- end -}}
+        {{- $pairs := split $size "x" -}}
+        {{- $height = index $pairs 0 -}}
+        {{- $width = index $pairs 1 -}}
+
+        <img src="{{ $img.Permalink }}" style="width: {{ $width }}px; height: {{$height}}px">
+    {{- else -}}
+        <img src="{{ $img.Permalink }}">
+    {{- end -}}
+</figure>
