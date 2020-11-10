@@ -37,7 +37,7 @@ In this tutorial, we are going to use a local binary.
 
 Let's create a simple script that retreives GitHub trending projects:
 
-{{< editor lang="fql" height="330px" readonly="true" >}}
+{{< code lang="fql" height="280px" >}}
 LET github = DOCUMENT("https://github.com/trending")
 
 FOR project IN ELEMENTS(github, ".Box-row")
@@ -51,7 +51,7 @@ FOR project IN ELEMENTS(github, ".Box-row")
     	language: ELEMENT_EXISTS(project, '[itemprop="programmingLanguage"]') ? INNER_TEXT(project, '[itemprop="programmingLanguage"]') : "",
     	stars: TRIM(INNER_TEXT(project, 'a[href="'+href+'/stargazers"]'))
     }
-{{</ editor >}}
+{{</ code >}}
 
 Let's save it in a file called ``trending.fql``.
 Now we can the query with ``lab``:
@@ -65,7 +65,7 @@ $ lab trending.fql
 
 ``lab`` has successfully executed the given script! Even though, it might not look very impressive, it is pretty useful when you write scripts that test UI, like this:
 
-{{< editor lang="fql" height="330px" readonly="true" >}}
+{{< code lang="fql" height="250px" >}}
 LET github = DOCUMENT("https://github.com/trending")
 LET emailBtnSelector = 'a[href="/explore/email"]'
 LET trendingBtnSelector = 'a[data-selected-links="trending_repositories /trending"]'
@@ -77,7 +77,7 @@ T::TRUE(ELEMENT_EXISTS(github, trendingBtnSelector))
 T::INCLUDE(ELEMENT(github, trendingBtnSelector).attributes.class, 'selected')
 
 RETURN TRUE
-{{</ editor >}}
+{{</ code >}}
 
 Let's save this query in a file called ``assertions.fql`` and execute it:
 ```bash
@@ -135,9 +135,9 @@ $ echo "Hello world" > content/readme.txt
 $ touch cdn-example.fql
 ```
 
-{{< editor lang="fql" height="330px" readonly="true" >}}
+{{< code lang="fql" height="90px" >}}
 RETURN IO::NET::HTTP::GET(@lab.cdn.content)
-{{</ editor >}}
+{{</ code >}}
 
 As you have alredy seen before, we are using ``@lab`` param to get access to available cdn endpoints.
 ``content`` is a directory name that is used for static files.
