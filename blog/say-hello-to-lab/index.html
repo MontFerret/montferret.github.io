@@ -183,18 +183,10 @@
 
 
 
-
-
 <div class="code-editor">
-    <div class="columns is-mobile">
-        <div class="column is-1 is-offset-11">
-            <button id="code-editor-194-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
-        </div>
-    </div>
-
     <div class="columns">
-        <div class="column is-6">
-            <div id="code-editor-194-text" class="code-editor-text" style="height: 330px;">
+        <div class="column is-full">
+            <div id="code-650-text" class="code-editor-text" style="height: 280px;">
                 
 LET github = DOCUMENT("https://github.com/trending")
 
@@ -212,71 +204,15 @@ FOR project IN ELEMENTS(github, ".Box-row")
 
             </div>
         </div>
-        <div class="column is-6">
-            <div id="code-editor-194-result" class="code-editor-result" style="height: 330px;"></div>
-        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode) {
-                const editor = ace.edit(id);
-                editor.setTheme("ace\/theme\/tomorrow_night");
-                editor.session.setMode("ace/mode/" + mode);
-
-                return editor;
-            }
-
-            const btn = document.querySelector('#code-editor-194-run-button');
-            const textEditor = createEditor('code-editor-194-text', 'aql');
-            const resultEditor = createEditor('code-editor-194-result', 'json');
-            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
-                editor.setValue(content, -1);
-            }
-
-            let isRunning = false;
-
-            function onStart() {
-                isRunning = true;
-                textEditor.setReadOnly(true);
-                btn.classList.add('is-loading');
-            }
-
-            function onEnd(result) {
-                isRunning = false;
-                textEditor.setReadOnly(false);
-                btn.classList.remove('is-loading');
-
-                setContent(resultEditor, result);
-            }
-
-            btn.addEventListener('click', () => {
-                if (isRunning) {
-                    return;
-                }
-
-                const body = {
-                        text: textEditor.getValue(),
-                        params: JSON.parse("{}")
-                };
-
-                onStart();
-                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
-                    method: 'post',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json,encoding=utf-8'
-                    },
-                    body: JSON.stringify(body)
-                })
-                    .then(r => r.json())
-                    .then((data) => {
-                        onEnd(JSON.stringify(data, null, 4));
-                    })
-                    .catch((err) => {
-                        onEnd(err.toString());
-                    });
-            });
+            const editor = ace.edit('code-650-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
         }, false);
     </script>
 </div>
@@ -291,18 +227,10 @@ Now we can the query with <code>lab</code>:</p>
 
 
 
-
-
 <div class="code-editor">
-    <div class="columns is-mobile">
-        <div class="column is-1 is-offset-11">
-            <button id="code-editor-731-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
-        </div>
-    </div>
-
     <div class="columns">
-        <div class="column is-6">
-            <div id="code-editor-731-text" class="code-editor-text" style="height: 330px;">
+        <div class="column is-full">
+            <div id="code-616-text" class="code-editor-text" style="height: 250px;">
                 
 LET github = DOCUMENT("https://github.com/trending")
 LET emailBtnSelector = 'a[href="/explore/email"]'
@@ -318,71 +246,15 @@ RETURN TRUE
 
             </div>
         </div>
-        <div class="column is-6">
-            <div id="code-editor-731-result" class="code-editor-result" style="height: 330px;"></div>
-        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode) {
-                const editor = ace.edit(id);
-                editor.setTheme("ace\/theme\/tomorrow_night");
-                editor.session.setMode("ace/mode/" + mode);
-
-                return editor;
-            }
-
-            const btn = document.querySelector('#code-editor-731-run-button');
-            const textEditor = createEditor('code-editor-731-text', 'aql');
-            const resultEditor = createEditor('code-editor-731-result', 'json');
-            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
-                editor.setValue(content, -1);
-            }
-
-            let isRunning = false;
-
-            function onStart() {
-                isRunning = true;
-                textEditor.setReadOnly(true);
-                btn.classList.add('is-loading');
-            }
-
-            function onEnd(result) {
-                isRunning = false;
-                textEditor.setReadOnly(false);
-                btn.classList.remove('is-loading');
-
-                setContent(resultEditor, result);
-            }
-
-            btn.addEventListener('click', () => {
-                if (isRunning) {
-                    return;
-                }
-
-                const body = {
-                        text: textEditor.getValue(),
-                        params: JSON.parse("{}")
-                };
-
-                onStart();
-                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
-                    method: 'post',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json,encoding=utf-8'
-                    },
-                    body: JSON.stringify(body)
-                })
-                    .then(r => r.json())
-                    .then((data) => {
-                        onEnd(JSON.stringify(data, null, 4));
-                    })
-                    .catch((err) => {
-                        onEnd(err.toString());
-                    });
-            });
+            const editor = ace.edit('code-616-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
         }, false);
     </script>
 </div>
@@ -423,88 +295,24 @@ $ touch cdn-example.fql
 
 
 
-
-
 <div class="code-editor">
-    <div class="columns is-mobile">
-        <div class="column is-1 is-offset-11">
-            <button id="code-editor-881-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
-        </div>
-    </div>
-
     <div class="columns">
-        <div class="column is-6">
-            <div id="code-editor-881-text" class="code-editor-text" style="height: 330px;">
+        <div class="column is-full">
+            <div id="code-362-text" class="code-editor-text" style="height: 90px;">
                 
 RETURN IO::NET::HTTP::GET(@lab.cdn.content)
 
             </div>
         </div>
-        <div class="column is-6">
-            <div id="code-editor-881-result" class="code-editor-result" style="height: 330px;"></div>
-        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode) {
-                const editor = ace.edit(id);
-                editor.setTheme("ace\/theme\/tomorrow_night");
-                editor.session.setMode("ace/mode/" + mode);
-
-                return editor;
-            }
-
-            const btn = document.querySelector('#code-editor-881-run-button');
-            const textEditor = createEditor('code-editor-881-text', 'aql');
-            const resultEditor = createEditor('code-editor-881-result', 'json');
-            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
-                editor.setValue(content, -1);
-            }
-
-            let isRunning = false;
-
-            function onStart() {
-                isRunning = true;
-                textEditor.setReadOnly(true);
-                btn.classList.add('is-loading');
-            }
-
-            function onEnd(result) {
-                isRunning = false;
-                textEditor.setReadOnly(false);
-                btn.classList.remove('is-loading');
-
-                setContent(resultEditor, result);
-            }
-
-            btn.addEventListener('click', () => {
-                if (isRunning) {
-                    return;
-                }
-
-                const body = {
-                        text: textEditor.getValue(),
-                        params: JSON.parse("{}")
-                };
-
-                onStart();
-                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
-                    method: 'post',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json,encoding=utf-8'
-                    },
-                    body: JSON.stringify(body)
-                })
-                    .then(r => r.json())
-                    .then((data) => {
-                        onEnd(JSON.stringify(data, null, 4));
-                    })
-                    .catch((err) => {
-                        onEnd(err.toString());
-                    });
-            });
+            const editor = ace.edit('code-362-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
         }, false);
     </script>
 </div>
