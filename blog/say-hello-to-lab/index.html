@@ -153,28 +153,32 @@
         <div class="columns is-centered blog-post-header has-text-centered">
             <div class="column is-10">
                 <p class="title is-2">
-                    Ferret v0.12.0
+                    Say &#39;Hello&#39; to Lab
                 </p>
                 <p class="subtitle is-4">
-                        More stability
+                        A new way to test Ferret scripts
                     </p>
                 <p class="subtitle is-6 has-text-grey">
-                    <span>September 14, 2020</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
+                    <span>November 9, 2020</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
                 </p>
                 <hr class="is-block-centered" />
             </div>
         </div>
         <div class="columns is-centered blog-post-content has-text-justified">
             <div class="column is-8">
-                <p>Hello fellow miners,</p>
-<p>We are happy to announce a new Ferret release - <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.12.0">Ferret v0.12.0</a></strong>.</p>
-<p>This release has a new useful module in the standard library - testing!<br>
-Let&rsquo;s dig in. The full changelog you can find <a href="https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#0120">here</a>.</p>
-<hr>
-<h1 id="whats-added">What&rsquo;s added</h1>
-<h2 id="assertion-library">Assertion library</h2>
-<p>A new <code>T</code> namespace has been added to the standard library that provides some helpful methods for making assertions.  <br>
-The functions can be used to test UI, validate data and ensure the correctnes of a script.</p>
+                <figure class="image"><img src="https://www.montferret.dev/blog/say-hello-to-lab/images/lab-logo.png" style="width: 256px; height: 256px"></figure>
+<p>Hello friends,</p>
+<p>Our team is excited to announce a new tool in our ecosystem - <a href="https://github.com/MontFerret/lab">The Lab</a>!</p>
+<p>The Lab is a test runner for Ferret that helps you to test how your scripts retrieve data or validate web UI.</p>
+<p>Let&rsquo;s see how it works!</p>
+<h2 id="get-started">Get started</h2>
+<p>The Lab can be installed either by downloading a <a href="https://github.com/MontFerret/lab/releases">binary</a> or pulling a Docker image:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker pull montferret/lab
+</code></pre></div><p>If you are macOS/Linux user, you can install the latest binary with the shell script:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/MontFerret/lab/master/install.sh | sudo sh
+</code></pre></div><p>In this tutorial, we are going to use a local binary.</p>
+<h2 id="first-run">First run</h2>
+<p>Let&rsquo;s create a simple script that retreives GitHub trending projects:</p>
 
 
 
@@ -184,28 +188,32 @@ The functions can be used to test UI, validate data and ensure the correctnes of
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-920-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-194-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-920-text" class="code-editor-text" style="height: 190px;">
+            <div id="code-editor-194-text" class="code-editor-text" style="height: 330px;">
                 
+LET github = DOCUMENT("https://github.com/trending")
 
-LET doc = DOCUMENT('https://github.com/', { driver: "cdp" })
+FOR project IN ELEMENTS(github, ".Box-row")
+    LET link = ELEMENT(project, "h1 a")
+    LET href = link.attributes.href
 
-T::TRUE(ELEMENT_EXISTS(doc, "#user[login]"))
-T::TRUE(ELEMENT_EXISTS(doc, "#user[email]"))
-T::TRUE(ELEMENT_EXISTS(doc, "#user[password]"))
-
-RETURN NONE
-
+    RETURN {
+    	url: "https://github.com" + href,
+    	name: SUBSTITUTE(link.innerText, " ", ""),
+    	description: ELEMENT_EXISTS(project, "p") ? INNER_TEXT(project, "p") : "",
+    	language: ELEMENT_EXISTS(project, '[itemprop="programmingLanguage"]') ? INNER_TEXT(project, '[itemprop="programmingLanguage"]') : "",
+    	stars: TRIM(INNER_TEXT(project, 'a[href="'+href+'/stargazers"]'))
+    }
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-920-result" class="code-editor-result" style="height: 190px;"></div>
+            <div id="code-editor-194-result" class="code-editor-result" style="height: 330px;"></div>
         </div>
     </div>
 
@@ -219,9 +227,9 @@ RETURN NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-920-run-button');
-            const textEditor = createEditor('code-editor-920-text', 'aql');
-            const resultEditor = createEditor('code-editor-920-result', 'json');
+            const btn = document.querySelector('#code-editor-194-run-button');
+            const textEditor = createEditor('code-editor-194-text', 'aql');
+            const resultEditor = createEditor('code-editor-194-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -272,9 +280,13 @@ RETURN NONE
         }, false);
     </script>
 </div>
-<p>Read about available functions <a href="https://www.montferret.dev/docs/stdlib/testing">here</a>.</p>
-<h2 id="new-frames-function">New FRAMES function</h2>
-<p>A new helper function that finds HTML frames by a given property selector.</p>
+<p>Let&rsquo;s save it in a file called <code>trending.fql</code>.
+Now we can the query with <code>lab</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab trending.fql
+9:04PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
+9:04PM INF Passed Duration<span style="color:#f92672">=</span>1.32741042s File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/trending.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+9:04PM INF Done Duration<span style="color:#f92672">=</span>1.32741042s Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</code></pre></div><p><code>lab</code> has successfully executed the given script! Even though, it might not look very impressive, it is pretty useful when you write scripts that test UI, like this:</p>
 
 
 
@@ -284,28 +296,30 @@ RETURN NONE
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-558-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-731-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-558-text" class="code-editor-text" style="height: 190px;">
+            <div id="code-editor-731-text" class="code-editor-text" style="height: 330px;">
                 
+LET github = DOCUMENT("https://github.com/trending")
+LET emailBtnSelector = 'a[href="/explore/email"]'
+LET trendingBtnSelector = 'a[data-selected-links="trending_repositories /trending"]'
 
-LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
-    driver: 'cdp'
-})
+T::TRUE(ELEMENT_EXISTS(github, emailBtnSelector))
+T::EQ(TRIM(INNER_TEXT(github, emailBtnSelector)), 'Get email updates')
 
-LET frame = FRAMES(page, "url", "https://www.montferret.dev/")
+T::TRUE(ELEMENT_EXISTS(github, trendingBtnSelector))
+T::INCLUDE(ELEMENT(github, trendingBtnSelector).attributes.class, 'selected')
 
-RETURN FIRST(frame).url
-
+RETURN TRUE
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-558-result" class="code-editor-result" style="height: 190px;"></div>
+            <div id="code-editor-731-result" class="code-editor-result" style="height: 330px;"></div>
         </div>
     </div>
 
@@ -319,9 +333,9 @@ RETURN FIRST(frame).url
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-558-run-button');
-            const textEditor = createEditor('code-editor-558-text', 'aql');
-            const resultEditor = createEditor('code-editor-558-result', 'json');
+            const btn = document.querySelector('#code-editor-731-run-button');
+            const textEditor = createEditor('code-editor-731-text', 'aql');
+            const resultEditor = createEditor('code-editor-731-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -372,9 +386,40 @@ RETURN FIRST(frame).url
         }, false);
     </script>
 </div>
-<h2 id="iframe-navigation-handling">iFrame navigation handling</h2>
-<p>Finally, we can control navigation of nested iframes! Whenever your page has a nested iframe that performs some nested navigation, you can tell Ferret to wait for its completion.</p>
-
+<p>Let&rsquo;s save this query in a file called <code>assertions.fql</code> and execute it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab assertion.fql
+9:06PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
+9:06PM INF Passed Duration<span style="color:#f92672">=</span>415.113954ms File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/assertion.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+9:06PM INF Done Duration<span style="color:#f92672">=</span>415.113954ms Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</code></pre></div><p>Great! Now we have 2 scripts that we can run together:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab .
+9:07PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
+9:07PM INF Passed Duration<span style="color:#f92672">=</span>1.402902567s File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/assertion.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+9:07PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
+9:07PM INF Passed Duration<span style="color:#f92672">=</span>134.648972ms File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/trending.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+9:07PM INF Done Duration<span style="color:#f92672">=</span>1.537551539s Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>
+</code></pre></div><h2 id="suite-files">Suite files</h2>
+<p>All that good, but why would we bother writing something that can be achieved fairly easy by Ferret alone?</p>
+<p>The answer is suite files.</p>
+<p>Till this moment, we were using plain FQL files which <code>lab</code> directly executed using <code>ferret</code> without possibility to validate correctness of returned data.</p>
+<p>Here come suite files:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">query</span>:
+  <span style="color:#f92672">ref</span>: <span style="color:#ae81ff">trending.fql</span>
+<span style="color:#f92672">assert</span>:
+  <span style="color:#f92672">text</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">    </span>    <span style="color:#ae81ff">RETURN T::LEN(@lab.data.query.result, 25)</span>
+</code></pre></div><p>Ok, what happening here is that we have decoupled our query from assertion. <code>lab</code> executes a query from <code>query</code> section and then validates returned data by executing another query from <code>assert</code> section.</p>
+<p>The used <code>@lab</code> parameter is a built-in parameter that holds some runtime information like query results and <code>cdn</code> endpoints which we will discuss later.</p>
+<div class="notification is-info">
+  We are using ``ref`` keyword here to point to a external file, but we could also use ``text`` in there as we do in assertion section.
+</div>
+<h2 id="serving-static-files">Serving static files</h2>
+<p>One of the features that <code>lab</code> provides is static files server called <code>cdn</code>. <code>cdn</code> endpoint allows you to serve any static files or web apps during tests execution.</p>
+<p>Let&rsquo;s create a plain text file and simple query that will download a it using <code>cdn</code> endpoint.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ mkdir content
+$ echo <span style="color:#e6db74">&#34;Hello world&#34;</span> &gt; content/readme.txt
+$ touch cdn-example.fql
+</code></pre></div>
 
 
 
@@ -383,53 +428,20 @@ RETURN FIRST(frame).url
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-424-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
+            <button id="code-editor-881-run-button" class="button is-primary is-pulled-right is-outlined is-radiusless">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-424-text" class="code-editor-text" style="height: 580px;">
+            <div id="code-editor-881-text" class="code-editor-text" style="height: 330px;">
                 
-LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
-    driver: 'cdp'
-})
-
-LET innerPage = FIRST(FRAMES(page, "url", "https://www.montferret.dev/"))
-
-T::NOT::NONE(innerPage)
-
-CLICK(innerPage, "#navbar-burger")
-WAIT_CLASS(innerPage, "#primary-nav", "is-active")
-CLICK(innerPage, "#blog")
-
-WAIT_NAVIGATION(page, {
-    frame: innerPage
-})
-
-// We need to get a new document that we have navigated to
-LET innerPage2 = FIRST(FRAMES(page, "url", "https://www.montferret.dev/blog/"))
-
-WAIT_ELEMENT(innerPage2, ".blog")
-
-LET item = ELEMENT(innerPage2, ".blog-post a")
-LET targetURL = item.attributes.href
-
-CLICK(item)
-
-WAIT_NAVIGATION(page, {
-	frame: innerPage2
-})
-
-// We need to get a new document that we have navigated to
-LET innerPage3 = FIRST(FRAMES(page, "url", targetURL))
-
-RETURN INNER_TEXT(innerPage3, ".content")
+RETURN IO::NET::HTTP::GET(@lab.cdn.content)
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-424-result" class="code-editor-result" style="height: 580px;"></div>
+            <div id="code-editor-881-result" class="code-editor-result" style="height: 330px;"></div>
         </div>
     </div>
 
@@ -443,9 +455,9 @@ RETURN INNER_TEXT(innerPage3, ".content")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-424-run-button');
-            const textEditor = createEditor('code-editor-424-text', 'aql');
-            const resultEditor = createEditor('code-editor-424-result', 'json');
+            const btn = document.querySelector('#code-editor-881-run-button');
+            const textEditor = createEditor('code-editor-881-text', 'aql');
+            const resultEditor = createEditor('code-editor-881-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -496,11 +508,27 @@ RETURN INNER_TEXT(innerPage3, ".content")
         }, false);
     </script>
 </div>
-<h1 id="whats-changed">What&rsquo;s changed</h1>
-<h2 id="removed-property-caching-and-tracking">Removed property caching and tracking</h2>
-<p>This <strong>could be</strong> a breaking change, so, please, test your scripts.
-In previous versions, the CDP driver used aggressive caching and changes tracking on properties like <code>.class</code>, <code>.attributes</code> and etc., in order to redcue amount of calls to a browser, which led to high CPU usage when a runtime held a big amount of elements in memory.<br>
-To tackle the problem, the caching and tracking were removed and thus, every time element&rsquo;s property is accessed, a latest value gets retrived from a browser, without any further caching. If something needs to be cahced, it&rsquo;s user&rsquo;s responsibility to chace it in local variable.</p>
+<p>As you have alredy seen before, we are using <code>@lab</code> param to get access to available cdn endpoints.
+<code>content</code> is a directory name that is used for static files.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab --cdn<span style="color:#f92672">=</span>./content cdn-example.fql
+⇨ http server started on <span style="color:#f92672">[</span>::<span style="color:#f92672">]</span>:57150
+9:10PM INF Passed Duration<span style="color:#f92672">=</span>13.387547ms File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/cdn-example.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+9:10PM INF Done Duration<span style="color:#f92672">=</span>13.387547ms Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</code></pre></div><p>As you might noticed, we see in the logs that before scripts execution, <code>lab</code> launched a web server on port 57150, in order to server static files we pointed to.</p>
+<div class="notification is-info">
+  You can serve as many folders as you want.
+</div>
+<h2 id="parallel-execution">Parallel execution</h2>
+<p>By default, <code>lab</code> executes queries sequentially, but you can make it run in parallel, by setting <code>concurrency</code> parameter to a required level of parallelism:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab --concurrency<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span> .
+</code></pre></div><h2 id="docker">Docker</h2>
+<p>Additionally to binary files <code>lab</code> is also distributed as Docker images via <a href="https://github.com/orgs/MontFerret/packages/container/package/lab">GitHub</a> and <a href="https://hub.docker.com/repository/docker/montferret/lab">Docker Hub</a> that have both <code>lab</code> binary and headless <code>Chromium</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run --rm -v $PWD:/test montferret/lab:1.2.0
+</code></pre></div><h2 id="summary">Summary</h2>
+<p>Let&rsquo;s summarize what we&rsquo;ve learned.</p>
+<p><code>lab</code> can be useful to test correctness of your scraping queries by running them and validating their outputs.</p>
+<p>Also, <code>lab</code> can help in testing UI by using new <a href="https://www.montferret.dev/docs/stdlib/testing/">assertion library</a>.</p>
+<p>In some scenarios, it can be used as a batch script runner, that can execute your scripts in parallel that will simplify your infrastructure.</p>
 
             </div>
         </div>
