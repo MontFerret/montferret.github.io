@@ -7,7 +7,7 @@ draft: false
 # Syntax
 
 ### Query types
-An FQL query must return a result indicated by usage either of the ``RETURN`` or ``FOR IN`` keywords. The FQL parser will return an error if it cannot find any of these two statements.
+An FQL query must return a result indicated by usage either of the ``RETURN`` or ``FOR IN`` or ``FOR WHILE `` keywords. The FQL parser will return an error if it cannot find any of these two statements.
 
 ### Whitespace
 Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces. Whitespace within strings or names must be enclosed in quotes in order to be preserved.

@@ -12,7 +12,7 @@ LET google = DOCUMENT("https://www.google.com/", {
 
 HOVER(google, 'input[name="q"]')
 WAIT(RAND(100))
-INPUT(google, 'input[name="q"]', "ferret", 30)
+INPUT(google, 'input[name="q"]', @criteria, 30)
 
 WAIT(RAND(100))
 
@@ -27,7 +27,7 @@ FOR result IN ELEMENTS(google, '.g')
     FILTER TRIM(result.attributes.class) == 'g'
     RETURN {
         title: INNER_TEXT(result, 'h3'),
-        description: INNER_TEXT(result, '.st'),
+        description: INNER_TEXT(result, '.rc > div:nth-child(2) span'),
         url: INNER_TEXT(result, 'cite')
     }
 {{</ editor >}}

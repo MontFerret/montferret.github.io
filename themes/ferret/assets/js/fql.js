@@ -7,7 +7,7 @@ function registerFQL(hljs) {
     var KEYWORDS = {
       keyword:
         'USE FOR IN RETURN LET AND OR LIMIT FILTER DISTINCT SORT COLLECT ASC DESC' +
-        'INTO KEEP WITH COUNT ALL ANY AGGREGATE LIKE NOT'
+        'INTO KEEP WITH COUNT ALL ANY AGGREGATE LIKE NOT WHILE DO'
       ,
       literal:
         'TRUE true FALSE false NONE',
