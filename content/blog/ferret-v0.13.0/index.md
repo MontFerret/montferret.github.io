@@ -11,22 +11,23 @@ Hello friends,
 
 We are excited to announce a new Ferret release - **[Ferret v0.13.0](https://github.com/MontFerret/ferret/releases/tag/v0.13.0)**.  
 
-This release brings new syntax feature, DOM API updates and some fixes. Let's dive in!
+This release brings new syntax, DOM API updates and some bug fixes. Let's dive in!
 
 # What's added
 
 ## While loop
 Finally! While loops have landed FQL!    
-Ferret query language inherently lacked while loops due to its origin from ArangoDB query language. But over time, it's become obvoious that this kind of looping is essential for scraping web pages.
 
-While loops in FQL are implemented as an modification of ``FOR IN`` loop and come in two modes: ``while-do`` and ``do-while``:
+Ferret query language inherently lacked while loops due to its origin from ArangoDB query language. But over time, it's become obvious that this kind of looping is essential for data scraping.
+
+While loops in FQL are implemented as an extension of ``FOR IN`` loop and come in two modes: ``while-do`` and ``do-while``:
 
 ```
 FOR counter [DO] WHILE condition
     RETURN value
 ```
 
-``while-do`` is a traditional while loop where a condition is checked before every iteration. It might be not very useful in web scraping (e.g. pagination), thus we have implemented ``do-while`` where condition checks starts to occur on 2nd iteration i.e. there is always at least one iteration.
+``while-do`` is a traditional while loop where a condition is checked before every iteration. It might be not very useful in web scraping (e.g. pagination), thus we have implemented ``do-while`` where condition checks start to occur on 2nd iteration i.e. there is always at least one iteration.
 
 Since data in FQL is immutable, there are no direct mutations in code which while loops can depend on. Rather while loops depend on checks of external resources like existance of HTML elements or database records.
 
@@ -55,7 +56,7 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
 In this while loop, we are checking if the next button exists (external mutation) but always execute the loop body at least once just in case there is only one page.
 
 The ``i`` variable represents a loop counter that gives information which iteration we are in.
-Being a modification of ``FOR-IN`` loop gives us all statements that can be applied to ``FOR-IN`` loop like ``FILTER``, ``LIMIT`` and etc.
+Being an extension of ``FOR-IN`` loop gives us all statements that can be used with regular ``FOR-IN`` loop like ``FILTER``, ``LIMIT`` and etc.
 
 ## Computed styles
 
