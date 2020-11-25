@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.78.1" />
+    <meta name="generator" content="Hugo 0.78.2" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.64f1f7a6c5e475867d245403cd132b96cb35a0f513fdae841e901a1feac0734c.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.a26eeeba3f8637bd8f8dbe44204cb92cdbbe771f79bd5548d12cc5cda0683ec8.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -462,7 +462,7 @@
             <article id="content" class="has-text-justified">
     <h1 id="syntax">Syntax</h1>
 <h3 id="query-types">Query types</h3>
-<p>An FQL query must return a result indicated by usage either of the <code>RETURN</code> or <code>FOR IN</code> keywords. The FQL parser will return an error if it cannot find any of these two statements.</p>
+<p>An FQL query must return a result indicated by usage either of the <code>RETURN</code> or <code>FOR IN</code> or <code>FOR WHILE </code> keywords. The FQL parser will return an error if it cannot find any of these two statements.</p>
 <h3 id="whitespace">Whitespace</h3>
 <p>Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces. Whitespace within strings or names must be enclosed in quotes in order to be preserved.</p>
 <h3 id="comments">Comments</h3>
@@ -480,7 +480,7 @@
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-278-text" class="code-editor-text" style="height: 170px;">
+            <div id="code-529-text" class="code-editor-text" style="height: 170px;">
                 
 /* this is a comment */ RETURN 1
 /* these */ RETURN /* are */ 1 /* multiple */ + /* comments */ 1
@@ -495,7 +495,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-278-text');
+            const editor = ace.edit('code-529-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
@@ -525,7 +525,7 @@
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-655-text" class="code-editor-text" style="height: 180px;">
+            <div id="code-607-text" class="code-editor-text" style="height: 180px;">
                 
 LET page = DOCUMENT("https://github.com/trending")
 
@@ -541,7 +541,7 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-655-text');
+            const editor = ace.edit('code-607-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
@@ -596,7 +596,7 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-607-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-77-text" class="code-editor-text" style="height: 100px;">
                 
 FOR i IN [{ "RETURN": "foobar" }]
     RETURN i."RETURN"
@@ -607,7 +607,7 @@ FOR i IN [{ "RETURN": "foobar" }]
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-607-text');
+            const editor = ace.edit('code-77-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
@@ -624,7 +624,7 @@ FOR i IN [{ "RETURN": "foobar" }]
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-254-text" class="code-editor-text" style="height: 120px;">
+            <div id="code-335-text" class="code-editor-text" style="height: 120px;">
                 
 LET users = [{ name: "Steve" }]
 FOR u IN users
@@ -636,7 +636,7 @@ FOR u IN users
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-254-text');
+            const editor = ace.edit('code-335-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
