@@ -6,14 +6,41 @@ draft: false
 
 There are several way how to implement pagination.
 
+### WHILE loop
+Since v0.13.0, pagination can be implemented with ``for-while`` loop.
+
+{{< notification type="info">}}
+For paginations, it's recommended to use DO-WHILE variation of the loop, in order to process at least the first page.
+{{</ notification >}}
+
+{{< editor height="300px" >}}
+LET doc = DOCUMENT("https://github.com/MontFerret/ferret/stargazers", { driver: "cdp" })
+
+LET nextSelector = ".paginate-container .BtnGroup a:nth-child(2)"
+LET elementsSelector = '.follow-list li'
+
+FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
+    LIMIT 3
+	LET wait = i > 0 ? CLICK(doc, nextSelector) : false
+	LET nav = wait ? WAIT_NAVIGATION(doc) : false
+	
+	FOR el IN ELEMENTS(doc, elementsSelector)
+		FILTER ELEMENT_EXISTS(el, ".octicon-organization")
+
+		RETURN {
+			name: INNER_TEXT(el, ".follow-list-name"),
+			company: INNER_TEXT(el, ".follow-list-info span")
+		}
+{{</ editor >}}
+
 ### Controlled
-In a controlled pagination, we either pass a number of pages to scrape or extract the number from the target page:
+You can also use ``for-in`` loop with specified range of iterations that can be either fixed or extrapolated from a target page:
 
 {{< editor height="600px" >}}
 LET baseURL = 'https://www.amazon.com/'
 LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
-INPUT(amazon, '#twotabsearchtextbox', @criteria)
+INPUT(amazon, '#twotabsearchtextbox', "ferret")
 CLICK(amazon, '.nav-search-submit input[type="submit"]')
 WAIT_NAVIGATION(amazon)
 
@@ -31,8 +58,6 @@ LET result = (
         LET clicked = pageNum == 1 ? false : CLICK(amazon, nextBtnSelector)
         LET wait = clicked ? WAIT_NAVIGATION(amazon, 10000) : false
         LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
-
-        PRINT("page:", pageNum, "clicked", clicked)
 
         LET items = (
             FOR el IN ELEMENTS(amazon, resultItemSelector)
@@ -66,7 +91,7 @@ Iteration always starts with a current page.
 LET baseURL = 'https://www.amazon.com/'
 LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
-INPUT(amazon, '#twotabsearchtextbox', @criteria)
+INPUT(amazon, '#twotabsearchtextbox', "ferret")
 CLICK(amazon, '.nav-search-submit input[type="submit"]')
 WAIT_NAVIGATION(amazon)
 
@@ -78,7 +103,7 @@ LET priceFracSelector = '.a-price-fraction'
 
 LET result = (
     FOR pageNum IN PAGINATION(amazon, nextBtnSelector)
-        LIMIT @pages
+        LIMIT 3
 
         LET wait = pageNum > 0 ? WAIT_NAVIGATION(amazon, 20000) : false
         LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
@@ -90,8 +115,6 @@ LET result = (
                 LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), "[0-9]+")) : "00"
 		        LET price = TO_FLOAT(priceWholeTxt + "." + priceFracTxt)
 		        LET anchor = ELEMENT(el, "a")
-
-		        PRINT(priceWholeTxt, priceFracTxt)
 
                 RETURN {
                     url: baseURL + anchor.attributes.href,
