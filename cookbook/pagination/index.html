@@ -227,8 +227,15 @@
         <section id="main" class="column is-10">
             <article id="content" class="has-text-justified">
     <p>There are several way how to implement pagination.</p>
-<h3 id="controlled">Controlled</h3>
-<p>In a controlled pagination, we either pass a number of pages to scrape or extract the number from the target page:</p>
+<h3 id="while-loop">WHILE loop</h3>
+<p>Since v0.13.0, pagination can be implemented with <code>for-while</code> loop.</p>
+
+
+<div class="notification is-info">
+    
+For paginations, it's recommended to use DO-WHILE variation of the loop, in order to process at least the first page.
+
+</div>
 
 
 
@@ -238,18 +245,125 @@
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-69-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+            <button id="code-editor-447-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-69-text" class="code-editor-text" style="height: 600px;">
+            <div id="code-editor-447-text" class="code-editor-text" style="height: 300px;">
+                
+LET doc = DOCUMENT("https://github.com/MontFerret/ferret/stargazers", { driver: "cdp" })
+
+LET nextSelector = ".paginate-container .BtnGroup a:nth-child(2)"
+LET elementsSelector = '.follow-list li'
+
+FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
+    LIMIT 3
+	LET wait = i > 0 ? CLICK(doc, nextSelector) : false
+	LET nav = wait ? WAIT_NAVIGATION(doc) : false
+	
+	FOR el IN ELEMENTS(doc, elementsSelector)
+		FILTER ELEMENT_EXISTS(el, ".octicon-organization")
+
+		RETURN {
+			name: INNER_TEXT(el, ".follow-list-name"),
+			company: INNER_TEXT(el, ".follow-list-info span")
+		}
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-447-result" class="code-editor-result" style="height: 300px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-447-run-button');
+            const textEditor = createEditor('code-editor-447-text', 'aql');
+            const resultEditor = createEditor('code-editor-447-result', 'json');
+            resultEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<h3 id="controlled">Controlled</h3>
+<p>You can also use <code>for-in</code> loop with specified range of iterations that can be either fixed or extrapolated from a target page:</p>
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns is-mobile">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-810-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-810-text" class="code-editor-text" style="height: 600px;">
                 
 LET baseURL = 'https://www.amazon.com/'
 LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
-INPUT(amazon, '#twotabsearchtextbox', @criteria)
+INPUT(amazon, '#twotabsearchtextbox', "ferret")
 CLICK(amazon, '.nav-search-submit input[type="submit"]')
 WAIT_NAVIGATION(amazon)
 
@@ -267,8 +381,6 @@ LET result = (
         LET clicked = pageNum == 1 ? false : CLICK(amazon, nextBtnSelector)
         LET wait = clicked ? WAIT_NAVIGATION(amazon, 10000) : false
         LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
-
-        PRINT("page:", pageNum, "clicked", clicked)
 
         LET items = (
             FOR el IN ELEMENTS(amazon, resultItemSelector)
@@ -293,7 +405,7 @@ RETURN FLATTEN(result)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-69-result" class="code-editor-result" style="height: 600px;"></div>
+            <div id="code-editor-810-result" class="code-editor-result" style="height: 600px;"></div>
         </div>
     </div>
 
@@ -307,9 +419,9 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-69-run-button');
-            const textEditor = createEditor('code-editor-69-text', 'aql');
-            const resultEditor = createEditor('code-editor-69-result', 'json');
+            const btn = document.querySelector('#code-editor-810-run-button');
+            const textEditor = createEditor('code-editor-810-text', 'aql');
+            const resultEditor = createEditor('code-editor-810-result', 'json');
             resultEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -378,18 +490,18 @@ Iteration always starts with a current page.
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-413-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+            <button id="code-editor-580-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-413-text" class="code-editor-text" style="height: 600px;">
+            <div id="code-editor-580-text" class="code-editor-text" style="height: 600px;">
                 
 LET baseURL = 'https://www.amazon.com/'
 LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
-INPUT(amazon, '#twotabsearchtextbox', @criteria)
+INPUT(amazon, '#twotabsearchtextbox', "ferret")
 CLICK(amazon, '.nav-search-submit input[type="submit"]')
 WAIT_NAVIGATION(amazon)
 
@@ -401,7 +513,7 @@ LET priceFracSelector = '.a-price-fraction'
 
 LET result = (
     FOR pageNum IN PAGINATION(amazon, nextBtnSelector)
-        LIMIT @pages
+        LIMIT 3
 
         LET wait = pageNum > 0 ? WAIT_NAVIGATION(amazon, 20000) : false
         LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
@@ -413,8 +525,6 @@ LET result = (
                 LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), "[0-9]+")) : "00"
 		        LET price = TO_FLOAT(priceWholeTxt + "." + priceFracTxt)
 		        LET anchor = ELEMENT(el, "a")
-
-		        PRINT(priceWholeTxt, priceFracTxt)
 
                 RETURN {
                     url: baseURL + anchor.attributes.href,
@@ -431,7 +541,7 @@ RETURN FLATTEN(result)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-413-result" class="code-editor-result" style="height: 600px;"></div>
+            <div id="code-editor-580-result" class="code-editor-result" style="height: 600px;"></div>
         </div>
     </div>
 
@@ -445,9 +555,9 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-413-run-button');
-            const textEditor = createEditor('code-editor-413-text', 'aql');
-            const resultEditor = createEditor('code-editor-413-result', 'json');
+            const btn = document.querySelector('#code-editor-580-run-button');
+            const textEditor = createEditor('code-editor-580-text', 'aql');
+            const resultEditor = createEditor('code-editor-580-result', 'json');
             resultEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
