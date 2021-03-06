@@ -4,15 +4,24 @@ weight: 2
 draft: false
 ---
 
-# Syntax
+{{< header >}}
+Syntax
+{{</ header >}}
 
-### Query types
+{{< header size="3" >}}
+Query types
+{{</ header >}}
+
 An FQL query must return a result indicated by usage either of the ``RETURN`` or ``FOR IN`` or ``FOR WHILE `` keywords. The FQL parser will return an error if it cannot find any of these two statements.
 
-### Whitespace
+{{< header size="3" >}}
+Whitespace
+{{</ header >}}
 Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces. Whitespace within strings or names must be enclosed in quotes in order to be preserved.
 
-### Comments
+{{< header size="3" >}}
+Comments
+{{</ header >}}
 Comments can be embedded at any position in a query. The text contained in the comment is ignored by the FQL parser.
 
 Multi-line comments cannot be nested, which means subsequent comment starts within comments are ignored, comment ends will end the comment.
@@ -31,7 +40,9 @@ FQL supports two types of comments:
 // a single line comment
 {{</ code >}}
 
-### Keywords
+{{< header size="3" >}}
+Keywords
+{{</ header >}}
 On the top level, FQL offers the following operations:
 
 - ``USE``: allows the use of types in a namespace without typing full type path.
@@ -99,7 +110,9 @@ There are a few more keywords in addition to the higher-level operation keywords
     </div>
 </div>
 
-### Names
+{{< header size="3" >}}
+Names
+{{</ header >}}
 In general, names are used to identify objects (properties, variables, and functions) in FQL queries.
 
 The maximum supported length of any name is 64 bytes. Names in FQL are always case-sensitive.
@@ -111,7 +124,9 @@ FOR i IN [{ "RETURN": "foobar" }]
     RETURN i."RETURN"
 {{</ code >}}
 
-#### Variable names
+{{< header size="3">}}
+Variable names
+{{</ header >}}
 FQL allows the user to assign values to additional variables in a query. All variables that are assigned a value must have a name that is unique within the context of the query.
 
 {{< code lang="fql" height="120px" >}}

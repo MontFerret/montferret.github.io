@@ -1,10 +1,12 @@
 ---
 title: "Data types"
-weight: 4
+weight: 3
 draft: false
 ---
 
-# Data types
+{{< header >}}
+Data types
+{{</ header >}}
 
 FQL supports both primitive data types consisting of exactly one value and compound data types comprised of multiple values. The following types are available:
 
@@ -55,15 +57,25 @@ FQL supports both primitive data types consisting of exactly one value and compo
     </tbody>
 </table>
 
-## Primitive types
 
-### None value
+{{< header size="2" >}}
+Primitive types
+{{</ header >}}
+
+{{< header size="3" >}}
+None value
+{{</ header >}}
 A none value can be used to represent an empty or absent value. It is different from a numerical value of zero (null != 0) and other falsy values (false, zero-length string, empty array or object). It is also known as nil or null in other languages.
 
-### Boolean data type
+
+{{< header size="3" >}}
+Boolean data type
+{{</ header >}}
 The Boolean data type has two possible values, ``true`` and ``false``. They represent the two truth values in logic and mathematics.
 
-### Numeric literals
+{{< header size="3" >}}
+Numeric literals
+{{</ header >}}
 Numeric literals can be integers or floating-point numbers. They can optionally be signed with the + or - symbols. A decimal point . is used as separator for the optional fractional part. 
 
 {{< code lang="fql" height="200px" >}}
@@ -77,7 +89,9 @@ Numeric literals can be integers or floating-point numbers. They can optionally 
 -99.99
 {{</ code >}}
 
-### String literals
+{{< header size="3" >}}
+String literals
+{{</ header >}}
 String literals must be enclosed in single or double quotes. If the used quote character is to be used itself within the string literal, it must be escaped using the backslash symbol. A literal backslash also needs to be escaped with a backslash.
 
 {{< code lang="fql" height="245px" >}}
@@ -94,14 +108,19 @@ String literals must be enclosed in single or double quotes. If the used quote c
 'the path separator on Windows is \\'
 {{</ code >}}
 
-## Compound types
+{{< header size="2" >}}
+Compound types
+{{</ header >}}
 FQL supports two compound types:
 
 - array: A composition of unnamed values, each accessible by their positions.
 - object: A composition of named values, each accessible by their names.
 - binary: An array of binary values.
 
-### Arrays
+
+{{< header size="3" >}}
+Arrays
+{{</ header >}}
 The first supported compound type is the array type. Arrays are effectively sequences of (unnamed / anonymous) values. Individual array elements can be accessed by their positions. The order of elements in an array is important.
 
 An array declaration starts with a left square bracket ``[`` and ends with a right square bracket ``]``. The declaration contains zero, one or more expressions, separated from each other with the comma ``,`` symbol. Whitespace around elements is ignored in the declaration, thus line breaks, tab stops and blanks can be used for formatting.
@@ -131,8 +150,9 @@ u.friends[0]
 u.friends[2]
 {{</ code >}}
 
-### Objects
-
+{{< header size="3" >}}
+Objects
+{{</ header >}}
 The other supported compound type is the object type. Objects are a composition of zero to many attributes. Each attribute is a name/value pair. Object attributes can be accessed individually by their names. This data type is also known as dictionary, map, associative array and other names.
 
 Object declarations start with a left curly bracket ``{`` and end with a right curly bracket ``}``. An object contains zero to many attribute declarations, separated from each other with the ``,`` symbol. Whitespace around elements is ignored in the declaration, thus line breaks, tab stops and blanks can be used for formatting.
@@ -217,7 +237,20 @@ LET attr2 = "name"
 u[attr1][0][attr2][ CONCAT("fir", "st") ]
 {{</ code >}}
 
-## Custom types
+{{< header size="3" >}}
+Binary value
+{{</ header >}}
+
+Binary value is an array of bytes that represent binary data like files, images, audio or video.
+
+{{< editor height="105px" >}}
+RETURN IO::NET::HTTP::GET("https://www.montferret.dev/")
+{{</ code >}}
+
+
+{{< header size="2" >}}
+Custom types
+{{</ header >}}
 Custom types are the values defined by a user or author of a 3rd party library that extends FQL functionality.
 The values can represent either specific primitives or compound types. For example, tt could be http cookies, database records, images and etc. 
 
@@ -268,7 +301,9 @@ LET myType = SOME_FUNC()
 RETURN [myType]
 {{</ code >}}
 
-### Reading data
+{{< header size="3" >}}
+Reading data
+{{</ header >}}
 By default, implementing ``core.Value`` gives the FQL runtime just a basic set of functionality to work with values. This means that a type which implemented only ``core.Value`` interfaces is treated as a primitive data type.
 
 If the underlying data type is compound and there is a need for providing access to underlying data, the type should implement ``core.Getter`` interface:
@@ -287,7 +322,10 @@ LET myType = SOME_FUNC()
 RETURN myType.someProperty
 {{</ code >}}
 
-### Iterations
+
+{{< header size="3" >}}
+Iterations
+{{</ header >}}
 In order to use a custom type as source for ``FOR IN`` statement, it must implement ``core.Iterable`` interface:
 
 {{< code lang="golang" height="120px" >}}
@@ -302,5 +340,7 @@ type Iterator interface {
 }
 {{</ code >}}
 
-### Clean up
+{{< header size="3" >}}
+Clean up
+{{</ header >}}
 If a custom type needs to do some clean up after a query execution, it needs to implement Go's ``io.Closer`` interface.

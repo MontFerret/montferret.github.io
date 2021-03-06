@@ -1,10 +1,12 @@
 ---
 title: "Query results"
-weight: 7
+weight: 8
 draft: false
 ---
 
-# Query results
+{{< header >}}
+Query results
+{{</ header >}}
 
 Unlike AQL, the result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
 
@@ -37,7 +39,9 @@ FOR u IN elements
 { "foo": "bar" }
 {{</ code >}}
 
-## Result type
+{{< header size="2" >}}
+Result type
+{{</ header >}}
 
 The result data type is in JSON format. 
 All binary data gets encoded into base64 strings.

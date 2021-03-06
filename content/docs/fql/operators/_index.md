@@ -1,13 +1,19 @@
 ---
 title: "Operators"
-weight: 3
+weight: 4
 draft: false
+menu: [comparison,array comparison,logical,arithmetic,ternary,range,precedence]
 ---
 
-# Operators
+{{< header >}}
+Operators
+{{</ header >}}
+
 FQL supports a number of operators that can be used in expressions. There are comparison, logical, arithmetic, and the ternary operator.
 
-## Comparison operators
+{{< header size="2" >}}
+Comparison operators
+{{</ header >}}
 Comparison (or relational) operators compare two operands. They can be used with any input data types, and will return a boolean result value.
 
 The following comparison operators are supported:
@@ -21,6 +27,7 @@ The following comparison operators are supported:
 - ``IN`` test if a value is contained in an array
 - ``NOT IN`` test if a value is not contained in an array
 - ``LIKE`` tests if a string value matches a pattern
+- ``NOT LIKE`` tests if a string value does not match a pattern
 - ``=~`` tests if a string value matches a regular expression
 - ``!~`` tests if a string value does not match a regular expression
 
@@ -43,20 +50,26 @@ true != NONE              // true
 42 NOT IN [ 17, 40, 50 ]  // true
 "abc" == "abc"            // true
 "abc" == "ABC"            // false
-"foo" LIKE "f%"           // true
+"foo" LIKE "f*"           // true
+"foo"  NOT LIKE  "f*"      // false
 "foo" =~ "^f[o].$"        // true
 "foo" !~ "[a-z]+bar$"     // true
 {{</ code >}}
 
-The ``LIKE`` operator checks whether its left operand matches the pattern specified in its right operand. The pattern can consist of regular characters and wildcards. The supported wildcards are _ to match a single arbitrary character, and % to match any number of arbitrary characters. Literal % and _ need to be escaped with a backslash. Backslashes need to be escaped themselves, which effectively means that two reverse solidus characters need to preceed a literal percent sign or underscore. In arangosh, additional escaping is required, making it four backslashes in total preceeding the to-be-escaped character.
+The ``LIKE`` operator checks whether its left operand matches the pattern specified in its right operand. The pattern can consist of wildcards. The list of supported wildcards can be found [here](http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm).
 
 {{< code lang="fql" height="120px" >}}
-"abc" LIKE "a%"              // true
-"abc" LIKE "_bc"             // true
-"a_b_foo" LIKE "a\\_b\\_foo" // true
+"abc" LIKE "a*"              // true
+"abc" LIKE "?bc"             // true
 {{</ code >}}
 
-## Array comparison operators
+The pattern matching performed by the ``LIKE`` operator is case-sensitive.
+
+The ``NOT LIKE`` operator has the same characteristics as the ``LIKE`` operator but with the result negated. 
+
+{{< header size="3" >}}
+Array comparison operators
+{{</ header >}}
 The comparison operators also exist as array variant. In the array variant, the operator is prefixed with one of the keywords ``ALL``, ``ANY`` or ``NONE``. Using one of these keywords changes the operator behavior to execute the comparison operation for all, any, or none of its left hand argument values. It is therefore expected that the left hand argument of an array operator is an array.
 
 {{< code lang="fql" height="360px" >}}
@@ -80,7 +93,9 @@ The comparison operators also exist as array variant. In the array variant, the 
 ["foo", "bar"] ANY == "foo"      // true
 {{</ code >}}
 
-## Logical operators
+{{< header size="2" >}}
+Logical operators
+{{</ header >}}
 The following logical operators are supported in FQL:
 
 - ``&&`` logical and operator
@@ -139,7 +154,9 @@ NONE && true                               // NONE
 true && 23                                 // 23
 {{</ code >}}
 
-## Arithmetic operators
+{{< header size="2" >}}
+Arithmetic operators
+{{</ header >}}
 Arithmetic operators perform an arithmetic operation on two numeric operands. The result of an arithmetic operation is again a numeric value.
 
 FQL supports the following arithmetic operators:
@@ -200,7 +217,9 @@ NONE + 1                // 1
 1 / 0                   // 0
 {{</ code >}}
 
-## Ternary operator
+{{< header size="2" >}}
+Ternary operator
+{{</ header >}}
 FQL also supports a ternary operator that can be used for conditional evaluation. The ternary operator expects a boolean condition as its first operand, and it returns the result of the second operand if the condition evaluates to true, and the third operand otherwise.
 
 {{< code lang="fql" height="80px" >}}
@@ -213,7 +232,9 @@ There is also a shortcut variant of the ternary operator with just two operands.
 u.value ? : 'value is null, 0 or not present'
 {{</ code >}}
 
-## Range operator
+{{< header size="2" >}}
+Range operator
+{{</ header >}}
 FQL supports expressing simple numeric ranges with the ``..`` operator. This operator can be used to easily iterate over a sequence of numeric values.
 
 The ``..`` operator will produce an array of the integer values in the defined range, with both bounding values included.
@@ -228,7 +249,9 @@ will produce the following result:
 [ 2010, 2011, 2012, 2013 ]
 {{</ code >}}
 
-## Operator precedence
+{{< header size="2" >}}
+Operator precedence
+{{</ header >}}
 The operator precedence in FQL is similar as in other familiar languages (lowest precedence first):
 - ``? :`` ternary operator
 - ``||`` logical or

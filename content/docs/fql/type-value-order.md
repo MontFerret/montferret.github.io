@@ -1,10 +1,12 @@
 ---
 title: "Type and value order"
-weight: 6
+weight: 7
 draft: false
 ---
 
-# Type and value order
+{{< header >}}
+Type and value order
+{{</ header >}}
 
 When checking for equality or inequality or when determining the sort order of values, FQL uses a deterministic algorithm that takes both the data types and the actual values into account.
 
