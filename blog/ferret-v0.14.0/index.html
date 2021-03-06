@@ -153,28 +153,28 @@
         <div class="columns is-centered blog-post-header has-text-centered">
             <div class="column is-10">
                 <p class="title is-2">
-                    Ferret v0.12.0
+                    Ferret v0.14.0
                 </p>
                 <p class="subtitle is-4">
-                        More stability
+                        Happy new year!
                     </p>
                 <p class="subtitle is-6 has-text-grey">
-                    <span>September 14, 2020</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
+                    <span>March 6, 2021</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
                 </p>
                 <hr class="is-block-centered" />
             </div>
         </div>
         <div class="columns is-centered blog-post-content has-text-justified">
             <div class="column is-8">
-                <p>Hello fellow miners,</p>
-<p>We are happy to announce a new Ferret release - <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.12.0">Ferret v0.12.0</a></strong>.</p>
-<p>This release has a new useful module in the standard library - testing!<br>
-Let&rsquo;s dig in. The full changelog you can find <a href="https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#0120">here</a>.</p>
-<hr>
+                <p>Hello friends,</p>
+<p>Belated happy new 2021 year! Hope things will be better and we can finally get back to normal life.</p>
+<p>Meanwhile, in between of work, personal lives and anxiety, we&rsquo;ve managed to bring you some great features with a new release of Ferret - <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.14.0">Ferret v0.14.0</a></strong>.</p>
+<p>This release contains some syntax updates, DOM API fixes and extra flexibility. Let&rsquo;s dive in!</p>
 <h1 id="whats-added">What&rsquo;s added</h1>
-<h2 id="assertion-library">Assertion library</h2>
-<p>A new <code>T</code> namespace has been added to the standard library that provides some helpful methods for making assertions.  <br>
-The functions can be used to test UI, validate data and ensure the correctnes of a script.</p>
+<h2 id="support-of-history-api">Support of History API</h2>
+<p>Before v0.14.0, Page object from the CDP driver, would only return the url that was set during <strong>full</strong> page load or redirect but ignored all <strong>in page</strong> navigation using History API (e.g. using <code>react-router</code>).</p>
+<p>Starting this relase, the behavior has changed. Now the Page object always returns the url which is in the url-bar of your browser. If you need previous behavior, access url property of the root document.</p>
+<p>By other words, <code>page.url</code> and <code>document.url</code> may point to different locations if History API is used on your page.</p>
 
 
 
@@ -184,20 +184,267 @@ The functions can be used to test UI, validate data and ensure the correctnes of
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-584-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+            <button id="code-editor-74-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-584-text" class="code-editor-text" style="height: 190px;">
+            <div id="code-editor-74-text" class="code-editor-text" style="height: 300px;">
                 
+LET page = DOCUMENT("https://soundcloud.com", { driver: "cdp"})
+LET doc = page.mainFrame
 
-LET doc = DOCUMENT('https://github.com/', { driver: "cdp" })
+WAIT_ELEMENT(doc, ".trendingTracks")
+SCROLL_ELEMENT(doc, ".trendingTracks")
+WAIT_ELEMENT(doc, ".trendingTracks .badgeList__item")
 
-T::TRUE(ELEMENT_EXISTS(doc, "#user[login]"))
-T::TRUE(ELEMENT_EXISTS(doc, "#user[email]"))
-T::TRUE(ELEMENT_EXISTS(doc, "#user[password]"))
+LET song = ELEMENT(doc, ".trendingTracks .badgeList__item")
+CLICK(song)
+
+WAIT_ELEMENT(doc, ".l-listen-hero")
+
+RETURN {
+    page: page.url,
+    doc: doc.url
+}
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-74-result" class="code-editor-result" style="height: 300px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-74-run-button');
+            const textEditor = createEditor('code-editor-74-text', 'aql');
+            const resultEditor = createEditor('code-editor-74-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<h2 id="support-of-custom-http-transport-in-the-http-driver">Support of custom HTTP transport in the HTTP driver</h2>
+<p>Now it&rsquo;s possible to provide your custom HTTP transport to the underlying HTTP client (<a href="https://github.com/sethgrid/pester">pester</a>) in HTTP driver:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-936-text" class="code-editor-text" style="height: 250px;">
+                
+import (
+    h "net/http"
+    "github.com/MontFerret/ferret/pkg/drivers/http"
+)
+
+func main() {
+    httpDriver := http.NewDriver(
+		http.WithCustomTransport(&h.Transport{}),
+	)
+}
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-936-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+<h2 id="added-like-operator">Added LIKE operator</h2>
+<p>It&rsquo;s been a part of ArrangoDB Query Language since the beginning, but was not ported to FQL in its early times.
+And now, <code>LIKE</code> operator has finally landed!</p>
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns is-mobile">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-944-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-944-text" class="code-editor-text" style="height: 300px;">
+                
+LET values = (
+    FOR str IN ["foo", "bar", "qaz"]
+				FILTER str LIKE "*a*"
+				RETURN str 
+)
+
+RETURN FIRST(values) NOT LIKE "b**" ? 'failure' : 'success' 
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-944-result" class="code-editor-result" style="height: 300px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-944-run-button');
+            const textEditor = createEditor('code-editor-944-text', 'aql');
+            const resultEditor = createEditor('code-editor-944-result', 'json');
+            resultEditor.setReadOnly(true);function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<p>As you might noticed, FQL&rsquo;s implementation has some deviations from its ArrangoDB counterpart: syntax of pattern matching. Ferret is using <a href="http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm">stadard Unix wildcards</a>.</p>
+<h2 id="support-of-ignoring-page-resources">Support of ignoring page resources</h2>
+<p>Now you can ignore all the &ldquo;noise&rdquo; loaded with your web pages and speed up your scraping by disabling particular files from loading:</p>
+
+
+
+
+
+
+<div class="code-editor">
+    <div class="columns is-mobile">
+        <div class="column is-1 is-offset-11">
+            <button id="code-editor-89-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-89-text" class="code-editor-text" style="height: 300px;">
+                
+LET p = DOCUMENT("https://www.gettyimages.com/", {
+    driver: "cdp",
+    ignore: {
+        resources: [
+            {
+                url: "*",
+                type: "image"
+            }
+        ]
+    }
+})
 
 RETURN NONE
 
@@ -205,7 +452,7 @@ RETURN NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-584-result" class="code-editor-result" style="height: 190px;"></div>
+            <div id="code-editor-89-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
 
@@ -219,9 +466,9 @@ RETURN NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-584-run-button');
-            const textEditor = createEditor('code-editor-584-text', 'aql');
-            const resultEditor = createEditor('code-editor-584-result', 'json');
+            const btn = document.querySelector('#code-editor-89-run-button');
+            const textEditor = createEditor('code-editor-89-text', 'aql');
+            const resultEditor = createEditor('code-editor-89-result', 'json');
             resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
@@ -272,9 +519,9 @@ RETURN NONE
         }, false);
     </script>
 </div>
-<p>Read about available functions <a href="https://www.montferret.dev/docs/stdlib/testing">here</a>.</p>
-<h2 id="new-frames-function">New FRAMES function</h2>
-<p>A new helper function that finds HTML frames by a given property selector.</p>
+<p>You can either use just a type of the resource (stylesheet, script, image, font and etc) or add an url pattern to do it more selectevley.</p>
+<h2 id="support-of-handling-non-200-http-status-codes-in-the-http-driver">Support of handling non-200 HTTP status codes in the HTTP driver</h2>
+<p>This possibility added to the HTTP driver that allows you to handle situation when a target website responds with HTTP code other than 200 but still has content.</p>
 
 
 
@@ -284,28 +531,32 @@ RETURN NONE
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-67-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+            <button id="code-editor-581-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-67-text" class="code-editor-text" style="height: 190px;">
+            <div id="code-editor-581-text" class="code-editor-text" style="height: 300px;">
                 
-
-LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
-    driver: 'cdp'
+LET p = DOCUMENT("https://www.gettyimages.com/", {
+    ignore: {
+        statusCodes: [
+            {
+                url: "*",
+                code: 418
+            }
+        ]
+    }
 })
 
-LET frame = FRAMES(page, "url", "https://www.montferret.dev/")
-
-RETURN FIRST(frame).url
+RETURN NONE
 
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-67-result" class="code-editor-result" style="height: 190px;"></div>
+            <div id="code-editor-581-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
 
@@ -319,10 +570,10 @@ RETURN FIRST(frame).url
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-67-run-button');
-            const textEditor = createEditor('code-editor-67-text', 'aql');
-            const resultEditor = createEditor('code-editor-67-result', 'json');
-            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+            const btn = document.querySelector('#code-editor-581-run-button');
+            const textEditor = createEditor('code-editor-581-text', 'aql');
+            const resultEditor = createEditor('code-editor-581-result', 'json');
+            resultEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
 
@@ -372,8 +623,9 @@ RETURN FIRST(frame).url
         }, false);
     </script>
 </div>
-<h2 id="iframe-navigation-handling">iFrame navigation handling</h2>
-<p>Finally, we can control navigation of nested iframes! Whenever your page has a nested iframe that performs some nested navigation, you can tell Ferret to wait for its completion.</p>
+<p>As with ignoring resources, you can either use just a code or add an url pattern to do it more selectevley.</p>
+<h2 id="document_exists-function">DOCUMENT_EXISTS function</h2>
+<p>Now you can check if a webpage exists before navigating to it.</p>
 
 
 
@@ -383,53 +635,20 @@ RETURN FIRST(frame).url
 <div class="code-editor">
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-384-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+            <button id="code-editor-662-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-384-text" class="code-editor-text" style="height: 580px;">
+            <div id="code-editor-662-text" class="code-editor-text" style="height: 80px;">
                 
-LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
-    driver: 'cdp'
-})
-
-LET innerPage = FIRST(FRAMES(page, "url", "https://www.montferret.dev/"))
-
-T::NOT::NONE(innerPage)
-
-CLICK(innerPage, "#navbar-burger")
-WAIT_CLASS(innerPage, "#primary-nav", "is-active")
-CLICK(innerPage, "#blog")
-
-WAIT_NAVIGATION(page, {
-    frame: innerPage
-})
-
-// We need to get a new document that we have navigated to
-LET innerPage2 = FIRST(FRAMES(page, "url", "https://www.montferret.dev/blog/"))
-
-WAIT_ELEMENT(innerPage2, ".blog")
-
-LET item = ELEMENT(innerPage2, ".blog-post a")
-LET targetURL = item.attributes.href
-
-CLICK(item)
-
-WAIT_NAVIGATION(page, {
-	frame: innerPage2
-})
-
-// We need to get a new document that we have navigated to
-LET innerPage3 = FIRST(FRAMES(page, "url", targetURL))
-
-RETURN INNER_TEXT(innerPage3, ".content")
+RETURN DOCUMENT_EXISTS("www.asdadasda.sds")
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-384-result" class="code-editor-result" style="height: 580px;"></div>
+            <div id="code-editor-662-result" class="code-editor-result" style="height: 80px;"></div>
         </div>
     </div>
 
@@ -443,10 +662,10 @@ RETURN INNER_TEXT(innerPage3, ".content")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-384-run-button');
-            const textEditor = createEditor('code-editor-384-text', 'aql');
-            const resultEditor = createEditor('code-editor-384-result', 'json');
-            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
+            const btn = document.querySelector('#code-editor-662-run-button');
+            const textEditor = createEditor('code-editor-662-text', 'aql');
+            const resultEditor = createEditor('code-editor-662-result', 'json');
+            resultEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
 
@@ -496,11 +715,15 @@ RETURN INNER_TEXT(innerPage3, ".content")
         }, false);
     </script>
 </div>
-<h1 id="whats-changed">What&rsquo;s changed</h1>
-<h2 id="removed-property-caching-and-tracking">Removed property caching and tracking</h2>
-<p>This <strong>could be</strong> a breaking change, so, please, test your scripts.
-In previous versions, the CDP driver used aggressive caching and changes tracking on properties like <code>.class</code>, <code>.attributes</code> and etc., in order to redcue amount of calls to a browser, which led to high CPU usage when a runtime held a big amount of elements in memory.<br>
-To tackle the problem, the caching and tracking were removed and thus, every time element&rsquo;s property is accessed, a latest value gets retrived from a browser, without any further caching. If something needs to be cahced, it&rsquo;s user&rsquo;s responsibility to chace it in local variable.</p>
+<h1 id="whats-fixed">What&rsquo;s fixed</h1>
+<p>Ok, now, let&rsquo;s take a look what bugs have been fixed!</p>
+<ul>
+<li>RAND(0,100) always same result</li>
+<li>Element.children always returns empty array</li>
+<li>Passing parameters with a nested nil structure leads to panic</li>
+</ul>
+<h1 id="summary">Summary</h1>
+<p>Thanks everyone who contributed to the project by either providing new feature or fixing bugs or just asking questions!</p>
 
             </div>
         </div>
