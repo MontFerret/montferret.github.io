@@ -1,4 +1,5 @@
 {{ $root := .RootPage }}
+{{ $site := .RootPage.Site }}
 {{ $rootURL := urls.Parse .RootPage.Permalink }}
 {{ $rootDir := path.Dir $rootURL.Path }}
 {{ $page := .Page }}
@@ -6,19 +7,33 @@
 {{ $pageDir := path.Dir $pageURL.Path }}
 {{ $active := .ActivePage }}
 {{ $isTopLevel := eq $rootDir $pageDir }}
+{{ $noLabel := $page.Params.noLabel }}
 
+{{ if not $noLabel}}
 <p class="menu-label">
     {{ .Page.Title }}
 </p>
+{{ end }}
+
 <ul class="menu-list">
     {{ range .Page.Pages.ByWeight}}
-        {{ if .IsPage }}
+        {{ $current := . }}
+        {{ $hasContent := gt (len .Content) 0 }}
+        {{ $asPage := or .IsPage (and .IsSection $hasContent)}}
+
+        {{ if $asPage }}
             {{ $isActive := (eq $active.Permalink .Permalink) }}
             <li>
                 <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
                     {{ .Title }}
-                </a>
+                </a>  
             </li>
+
+            {{ if .IsSection }}
+                {{ range .Pages }}
+                    {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
+                {{ end }}
+            {{ end }}
         {{ end }}
     {{ end }}
 
@@ -27,7 +42,8 @@
 {{ end }}
 
 {{ range $page.Sections}}
-    {{ if .Pages }}
+    {{ $noContent := eq (len .Content) 0 }}
+    {{ if and .Pages $noContent }}
         {{ $sectionURL := urls.Parse .Permalink }}
 
         {{ if $isTopLevel }}

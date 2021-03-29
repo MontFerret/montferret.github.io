@@ -24,3 +24,20 @@ After some time looking for a tool that would let me to not write a code, but ju
 # Inspiration
 FQL (Ferret Query Language) is heavily inspired by AQL (ArangoDB Query Language).
 But due to the domain specifics, there are some differences in how things work.
+
+<hr />
+
+# How it works
+
+<img src="/img/design.png"  />
+
+Ferret consists of the following main parts:
+- FQL parser, compiler and runtime
+- Standard library
+- User functions registry
+- HTML drivers and types (in-memory and Chrome Devtools Protocol based)
+- CLI
+
+In order to use CDP (Chrome Devtools Protocol based) driver, you should have running Chrome/Chromium with open debugging port (9222), so that Ferret could connect to it.
+
+For in-memory page parsing and processing, no external dependencies are needed.

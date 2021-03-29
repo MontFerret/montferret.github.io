@@ -21,7 +21,13 @@
             const editor = ace.edit('{{ $id }}-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + '{{ $lang }}');
-            editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
             editor.renderer.$cursorLayer.element.style.display = "none"
         }, false);
     </script>

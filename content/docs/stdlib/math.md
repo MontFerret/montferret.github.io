@@ -434,7 +434,7 @@ Argument   | Type     | Default value  | Description
 RAND
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/rand.go#L15)
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/rand.go#L13)
 
 RAND return a pseudo-random number between 0 and 1.
 

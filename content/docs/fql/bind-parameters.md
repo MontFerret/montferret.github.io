@@ -1,10 +1,12 @@
 ---
 title: "Bind parameters"
-weight: 5
+weight: 6
 draft: false
 ---
 
-# Bind parameters
+{{< header >}}
+Bind parameters
+{{</ header >}}
 
 FQL supports the usage of bind parameters, thus allowing to separate the query text from literal values used in the query. It is good practice to separate the query text from the literal values because it allows to reuse same query in different scenarios.
 

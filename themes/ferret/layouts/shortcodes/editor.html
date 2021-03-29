@@ -3,8 +3,10 @@
 {{ $width := default "100%" ( .Get "height" ) }}
 {{ $isReadOnly := default "false" ( .Get "readonly" ) }}
 {{ $params := default "{}" ( .Get "params" ) }}
+{{ $orientation := default "vertical" ( .Get "orientation") }}
 
 <div class="code-editor">
+    {{ if eq $orientation "vertical"}}
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
             <button id="{{ $id }}-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
@@ -21,6 +23,26 @@
             <div id="{{ $id }}-result" class="code-editor-result" style="height: {{ $height }};"></div>
         </div>
     </div>
+    {{ else }}
+    <div class="columns is-mobile">
+        <div class="column is-1 is-offset-11">
+            <button id="{{ $id }}-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-12">
+            <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">
+                {{ .Inner }}
+            </div>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column is-12">
+            <div id="{{ $id }}-result" class="code-editor-result" style="height: {{ $height }};"></div>
+        </div>
+    </div>
+    {{ end }}
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -28,6 +50,10 @@
                 const editor = ace.edit(id);
                 editor.setTheme("{{ $.Site.Data.repl.theme }}");
                 editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
 
                 return editor;
             }

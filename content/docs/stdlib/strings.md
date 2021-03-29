@@ -113,7 +113,8 @@ ESCAPE_HTML
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/escape.go#L16)
 
-ESCAPE_HTML escapes special characters like "<" to become "&lt;". It escapes only five such characters: <, >, &, ' and ". UnescapeString(EscapeString(s)) == s always holds, but the converse isn't always true.
+"ESCAPE_HTML escapes special characters like \"<\" to become \"&lt;\"\. It escapes only five such characters: <, >, &, ' and \". UnescapeString(EscapeString(s))\\ == s always holds, but the converse isn't always true."
+
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -213,7 +214,7 @@ Argument   | Type     | Default value  | Description
 JSON_PARSE
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L13)
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L15)
 
 JSON_PARSE returns a value described by the JSON-encoded input string.
 
@@ -232,7 +233,7 @@ Argument   | Type     | Default value  | Description
 JSON_STRINGIFY
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L34)
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L36)
 
 JSON_STRINGIFY returns a JSON string representation of the input value.
 
@@ -271,7 +272,7 @@ Argument   | Type     | Default value  | Description
 LIKE
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/like.go#L15)
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/like.go#L22)
 
 LIKE checks whether the pattern search is contained in the string text, using wildcard matching.
 
