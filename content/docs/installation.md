@@ -12,7 +12,13 @@ Even though, Ferret comes as a CLI executable, it also can be used as a library.
 
 #### From binary
 
-You can download latest binaries from [here](https://github.com/MontFerret/ferret/releases).
+You can either download latest binaries from [here](https://github.com/MontFerret/ferret/releases)
+
+or use the following shell script:
+
+```bash
+$ curl https://raw.githubusercontent.com/MontFerret/ferret/master/install.sh | sudo sh
+```
 
 #### From the source
 
@@ -29,14 +35,16 @@ $ go get github.com/MontFerret/ferret/pkg/compiler
 <hr />
 
 # Environment
-In order to use all Ferret features, you will need to have Chrome either installed locally or running in Docker. For ease of use we recommend to run Chrome inside a Docker container:
+In order to use all Ferret features, you will need to have Chrome/Chromium either installed locally or running in Docker. For ease of use we recommend to run Chrome/Chromium inside a Docker container.
+
+You can use any Chromium-based headless image, but we've put together an image that's ready to go:
 
 ```bash
-$ docker run -d -p 9222:9222 -e CHROME_OPTS='--disable-dev-shm-usage --force-gpu-mem-available-mb --full-memory-crash-report' alpeware/chrome-headless-stable:ver-83.0.4103.61
+$ docker pull montferret/chromium
+$ docker run -d -p 9222:9222 montferret/chromium
 ```
 
-
-But if you want to see what's happening during query execution, just start your Chrome with remote debugging port:
+If you'd rather see what's happening during query execution, just start launch Chrome from your host with the remote debugging port set:
 
 ```bash
 $ chrome.exe --remote-debugging-port=9222
