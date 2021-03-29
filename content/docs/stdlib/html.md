@@ -3,7 +3,7 @@ title: "html"
 weight: 1
 draft: false
 menuTitle: 
-menu: [ATTR_GET,ATTR_REMOVE,ATTR_SET,BLUR,CLICK,CLICK_ALL,COOKIE_DEL,COOKIE_GET,COOKIE_SET,DOCUMENT,DOWNLOAD,ELEMENT,ELEMENTS,ELEMENTS_COUNT,ELEMENT_EXISTS,FOCUS,FRAMES,HOVER,INNER_HTML,INNER_HTML_ALL,INNER_HTML_SET,INNER_TEXT,INNER_TEXT_ALL,INNER_TEXT_SET,INPUT,INPUT_CLEAR,MOUSE,NAVIGATE,NAVIGATE_BACK,NAVIGATE_FORWARD,PAGINATION,PARSE,PDF,SCREENSHOT,SCROLL,SCROLL_BOTTOM,SCROLL_ELEMENT,SCROLL_TOP,SELECT,STYLE_GET,STYLE_REMOVE,STYLE_SET,WAIT_ATTR,WAIT_ATTR_ALL,WAIT_CLASS,WAIT_CLASS_ALL,WAIT_ELEMENT,WAIT_NAVIGATION,WAIT_NO_ATTR,WAIT_NO_ATTR_ALL,WAIT_NO_CLASS,WAIT_NO_CLASS_ALL,WAIT_NO_ELEMENT,WAIT_NO_STYLE,WAIT_NO_STYLE_ALL,WAIT_STYLE,WAIT_STYLE_ALL,XPATH,]
+menu: [ATTR_GET,ATTR_QUERY,ATTR_REMOVE,ATTR_SET,BLUR,CLICK,CLICK_ALL,COOKIE_DEL,COOKIE_GET,COOKIE_SET,DOCUMENT,DOCUMENT_EXISTS,DOWNLOAD,ELEMENT,ELEMENTS,ELEMENTS_COUNT,ELEMENT_EXISTS,FOCUS,FRAMES,HOVER,INNER_HTML,INNER_HTML_ALL,INNER_HTML_SET,INNER_TEXT,INNER_TEXT_ALL,INNER_TEXT_SET,INPUT,INPUT_CLEAR,MOUSE,NAVIGATE,NAVIGATE_BACK,NAVIGATE_FORWARD,PAGINATION,PARSE,PDF,SCREENSHOT,SCROLL,SCROLL_BOTTOM,SCROLL_ELEMENT,SCROLL_TOP,SELECT,STYLE_GET,STYLE_REMOVE,STYLE_SET,WAIT_ATTR,WAIT_ATTR_ALL,WAIT_CLASS,WAIT_CLASS_ALL,WAIT_ELEMENT,WAIT_NAVIGATION,WAIT_NO_ATTR,WAIT_NO_ATTR_ALL,WAIT_NO_CLASS,WAIT_NO_CLASS_ALL,WAIT_NO_ELEMENT,WAIT_NO_STYLE,WAIT_NO_STYLE_ALL,WAIT_STYLE,WAIT_STYLE_ALL,XPATH,]
 ---
 
 
@@ -22,6 +22,27 @@ ATTR_GET gets single or more attribute(s) of a given element.
 Argument   | Type     | Default value  | Description
 `node` | `HTMLPage` `HTMLDocument` `HTMLElement`  |  | Target node.
 `attrNames` | `String, repeated`  |  | Attribute name(s).
+
+
+**Returns** `Object` Key-value pairs of attribute values.
+- - - -
+
+
+{{< header href="attr_query" >}}
+
+ATTR_QUERY
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_query.go#L15)
+
+ATTR_QUERY finds a single or more attribute(s) by an query selector.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`node` | `HTMLPage` `HTMLDocument` `HTMLElement`  |  | Target node.
+`selector` | `String`  |  | Query selector.
+`attrName` | `String, repeated`  |  | Attr name(s).
 
 
 **Returns** `Object` Key-value pairs of attribute values.
@@ -53,7 +74,7 @@ Argument   | Type     | Default value  | Description
 ATTR_SET
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_set.go#L15)
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_set.go#L16)
 
 ATTR_SET sets or updates a single or more attribute(s) of a given element.
 
@@ -196,7 +217,7 @@ Argument   | Type     | Default value  | Description
 DOCUMENT
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/document.go#L36)
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/document.go#L53)
 
 DOCUMENT opens an HTML page by a given url. By default, loads a page by http call - resulted page does not support any interactions.
 
@@ -208,8 +229,24 @@ Argument   | Type     | Default value  | Description
 `params.timeout` | `Int`  | `60000` | Page load timeout.
 `params.userAgent` | `String`  |  | Custom user agent.
 `params.keepCookies` | `Boolean`  | `False` | Boolean value indicating whether to use cookies from previous sessions i.e. not to open a page in the incognito mode.
-`params.cookies` | `HTTPCookies`  |  | Set of http cookies to use during page loading.
-`params.headers` | `HTTPHeaders`  |  | Set of http headers to use during page loading.
+`params.cookies` | `Object[]` `Object`  |  | Set of http cookies to use during page loading.
+`params.cookies.*.name` | `String`  |  | Cookie name.
+`params.cookies.*.value` | `String`  |  | Cookie value.
+`params.cookies.*.path` | `String`  |  | Cookie path.
+`params.cookies.*.domain` | `String`  |  | Cookie domain.
+`params.cookies.` | `Int`  | `*.maxAge` | Cookie max age.
+`params.cookies.` | `String` `DateTime`  | `*.expires` | Cookie expiration date time.
+`params.cookies.` | `String`  | `*.sameSite` | Origin policy.
+`params.cookies.` | `Boolean`  | `*.httpOnly=false` | Cookie cannot be accessed through client side script.
+`params.cookies.` | `Boolean`  | `*.secure=false` | Cookie sent to the server only with an encrypted request over the https protocol.
+`params.headers` | `Object`  |  | Set of http headers to use during page loading.
+`params.ignore` | `Object`  |  | Set of parameters to ignore some page functionality or behavior.
+`params.ignore.resources` | `Object[]`  |  | Collection of rules to ignore resources during page load and navigation.
+`params.ignore.resources.` | `String`  | `*.url` | > exactly one) are allowed. escape character is backslash. omitting is equivalent to "*".
+`params.ignore.resources.` | `String`  | `*.type` | Resource type. if set, requests for matching resource types will be blocked.
+`params.ignore.statusCodes` | `Object[]`  |  | Collection of rules to ignore certain http codes that can cause failures.
+`params.ignore.statusCodes.` | `String`  | `*.url` | > exactly one) are allowed. escape character is backslash. omitting is equivalent to "*".
+`params.ignore.statusCodes.` | `Int`  | `*.code` | Http code to ignore.
 `params.viewport` | `Object`  |  | Viewport params.
 `params.viewport.height` | `Int`  |  | Viewport height.
 `params.viewport.width` | `Int`  |  | Viewport width.
@@ -219,6 +256,27 @@ Argument   | Type     | Default value  | Description
 
 
 **Returns** `HTMLPage` Loaded html page.
+- - - -
+
+
+{{< header href="document_exists" >}}
+
+DOCUMENT_EXISTS
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/document_exists.go#L16)
+
+DOCUMENT_EXISTS returns a boolean value indicating whether a web page exists by a given url.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`url` | `String`  |  | Target url.
+`options` | `Object`  |  | Request options.
+`options.headers` | `Object`  |  | Request headers.
+
+
+**Returns** `Boolean` A boolean value indicating whether a web page exists by a given url.
 - - - -
 
 
@@ -1048,7 +1106,7 @@ Argument   | Type     | Default value  | Description
 `timeout` | `Int`  | `5000` | Navigation timeout.
 `params` | `Object`  | `None` | Navigation parameters.
 `params.timeout` | `Int`  | `5000` | Navigation timeout.
-`params.target` | `Int`  |  | Navigation target url.
+`params.target` | `String`  |  | Navigation target url.
 `params.frame` | `HTMLDocument`  |  | Navigation frame.
 
 
