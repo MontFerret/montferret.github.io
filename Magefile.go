@@ -81,6 +81,43 @@ func Install() error {
 	return sh.RunV("npm", "install")
 }
 
+// Generates documentation
+func Generate() error {
+	_, err := os.Stat(STDLIB_AST)
+
+	if err != nil {
+		fmt.Println("Missing stdlib data source")
+
+		return err
+	}
+
+	content, err := os.ReadFile(STDLIB_AST)
+
+	if err != nil {
+		fmt.Println("Failed to read data source")
+
+		return err
+	}
+
+	ast := AST{}
+
+	if err := yaml.Unmarshal([]byte(content), &ast); err != nil {
+		fmt.Println("Failed to parse data source")
+
+		return err
+	}
+
+	for _, module := range ast.Modules {
+	    name := strings.ReplaceAll(module.Name, "/", "-")
+	    
+		sh.RunWith(map[string]string{
+			"USING_KEY": module.Name,
+		}, "frep", "--load", STDLIB_AST, "--overwrite", fmt.Sprintf("%s:%s/%s.md", STDLIB_TEMPLATE, STDLIB_DOCS_DIR, name))
+	}
+
+	return nil
+}
+
 // Publishes website to GitHub Pages
 func Publish() error {
 	dirty, err := sh.Output("git", "status", "-s")
@@ -137,44 +174,29 @@ func Publish() error {
 
 	fmt.Println("Updating master branch")
 
-	// cd public && git add --all && git commit -m "Publishing to master (publish.sh)" && git push origin master && cd ..
+	os.Chdir(OUTPUT_DIR)
 
-	return nil
-}
-
-// Generates documentation
-func Generate() error {
-	_, err := os.Stat(STDLIB_AST)
-
-	if err != nil {
-		fmt.Println("Missing stdlib data source")
+	if err := sh.RunV("git", "add", "--all"); err != nil {
+		fmt.Println("Failed to update master branch")
 
 		return err
 	}
 
-	content, err := os.ReadFile(STDLIB_AST)
-
-	if err != nil {
-		fmt.Println("Failed to read data source")
+	if err := sh.RunV("git", "commit", "-m", "Publishing to master (Mage)"); err != nil {
+		fmt.Println("Failed to update master branch")
 
 		return err
 	}
 
-	ast := AST{}
-
-	if err := yaml.Unmarshal([]byte(content), &ast); err != nil {
-		fmt.Println("Failed to parse data source")
+	if err := sh.RunV("git", "push", "origin", "master"); err != nil {
+		fmt.Println("Failed to update master branch")
 
 		return err
 	}
 
-	for _, module := range ast.Modules {
-	    name := strings.ReplaceAll(module.Name, "/", "-")
-	    
-		sh.RunWith(map[string]string{
-			"USING_KEY": module.Name,
-		}, "frep", "--load", STDLIB_AST, "--overwrite", fmt.Sprintf("%s:%s/%s.md", STDLIB_TEMPLATE, STDLIB_DOCS_DIR, name))
-	}
+	defer os.Chdir("..")
+
+	fmt.Println("Successfully updated master")
 
 	return nil
 }
