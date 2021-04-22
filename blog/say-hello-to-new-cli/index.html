@@ -153,214 +153,85 @@
         <div class="columns is-centered blog-post-header has-text-centered">
             <div class="column is-10">
                 <p class="title is-2">
-                    Ferret v0.10.0
+                    Say &#39;Hello&#39; to new CLI
                 </p>
                 <p class="subtitle is-4">
-                        Comeback
+                        Brand new Ferret CLI
                     </p>
                 <p class="subtitle is-6 has-text-grey">
-                    <span>February 21, 2020</span> by <a href="https://www.twitter.com/ziflex">Tim Voronov</a>
+                    <span>April 22, 2021</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
                 </p>
                 <hr class="is-block-centered" />
             </div>
         </div>
         <div class="columns is-centered blog-post-content has-text-justified">
             <div class="column is-8">
-                <p>Hello fellow miners, <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.10.0">Ferret v0.10.0</a></strong> has been <strong>finally</strong> released!</p>
-<p>It&rsquo;s been long and busy 6 months since the last release and many of you might thought that the project got abandoned. <br>
-We assure you it&rsquo;s not! But sometimes life happens and slows you down.</p>
-<p>But we are back and ready to rock!</p>
-<p>This release has many great features and improvements thank to all our contributors. <br>
-Let&rsquo;s take a look at the most important ones. The full changelog you can find <a href="https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#0100">here</a>.</p>
-<h1 id="whats-added">What&rsquo;s added</h1>
-<h2 id="io-functions">I/O functions</h2>
-<p>You asked - we added! Finally, I/O functions have arrived.
-In the beginning of the project, we were concerned about security threats that access to filesystem poses, but seeing how demanded this functionality is we agreed to add it. <br>
-Now, Ferret has new I/O namespaces, with the following functions:</p>
-<ul>
-<li><code>IO::FS::READ</code></li>
-<li><code>IO::FS::WRITE</code></li>
-<li><code>IO::NET::HTTP:GET</code></li>
-<li><code>IO::NET::HTTP:POST</code></li>
-<li><code>IO::NET::HTTP:PUT</code></li>
-<li><code>IO::NET::HTTP:DELETE</code></li>
-<li><code>IO::NET::HTTP:REQUEST</code></li>
-</ul>
-<p>Enjoy!</p>
-<h2 id="loading-html-string-into-memory">Loading HTML string into memory</h2>
-<p>Another popular feature request - possibility to load a prefetched HTML string into Ferret. <br>
-With this release, you can finally do it with <code>HTML_PARSE</code> function.</p>
+                <p>Hello fellas,</p>
+<p>We are happy to announce that we finally have a brand <a href="https://github.com/MontFerret/cli">new Ferret CLI</a>!</p>
+<figure class="image"><img src="https://www.montferret.dev/blog/say-hello-to-new-cli/images/cli-logo.svg" style="width: 256px; height: 256px"></figure>
+<p>As the project grows, it became clear that we need to separate Ferret Runtime and CLI, to let the projects evolve on their own.</p>
+<p>The separation allowed us to review what we need from CLI and rebuild it from the ground up.</p>
+<p>Thus, let&rsquo;s dive in and see what&rsquo;s in there.</p>
+<h1 id="get-started">Get started</h1>
+<p>First of all, we need to install it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sudo sh
+</code></pre></div><p>If you want to install it to a particular folder set it to <code>LOCATION</code> environment variable:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | LOCATION<span style="color:#f92672">=</span>my-dir sh
+</code></pre></div><h1 id="whats-broken">What&rsquo;s broken</h1>
+<p>Let&rsquo;s start with some breaking changes.</p>
+<p>Fortunately, there is only one breaking change: now if you want to execute a script or enter to REPL, you need to call <code>exec</code> command:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec
+Welcome to Ferret REPL 0.14.1
 
-
-
-
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-482-text" class="code-editor-text" style="height: 180px;">
-                
-LET file = IO::FS::READ(@myfile)
-
-LET doc = HTML_PARSE(TO_STRING(file), {
-    driver: 'cdp' // or 'http'
-})
-
-RETURN INNER_TEXT(doc, 'title')
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-482-text');
-            editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-        }, false);
-    </script>
+Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>Ctrl-D<span style="color:#e6db74">`</span> to exit this program.
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec my-script.fql
+</code></pre></div><h1 id="whats-new">What&rsquo;s new</h1>
+<h2 id="auto-browser-launch">Auto-browser launch</h2>
+<p>With new CLI, you can easily run your script with automatically open local browser:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec --browser-open my-script.fql
+</code></pre></div><p><code>--browser-open</code> will inform CLI to find locally installed Chrome or Chromium and open it before execution.</p>
+<p>In case if you don&rsquo;t want your browser to be visible during execution, you can pass <code>--browser-headless</code> flag to open it in the headless mode:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec --browser-headless my-script.fql
+</code></pre></div><div class="notification is-warning">
+  At this moment, CLI does not support browser installation, thus Chrome/Chromium must be installed on your machine before using these flags.
 </div>
-<h2 id="parameter-value-availability-check">Parameter value availability check</h2>
-<p>In this release, we do pre-runtime check whether all values are provided for parameters used by a script. <br>
-It was very frustrating when your script was failing in the middle of its execution just because you forgot to provide a value for one of the paramaters.</p>
-<h1 id="whats-changed">What&rsquo;s changed</h1>
-<h2 id="case-insensitivity">Case insensitivity</h2>
-<p>Finally, FQL keywords are case insensitive!</p>
-<p>That&rsquo;s how Google Search query looks like in lower case now:</p>
-
-
-
-
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-696-text" class="code-editor-text" style="height: 330px;">
-                
-let google = document("https://www.google.com/", {
-    driver: "cdp",
-})
-
-input(google, 'input[name="q"]', "ferret")
-click(google, 'input[name="btnK"]')
-
-wait_navigation(google)
-
-for result in elements(google, '.g')
-    filter trim(result.attributes.class) == 'g'
-    return {
-        title: inner_text(result, 'h3'),
-        description: inner_text(result, '.st'),
-        url: inner_text(result, 'cite')
-    }
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-696-text');
-            editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-        }, false);
-    </script>
+<h2 id="browser-management">Browser management</h2>
+<p>Also, you can briefly manage your local browser by openning and closing it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret brower open
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret brower open -d
+<span style="color:#ae81ff">89502</span>
+</code></pre></div><p><code>-d</code> flag indicates that the browser needs to be open in the background i.e. the proccess will exit once the browser is open and ready to be used and return the process id.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret brower close process-id
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret brower close
+</code></pre></div><p><code>close</code> without a given process id will <strong>try</strong> to find early opened browser with local debugging options.</p>
+<div class="notification is-info">
+  In the future, we will add more options for browser management.
 </div>
-<h2 id="improved-cdp-driver-performance">Improved CDP driver performance</h2>
-<p>CDP driver performance has been drastically improved that brings CPU usage down from 60% for 3 pages to &lt;1%.</p>
-<h1 id="whats-fixed">What&rsquo;s fixed</h1>
-<h2 id="redirects">Redirects</h2>
-<p>It was a long lasting problem that Ferret could not correctly handle redirects that could occur during a page navigation that was leading to timeouts or corrupt page state.</p>
-<p>Now it has finally been fixed!<br>
-<code>WAIT_NAVIGATION</code> function has 2nd optional parameter that can be an object with the following fields:</p>
+<h2 id="configuration">Configuration</h2>
+<p>New CLI allows you to store overriden default flag values, by using configuration files.</p>
+<p>The list of supported configuration keys you can get by using the following command:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret config ls
 
-
-
-
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-208-text" class="code-editor-text" style="height: 135px;">
-                
-type Parameters struct {
-    TargetURL string
-    Timeout time.Duration
-}
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-208-text');
-            editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'golang');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-        }, false);
-    </script>
-</div>
-<p><code>TargetURL</code> is a regexp string that can be used to give Ferret a hint what the destination url is:</p>
-
-
-
-
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-623-text" class="code-editor-text" style="height: 220px;">
-                
-LET doc = DOCUMENT("http://waos.ovh/redirect.html", {
-    driver: 'cdp'
-})
-
-CLICK(doc, '.click')
-
-WAIT_NAVIGATION(doc, { targetURL: "redirect2\.html" })
-
-RETURN ELEMENT(doc, '.title')
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-623-text');
-            editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-        }, false);
-    </script>
-</div>
+log-level: info
+runtime: &lt;nil&gt;
+browser-cookies: &lt;nil&gt;
+browser-address: &lt;nil&gt;
+browser-open: &lt;nil&gt;
+browser-headless: &lt;nil&gt;
+proxy: &lt;nil&gt;
+user-agent: &lt;nil&gt;
+</code></pre></div><p>For example, let&rsquo;s set <code>browser-open</code> to <code>true</code> so, every time we run our script, the browser would be opened:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret config set browser-open true
+</code></pre></div><p>And then, when you launch the REPL, you will see your local browser will be automatically opened:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec
+</code></pre></div><p>Once we exit the REPL, browser will be closed.</p>
+<p>Also, you can get the current value of a particular flag:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret config get browser-open
+true
+</code></pre></div><h1 id="summary">Summary</h1>
+<p>That&rsquo;s it, folks!
+Having a separate project for CLI helps us focus more on CLI-only features outside of the Ferret Runtime and improve its usability.</p>
+<p>If you have any feature requests welcome to <a href="https://github.com/MontFerret/cli/issues">GitHub Issues</a> or to discuss something join us on <a href="https://github.com/MontFerret/cli/discussions">GitHub Discuss board</a>!</p>
 
             </div>
         </div>
