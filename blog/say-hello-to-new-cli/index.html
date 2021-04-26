@@ -186,6 +186,12 @@ Welcome to Ferret REPL 0.14.1
 Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>Ctrl-D<span style="color:#e6db74">`</span> to exit this program.
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec my-script.fql
 </code></pre></div><h1 id="whats-new">What&rsquo;s new</h1>
+<h2 id="remote-runtime">Remote runtime</h2>
+<p>Alternative to built-in runtime, you can tell CLI to execute a given script using the remote one!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec --runtime https://my-worker.app my-script.fql
+</code></pre></div><div class="notification is-info">
+  The remote runtime must support the same request contract as <a href="https://github.com/MontFerret/worker">Ferret Worker</a> does.
+</div>
 <h2 id="auto-browser-launch">Auto-browser launch</h2>
 <p>With new CLI, you can easily run your script with automatically open local browser:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec --browser-open my-script.fql
@@ -197,12 +203,12 @@ Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`
 </div>
 <h2 id="browser-management">Browser management</h2>
 <p>Also, you can briefly manage your local browser by openning and closing it.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret brower open
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret brower open -d
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret browser open
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret browser open -d
 <span style="color:#ae81ff">89502</span>
 </code></pre></div><p><code>-d</code> flag indicates that the browser needs to be open in the background i.e. the proccess will exit once the browser is open and ready to be used and return the process id.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret brower close process-id
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret brower close
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret browser close process-id
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret browser close
 </code></pre></div><p><code>close</code> without a given process id will <strong>try</strong> to find early opened browser with local debugging options.</p>
 <div class="notification is-info">
   In the future, we will add more options for browser management.
