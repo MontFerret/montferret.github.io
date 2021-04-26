@@ -105,13 +105,13 @@
                         </a>
                 
                         
-                        <a href="/blog/" class="navbar-item "
+                        <a href="/blog/" class="navbar-item  active"
                         title=Blog id=blog>
                             Blog
                         </a>
                 
                         
-                        <a href="/cookbook/google-search" class="navbar-item  active"
+                        <a href="/cookbook/google-search" class="navbar-item "
                         title=Cookbook id=cookbook>
                             Cookbook
                         </a>
@@ -149,119 +149,67 @@
         })
     })();
 </script><div id="content">
-    <div class="content section cookbook">
+    <div class="content section blog blog-post">
+        <div class="columns is-centered blog-post-header has-text-centered">
+            <div class="column is-10">
+                <p class="title is-2">
+                    Ferret v0.15.0
+                </p>
+                <p class="subtitle is-4">
+                        Moving forward
+                    </p>
+                <p class="subtitle is-6 has-text-grey">
+                    <span>April 25, 2021</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
+                </p>
+                <hr class="is-block-centered" />
+            </div>
+        </div>
+        <div class="columns is-centered blog-post-content has-text-justified">
+            <div class="column is-8">
+                <p>Hello friends,</p>
+<p>Ferret v0.15.0 is out. This release is more focused on bug fixes and API improvements.</p>
+<p>Since the runtime and CLI have been splitted into 2 different repositories, you can find CLI binaries <a href="https://github.com/MontFerret/cli/releases/tag/v1.1.0">here</a> which was upgraded to v1.1.0.</p>
+<h1 id="whats-added">What&rsquo;s added</h1>
+<h2 id="support-of-document-charset-in-http-driver">Support of document charset in HTTP driver</h2>
+<p>If your target page does not contain information if its content encoding and it is other than <code>utf-8</code>, you can help <code>http</code> driver to properly convert the page content into <code>utf-8</code>.</p>
+
+
+
+
+<div class="code-editor">
     <div class="columns">
-        <section class="column is-2">
-            <aside class="menu">
-    
-    
+        <div class="column is-full">
+            <div id="code-454-text" class="code-editor-text" style="height: 300px;">
+                
+LET page = DOCUMENT("www.non-utf8-page.co", {
+    driver: "http",
+    charset: "windows-1251"
+})
 
+            </div>
+        </div>
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-454-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'aql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+<h2 id="possibility-to-send-keyboard-events">Possibility to send keyboard events</h2>
+<p>Have you ever scraped a page with search input field that could be tirggered by pressing &ldquo;Enter&rdquo; key on your keyboard and there was no way of doing this using Ferret? Such a bumer!</p>
+<p>Well, now you can do that with new <code>PRESS</code> and <code>PRESS_SELECTOR</code> functions!</p>
 
-
-
-
-
-
-
-
-
-<p class="menu-label">
-    Cookbook
-</p>
-
-
-<ul class="menu-list">
-    
-        
-        
-        
-
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/google-search/" class="is-active">
-                    Google search
-                </a>  
-            </li>
-
-            
-        
-    
-        
-        
-        
-
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/pagination/" class="">
-                    Pagination
-                </a>  
-            </li>
-
-            
-        
-    
-        
-        
-        
-
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/iframes/" class="">
-                    iframes
-                </a>  
-            </li>
-
-            
-        
-    
-        
-        
-        
-
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/screenshot/" class="">
-                    Screenshots
-                </a>  
-            </li>
-
-            
-        
-    
-        
-        
-        
-
-        
-            
-            <li>
-                <a href="https://www.montferret.dev/cookbook/navigation/" class="">
-                    Navigation
-                </a>  
-            </li>
-
-            
-        
-    
-
-
-</ul>
-
-
-
-
-
-</aside>
-
-        </section>
-        <section id="main" class="column is-10">
-            <article id="content" class="has-text-justified">
-    
 
 
 
@@ -272,44 +220,38 @@
     
     <div class="columns is-mobile">
         <div class="column is-1 is-offset-11">
-            <button id="code-editor-269-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+            <button id="code-editor-645-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
         </div>
     </div>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-269-text" class="code-editor-text" style="height: 450px;">
+            <div id="code-editor-645-text" class="code-editor-text" style="height: 300px;">
                 
-LET google = DOCUMENT("https://www.google.com/", {
-    driver: "cdp",
-    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
+LET page = DOCUMENT("https://soundcloud.com/", {
+    driver: "cdp"
 })
 
-HOVER(google, 'input[name="q"]')
-WAIT(RAND(100))
-INPUT(google, 'input[name="q"]', @criteria, 30)
+WAIT_ELEMENT(page, '.headerSearch__input')
+LET search = ELEMENT(page, '.headerSearch__input')
 
-WAIT(RAND(100))
+INPUT(search, "Singing ferret")
+WAIT(200)
+PRESS(search, "Enter")
 
-WAIT_ELEMENT(google, '.UUbT9')
-WAIT(RAND(100))
-CLICK(google, 'input[name="btnK"]')
+WAIT_ELEMENT(page, ".lazyLoadingList__list")
 
-WAIT_NAVIGATION(google)
-
-FOR result IN ELEMENTS(google, '.g')
-    // filter out extra elements like videos and 'People also ask'
-    FILTER TRIM(result.attributes.class) == 'g'
+FOR track IN ELEMENTS(page, ".searchItem")
+    LIMIT 3
     RETURN {
-        title: INNER_TEXT(result, 'h3'),
-        description: INNER_TEXT(result, '.rc > div:nth-child(2) span'),
-        url: INNER_TEXT(result, 'cite')
+        artist: TRIM(INNER_TEXT(track, '.soundTitle__usernameText')),
+        track: TRIM(INNER_TEXT(track, '.soundTitle__title'))
     }
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-269-result" class="code-editor-result" style="height: 450px;"></div>
+            <div id="code-editor-645-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -328,10 +270,10 @@ FOR result IN ELEMENTS(google, '.g')
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-269-run-button');
-            const textEditor = createEditor('code-editor-269-text', 'aql');
-            const resultEditor = createEditor('code-editor-269-result', 'json');
-            resultEditor.setReadOnly(true);function setContent(editor, content) {
+            const btn = document.querySelector('#code-editor-645-run-button');
+            const textEditor = createEditor('code-editor-645-text', 'aql');
+            const resultEditor = createEditor('code-editor-645-result', 'json');
+            resultEditor.setReadOnly(true);textEditor.setReadOnly(true);function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
 
@@ -381,11 +323,19 @@ FOR result IN ELEMENTS(google, '.g')
         }, false);
     </script>
 </div>
+<h1 id="whats-fixed">What&rsquo;s fixed</h1>
+<p>Ok, now, let&rsquo;s take a look what bugs have been fixed!</p>
+<ul>
+<li>Passing headers and cookies to HTTP driver</li>
+<li>Reading property of anyonymous object</li>
+<li>Clearing input text containing special characteers</li>
+</ul>
+<h1 id="summary">Summary</h1>
+<p>As always, thanks everyone who contributed to the project!</p>
 
-</article>
-        </section>
+            </div>
+        </div>
     </div>
-</div>
 
         </div><footer class="footer">
     <div class="columns">
