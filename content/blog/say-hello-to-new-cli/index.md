@@ -52,6 +52,18 @@ $ ferret exec my-script.fql
 
 # What's new
 
+## Remote runtime
+Alternative to built-in runtime, you can tell CLI to execute a given script using the remote one!
+
+```bash
+$ ferret exec --runtime https://my-worker.app my-script.fql
+```
+
+<div class="notification is-info">
+  The remote runtime must support the same request contract as <a href="https://github.com/MontFerret/worker">Ferret Worker</a> does.
+</div>
+
+
 ## Auto-browser launch
 With new CLI, you can easily run your script with automatically open local browser:
 
@@ -76,22 +88,22 @@ $ ferret exec --browser-headless my-script.fql
 Also, you can briefly manage your local browser by openning and closing it.
 
 ```bash
-$ ferret brower open
+$ ferret browser open
 ```
 
 ```bash
-$ ferret brower open -d
+$ ferret browser open -d
 89502
 ```
 
 ``-d`` flag indicates that the browser needs to be open in the background i.e. the proccess will exit once the browser is open and ready to be used and return the process id.
 
 ```bash
-$ ferret brower close process-id
+$ ferret browser close process-id
 ```
 
 ```bash
-$ ferret brower close
+$ ferret browser close
 ```
 
 ``close`` without a given process id will **try** to find early opened browser with local debugging options.
