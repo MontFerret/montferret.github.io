@@ -6,30 +6,28 @@ draft: false
 
 # Installation
 
-Even though, Ferret comes as a CLI executable, it also can be used as a library. 
-
 ### CLI
 
 #### From binary
 
-You can either download latest binaries from [here](https://github.com/MontFerret/ferret/releases)
+You can either download latest binaries from [here](https://github.com/MontFerret/cli/releases)
 
 or use the following shell script:
 
 ```bash
-$ curl https://raw.githubusercontent.com/MontFerret/ferret/master/install.sh | sudo sh
+$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | LOCATION=. sh
 ```
 
 #### From the source
 
 ```bash
-$ go get github.com/MontFerret/ferret
+$ go get github.com/MontFerret/cli
 ```
 
 ### Library
 
 ```bash
-$ go get github.com/MontFerret/ferret/pkg/compiler
+$ go get github.com/MontFerret/ferret
 ```
 
 <hr />
