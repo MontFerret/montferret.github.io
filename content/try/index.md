@@ -5,7 +5,7 @@ type: "repl"
 draft: false
 ---
 
-{{< editor id="replEditor" >}}
+{{< editor id="replEditor" sharable="true" >}}
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
     driver: 'cdp'
 })
