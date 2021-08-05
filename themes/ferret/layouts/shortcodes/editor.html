@@ -4,14 +4,19 @@
 {{ $isReadOnly := default "false" ( .Get "readonly" ) }}
 {{ $params := default "{}" ( .Get "params" ) }}
 {{ $orientation := default "vertical" ( .Get "orientation") }}
+{{ $sharable := default "false" ( .Get "sharable" ) }}
 
 <div class="code-editor">
+    {{- if eq $sharable "true" }}
+    <input id="{{ $id }}-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
+    {{- end }}
+
     {{ if eq $orientation "vertical"}}
-    <div class="columns is-mobile">
-        <div class="column is-1 is-offset-11">
-            <button id="{{ $id }}-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
-        </div>
-    </div>
+    {{- if eq $sharable "true" }}
+    <button id="{{ $id }}-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
+    {{- end }}
+
+    <button id="{{ $id }}-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
@@ -24,11 +29,10 @@
         </div>
     </div>
     {{ else }}
-    <div class="columns is-mobile">
-        <div class="column is-1 is-offset-11">
-            <button id="{{ $id }}-run-button" class="button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
-        </div>
-    </div>
+    {{- if eq $sharable "true" }}
+    <button id="{{ $id }}-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
+    {{- end }}
+    <button id="{{ $id }}-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
@@ -63,13 +67,52 @@
             const resultEditor = createEditor('{{ $id }}-result', 'json');
             resultEditor.setReadOnly(true);
 
-            {{- if eq $isReadOnly "true" -}}
+            {{- if eq $isReadOnly "true" }}
                 textEditor.setReadOnly(true);
-            {{- end -}}
+            {{- end }}
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+
+            {{- if eq $sharable "true" }}
+                const clibboardEl = document.querySelector('#{{ $id }}-share-clipboard');
+                const shareBtn = document.querySelector('#{{ $id }}-share-button');
+
+                shareBtn.addEventListener('click', () => {
+                    try {
+                        const script = btoa(textEditor.getValue());
+
+                        const url = `${location.protocol}\/\/${location.host}${location.pathname}?script=${script}`;
+                        clibboardEl.value = url;
+                        clibboardEl.focus();
+                        clibboardEl.select();
+                        
+                        if (!document.execCommand("copy")) {
+                            console.info(url);
+
+                            throw new Error('Could not copy url to the clipboard')
+                        }
+                    } catch(err) {
+                        console.error('Failed to share');
+                        console.error(err);
+                    }
+                });
+
+                const q = new URLSearchParams(location.search);
+                const encodedScript = q.get("script");
+
+                if (encodedScript) {
+                    try {
+                        const script = atob(encodedScript);
+
+                        setContent(textEditor, script);
+                    } catch(err) {
+                        console.error('Failed to decode script');
+                        console.error(err);
+                    }
+                }
+            {{- end }}
 
             let isRunning = false;
 
