@@ -7,7 +7,7 @@ draft: false
 # What is Ferret?
 Ferret project is an ambitious initiative trying to bring the universal platform for writing scrapers without any hassle. It aims to simplify data extraction from the web for UI testing, machine learning, analytics and more.    
       
-Ferret allows you to focus on the data by abstracting away the technical details and complexity of underlying technologies using its own declarative language. 
+Ferret's main focus is on data abstraction. It implements its declarative language to get rid of the complexities of underlying technologies. 
 
 Ferret is extremely portable, extensible and fast.
 
