@@ -31,16 +31,24 @@ jobs:
         id: go
 
       # Runs a single command using the runners shell
-      - name: Install dependencies
+      - name: Install Go dependencies
         run: |
           go get
-          go get -u -d github.com/magefile/mage
+          
+      - name: Install theme
+        uses: magefile/mage-action@v1
+        with:
+          version: latest
+          args: install
 
-      # Runs a set of commands using the runners shell
       - name: Build
-        run: |
-          mage install
-          mage build
+        uses: magefile/mage-action@v1
+        with:
+          version: latest
+          args: build
           
       - name: Publish
-        run: mage publish
+        uses: magefile/mage-action@v1
+        with:
+          version: latest
+          args: publish
