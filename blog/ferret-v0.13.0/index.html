@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.85.0" />
+    <meta name="generator" content="Hugo 0.88.1" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -174,7 +174,7 @@
 <p>Finally! While loops have landed FQL!</p>
 <p>Ferret query language inherently lacked while loops due to its origin from ArangoDB query language. But over time, it&rsquo;s become obvious that this kind of looping is essential for data scraping.</p>
 <p>While loops in FQL are implemented as an extension of <code>FOR IN</code> loop and come in two modes: <code>while-do</code> and <code>do-while</code>:</p>
-<pre><code>FOR counter [DO] WHILE condition
+<pre tabindex="0"><code>FOR counter [DO] WHILE condition
     RETURN value
 </code></pre><p><code>while-do</code> is a traditional while loop where a condition is checked before every iteration. It might be not very useful in web scraping (e.g. pagination), thus we have implemented <code>do-while</code> where condition checks start to occur on 2nd iteration i.e. there is always at least one iteration.</p>
 <p>Since data in FQL is immutable, there are no direct mutations in code which while loops can depend on. Rather while loops depend on checks of external resources like existance of HTML elements or database records.</p>
@@ -191,11 +191,11 @@
 
     
 
-    <button id="code-editor-176-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-852-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-176-text" class="code-editor-text" style="height: 340px;">
+            <div id="code-editor-852-text" class="code-editor-text" style="height: 340px;">
                 
 LET doc = DOCUMENT("https://github.com/marketplace/category/api-management", { driver: "cdp"})
 LET nextSelector = ".paginate-container .BtnGroup a:nth-child(2)"
@@ -218,7 +218,7 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-176-result" class="code-editor-result" style="height: 340px;"></div>
+            <div id="code-editor-852-result" class="code-editor-result" style="height: 340px;"></div>
         </div>
     </div>
     
@@ -237,9 +237,9 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-176-run-button');
-            const textEditor = createEditor('code-editor-176-text', 'aql');
-            const resultEditor = createEditor('code-editor-176-result', 'json');
+            const btn = document.querySelector('#code-editor-852-run-button');
+            const textEditor = createEditor('code-editor-852-text', 'aql');
+            const resultEditor = createEditor('code-editor-852-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -311,11 +311,11 @@ Being an extension of <code>FOR-IN</code> loop gives us all statements that can 
 
     
 
-    <button id="code-editor-291-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-340-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-291-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-340-text" class="code-editor-text" style="height: 200px;">
                 
 LET doc = DOCUMENT("https://github.com/", { driver: "cdp"})
 LET el = ELEMENT(doc, "#user_email")
@@ -328,7 +328,7 @@ RETURN {
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-291-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-340-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -347,9 +347,9 @@ RETURN {
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-291-run-button');
-            const textEditor = createEditor('code-editor-291-text', 'aql');
-            const resultEditor = createEditor('code-editor-291-result', 'json');
+            const btn = document.querySelector('#code-editor-340-run-button');
+            const textEditor = createEditor('code-editor-340-text', 'aql');
+            const resultEditor = createEditor('code-editor-340-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -417,11 +417,11 @@ RETURN {
 
     
 
-    <button id="code-editor-749-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-252-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-749-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-252-text" class="code-editor-text" style="height: 200px;">
                 
 LET doc = DOCUMENT("https://getbootstrap.com/docs/4.5/components/list-group/", { driver: "cdp"})
 LET list = ELEMENT(doc, 'ul.list-group')
@@ -438,7 +438,7 @@ RETURN {
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-749-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-252-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -457,9 +457,9 @@ RETURN {
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-749-run-button');
-            const textEditor = createEditor('code-editor-749-text', 'aql');
-            const resultEditor = createEditor('code-editor-749-result', 'json');
+            const btn = document.querySelector('#code-editor-252-run-button');
+            const textEditor = createEditor('code-editor-252-text', 'aql');
+            const resultEditor = createEditor('code-editor-252-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 

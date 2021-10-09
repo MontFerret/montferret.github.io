@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.85.0" />
+    <meta name="generator" content="Hugo 0.88.1" />
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -173,9 +173,9 @@
 <p>Let&rsquo;s see how it works!</p>
 <h2 id="get-started">Get started</h2>
 <p>The Lab can be installed either by downloading a <a href="https://github.com/MontFerret/lab/releases">binary</a> or pulling a Docker image:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker pull montferret/lab
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker pull montferret/lab
 </code></pre></div><p>If you are macOS/Linux user, you can install the latest binary with the shell script:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/MontFerret/lab/master/install.sh | sudo sh
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/MontFerret/lab/master/install.sh | sudo sh
 </code></pre></div><p>In this tutorial, we are going to use a local binary.</p>
 <h2 id="first-run">First run</h2>
 <p>Let&rsquo;s create a simple script that retreives GitHub trending projects:</p>
@@ -186,7 +186,7 @@
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-714-text" class="code-editor-text" style="height: 280px;">
+            <div id="code-780-text" class="code-editor-text" style="height: 280px;">
                 
 LET github = DOCUMENT("https://github.com/trending")
 
@@ -208,7 +208,7 @@ FOR project IN ELEMENTS(github, ".Box-row")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-714-text');
+            const editor = ace.edit('code-780-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -224,7 +224,7 @@ FOR project IN ELEMENTS(github, ".Box-row")
 </div>
 <p>Let&rsquo;s save it in a file called <code>trending.fql</code>.
 Now we can the query with <code>lab</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab trending.fql
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab trending.fql
 9:04PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
 9:04PM INF Passed Duration<span style="color:#f92672">=</span>1.32741042s File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/trending.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
 9:04PM INF Done Duration<span style="color:#f92672">=</span>1.32741042s Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
@@ -236,7 +236,7 @@ Now we can the query with <code>lab</code>:</p>
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-752-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-387-text" class="code-editor-text" style="height: 250px;">
                 
 LET github = DOCUMENT("https://github.com/trending")
 LET emailBtnSelector = 'a[href="/explore/email"]'
@@ -256,7 +256,7 @@ RETURN TRUE
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-752-text');
+            const editor = ace.edit('code-387-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -271,12 +271,12 @@ RETURN TRUE
     </script>
 </div>
 <p>Let&rsquo;s save this query in a file called <code>assertions.fql</code> and execute it:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab assertion.fql
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab assertion.fql
 9:06PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
 9:06PM INF Passed Duration<span style="color:#f92672">=</span>415.113954ms File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/assertion.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
 9:06PM INF Done Duration<span style="color:#f92672">=</span>415.113954ms Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
 </code></pre></div><p>Great! Now we have 2 scripts that we can run together:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab .
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab .
 9:07PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
 9:07PM INF Passed Duration<span style="color:#f92672">=</span>1.402902567s File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/assertion.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
 9:07PM DBG using User-Agent user-agent<span style="color:#f92672">=</span>
@@ -287,7 +287,7 @@ RETURN TRUE
 <p>The answer is suite files.</p>
 <p>Till this moment, we&rsquo;ve used plain FQL files which <code>lab</code> directly executed using <code>ferret</code> without possibility to validate correctness of returned data.</p>
 <p>Here come suite files:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">query</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">query</span>:
   <span style="color:#f92672">ref</span>: <span style="color:#ae81ff">trending.fql</span>
 <span style="color:#f92672">assert</span>:
   <span style="color:#f92672">text</span>: |<span style="color:#e6db74">
@@ -300,7 +300,7 @@ RETURN TRUE
 <h2 id="serving-static-files">Serving static files</h2>
 <p>One of the features that <code>lab</code> provides is static files server called <code>cdn</code>. The <code>cdn</code> endpoint allows you to serve any static files or web apps during execution of the tests.</p>
 <p>Let&rsquo;s create a plain text file and simple query that will download a it using the <code>cdn</code> endpoint.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ mkdir content
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ mkdir content
 $ echo <span style="color:#e6db74">&#34;Hello world&#34;</span> &gt; content/readme.txt
 $ touch cdn-example.fql
 </code></pre></div>
@@ -310,7 +310,7 @@ $ touch cdn-example.fql
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-785-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-868-text" class="code-editor-text" style="height: 90px;">
                 
 RETURN IO::NET::HTTP::GET(@lab.cdn.content)
 
@@ -320,7 +320,7 @@ RETURN IO::NET::HTTP::GET(@lab.cdn.content)
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-785-text');
+            const editor = ace.edit('code-868-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -336,7 +336,7 @@ RETURN IO::NET::HTTP::GET(@lab.cdn.content)
 </div>
 <p>As you have alredy seen before, we are using the <code>@lab</code> param to get access to available cdn endpoints.
 <code>content</code> is a directory name that is used for static files.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab --cdn<span style="color:#f92672">=</span>./content cdn-example.fql
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab --cdn<span style="color:#f92672">=</span>./content cdn-example.fql
 ⇨ http server started on <span style="color:#f92672">[</span>::<span style="color:#f92672">]</span>:57150
 9:10PM INF Passed Duration<span style="color:#f92672">=</span>13.387547ms File<span style="color:#f92672">=</span>/Users/ziflex/Work/src/github.com/MontFerret/_scripts/cdn-example.fql Times<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
 9:10PM INF Done Duration<span style="color:#f92672">=</span>13.387547ms Failed<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> Passed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
@@ -346,10 +346,10 @@ RETURN IO::NET::HTTP::GET(@lab.cdn.content)
 </div>
 <h2 id="parallel-execution">Parallel execution</h2>
 <p>By default, <code>lab</code> executes queries sequentially, but you can make it run in parallel by setting <code>concurrency</code> parameter to the required level of parallelism:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab --concurrency<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span> .
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ lab --concurrency<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span> .
 </code></pre></div><h2 id="docker">Docker</h2>
 <p>Aside from binary files, <code>lab</code> is also distributed as Docker images via <a href="https://github.com/orgs/MontFerret/packages/container/package/lab">GitHub</a> and <a href="https://hub.docker.com/repository/docker/montferret/lab">Docker Hub</a> that have both <code>lab</code> binaries and headless <code>Chromium</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run --rm -v $PWD:/test montferret/lab:1.2.0
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run --rm -v $PWD:/test montferret/lab:1.2.0
 </code></pre></div><h2 id="summary">Summary</h2>
 <p>Let&rsquo;s summarize what we&rsquo;ve learned.</p>
 <p><code>lab</code> can be useful to test correctness of your scraping queries by running them and validating their outputs.</p>
