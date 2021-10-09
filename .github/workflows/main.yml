@@ -1,15 +1,9 @@
 # This is a basic workflow to help you get started with Actions
 
-name: publish
+name: main
 
 # Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the dev branch
-  push:
-    branches: [ dev ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -28,7 +22,11 @@ jobs:
         with:
           stable: true
           go-version: '^1.7'
-        id: go
+        
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.88.1'
 
       # Runs a single command using the runners shell
       - name: Install Go dependencies
@@ -49,6 +47,7 @@ jobs:
           
       - name: Publish
         uses: magefile/mage-action@v1
+        if: ${{ github.ref == 'refs/heads/dev' }}
         with:
           version: latest
           args: publish
