@@ -45,9 +45,11 @@ jobs:
           version: latest
           args: build
           
-      - name: Publish
-        uses: magefile/mage-action@v1
+      - name: Deploy 🚀
         if: ${{ github.ref == 'refs/heads/dev' }}
+        uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
-          version: latest
-          args: publish
+          branch: master # The branch the action should deploy to.
+          folder: public # The folder the action should deploy.
+          target-folder: .
+          clean: true
