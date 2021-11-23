@@ -77,7 +77,7 @@ WAITFOR EVENT "navigation" IN page FILTER CURREN.frame == nested_doc
 ### AJAX
 ``request`` and ``response`` are the events you can use to subscribe to AJAX request/response operations:
 
-```fql
+{{< editor lang="fql" height="300px" readonly="true" >}}
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 
 WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
@@ -86,7 +86,7 @@ SCROLL_BOTTOM(doc)
 LET evt = (WAITFOR EVENT "request" IN doc FILTER CURRENT.url LIKE "https://api-v2.soundcloud.com/charts?genre=soundcloud*")
 
 RETURN evt.headers
-```
+{{</ editor >}}
 
 Request object:
 ```fql
@@ -98,7 +98,7 @@ Request object:
 }
 ```
 
-```fql
+{{< editor lang="fql" height="250px" readonly="true" >}}
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 
 WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
@@ -107,7 +107,7 @@ SCROLL_BOTTOM(doc)
 LET evt = (WAITFOR EVENT "response" IN doc FILTER CURRENT.url LIKE "https://api-v2.soundcloud.com/charts?genre=soundcloud*")
 
 RETURN JSON_PARSE(evt.body)
-```
+{{</ editor >}}
 
 Response object:
 ```fql
@@ -132,55 +132,71 @@ Well, now you do not have to do it anymore! This release is bringing the optiona
     The optional chaining operator (?.) enables you to read the value of a property located deep within a chain of connected objects without having to check that each reference in the chain is valid.
 </div>
 
-```fql
+{{< editor lang="fql" height="100px" readonly="true" >}}
 LET foo = { bar: NONE }
 RETURN foo?.bar?.baz
-```
+{{</ editor >}}
 
 The ``?.`` operator is like the ``.`` chaining operator, except that instead of returning an error if a reference is null, the expression short-circuits with a return value of ``NONE``.
-
-```fql
-LET foo = { bar: NONE }
-RETURN T::NONE(foo)
-```
 
 ## Errors suppression
 Errors suppression feature is somewhat similar to the optional chaining in allowing to tolerate insignificant errors during query execution and return ``NONE`` in case of occurred error:
 
-```fql
-LET el = ELEMENT(NONE, "#el)?
+{{< editor lang="fql" height="100px" readonly="true" >}}
+LET el = ELEMENT(NONE, "#el")?
 
 RETURN el == NONE
-```
+{{</ editor >}}
+
+If you try to execute the same query, but without ``?`` operator, it will fail:
+
+{{< editor lang="fql" height="100px" readonly="true" >}}
+LET el = ELEMENT(NONE, "#el")
+
+RETURN el == NONE
+{{</ editor >}}
 
 The ``?`` operator is like the ``?.`` optional chaining operator, but for function calls and inline statements:
 
-```fql
+{{< editor lang="fql" height="150px" readonly="true" >}}
+LET page = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 LET evt = (WAITFOR EVENT "navigation" IN page)?
 
 RETURN evt == NONE ? "not navigated" : "navigated"
-```
+{{</ editor >}}
 
 ## XPath selectors
 This is one of the long waiting features - universal use of XPath selectors.
 With updated interface of HTML driver componenets, it is possible to pass XPath selectors to HTML API functions by using new ``X`` function:
 
-```fql
-CLICK(page, X("//button[@id='my-button']"))
-```
+{{< editor lang="fql" height="250px" readonly="true" >}}
+LET page = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
+WAIT_ELEMENT(page, X("//div[contains(@class, 'chartTrack__details')]"), 5000)
+
+FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
+    LET details = ELEMENT(el, X('./div/div[3]'))
+    RETURN {
+        artist: INNER_TEXT(details, X('./div[1]')),
+        title:  INNER_TEXT(details, X('./div[2]')),
+    }
+{{</ editor >}}
 
 ``X`` function creates an XPath type of query selector which is supported by all HTML API functions now. The function automatically resolves returned value based on its type.
 
 ## Discard results
-Sometimes we need to do some prep work in a ``FOR`` loop but are not interested in the returned result. With this release we can use Go-like ``_`` variable name to discard results:
+Sometimes we need to do some prep work in a ``FOR`` loop but are not interested in the returned result. With this release we can use Go-like ``_`` variable name to discard results.
 
-```fql
+Like in Go, you cannot access this variable later:
+
+{{< editor lang="fql" height="250px" readonly="true" >}}
 LET _ = (
     FOR num IN 1..10
-        CLICK(el, '#el-'+num)
+        PRINT(num)
         RETURN NONE
 )
-```
+
+RETURN _
+{{</ editor >}}
 
 # What's fixed
 Here is a list of important bug fixes:
