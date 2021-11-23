@@ -203,30 +203,224 @@ This is a pseudo-variable that provides access to the current event object. The 
 <pre tabindex="0"><code class="language-fql" data-lang="fql">WAITFOR EVENT &quot;navigation&quot; IN page FILTER CURREN.frame == nested_doc
 </code></pre><h3 id="ajax">AJAX</h3>
 <p><code>request</code> and <code>response</code> are the events you can use to subscribe to AJAX request/response operations:</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: &quot;cdp&quot; })
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-560-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-560-text" class="code-editor-text" style="height: 300px;">
+                
+LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 
 WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
 SCROLL_BOTTOM(doc)
 
-LET evt = (WAITFOR EVENT &quot;request&quot; IN doc FILTER CURRENT.url LIKE &quot;https://api-v2.soundcloud.com/charts?genre=soundcloud*&quot;)
+LET evt = (WAITFOR EVENT "request" IN doc FILTER CURRENT.url LIKE "https://api-v2.soundcloud.com/charts?genre=soundcloud*")
 
 RETURN evt.headers
-</code></pre><p>Request object:</p>
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-560-result" class="code-editor-result" style="height: 300px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-560-run-button');
+            const textEditor = createEditor('code-editor-560-text', 'aql');
+            const resultEditor = createEditor('code-editor-560-result', 'json');
+            resultEditor.setReadOnly(true);
+                textEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<p>Request object:</p>
 <pre tabindex="0"><code class="language-fql" data-lang="fql">{
  url
  method
  headers
  body
 }
-</code></pre><pre tabindex="0"><code class="language-fql" data-lang="fql">LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: &quot;cdp&quot; })
+</code></pre>
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-191-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-191-text" class="code-editor-text" style="height: 250px;">
+                
+LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 
 WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
 SCROLL_BOTTOM(doc)
 
-LET evt = (WAITFOR EVENT &quot;response&quot; IN doc FILTER CURRENT.url LIKE &quot;https://api-v2.soundcloud.com/charts?genre=soundcloud*&quot;)
+LET evt = (WAITFOR EVENT "response" IN doc FILTER CURRENT.url LIKE "https://api-v2.soundcloud.com/charts?genre=soundcloud*")
 
 RETURN JSON_PARSE(evt.body)
-</code></pre><p>Response object:</p>
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-191-result" class="code-editor-result" style="height: 250px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-191-run-button');
+            const textEditor = createEditor('code-editor-191-text', 'aql');
+            const resultEditor = createEditor('code-editor-191-result', 'json');
+            resultEditor.setReadOnly(true);
+                textEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<p>Response object:</p>
 <pre tabindex="0"><code class="language-fql" data-lang="fql">{
  url 
  statusCode
@@ -242,33 +436,629 @@ RETURN JSON_PARSE(evt.body)
 <div class="notification is-info">
     The optional chaining operator (?.) enables you to read the value of a property located deep within a chain of connected objects without having to check that each reference in the chain is valid.
 </div>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">LET foo = { bar: NONE }
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-244-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-244-text" class="code-editor-text" style="height: 100px;">
+                
+LET foo = { bar: NONE }
 RETURN foo?.bar?.baz
-</code></pre><p>The <code>?.</code> operator is like the <code>.</code> chaining operator, except that instead of returning an error if a reference is null, the expression short-circuits with a return value of <code>NONE</code>.</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">LET foo = { bar: NONE }
-RETURN T::NONE(foo)
-</code></pre><h2 id="errors-suppression">Errors suppression</h2>
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-244-result" class="code-editor-result" style="height: 100px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-244-run-button');
+            const textEditor = createEditor('code-editor-244-text', 'aql');
+            const resultEditor = createEditor('code-editor-244-result', 'json');
+            resultEditor.setReadOnly(true);
+                textEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<p>The <code>?.</code> operator is like the <code>.</code> chaining operator, except that instead of returning an error if a reference is null, the expression short-circuits with a return value of <code>NONE</code>.</p>
+<h2 id="errors-suppression">Errors suppression</h2>
 <p>Errors suppression feature is somewhat similar to the optional chaining in allowing to tolerate insignificant errors during query execution and return <code>NONE</code> in case of occurred error:</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">LET el = ELEMENT(NONE, &quot;#el)?
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-593-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-593-text" class="code-editor-text" style="height: 100px;">
+                
+LET el = ELEMENT(NONE, "#el")?
 
 RETURN el == NONE
-</code></pre><p>The <code>?</code> operator is like the <code>?.</code> optional chaining operator, but for function calls and inline statements:</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">LET evt = (WAITFOR EVENT &quot;navigation&quot; IN page)?
 
-RETURN evt == NONE ? &quot;not navigated&quot; : &quot;navigated&quot;
-</code></pre><h2 id="xpath-selectors">XPath selectors</h2>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-593-result" class="code-editor-result" style="height: 100px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-593-run-button');
+            const textEditor = createEditor('code-editor-593-text', 'aql');
+            const resultEditor = createEditor('code-editor-593-result', 'json');
+            resultEditor.setReadOnly(true);
+                textEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<p>If you try to execute the same query, but without <code>?</code> operator, it will fail:</p>
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-513-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-513-text" class="code-editor-text" style="height: 100px;">
+                
+LET el = ELEMENT(NONE, "#el")
+
+RETURN el == NONE
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-513-result" class="code-editor-result" style="height: 100px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-513-run-button');
+            const textEditor = createEditor('code-editor-513-text', 'aql');
+            const resultEditor = createEditor('code-editor-513-result', 'json');
+            resultEditor.setReadOnly(true);
+                textEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<p>The <code>?</code> operator is like the <code>?.</code> optional chaining operator, but for function calls and inline statements:</p>
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-974-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-974-text" class="code-editor-text" style="height: 150px;">
+                
+LET page = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
+LET evt = (WAITFOR EVENT "navigation" IN page)?
+
+RETURN evt == NONE ? "not navigated" : "navigated"
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-974-result" class="code-editor-result" style="height: 150px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-974-run-button');
+            const textEditor = createEditor('code-editor-974-text', 'aql');
+            const resultEditor = createEditor('code-editor-974-result', 'json');
+            resultEditor.setReadOnly(true);
+                textEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<h2 id="xpath-selectors">XPath selectors</h2>
 <p>This is one of the long waiting features - universal use of XPath selectors.
 With updated interface of HTML driver componenets, it is possible to pass XPath selectors to HTML API functions by using new <code>X</code> function:</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">CLICK(page, X(&quot;//button[@id='my-button']&quot;))
-</code></pre><p><code>X</code> function creates an XPath type of query selector which is supported by all HTML API functions now. The function automatically resolves returned value based on its type.</p>
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-305-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-305-text" class="code-editor-text" style="height: 250px;">
+                
+LET page = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
+WAIT_ELEMENT(page, X("//div[contains(@class, 'chartTrack__details')]"), 5000)
+
+FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
+    LET details = ELEMENT(el, X('./div/div[3]'))
+    RETURN {
+        artist: INNER_TEXT(details, X('./div[1]')),
+        title:  INNER_TEXT(details, X('./div[2]')),
+    }
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-305-result" class="code-editor-result" style="height: 250px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-305-run-button');
+            const textEditor = createEditor('code-editor-305-text', 'aql');
+            const resultEditor = createEditor('code-editor-305-result', 'json');
+            resultEditor.setReadOnly(true);
+                textEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<p><code>X</code> function creates an XPath type of query selector which is supported by all HTML API functions now. The function automatically resolves returned value based on its type.</p>
 <h2 id="discard-results">Discard results</h2>
-<p>Sometimes we need to do some prep work in a <code>FOR</code> loop but are not interested in the returned result. With this release we can use Go-like <code>_</code> variable name to discard results:</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">LET _ = (
+<p>Sometimes we need to do some prep work in a <code>FOR</code> loop but are not interested in the returned result. With this release we can use Go-like <code>_</code> variable name to discard results.</p>
+<p>Like in Go, you cannot access this variable later:</p>
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-716-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-716-text" class="code-editor-text" style="height: 250px;">
+                
+LET _ = (
     FOR num IN 1..10
-        CLICK(el, '#el-'+num)
+        PRINT(num)
         RETURN NONE
 )
-</code></pre><h1 id="whats-fixed">What&rsquo;s fixed</h1>
+
+RETURN _
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-716-result" class="code-editor-result" style="height: 250px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-716-run-button');
+            const textEditor = createEditor('code-editor-716-text', 'aql');
+            const resultEditor = createEditor('code-editor-716-result', 'json');
+            resultEditor.setReadOnly(true);
+                textEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+
+                onStart();
+                fetch("https:\/\/ferret-worker-pucbyp2omq-ue.a.run.app", {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json,encoding=utf-8'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(r => r.json())
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.toString());
+                    });
+            });
+        }, false);
+    </script>
+</div>
+<h1 id="whats-fixed">What&rsquo;s fixed</h1>
 <p>Here is a list of important bug fixes:</p>
 <ul>
 <li><code>values.Parse</code> does not parse int64</li>
