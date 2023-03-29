@@ -10,10 +10,9 @@ Built with Hugo
 - [frep](https://github.com/subchen/frep/releases)(optional) is the tool used for templating the documentation
 
 ## Getting Started
-
 ### Installing dependencies
 ```bash
-mage install
+go mod tidy && mage install
 ```
 
 ### Dev server
