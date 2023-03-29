@@ -2,10 +2,33 @@
 
 Built with Hugo
 
-### Building
+## Prerequisites
+- [Go](https://golang.org/doc/install)
+- [Hugo](https://gohugo.io/getting-started/installing/)
+- [Node.js](https://nodejs.org/en/download/)
+- [Mage](https://magefile.org) for building the website.
+- [frep](https://github.com/subchen/frep/releases)(optional) is the tool used for templating the documentation
 
-1. [Mage](https://magefile.org) is the build tool.
-2. [frep](https://github.com/subchen/frep/releases) is the tool used for templating the documentation
-pages. You need to install it.
-3. Generating `stdlib` documentation requires doc rep YAML. You can then use
-`sh generate-docs.sh <REP_FILE>` to generate the documentation.
+## Getting Started
+
+### Installing dependencies
+```bash
+mage install
+```
+
+### Dev server
+```bash
+mage serve
+```
+
+### Generating API docs
+Generating `stdlib` documentation requires doc rep YAML.
+
+```bash
+mage generate
+```
+
+### Publishing
+```bash
+mage publish
+```

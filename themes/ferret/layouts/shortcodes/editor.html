@@ -149,12 +149,28 @@
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
