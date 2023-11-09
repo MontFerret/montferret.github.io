@@ -70,6 +70,10 @@ $ ferret exec -d "http://127.0.0.1:9222"
 
 **NOTE**: By default, Ferret will try to use this local address as a default one, so it makes sense to explicitly pass the parameter only in case of either different port number or remote address. So in this case, specifying the address makes no difference as long as the `driver` parameter is set with `cdp` in the query.
 
+```bash
+> LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
+```
+
 Alternatively, you can tell CLI to launch Chrome for you.
 
 ```bash
