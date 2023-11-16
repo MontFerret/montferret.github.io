@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -283,11 +283,11 @@ For paginations, it's recommended to use DO-WHILE variation of the loop, in orde
 
     
 
-    <button id="code-editor-32-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-1-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-32-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-1-text" class="code-editor-text" style="height: 300px;">
                 
 LET doc = DOCUMENT("https://github.com/MontFerret/ferret/stargazers", { driver: "cdp" })
 
@@ -310,7 +310,7 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-32-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-1-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -329,9 +329,9 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-32-run-button');
-            const textEditor = createEditor('code-editor-32-text', 'aql');
-            const resultEditor = createEditor('code-editor-32-result', 'json');
+            const btn = document.querySelector('#code-editor-1-run-button');
+            const textEditor = createEditor('code-editor-1-text', 'aql');
+            const resultEditor = createEditor('code-editor-1-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -373,12 +373,28 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -398,11 +414,11 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
 
     
 
-    <button id="code-editor-775-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-692-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-775-text" class="code-editor-text" style="height: 600px;">
+            <div id="code-editor-692-text" class="code-editor-text" style="height: 600px;">
                 
 LET baseURL = 'https://www.amazon.com/'
 LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
@@ -449,7 +465,7 @@ RETURN FLATTEN(result)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-775-result" class="code-editor-result" style="height: 600px;"></div>
+            <div id="code-editor-692-result" class="code-editor-result" style="height: 600px;"></div>
         </div>
     </div>
     
@@ -468,9 +484,9 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-775-run-button');
-            const textEditor = createEditor('code-editor-775-text', 'aql');
-            const resultEditor = createEditor('code-editor-775-result', 'json');
+            const btn = document.querySelector('#code-editor-692-run-button');
+            const textEditor = createEditor('code-editor-692-text', 'aql');
+            const resultEditor = createEditor('code-editor-692-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -512,12 +528,28 @@ RETURN FLATTEN(result)
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -544,11 +576,11 @@ Iteration always starts with a current page.
 
     
 
-    <button id="code-editor-233-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-685-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-233-text" class="code-editor-text" style="height: 600px;">
+            <div id="code-editor-685-text" class="code-editor-text" style="height: 600px;">
                 
 LET baseURL = 'https://www.amazon.com/'
 LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
@@ -593,7 +625,7 @@ RETURN FLATTEN(result)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-233-result" class="code-editor-result" style="height: 600px;"></div>
+            <div id="code-editor-685-result" class="code-editor-result" style="height: 600px;"></div>
         </div>
     </div>
     
@@ -612,9 +644,9 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-233-run-button');
-            const textEditor = createEditor('code-editor-233-text', 'aql');
-            const resultEditor = createEditor('code-editor-233-result', 'json');
+            const btn = document.querySelector('#code-editor-685-run-button');
+            const textEditor = createEditor('code-editor-685-text', 'aql');
+            const resultEditor = createEditor('code-editor-685-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -656,12 +688,28 @@ RETURN FLATTEN(result)
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -678,7 +726,7 @@ RETURN FLATTEN(result)
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

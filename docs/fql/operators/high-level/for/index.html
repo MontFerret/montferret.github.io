@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -790,7 +790,7 @@ FOR-IN
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-25-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-354-text" class="code-editor-text" style="height: 80px;">
                 
 FOR variableName IN expression
 
@@ -800,7 +800,7 @@ FOR variableName IN expression
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-25-text');
+            const editor = ace.edit('code-354-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -827,11 +827,11 @@ Each element returned by expression is visited exactly once. The current element
 <div class="code-editor">
 
     
-    <button id="code-editor-304-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-203-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-304-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-203-text" class="code-editor-text" style="height: 100px;">
                 
 FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
   RETURN i
@@ -841,7 +841,7 @@ FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-304-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-203-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -860,9 +860,9 @@ FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-304-run-button');
-            const textEditor = createEditor('code-editor-304-text', 'aql');
-            const resultEditor = createEditor('code-editor-304-result', 'json');
+            const btn = document.querySelector('#code-editor-203-run-button');
+            const textEditor = createEditor('code-editor-203-text', 'aql');
+            const resultEditor = createEditor('code-editor-203-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -904,12 +904,28 @@ FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -929,11 +945,11 @@ FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
 <div class="code-editor">
 
     
-    <button id="code-editor-193-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-858-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-193-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-858-text" class="code-editor-text" style="height: 100px;">
                 
 FOR year IN [ 2011, 2012, 2013 ]
   RETURN { "year" : year, "isLeapYear" : year % 4 == 0 && (year % 100 != 0 || year % 400 == 0) }
@@ -943,7 +959,7 @@ FOR year IN [ 2011, 2012, 2013 ]
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-193-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-858-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -962,9 +978,9 @@ FOR year IN [ 2011, 2012, 2013 ]
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-193-run-button');
-            const textEditor = createEditor('code-editor-193-text', 'aql');
-            const resultEditor = createEditor('code-editor-193-result', 'json');
+            const btn = document.querySelector('#code-editor-858-run-button');
+            const textEditor = createEditor('code-editor-858-text', 'aql');
+            const resultEditor = createEditor('code-editor-858-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1006,12 +1022,28 @@ FOR year IN [ 2011, 2012, 2013 ]
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1029,11 +1061,11 @@ FOR year IN [ 2011, 2012, 2013 ]
 <div class="code-editor">
 
     
-    <button id="code-editor-47-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-359-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-47-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-359-text" class="code-editor-text" style="height: 100px;">
                 
 FOR m IN [ 2019, 2020, 2021 ]
   FOR y IN [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sept", "oct", "nov", "dec" ]
@@ -1044,7 +1076,7 @@ FOR m IN [ 2019, 2020, 2021 ]
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-47-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-359-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -1063,9 +1095,9 @@ FOR m IN [ 2019, 2020, 2021 ]
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-47-run-button');
-            const textEditor = createEditor('code-editor-47-text', 'aql');
-            const resultEditor = createEditor('code-editor-47-result', 'json');
+            const btn = document.querySelector('#code-editor-359-run-button');
+            const textEditor = createEditor('code-editor-359-text', 'aql');
+            const resultEditor = createEditor('code-editor-359-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1107,12 +1139,28 @@ FOR m IN [ 2019, 2020, 2021 ]
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1134,7 +1182,7 @@ FOR-WHILE
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-946-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-112-text" class="code-editor-text" style="height: 80px;">
                 
 FOR variableName [DO] WHILE expression
 
@@ -1144,7 +1192,7 @@ FOR variableName [DO] WHILE expression
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-946-text');
+            const editor = ace.edit('code-112-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -1173,7 +1221,7 @@ FOR variableName [DO] WHILE expression
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

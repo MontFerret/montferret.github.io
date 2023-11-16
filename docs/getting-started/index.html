@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -766,50 +766,55 @@
     <h1 id="quick-start">Quick start</h1>
 <h3 id="browserless-mode">Browserless mode</h3>
 <p>If you want to play with FQL and check its syntax, you can run CLI with the following commands to run Ferret CLI in REPL mode:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Welcome to Ferret REPL
-Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>Ctrl-D<span style="color:#e6db74">`</span> to exit this program.
-&gt;%
-&gt;LET doc <span style="color:#f92672">=</span> DOCUMENT<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;https://news.ycombinator.com/&#39;</span><span style="color:#f92672">)</span>
-&gt;FOR post IN ELEMENTS<span style="color:#f92672">(</span>doc, <span style="color:#e6db74">&#39;.storylink&#39;</span><span style="color:#f92672">)</span>
-&gt;RETURN post.attributes.href
-&gt;%
-</code></pre></div><p><strong>NOTE</strong>: symbol % is used to start and end multi-line queries. You also can use the heredoc format.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Welcome to Ferret REPL
+</span></span><span style="display:flex;"><span>Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>Ctrl-D<span style="color:#e6db74">`</span> to exit this program.
+</span></span><span style="display:flex;"><span>&gt; %
+</span></span><span style="display:flex;"><span>&gt; LET doc <span style="color:#f92672">=</span> DOCUMENT<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;https://news.ycombinator.com/&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt; FOR post IN ELEMENTS<span style="color:#f92672">(</span>doc, <span style="color:#e6db74">&#39;.titleline &gt; a&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;     RETURN <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>&gt;         title: TRIM<span style="color:#f92672">(</span>INNER_TEXT<span style="color:#f92672">(</span>post<span style="color:#f92672">))</span>,
+</span></span><span style="display:flex;"><span>&gt;         link: ATTR_GET<span style="color:#f92672">(</span>post, <span style="color:#e6db74">&#39;href&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;     <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>&gt; %
+</span></span></code></pre></div><p><strong>NOTE</strong>: symbol % is used to start and end multi-line queries. You also can use the heredoc format.</p>
+<p>Use <code>exit</code> to quit the REPL.</p>
 <p>If you want to execute a query stored in a file, just pass a file name:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret ./docs/examples/static-page.fql
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat ./docs/examples/static-page.fql | ferret
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret &lt; ./docs/examples/static-page.fql
-</code></pre></div><h3 id="browser-mode">Browser mode</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec ./docs/examples/static-page.fql
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat ./docs/examples/static-page.fql | ferret exec 
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec &lt; ./docs/examples/static-page.fql
+</span></span></code></pre></div><h3 id="browser-mode">Browser mode</h3>
 <p>By default, Ferret loads HTML pages via HTTP protocol, because it&rsquo;s faster.
 But nowadays, there are more and more websites rendered with JavaScript, and therefore, this &lsquo;old school&rsquo; approach does not really work.
 For such cases, you may fetch documents using Chrome or Chromium via Chrome DevTools protocol (aka CDP).
 First, you need to make sure that you launched a Chrome instance with open debugging port.</p>
 <p>You can use your local installation:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ chrome.exe --remote-debugging-port<span style="color:#f92672">=</span><span style="color:#ae81ff">9222</span> --headless
-</code></pre></div><p>Or use <a href="https://www.docker.com/">Docker</a>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker pull montferret/chromium
-$ docker run -d -p 9222:9222 montferret/chromium
-</code></pre></div><p>Second, you need to pass the address to Ferret CLI.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret --cdp http://127.0.0.1:9222
-</code></pre></div><p><strong>NOTE</strong>: By default, Ferret will try to use this local address as a default one, so it makes sense to explicitly pass the parameter only in case of either different port number or remote address.</p>
-<p>Alternatively, you can tell CLI to launch Chrome for you.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret --cdp-launch
-</code></pre></div><p>Once Ferret knows how to communicate with Chrome, you can use <code>DOCUMENT(url, opts)</code> function with true boolean value for dynamic pages:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Welcome to Ferret REPL
-Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>Ctrl-D<span style="color:#e6db74">`</span> to exit this program.
-&gt;%
-&gt;LET doc <span style="color:#f92672">=</span> DOCUMENT<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;https://soundcloud.com/charts/top&#39;</span>, <span style="color:#f92672">{</span> driver: <span style="color:#e6db74">&#34;cdp&#34;</span> <span style="color:#f92672">})</span>
-&gt;WAIT_ELEMENT<span style="color:#f92672">(</span>doc, <span style="color:#e6db74">&#39;.chartTrack__details&#39;</span>, 5000<span style="color:#f92672">)</span>
-&gt;LET tracks <span style="color:#f92672">=</span> ELEMENTS<span style="color:#f92672">(</span>doc, <span style="color:#e6db74">&#39;.chartTrack__details&#39;</span><span style="color:#f92672">)</span>
-&gt;FOR track IN tracks
-&gt;    LET username <span style="color:#f92672">=</span> ELEMENT<span style="color:#f92672">(</span>track, <span style="color:#e6db74">&#39;.chartTrack__username&#39;</span><span style="color:#f92672">)</span>
-&gt;    LET title <span style="color:#f92672">=</span> ELEMENT<span style="color:#f92672">(</span>track, <span style="color:#e6db74">&#39;.chartTrack__title&#39;</span><span style="color:#f92672">)</span>
-&gt;    RETURN <span style="color:#f92672">{</span>
-&gt;       artist: username.innerText,
-&gt;        track: title.innerText
-&gt;    <span style="color:#f92672">}</span>
-&gt;%
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ chrome.exe --remote-debugging-port<span style="color:#f92672">=</span><span style="color:#ae81ff">9222</span> --headless
+</span></span></code></pre></div><p>Or use <a href="https://www.docker.com/">Docker</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker pull montferret/chromium
+</span></span><span style="display:flex;"><span>$ docker run -d -p 9222:9222 montferret/chromium
+</span></span></code></pre></div><p>Second, you need to pass the address to Ferret CLI.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec -d <span style="color:#e6db74">&#34;http://127.0.0.1:9222&#34;</span>
+</span></span></code></pre></div><p><strong>NOTE</strong>: By default, Ferret will try to use this local address as a default one, so it makes sense to explicitly pass the parameter only in case of either different port number or remote address. So in this case, specifying the address makes no difference as long as the <code>driver</code> parameter is set with <code>cdp</code> in the query.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>&gt; LET doc <span style="color:#f92672">=</span> DOCUMENT<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;https://soundcloud.com/charts/top&#39;</span>, <span style="color:#f92672">{</span> driver: <span style="color:#e6db74">&#34;cdp&#34;</span> <span style="color:#f92672">})</span>
+</span></span></code></pre></div><p>Alternatively, you can tell CLI to launch Chrome for you.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec --browser-headless
+</span></span><span style="display:flex;"><span>$ ferret exec --browser-open <span style="color:#75715e"># browser with head</span>
+</span></span></code></pre></div><p>Once Ferret knows how to communicate with Chrome, you can use <code>DOCUMENT(url, opts)</code> function with true boolean value for dynamic pages:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Welcome to Ferret REPL
+</span></span><span style="display:flex;"><span>Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>Ctrl-D<span style="color:#e6db74">`</span> to exit this program.
+</span></span><span style="display:flex;"><span>&gt;%
+</span></span><span style="display:flex;"><span>&gt;LET doc <span style="color:#f92672">=</span> DOCUMENT<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;https://soundcloud.com/charts/top&#39;</span>, <span style="color:#f92672">{</span> driver: <span style="color:#e6db74">&#34;cdp&#34;</span> <span style="color:#f92672">})</span>
+</span></span><span style="display:flex;"><span>&gt;WAIT_ELEMENT<span style="color:#f92672">(</span>doc, <span style="color:#e6db74">&#39;.chartTrack__details&#39;</span>, 5000<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;FOR track IN ELEMENTS<span style="color:#f92672">(</span>doc, <span style="color:#e6db74">&#39;.chartTrack__details&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;    LET username <span style="color:#f92672">=</span> ELEMENT<span style="color:#f92672">(</span>track, <span style="color:#e6db74">&#39;.chartTrack__username&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;    LET title <span style="color:#f92672">=</span> ELEMENT<span style="color:#f92672">(</span>track, <span style="color:#e6db74">&#39;.chartTrack__title&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&gt;    RETURN <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>&gt;       artist: username.innerText,
+</span></span><span style="display:flex;"><span>&gt;        track: title.innerText
+</span></span><span style="display:flex;"><span>&gt;    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>&gt;%
+</span></span></code></pre></div>
 </article>
         </section>
         
@@ -823,7 +828,7 @@ Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

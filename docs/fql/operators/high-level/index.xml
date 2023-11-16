@@ -12,8 +12,9 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/for/</guid>
-      <description>FOR   The versatile FOR keyword can be used to iterate over a different collections like array, objects and set of HTML elements.
-FOR-IN   FOR variableName IN expression     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-25-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.renderer.$cursorLayer.element.style.display = &#34;none&#34; }, false);   A FOR-IN statement iterates through all entries of an array, object, or values that implement Iterable interface.</description>
+      <description>FOR The versatile FOR keyword can be used to iterate over a different collections like array, objects and set of HTML elements.
+FOR-IN FOR variableName IN expression A FOR-IN statement iterates through all entries of an array, object, or values that implement Iterable interface. Each element returned by expression is visited exactly once. The current element is made available for further processing in the variable specified by variableName.
+Run FOR i IN JSON_PARSE(IO::NET::HTTP::GET(&#39;http://country.</description>
     </item>
     
     <item>
@@ -22,9 +23,9 @@ FOR-IN   FOR variableName IN expression     document.addEventListener(&#39;DOMCo
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/return/</guid>
-      <description>RETURN   The RETURN statement can be used to produce the result of a query. It is mandatory to specify a RETURN statement at the end of each block in a data-selection query, otherwise the query will be invalid. Using RETURN on the main level in data-modification queries is optional.
+      <description>RETURN The RETURN statement can be used to produce the result of a query. It is mandatory to specify a RETURN statement at the end of each block in a data-selection query, otherwise the query will be invalid. Using RETURN on the main level in data-modification queries is optional.
 The general syntax for RETURN is:
-RETURN expression     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.</description>
+RETURN expression The expression returned by RETURN is produced for each iteration in the block the RETURN statement is placed in.</description>
     </item>
     
     <item>
@@ -33,9 +34,9 @@ RETURN expression     document.addEventListener(&#39;DOMContentLoaded&#39;, func
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/filter/</guid>
-      <description>FILTER   The FILTER statement can be used to restrict the results to elements that match an arbitrary logical condition.
+      <description>FILTER The FILTER statement can be used to restrict the results to elements that match an arbitrary logical condition.
 The general syntax for FILTER is:
-FILTER expression     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-301-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.renderer.$cursorLayer.element.style.display = &#34;none&#34; }, false);   expression must be a condition that evaluates to either false or true.</description>
+FILTER expression expression must be a condition that evaluates to either false or true. If the condition result is false, the current element is skipped, so it will not be processed further and not be part of the result. If the condition is true, the current element is not skipped and can be further processed.</description>
     </item>
     
     <item>
@@ -44,8 +45,9 @@ FILTER expression     document.addEventListener(&#39;DOMContentLoaded&#39;, func
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/sort/</guid>
-      <description>SORT   The SORT statement will force a sort of the array of already produced intermediate results in the current block. SORT allows specifying one or multiple sort criteria and directions. The general syntax is:
-SORT expression direction     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-515-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.</description>
+      <description>SORT The SORT statement will force a sort of the array of already produced intermediate results in the current block. SORT allows specifying one or multiple sort criteria and directions. The general syntax is:
+SORT expression direction Example query that is sorting by lastName (in ascending order), then firstName (in ascending order), then by id (in descending order):
+Run LET users = [{&#34;id&#34;:1,&#34;firstName&#34;:&#34;Johny&#34;,&#34;lastName&#34;:&#34;Purdie&#34;},{&#34;id&#34;:2,&#34;firstName&#34;:&#34;Wayland&#34;,&#34;lastName&#34;:&#34;Bewshaw&#34;},{&#34;id&#34;:3,&#34;firstName&#34;:&#34;Julius&#34;,&#34;lastName&#34;:&#34;Taplin&#34;},{&#34;id&#34;:4,&#34;firstName&#34;:&#34;Jarrad&#34;,&#34;lastName&#34;:&#34;Dollman&#34;},{&#34;id&#34;:5,&#34;firstName&#34;:&#34;Leia&#34;,&#34;lastName&#34;:&#34;Meechan&#34;}] FOR u IN users SORT u.lastName, u.</description>
     </item>
     
     <item>
@@ -54,8 +56,8 @@ SORT expression direction     document.addEventListener(&#39;DOMContentLoaded&#3
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/limit/</guid>
-      <description>LIMIT   The LIMIT statement allows slicing the result array using an offset and a count. It reduces the number of elements in the result to at most the specified number. Two general forms of LIMIT are followed:
-LIMIT count LIMIT offset, count     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-264-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.</description>
+      <description>LIMIT The LIMIT statement allows slicing the result array using an offset and a count. It reduces the number of elements in the result to at most the specified number. Two general forms of LIMIT are followed:
+LIMIT count LIMIT offset, count The first form allows specifying only the count value whereas the second form allows specifying both offset and count. The first form is identical using the second form with an offset value of 0.</description>
     </item>
     
     <item>
@@ -64,9 +66,10 @@ LIMIT count LIMIT offset, count     document.addEventListener(&#39;DOMContentLoa
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/let/</guid>
-      <description>LET   The LET statement can be used to assign an arbitrary value to a variable. The variable is then introduced in the scope the LET statement is placed in.
+      <description>LET The LET statement can be used to assign an arbitrary value to a variable. The variable is then introduced in the scope the LET statement is placed in.
 The general syntax is:
-LET variableName = expression     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-360-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.</description>
+LET variableName = expression Variables are immutable in FQL, which means they can not be re-assigned:
+LET a = [1, 2, 3] // initial assignment a = PUSH(a, 4) // syntax error, unexpected identifier LET a = PUSH(a, 4) // parsing error, variable &#39;a&#39; is assigned multiple times LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4] LET statements are mostly used to declare complex computations and to avoid repeated computations of the same value at multiple parts of a query.</description>
     </item>
     
     <item>
@@ -75,10 +78,10 @@ LET variableName = expression     document.addEventListener(&#39;DOMContentLoade
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/collect/</guid>
-      <description>COLLECT   The COLLECT keyword can be used to group an array by one or multiple group criteria.
+      <description>COLLECT The COLLECT keyword can be used to group an array by one or multiple group criteria.
 The COLLECT statement will eliminate all local variables in the current scope. After COLLECT only the variables introduced by COLLECT itself are available.
 There are several syntax variants for COLLECT operations:
-COLLECT variableName = expression COLLECT variableName = expression INTO groupsVariable COLLECT variableName = expression INTO groupsVariable = projectionExpression COLLECT variableName = expression INTO groupsVariable KEEP keepVariable COLLECT variableName = expression WITH COUNT INTO countVariable COLLECT variableName = expression AGGREGATE variableName = aggregateExpression COLLECT variableName = expression AGGREGATE variableName = aggregateExpression INTO groupsVariable COLLECT AGGREGATE variableName = aggregateExpression COLLECT AGGREGATE variableName = aggregateExpression INTO groupsVariable COLLECT WITH COUNT INTO countVariable     document.</description>
+COLLECT variableName = expression COLLECT variableName = expression INTO groupsVariable COLLECT variableName = expression INTO groupsVariable = projectionExpression COLLECT variableName = expression INTO groupsVariable KEEP keepVariable COLLECT variableName = expression WITH COUNT INTO countVariable COLLECT variableName = expression AGGREGATE variableName = aggregateExpression COLLECT variableName = expression AGGREGATE variableName = aggregateExpression INTO groupsVariable COLLECT AGGREGATE variableName = aggregateExpression COLLECT AGGREGATE variableName = aggregateExpression INTO groupsVariable COLLECT WITH COUNT INTO countVariable Grouping syntaxes The first syntax form of COLLECT only groups the result by the defined group criteria specified in expression.</description>
     </item>
     
   </channel>

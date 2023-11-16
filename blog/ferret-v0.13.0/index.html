@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -191,11 +191,11 @@
 
     
 
-    <button id="code-editor-471-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-657-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-471-text" class="code-editor-text" style="height: 340px;">
+            <div id="code-editor-657-text" class="code-editor-text" style="height: 340px;">
                 
 LET doc = DOCUMENT("https://github.com/marketplace/category/api-management", { driver: "cdp"})
 LET nextSelector = ".paginate-container .BtnGroup a:nth-child(2)"
@@ -218,7 +218,7 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-471-result" class="code-editor-result" style="height: 340px;"></div>
+            <div id="code-editor-657-result" class="code-editor-result" style="height: 340px;"></div>
         </div>
     </div>
     
@@ -237,9 +237,9 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-471-run-button');
-            const textEditor = createEditor('code-editor-471-text', 'aql');
-            const resultEditor = createEditor('code-editor-471-result', 'json');
+            const btn = document.querySelector('#code-editor-657-run-button');
+            const textEditor = createEditor('code-editor-657-text', 'aql');
+            const resultEditor = createEditor('code-editor-657-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -282,12 +282,28 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -311,11 +327,11 @@ Being an extension of <code>FOR-IN</code> loop gives us all statements that can 
 
     
 
-    <button id="code-editor-635-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-938-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-635-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-938-text" class="code-editor-text" style="height: 200px;">
                 
 LET doc = DOCUMENT("https://github.com/", { driver: "cdp"})
 LET el = ELEMENT(doc, "#user_email")
@@ -328,7 +344,7 @@ RETURN {
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-635-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-938-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -347,9 +363,9 @@ RETURN {
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-635-run-button');
-            const textEditor = createEditor('code-editor-635-text', 'aql');
-            const resultEditor = createEditor('code-editor-635-result', 'json');
+            const btn = document.querySelector('#code-editor-938-run-button');
+            const textEditor = createEditor('code-editor-938-text', 'aql');
+            const resultEditor = createEditor('code-editor-938-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -392,12 +408,28 @@ RETURN {
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -417,11 +449,11 @@ RETURN {
 
     
 
-    <button id="code-editor-885-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-652-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-885-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-652-text" class="code-editor-text" style="height: 200px;">
                 
 LET doc = DOCUMENT("https://getbootstrap.com/docs/4.5/components/list-group/", { driver: "cdp"})
 LET list = ELEMENT(doc, 'ul.list-group')
@@ -438,7 +470,7 @@ RETURN {
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-885-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-652-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -457,9 +489,9 @@ RETURN {
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-885-run-button');
-            const textEditor = createEditor('code-editor-885-text', 'aql');
-            const resultEditor = createEditor('code-editor-885-result', 'json');
+            const btn = document.querySelector('#code-editor-652-run-button');
+            const textEditor = createEditor('code-editor-652-text', 'aql');
+            const resultEditor = createEditor('code-editor-652-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -502,12 +534,28 @@ RETURN {
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -527,7 +575,7 @@ RETURN {
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

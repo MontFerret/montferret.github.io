@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -784,7 +784,7 @@ COLLECT
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-871-text" class="code-editor-text" style="height: 230px;">
+            <div id="code-54-text" class="code-editor-text" style="height: 230px;">
                 
 COLLECT variableName = expression
 COLLECT variableName = expression INTO groupsVariable
@@ -803,7 +803,7 @@ COLLECT WITH COUNT INTO countVariable
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-871-text');
+            const editor = ace.edit('code-54-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -838,11 +838,11 @@ Grouping syntaxes
 <div class="code-editor">
 
     
-    <button id="code-editor-20-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-696-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-20-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-696-text" class="code-editor-text" style="height: 200px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City"},{"id":2,"name":"Adolph MacAindreis","city":"Moscow"},{"id":3,"name":"Flory Maxworthy","city":"London"},{"id":4,"name":"Merola Blundell","city":"New York City"},{"id":5,"name":"Benson Manoelli","city":"Moscow"},{"id":6,"name":"Cordy McVie","city":"London"},{"id":7,"name":"Reggy Tuck","city":"New York City"},{"id":8,"name":"Courtney Toogood","city":"Berlin"},{"id":9,"name":"Berkley Fields","city":"Berlin"},{"id":10,"name":"Findley Gauvain","city":"Stockholm"}]
 
@@ -858,7 +858,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-20-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-696-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -877,9 +877,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-20-run-button');
-            const textEditor = createEditor('code-editor-20-text', 'aql');
-            const resultEditor = createEditor('code-editor-20-result', 'json');
+            const btn = document.querySelector('#code-editor-696-run-button');
+            const textEditor = createEditor('code-editor-696-text', 'aql');
+            const resultEditor = createEditor('code-editor-696-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -921,12 +921,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -944,11 +960,11 @@ FOR u IN users
 <div class="code-editor">
 
     
-    <button id="code-editor-371-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-315-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-371-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-315-text" class="code-editor-text" style="height: 200px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City"},{"id":2,"name":"Adolph MacAindreis","city":"Moscow"},{"id":3,"name":"Flory Maxworthy","city":"London"},{"id":4,"name":"Merola Blundell","city":"New York City"},{"id":5,"name":"Benson Manoelli","city":"Moscow"},{"id":6,"name":"Cordy McVie","city":"London"},{"id":7,"name":"Reggy Tuck","city":"New York City"},{"id":8,"name":"Courtney Toogood","city":"Berlin"},{"id":9,"name":"Berkley Fields","city":"Berlin"},{"id":10,"name":"Findley Gauvain","city":"Stockholm"}]
 
@@ -965,7 +981,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-371-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-315-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -984,9 +1000,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-371-run-button');
-            const textEditor = createEditor('code-editor-371-text', 'aql');
-            const resultEditor = createEditor('code-editor-371-result', 'json');
+            const btn = document.querySelector('#code-editor-315-run-button');
+            const textEditor = createEditor('code-editor-315-text', 'aql');
+            const resultEditor = createEditor('code-editor-315-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1028,12 +1044,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1052,11 +1084,11 @@ FOR u IN users
 <div class="code-editor">
 
     
-    <button id="code-editor-810-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-954-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-810-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-954-text" class="code-editor-text" style="height: 200px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA"},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia"},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK"},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA"},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia"},{"id":6,"name":"Cordy McVie","city":"London","country":"UK"},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA"},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany"},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany"},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden"}]
 
@@ -1074,7 +1106,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-810-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-954-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -1093,9 +1125,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-810-run-button');
-            const textEditor = createEditor('code-editor-810-text', 'aql');
-            const resultEditor = createEditor('code-editor-810-result', 'json');
+            const btn = document.querySelector('#code-editor-954-run-button');
+            const textEditor = createEditor('code-editor-954-text', 'aql');
+            const resultEditor = createEditor('code-editor-954-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1137,12 +1169,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1169,11 +1217,11 @@ Discarding obsolete variables
 <div class="code-editor">
 
     
-    <button id="code-editor-502-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-745-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-502-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-745-text" class="code-editor-text" style="height: 200px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA"},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia"},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK"},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA"},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia"},{"id":6,"name":"Cordy McVie","city":"London","country":"UK"},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA"},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany"},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany"},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden"}]
 
@@ -1191,7 +1239,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-502-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-745-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -1210,9 +1258,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-502-run-button');
-            const textEditor = createEditor('code-editor-502-text', 'aql');
-            const resultEditor = createEditor('code-editor-502-result', 'json');
+            const btn = document.querySelector('#code-editor-745-run-button');
+            const textEditor = createEditor('code-editor-745-text', 'aql');
+            const resultEditor = createEditor('code-editor-745-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1254,12 +1302,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1278,11 +1342,11 @@ FOR u IN users
 <div class="code-editor">
 
     
-    <button id="code-editor-676-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-170-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-676-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-170-text" class="code-editor-text" style="height: 250px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA","status":"active"},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia","status":"active"},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK","status":"active"},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA","status":"inactive"},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia","status":"inactive"},{"id":6,"name":"Cordy McVie","city":"London","country":"UK","status":"active"},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA","status":"active"},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany","status":"active"},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany","status":"inactive"},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden","status":"inactive"}]
 
@@ -1302,7 +1366,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-676-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-170-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -1321,9 +1385,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-676-run-button');
-            const textEditor = createEditor('code-editor-676-text', 'aql');
-            const resultEditor = createEditor('code-editor-676-result', 'json');
+            const btn = document.querySelector('#code-editor-170-run-button');
+            const textEditor = createEditor('code-editor-170-text', 'aql');
+            const resultEditor = createEditor('code-editor-170-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1365,12 +1429,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1391,11 +1471,11 @@ The following example limits the variables that are copied into the ``groupsVari
 <div class="code-editor">
 
     
-    <button id="code-editor-803-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-530-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-803-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-530-text" class="code-editor-text" style="height: 250px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA","status":"active"},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia","status":"active"},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK","status":"active"},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA","status":"inactive"},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia","status":"inactive"},{"id":6,"name":"Cordy McVie","city":"London","country":"UK","status":"active"},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA","status":"active"},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany","status":"active"},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany","status":"inactive"},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden","status":"inactive"}]
 
@@ -1414,7 +1494,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-803-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-530-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -1433,9 +1513,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-803-run-button');
-            const textEditor = createEditor('code-editor-803-text', 'aql');
-            const resultEditor = createEditor('code-editor-803-result', 'json');
+            const btn = document.querySelector('#code-editor-530-run-button');
+            const textEditor = createEditor('code-editor-530-text', 'aql');
+            const resultEditor = createEditor('code-editor-530-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1477,12 +1557,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1509,11 +1605,11 @@ Group length calculation
 <div class="code-editor">
 
     
-    <button id="code-editor-665-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-726-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-665-text" class="code-editor-text" style="height: 180px;">
+            <div id="code-editor-726-text" class="code-editor-text" style="height: 180px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA","status":"active"},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia","status":"active"},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK","status":"active"},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA","status":"inactive"},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia","status":"inactive"},{"id":6,"name":"Cordy McVie","city":"London","country":"UK","status":"active"},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA","status":"active"},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany","status":"active"},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany","status":"inactive"},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden","status":"inactive"}]
 
@@ -1527,7 +1623,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-665-result" class="code-editor-result" style="height: 180px;"></div>
+            <div id="code-editor-726-result" class="code-editor-result" style="height: 180px;"></div>
         </div>
     </div>
     
@@ -1546,9 +1642,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-665-run-button');
-            const textEditor = createEditor('code-editor-665-text', 'aql');
-            const resultEditor = createEditor('code-editor-665-result', 'json');
+            const btn = document.querySelector('#code-editor-726-run-button');
+            const textEditor = createEditor('code-editor-726-text', 'aql');
+            const resultEditor = createEditor('code-editor-726-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1590,12 +1686,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1613,11 +1725,11 @@ FOR u IN users
 <div class="code-editor">
 
     
-    <button id="code-editor-461-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-848-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-461-text" class="code-editor-text" style="height: 130px;">
+            <div id="code-editor-848-text" class="code-editor-text" style="height: 130px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA","status":"active"},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia","status":"active"},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK","status":"active"},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA","status":"inactive"},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia","status":"inactive"},{"id":6,"name":"Cordy McVie","city":"London","country":"UK","status":"active"},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA","status":"active"},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany","status":"active"},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany","status":"inactive"},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden","status":"inactive"}]
 
@@ -1628,7 +1740,7 @@ RETURN LENGTH(users)
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-461-result" class="code-editor-result" style="height: 130px;"></div>
+            <div id="code-editor-848-result" class="code-editor-result" style="height: 130px;"></div>
         </div>
     </div>
     
@@ -1647,9 +1759,9 @@ RETURN LENGTH(users)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-461-run-button');
-            const textEditor = createEditor('code-editor-461-text', 'aql');
-            const resultEditor = createEditor('code-editor-461-result', 'json');
+            const btn = document.querySelector('#code-editor-848-run-button');
+            const textEditor = createEditor('code-editor-848-text', 'aql');
+            const resultEditor = createEditor('code-editor-848-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1691,12 +1803,28 @@ RETURN LENGTH(users)
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1714,11 +1842,11 @@ RETURN LENGTH(users)
 <div class="code-editor">
 
     
-    <button id="code-editor-371-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-118-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-371-text" class="code-editor-text" style="height: 220px;">
+            <div id="code-editor-118-text" class="code-editor-text" style="height: 220px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA","status":"active","age":30},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia","status":"active","age":25},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK","status":"active","age":40},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA","status":"inactive","age":25},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia","status":"inactive","age":30},{"id":6,"name":"Cordy McVie","city":"London","country":"UK","status":"active","age":25},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA","status":"active","age":18},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany","status":"active","age":30},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany","status":"inactive","age":30},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden","status":"inactive","age":30}]
 
@@ -1735,7 +1863,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-371-result" class="code-editor-result" style="height: 220px;"></div>
+            <div id="code-editor-118-result" class="code-editor-result" style="height: 220px;"></div>
         </div>
     </div>
     
@@ -1754,9 +1882,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-371-run-button');
-            const textEditor = createEditor('code-editor-371-text', 'aql');
-            const resultEditor = createEditor('code-editor-371-result', 'json');
+            const btn = document.querySelector('#code-editor-118-run-button');
+            const textEditor = createEditor('code-editor-118-text', 'aql');
+            const resultEditor = createEditor('code-editor-118-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1798,12 +1926,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1833,11 +1977,11 @@ Aggregation
 <div class="code-editor">
 
     
-    <button id="code-editor-246-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-764-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-246-text" class="code-editor-text" style="height: 310px;">
+            <div id="code-editor-764-text" class="code-editor-text" style="height: 310px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA","status":"active","age":30},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia","status":"active","age":25},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK","status":"active","age":40},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA","status":"inactive","age":25},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia","status":"inactive","age":30},{"id":6,"name":"Cordy McVie","city":"London","country":"UK","status":"active","age":25},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA","status":"active","age":18},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany","status":"active","age":30},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany","status":"inactive","age":30},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden","status":"inactive","age":30}]
 
@@ -1860,7 +2004,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-246-result" class="code-editor-result" style="height: 310px;"></div>
+            <div id="code-editor-764-result" class="code-editor-result" style="height: 310px;"></div>
         </div>
     </div>
     
@@ -1879,9 +2023,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-246-run-button');
-            const textEditor = createEditor('code-editor-246-text', 'aql');
-            const resultEditor = createEditor('code-editor-246-result', 'json');
+            const btn = document.querySelector('#code-editor-764-run-button');
+            const textEditor = createEditor('code-editor-764-text', 'aql');
+            const resultEditor = createEditor('code-editor-764-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1923,12 +2067,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1948,11 +2108,11 @@ FOR u IN users
 <div class="code-editor">
 
     
-    <button id="code-editor-694-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-772-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-694-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-772-text" class="code-editor-text" style="height: 250px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA","status":"active","age":30},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia","status":"active","age":25},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK","status":"active","age":40},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA","status":"inactive","age":25},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia","status":"inactive","age":30},{"id":6,"name":"Cordy McVie","city":"London","country":"UK","status":"active","age":25},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA","status":"active","age":18},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany","status":"active","age":30},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany","status":"inactive","age":30},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden","status":"inactive","age":30}]
 
@@ -1971,7 +2131,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-694-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-772-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -1990,9 +2150,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-694-run-button');
-            const textEditor = createEditor('code-editor-694-text', 'aql');
-            const resultEditor = createEditor('code-editor-694-result', 'json');
+            const btn = document.querySelector('#code-editor-772-run-button');
+            const textEditor = createEditor('code-editor-772-text', 'aql');
+            const resultEditor = createEditor('code-editor-772-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -2034,12 +2194,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -2057,11 +2233,11 @@ FOR u IN users
 <div class="code-editor">
 
     
-    <button id="code-editor-206-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-306-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-206-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-306-text" class="code-editor-text" style="height: 250px;">
                 
 LET users = [{"id":1,"name":"Thorn De Banke","city":"New York City","country":"USA","status":"active","age":30},{"id":2,"name":"Adolph MacAindreis","city":"Moscow","country":"Russia","status":"active","age":25},{"id":3,"name":"Flory Maxworthy","city":"London","country":"UK","status":"active","age":40},{"id":4,"name":"Merola Blundell","city":"New York City","country":"USA","status":"inactive","age":25},{"id":5,"name":"Benson Manoelli","city":"Moscow","country":"Russia","status":"inactive","age":30},{"id":6,"name":"Cordy McVie","city":"London","country":"UK","status":"active","age":25},{"id":7,"name":"Reggy Tuck","city":"New York City","country":"USA","status":"active","age":18},{"id":8,"name":"Courtney Toogood","city":"Berlin","country":"Germany","status":"active","age":30},{"id":9,"name":"Berkley Fields","city":"Berlin","country":"Germany","status":"inactive","age":30},{"id":10,"name":"Findley Gauvain","city":"Stockholm","country":"Sweden","status":"inactive","age":30}]
 
@@ -2078,7 +2254,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-206-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-306-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -2097,9 +2273,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-206-run-button');
-            const textEditor = createEditor('code-editor-206-text', 'aql');
-            const resultEditor = createEditor('code-editor-206-result', 'json');
+            const btn = document.querySelector('#code-editor-306-run-button');
+            const textEditor = createEditor('code-editor-306-text', 'aql');
+            const resultEditor = createEditor('code-editor-306-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -2141,12 +2317,28 @@ FOR u IN users
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -2170,7 +2362,7 @@ FOR u IN users
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

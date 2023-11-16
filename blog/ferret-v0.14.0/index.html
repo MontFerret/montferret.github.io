@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -187,11 +187,11 @@
 
     
 
-    <button id="code-editor-69-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-383-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-69-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-383-text" class="code-editor-text" style="height: 300px;">
                 
 LET page = DOCUMENT("https://soundcloud.com", { driver: "cdp"})
 LET doc = page.mainFrame
@@ -213,7 +213,7 @@ RETURN {
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-69-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-383-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -232,9 +232,9 @@ RETURN {
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-69-run-button');
-            const textEditor = createEditor('code-editor-69-text', 'aql');
-            const resultEditor = createEditor('code-editor-69-result', 'json');
+            const btn = document.querySelector('#code-editor-383-run-button');
+            const textEditor = createEditor('code-editor-383-text', 'aql');
+            const resultEditor = createEditor('code-editor-383-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -277,12 +277,28 @@ RETURN {
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -297,7 +313,7 @@ RETURN {
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-938-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-858-text" class="code-editor-text" style="height: 250px;">
                 
 import (
     h "net/http"
@@ -317,7 +333,7 @@ func main() {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-938-text');
+            const editor = ace.edit('code-858-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
@@ -346,11 +362,11 @@ And now, <code>LIKE</code> operator has finally landed!</p>
 
     
 
-    <button id="code-editor-825-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-588-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-825-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-588-text" class="code-editor-text" style="height: 300px;">
                 
 LET values = (
     FOR str IN ["foo", "bar", "qaz"]
@@ -363,7 +379,7 @@ RETURN FIRST(values) NOT LIKE "b**" ? 'failure' : 'success'
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-825-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-588-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -382,9 +398,9 @@ RETURN FIRST(values) NOT LIKE "b**" ? 'failure' : 'success'
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-825-run-button');
-            const textEditor = createEditor('code-editor-825-text', 'aql');
-            const resultEditor = createEditor('code-editor-825-result', 'json');
+            const btn = document.querySelector('#code-editor-588-run-button');
+            const textEditor = createEditor('code-editor-588-text', 'aql');
+            const resultEditor = createEditor('code-editor-588-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -426,12 +442,28 @@ RETURN FIRST(values) NOT LIKE "b**" ? 'failure' : 'success'
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -452,11 +484,11 @@ RETURN FIRST(values) NOT LIKE "b**" ? 'failure' : 'success'
 
     
 
-    <button id="code-editor-269-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-481-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-269-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-481-text" class="code-editor-text" style="height: 300px;">
                 
 LET p = DOCUMENT("https://www.gettyimages.com/", {
     driver: "cdp",
@@ -476,7 +508,7 @@ RETURN NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-269-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-481-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -495,9 +527,9 @@ RETURN NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-269-run-button');
-            const textEditor = createEditor('code-editor-269-text', 'aql');
-            const resultEditor = createEditor('code-editor-269-result', 'json');
+            const btn = document.querySelector('#code-editor-481-run-button');
+            const textEditor = createEditor('code-editor-481-text', 'aql');
+            const resultEditor = createEditor('code-editor-481-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -540,12 +572,28 @@ RETURN NONE
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -566,11 +614,11 @@ RETURN NONE
 
     
 
-    <button id="code-editor-807-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-698-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-807-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-698-text" class="code-editor-text" style="height: 300px;">
                 
 LET p = DOCUMENT("https://www.gettyimages.com/", {
     ignore: {
@@ -589,7 +637,7 @@ RETURN NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-807-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-698-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -608,9 +656,9 @@ RETURN NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-807-run-button');
-            const textEditor = createEditor('code-editor-807-text', 'aql');
-            const resultEditor = createEditor('code-editor-807-result', 'json');
+            const btn = document.querySelector('#code-editor-698-run-button');
+            const textEditor = createEditor('code-editor-698-text', 'aql');
+            const resultEditor = createEditor('code-editor-698-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -652,12 +700,28 @@ RETURN NONE
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -678,18 +742,18 @@ RETURN NONE
 
     
 
-    <button id="code-editor-233-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-143-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-233-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-editor-143-text" class="code-editor-text" style="height: 80px;">
                 
 RETURN DOCUMENT_EXISTS("www.asdadasda.sds")
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-233-result" class="code-editor-result" style="height: 80px;"></div>
+            <div id="code-editor-143-result" class="code-editor-result" style="height: 80px;"></div>
         </div>
     </div>
     
@@ -708,9 +772,9 @@ RETURN DOCUMENT_EXISTS("www.asdadasda.sds")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-233-run-button');
-            const textEditor = createEditor('code-editor-233-text', 'aql');
-            const resultEditor = createEditor('code-editor-233-result', 'json');
+            const btn = document.querySelector('#code-editor-143-run-button');
+            const textEditor = createEditor('code-editor-143-text', 'aql');
+            const resultEditor = createEditor('code-editor-143-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -752,12 +816,28 @@ RETURN DOCUMENT_EXISTS("www.asdadasda.sds")
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -782,7 +862,7 @@ RETURN DOCUMENT_EXISTS("www.asdadasda.sds")
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

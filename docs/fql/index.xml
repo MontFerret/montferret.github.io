@@ -22,8 +22,8 @@ Even though, FQL is used to read data from the websites, it&amp;rsquo;s consider
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/syntax/</guid>
-      <description>Syntax   Query types   An FQL query must return a result indicated by usage either of the RETURN or FOR IN or FOR WHILE  keywords. The FQL parser will return an error if it cannot find any of these two statements.
- Whitespace   Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces.</description>
+      <description>Syntax Query types An FQL query must return a result indicated by usage either of the RETURN or FOR IN or FOR WHILE keywords. The FQL parser will return an error if it cannot find any of these two statements.
+Whitespace Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces.</description>
     </item>
     
     <item>
@@ -32,8 +32,8 @@ Even though, FQL is used to read data from the websites, it&amp;rsquo;s consider
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/data-types/</guid>
-      <description>Data types   FQL supports both primitive data types consisting of exactly one value and compound data types comprised of multiple values. The following types are available:
-  Data type Description     none An empty value, also: the absence of a value   boolean Boolean truth value with possible values false and true   integer Signed whole number   float Signed floating point number   string UTF-8 encoded text value   array Sequence of values, referred to by their positions   object Sequence of values, referred to by their names   binary Sequence of binary values   custom User defined types    Primitive types    None value   A none value can be used to represent an empty or absent value.</description>
+      <description>Data types FQL supports both primitive data types consisting of exactly one value and compound data types comprised of multiple values. The following types are available:
+Data type Description none An empty value, also: the absence of a value boolean Boolean truth value with possible values false and true integer Signed whole number float Signed floating point number string UTF-8 encoded text value array Sequence of values, referred to by their positions object Sequence of values, referred to by their names binary Sequence of binary values custom User defined types Primitive types None value A none value can be used to represent an empty or absent value.</description>
     </item>
     
     <item>
@@ -42,7 +42,7 @@ Even though, FQL is used to read data from the websites, it&amp;rsquo;s consider
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/bind-parameters/</guid>
-      <description>Bind parameters   FQL supports the usage of bind parameters, thus allowing to separate the query text from literal values used in the query. It is good practice to separate the query text from the literal values because it allows to reuse same query in different scenarios.
+      <description>Bind parameters FQL supports the usage of bind parameters, thus allowing to separate the query text from literal values used in the query. It is good practice to separate the query text from the literal values because it allows to reuse same query in different scenarios.
 Using bind parameters, the meaning of an existing query cannot be changed. Bind parameters can be used everywhere in a query where literals can be used.</description>
     </item>
     
@@ -52,7 +52,7 @@ Using bind parameters, the meaning of an existing query cannot be changed. Bind 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/type-value-order/</guid>
-      <description>Type and value order   When checking for equality or inequality or when determining the sort order of values, FQL uses a deterministic algorithm that takes both the data types and the actual values into account.
+      <description>Type and value order When checking for equality or inequality or when determining the sort order of values, FQL uses a deterministic algorithm that takes both the data types and the actual values into account.
 The compared operands are first compared by their data types, and only by their data values if the operands have the same data types.
 The following type order is used when comparing data types:</description>
     </item>
@@ -63,9 +63,9 @@ The following type order is used when comparing data types:</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/query-results/</guid>
-      <description>Query results   Unlike AQL, the result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
+      <description>Query results Unlike AQL, the result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
 For example, when the RETURN statement is used as the last query statement, a values gets returned as it is:
-RETURN 1     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-646-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.</description>
+RETURN 1 1 RETURN { foo: &#34;bar&#34; } { &#34;foo&#34;: &#34;bar&#34; } However, when returning data from an iteration, the result values will be always an array:</description>
     </item>
     
     <item>
@@ -74,8 +74,8 @@ RETURN 1     document.addEventListener(&#39;DOMContentLoaded&#39;, function () {
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/query-errors/</guid>
-      <description>Query errors   Issuing an invalid query to Ferret will result in a parse error if the query is syntactically invalid. The Ferret compiler will detect such errors during query inspection and abort further processing. Instead, an error message are returned so that the errors can be fixed.
-Under some circumstances, executing a query may also produce run-time errors that cannot be predicted from inspecting the query text alone.</description>
+      <description>Query errors Issuing an invalid query to Ferret will result in a parse error if the query is syntactically invalid. The Ferret compiler will detect such errors during query inspection and abort further processing. Instead, an error message are returned so that the errors can be fixed.
+Under some circumstances, executing a query may also produce run-time errors that cannot be predicted from inspecting the query text alone. This is because queries may use data from collections that may also be inhomogeneous.</description>
     </item>
     
   </channel>

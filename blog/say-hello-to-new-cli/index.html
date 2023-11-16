@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -174,67 +174,67 @@
 <p>Thus, let&rsquo;s dive in and see what&rsquo;s in there.</p>
 <h1 id="get-started">Get started</h1>
 <p>First of all, we need to install it:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sudo sh
-</code></pre></div><p>If you want to install it to a particular folder set it to <code>LOCATION</code> environment variable:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | LOCATION<span style="color:#f92672">=</span>my-dir sh
-</code></pre></div><h1 id="whats-broken">What&rsquo;s broken</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sudo sh
+</span></span></code></pre></div><p>If you want to install it to a particular folder set it to <code>LOCATION</code> environment variable:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | LOCATION<span style="color:#f92672">=</span>my-dir sh
+</span></span></code></pre></div><h1 id="whats-broken">What&rsquo;s broken</h1>
 <p>Let&rsquo;s start with some breaking changes.</p>
 <p>Fortunately, there is only one breaking change: now if you want to execute a script or enter to REPL, you need to call <code>exec</code> command:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec
-Welcome to Ferret REPL 0.14.1
-
-Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>Ctrl-D<span style="color:#e6db74">`</span> to exit this program.
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec my-script.fql
-</code></pre></div><h1 id="whats-new">What&rsquo;s new</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec
+</span></span><span style="display:flex;"><span>Welcome to Ferret REPL 0.14.1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Please use <span style="color:#e6db74">`</span>exit<span style="color:#e6db74">`</span> or <span style="color:#e6db74">`</span>Ctrl-D<span style="color:#e6db74">`</span> to exit this program.
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec my-script.fql
+</span></span></code></pre></div><h1 id="whats-new">What&rsquo;s new</h1>
 <h2 id="remote-runtime">Remote runtime</h2>
 <p>Alternative to built-in runtime, you can tell CLI to execute a given script using the remote one!</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec --runtime https://my-worker.app my-script.fql
-</code></pre></div><div class="notification is-info">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec --runtime https://my-worker.app my-script.fql
+</span></span></code></pre></div><div class="notification is-info">
   The remote runtime must support the same request contract as <a href="https://github.com/MontFerret/worker">Ferret Worker</a> does.
 </div>
 <h2 id="auto-browser-launch">Auto-browser launch</h2>
 <p>With new CLI, you can easily run your script with automatically open local browser:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec --browser-open my-script.fql
-</code></pre></div><p><code>--browser-open</code> will inform CLI to find locally installed Chrome or Chromium and open it before execution.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec --browser-open my-script.fql
+</span></span></code></pre></div><p><code>--browser-open</code> will inform CLI to find locally installed Chrome or Chromium and open it before execution.</p>
 <p>In case if you don&rsquo;t want your browser to be visible during execution, you can pass <code>--browser-headless</code> flag to open it in the headless mode:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec --browser-headless my-script.fql
-</code></pre></div><div class="notification is-warning">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec --browser-headless my-script.fql
+</span></span></code></pre></div><div class="notification is-warning">
   At this moment, CLI does not support browser installation, thus Chrome/Chromium must be installed on your machine before using these flags.
 </div>
 <h2 id="browser-management">Browser management</h2>
 <p>Also, you can briefly manage your local browser by openning and closing it.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret browser open
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret browser open -d
-<span style="color:#ae81ff">89502</span>
-</code></pre></div><p><code>-d</code> flag indicates that the browser needs to be open in the background i.e. the proccess will exit once the browser is open and ready to be used and return the process id.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret browser close process-id
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret browser close
-</code></pre></div><p><code>close</code> without a given process id will <strong>try</strong> to find early opened browser with local debugging options.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret browser open
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret browser open -d
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">89502</span>
+</span></span></code></pre></div><p><code>-d</code> flag indicates that the browser needs to be open in the background i.e. the proccess will exit once the browser is open and ready to be used and return the process id.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret browser close process-id
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret browser close
+</span></span></code></pre></div><p><code>close</code> without a given process id will <strong>try</strong> to find early opened browser with local debugging options.</p>
 <div class="notification is-info">
   In the future, we will add more options for browser management.
 </div>
 <h2 id="configuration">Configuration</h2>
 <p>New CLI allows you to store overriden default flag values, by using configuration files.</p>
 <p>The list of supported configuration keys you can get by using the following command:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret config ls
-
-log-level: info
-runtime: &lt;nil&gt;
-browser-cookies: &lt;nil&gt;
-browser-address: &lt;nil&gt;
-browser-open: &lt;nil&gt;
-browser-headless: &lt;nil&gt;
-proxy: &lt;nil&gt;
-user-agent: &lt;nil&gt;
-</code></pre></div><p>For example, let&rsquo;s set <code>browser-open</code> to <code>true</code> so, every time we run our script, the browser would be opened:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret config set browser-open true
-</code></pre></div><p>And then, when you launch the REPL, you will see your local browser will be automatically opened:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret exec
-</code></pre></div><p>Once we exit the REPL, browser will be closed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret config ls
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>log-level: info
+</span></span><span style="display:flex;"><span>runtime: &lt;nil&gt;
+</span></span><span style="display:flex;"><span>browser-cookies: &lt;nil&gt;
+</span></span><span style="display:flex;"><span>browser-address: &lt;nil&gt;
+</span></span><span style="display:flex;"><span>browser-open: &lt;nil&gt;
+</span></span><span style="display:flex;"><span>browser-headless: &lt;nil&gt;
+</span></span><span style="display:flex;"><span>proxy: &lt;nil&gt;
+</span></span><span style="display:flex;"><span>user-agent: &lt;nil&gt;
+</span></span></code></pre></div><p>For example, let&rsquo;s set <code>browser-open</code> to <code>true</code> so, every time we run our script, the browser would be opened:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret config set browser-open true
+</span></span></code></pre></div><p>And then, when you launch the REPL, you will see your local browser will be automatically opened:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret exec
+</span></span></code></pre></div><p>Once we exit the REPL, browser will be closed.</p>
 <p>Also, you can get the current value of a particular flag:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ferret config get browser-open
-true
-</code></pre></div><h1 id="summary">Summary</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ferret config get browser-open
+</span></span><span style="display:flex;"><span>true
+</span></span></code></pre></div><h1 id="summary">Summary</h1>
 <p>That&rsquo;s it, folks!
 Having a separate project for CLI helps us focus more on CLI-only features outside of the Ferret Runtime and improve its usability.</p>
 <p>If you have any feature requests welcome to <a href="https://github.com/MontFerret/cli/issues">GitHub Issues</a> or to discuss something join us on <a href="https://github.com/MontFerret/cli/discussions">GitHub Discuss board</a>!</p>
@@ -248,7 +248,7 @@ Having a separate project for CLI helps us focus more on CLI-only features outsi
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

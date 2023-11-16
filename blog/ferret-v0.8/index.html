@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -187,11 +187,11 @@ When a page gets loaded, Ferret finds all available elements and provieds an acc
 
     
 
-    <button id="code-editor-41-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-421-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-41-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-421-text" class="code-editor-text" style="height: 250px;">
                 
 LET page = DOCUMENT("https://www.w3schools.com/html/html_iframe.asp", {
 	driver: "cdp"
@@ -208,7 +208,7 @@ RETURN FIRST(content)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-41-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-421-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -227,9 +227,9 @@ RETURN FIRST(content)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-41-run-button');
-            const textEditor = createEditor('code-editor-41-text', 'aql');
-            const resultEditor = createEditor('code-editor-41-result', 'json');
+            const btn = document.querySelector('#code-editor-421-run-button');
+            const textEditor = createEditor('code-editor-421-text', 'aql');
+            const resultEditor = createEditor('code-editor-421-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -272,12 +272,28 @@ RETURN FIRST(content)
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -298,7 +314,7 @@ RETURN FIRST(content)
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-459-text" class="code-editor-text" style="height: 120px;">
+            <div id="code-150-text" class="code-editor-text" style="height: 120px;">
                 
 LET blob = DOWNLOAD("https://raw.githubusercontent.com/MontFerret/ferret/master/assets/logo.png")
 
@@ -310,7 +326,7 @@ RETURN IO::FS::WRITE("logo.png", blob)
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-459-text');
+            const editor = ace.edit('code-150-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -332,7 +348,7 @@ RETURN IO::FS::WRITE("logo.png", blob)
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-824-text" class="code-editor-text" style="height: 380px;">
+            <div id="code-332-text" class="code-editor-text" style="height: 380px;">
                 
 package main
 
@@ -360,7 +376,7 @@ func main() {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-824-text');
+            const editor = ace.edit('code-332-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
@@ -388,7 +404,7 @@ It automatically detects the output value type and deserializes them accordingly
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-953-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-162-text" class="code-editor-text" style="height: 90px;">
                 
 RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 
@@ -398,7 +414,7 @@ RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-953-text');
+            const editor = ace.edit('code-162-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -419,7 +435,7 @@ RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-311-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-469-text" class="code-editor-text" style="height: 90px;">
                 
 RETURN XPATH(page, "count(//div)")
 
@@ -429,7 +445,7 @@ RETURN XPATH(page, "count(//div)")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-311-text');
+            const editor = ace.edit('code-469-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -457,7 +473,7 @@ RETURN XPATH(page, "count(//div)")
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-730-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-555-text" class="code-editor-text" style="height: 90px;">
                 
 LET result = "foo" =~ "^f[o].$" // returns "true"
 
@@ -467,7 +483,7 @@ LET result = "foo" =~ "^f[o].$" // returns "true"
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-730-text');
+            const editor = ace.edit('code-555-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -488,7 +504,7 @@ LET result = "foo" =~ "^f[o].$" // returns "true"
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-766-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-908-text" class="code-editor-text" style="height: 90px;">
                 
 LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 
@@ -498,7 +514,7 @@ LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-766-text');
+            const editor = ace.edit('code-908-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -521,7 +537,7 @@ LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-176-text" class="code-editor-text" style="height: 185px;">
+            <div id="code-492-text" class="code-editor-text" style="height: 185px;">
                 
 // Using document and selector
 INNER_HTML_SET(doc, "body", "<span>Hello</span>")
@@ -537,7 +553,7 @@ INNER_TEXT_SET(doc.body, "Hello")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-176-text');
+            const editor = ace.edit('code-492-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -560,7 +576,7 @@ INNER_TEXT_SET(doc.body, "Hello")
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-573-text" class="code-editor-text" style="height: 185px;">
+            <div id="code-904-text" class="code-editor-text" style="height: 185px;">
                 
 LET doc = DOCUMENT(@url, {
     driver: 'cdp',
@@ -576,7 +592,7 @@ LET doc = DOCUMENT(@url, {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-573-text');
+            const editor = ace.edit('code-904-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -609,7 +625,7 @@ LET doc = DOCUMENT(@url, {
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-936-text" class="code-editor-text" style="height: 440px;">
+            <div id="code-899-text" class="code-editor-text" style="height: 440px;">
                 
 type HTMLPage interface {
 	core.Value
@@ -641,7 +657,7 @@ type HTMLPage interface {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-936-text');
+            const editor = ace.edit('code-899-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
@@ -666,7 +682,7 @@ type HTMLPage interface {
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-908-text" class="code-editor-text" style="height: 150px;">
+            <div id="code-251-text" class="code-editor-text" style="height: 150px;">
                 
 type Driver interface {
 	io.Closer
@@ -680,7 +696,7 @@ type Driver interface {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-908-text');
+            const editor = ace.edit('code-251-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
@@ -706,7 +722,7 @@ type Driver interface {
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

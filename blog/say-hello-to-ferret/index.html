@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -210,11 +210,11 @@ So, I started looking a for a tool that would solve the issues for me, but unfor
 
     
 
-    <button id="code-editor-681-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-693-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-681-text" class="code-editor-text" style="height: 220px;">
+            <div id="code-editor-693-text" class="code-editor-text" style="height: 220px;">
                 
 LET page = DOCUMENT("https://github.com/trending")
 
@@ -229,7 +229,7 @@ FOR row IN ELEMENTS(page, ".Box-row")
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-681-result" class="code-editor-result" style="height: 220px;"></div>
+            <div id="code-editor-693-result" class="code-editor-result" style="height: 220px;"></div>
         </div>
     </div>
     
@@ -248,9 +248,9 @@ FOR row IN ELEMENTS(page, ".Box-row")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-681-run-button');
-            const textEditor = createEditor('code-editor-681-text', 'aql');
-            const resultEditor = createEditor('code-editor-681-result', 'json');
+            const btn = document.querySelector('#code-editor-693-run-button');
+            const textEditor = createEditor('code-editor-693-text', 'aql');
+            const resultEditor = createEditor('code-editor-693-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -293,12 +293,28 @@ FOR row IN ELEMENTS(page, ".Box-row")
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -328,11 +344,11 @@ FOR row IN ELEMENTS(page, ".Box-row")
 
     
 
-    <button id="code-editor-97-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-606-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-97-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-606-text" class="code-editor-text" style="height: 200px;">
                 
 LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
 LET tracks = ELEMENTS(doc, ".chartTrack__details")
@@ -346,7 +362,7 @@ FOR track IN tracks
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-97-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-606-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -365,9 +381,9 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-97-run-button');
-            const textEditor = createEditor('code-editor-97-text', 'aql');
-            const resultEditor = createEditor('code-editor-97-result', 'json');
+            const btn = document.querySelector('#code-editor-606-run-button');
+            const textEditor = createEditor('code-editor-606-text', 'aql');
+            const resultEditor = createEditor('code-editor-606-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -410,12 +426,28 @@ FOR track IN tracks
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -439,11 +471,11 @@ FOR track IN tracks
 
     
 
-    <button id="code-editor-103-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-172-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-103-text" class="code-editor-text" style="height: 240px;">
+            <div id="code-editor-172-text" class="code-editor-text" style="height: 240px;">
                 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: 'cdp' })
 
@@ -460,7 +492,7 @@ FOR track IN tracks
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-103-result" class="code-editor-result" style="height: 240px;"></div>
+            <div id="code-editor-172-result" class="code-editor-result" style="height: 240px;"></div>
         </div>
     </div>
     
@@ -479,9 +511,9 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-103-run-button');
-            const textEditor = createEditor('code-editor-103-text', 'aql');
-            const resultEditor = createEditor('code-editor-103-result', 'json');
+            const btn = document.querySelector('#code-editor-172-run-button');
+            const textEditor = createEditor('code-editor-172-text', 'aql');
+            const resultEditor = createEditor('code-editor-172-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -524,12 +556,28 @@ FOR track IN tracks
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -564,11 +612,11 @@ FOR track IN tracks
 
     
 
-    <button id="code-editor-481-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-365-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-481-text" class="code-editor-text" style="height: 680px;">
+            <div id="code-editor-365-text" class="code-editor-text" style="height: 680px;">
                 
 LET baseURL = 'https://www.amazon.com/'
 LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
@@ -618,7 +666,7 @@ RETURN FLATTEN(result)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-481-result" class="code-editor-result" style="height: 680px;"></div>
+            <div id="code-editor-365-result" class="code-editor-result" style="height: 680px;"></div>
         </div>
     </div>
     
@@ -637,9 +685,9 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-481-run-button');
-            const textEditor = createEditor('code-editor-481-text', 'aql');
-            const resultEditor = createEditor('code-editor-481-result', 'json');
+            const btn = document.querySelector('#code-editor-365-run-button');
+            const textEditor = createEditor('code-editor-365-text', 'aql');
+            const resultEditor = createEditor('code-editor-365-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -682,12 +730,28 @@ RETURN FLATTEN(result)
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -738,7 +802,7 @@ I’m not really well familiar with Jupyter, but I know that many data scientist
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

@@ -36,7 +36,7 @@ $ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | LOCA
       
       <guid>https://www.montferret.dev/docs/getting-started/</guid>
       <description>Quick start Browserless mode If you want to play with FQL and check its syntax, you can run CLI with the following commands to run Ferret CLI in REPL mode:
-$ ferret Welcome to Ferret REPL Please use `exit` or `Ctrl-D` to exit this program. &amp;gt;% &amp;gt;LET doc = DOCUMENT(&amp;#39;https://news.ycombinator.com/&amp;#39;) &amp;gt;FOR post IN ELEMENTS(doc, &amp;#39;.storylink&amp;#39;) &amp;gt;RETURN post.attributes.href &amp;gt;% NOTE: symbol % is used to start and end multi-line queries. You also can use the heredoc format.</description>
+$ ferret exec Welcome to Ferret REPL Please use `exit` or `Ctrl-D` to exit this program. &amp;gt; % &amp;gt; LET doc = DOCUMENT(&amp;#34;https://news.ycombinator.com/&amp;#34;) &amp;gt; FOR post IN ELEMENTS(doc, &amp;#39;.titleline &amp;gt; a&amp;#39;) &amp;gt; RETURN { &amp;gt; title: TRIM(INNER_TEXT(post)), &amp;gt; link: ATTR_GET(post, &amp;#39;href&amp;#39;) &amp;gt; } &amp;gt; % NOTE: symbol % is used to start and end multi-line queries.</description>
     </item>
     
   </channel>

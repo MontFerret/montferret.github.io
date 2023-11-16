@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -162,16 +162,16 @@
 
 
 <div class="code-editor">
-    <input id="code-editor-38-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
+    <input id="code-editor-194-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
 
     
-    <button id="code-editor-38-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
+    <button id="code-editor-194-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
 
-    <button id="code-editor-38-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-194-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-38-text" class="code-editor-text" style="height: 400px;">
+            <div id="code-editor-194-text" class="code-editor-text" style="height: 400px;">
                 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
     driver: 'cdp'
@@ -190,7 +190,7 @@ FOR track IN tracks
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-38-result" class="code-editor-result" style="height: 400px;"></div>
+            <div id="code-editor-194-result" class="code-editor-result" style="height: 400px;"></div>
         </div>
     </div>
     
@@ -209,16 +209,16 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-38-run-button');
-            const textEditor = createEditor('code-editor-38-text', 'aql');
-            const resultEditor = createEditor('code-editor-38-result', 'json');
+            const btn = document.querySelector('#code-editor-194-run-button');
+            const textEditor = createEditor('code-editor-194-text', 'aql');
+            const resultEditor = createEditor('code-editor-194-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
-                const clibboardEl = document.querySelector('#code-editor-38-share-clipboard');
-                const shareBtn = document.querySelector('#code-editor-38-share-button');
+                const clibboardEl = document.querySelector('#code-editor-194-share-clipboard');
+                const shareBtn = document.querySelector('#code-editor-194-share-button');
 
                 shareBtn.addEventListener('click', () => {
                     try {
@@ -289,12 +289,28 @@ FOR track IN tracks
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -311,7 +327,7 @@ FOR track IN tracks
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>

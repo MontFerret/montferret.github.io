@@ -13,9 +13,12 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/arrays/</guid>
-      <description>APPEND   Source
+      <description>APPEND Source
 APPEND appends a new item to an array and returns a new array with a given element. If uniqueOnly is set to true, then will add the item only if it&amp;rsquo;s unique.
-           Argument Type Default value Description   arr Any[]  Target array.   item Any  Target value to add.    Returns Any[] New array.</description>
+Argument Type Default value Description arr Any[] Target array. item Any Target value to add. Returns Any[] New array.
+FIRST Source
+FIRST returns a first element from a given array.
+Argument Type Default value Description arr Any[] Target array.</description>
     </item>
     
     <item>
@@ -24,10 +27,12 @@ APPEND appends a new item to an array and returns a new array with a given eleme
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/collections/</guid>
-      <description>INCLUDES   Source
+      <description>INCLUDES Source
 INCLUDES checks whether a container includes a given value.
-           Argument Type Default value Description   haystack String Any[] Object Iterable  The value container.   needle Any  The target value to assert.    Returns Boolean A boolean value that indicates whether a container contains a given value.
-  LENGTH   Source</description>
+Argument Type Default value Description haystack String Any[] Object Iterable The value container. needle Any The target value to assert. Returns Boolean A boolean value that indicates whether a container contains a given value.
+LENGTH Source
+LENGTH returns the length of a measurable value.
+Argument Type Default value Description value Measurable The value to measure. Returns Int The length of the value.</description>
     </item>
     
     <item>
@@ -36,10 +41,10 @@ INCLUDES checks whether a container includes a given value.
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/datetime/</guid>
-      <description>DATE   Source
+      <description>DATE Source
 DATE converts RFC3339 date time string to DateTime object.
-           Argument Type Default value Description   time String  String in rfc3339 format.    Returns DateTime New datetime object derived from timestring.
-  DATE_ADD   Source
+Argument Type Default value Description time String String in rfc3339 format. Returns DateTime New datetime object derived from timestring.
+DATE_ADD Source
 DATE_ADD adds amount given in unit to date. The following units are available: * y, year, year * m, month, months * w, week, weeks * d, day, days * h, hour, hours * i, minute, minutes * s, second, seconds * f, millisecond, milliseconds</description>
     </item>
     
@@ -49,8 +54,9 @@ DATE_ADD adds amount given in unit to date. The following units are available: *
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/for/</guid>
-      <description>FOR   The versatile FOR keyword can be used to iterate over a different collections like array, objects and set of HTML elements.
-FOR-IN   FOR variableName IN expression     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-25-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.renderer.$cursorLayer.element.style.display = &#34;none&#34; }, false);   A FOR-IN statement iterates through all entries of an array, object, or values that implement Iterable interface.</description>
+      <description>FOR The versatile FOR keyword can be used to iterate over a different collections like array, objects and set of HTML elements.
+FOR-IN FOR variableName IN expression A FOR-IN statement iterates through all entries of an array, object, or values that implement Iterable interface. Each element returned by expression is visited exactly once. The current element is made available for further processing in the variable specified by variableName.
+Run FOR i IN JSON_PARSE(IO::NET::HTTP::GET(&#39;http://country.</description>
     </item>
     
     <item>
@@ -59,7 +65,7 @@ FOR-IN   FOR variableName IN expression     document.addEventListener(&#39;DOMCo
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/cookbook/google-search/</guid>
-      <description>Run LET google = DOCUMENT(&#34;https://www.google.com/&#34;, { driver: &#34;cdp&#34;, userAgent: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36&#34; }) HOVER(google, &#39;input[name=&#34;q&#34;]&#39;) WAIT(RAND(100)) INPUT(google, &#39;input[name=&#34;q&#34;]&#39;, @criteria, 30) WAIT(RAND(100)) WAIT_ELEMENT(google, &#39;.UUbT9&#39;) WAIT(RAND(100)) CLICK(google, &#39;input[name=&#34;btnK&#34;]&#39;) WAIT_NAVIGATION(google) FOR result IN ELEMENTS(google, &#39;.g&#39;) // filter out extra elements like videos and &#39;People also ask&#39; FILTER TRIM(result.attributes.class) == &#39;g&#39; RETURN { title: INNER_TEXT(result, &#39;h3&#39;), description: INNER_TEXT(result, &#39;.rc  div:nth-child(2) span&#39;), url: INNER_TEXT(result, &#39;cite&#39;) }       document.</description>
+      <description> Run LET google = DOCUMENT(&#34;https://www.google.com/&#34;, { driver: &#34;cdp&#34;, userAgent: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36&#34; }) HOVER(google, &#39;input[name=&#34;q&#34;]&#39;) WAIT(RAND(100)) INPUT(google, &#39;input[name=&#34;q&#34;]&#39;, @criteria, 30) WAIT(RAND(100)) WAIT_ELEMENT(google, &#39;.UUbT9&#39;) WAIT(RAND(100)) CLICK(google, &#39;input[name=&#34;btnK&#34;]&#39;) WAIT_NAVIGATION(google) FOR result IN ELEMENTS(google, &#39;.g&#39;) // filter out extra elements like videos and &#39;People also ask&#39; FILTER TRIM(result.attributes.class) == &#39;g&#39; RETURN { title: INNER_TEXT(result, &#39;h3&#39;), description: INNER_TEXT(result, &#39;.rc &gt; div:nth-child(2) span&#39;), url: INNER_TEXT(result, &#39;cite&#39;) } </description>
     </item>
     
     <item>
@@ -68,11 +74,12 @@ FOR-IN   FOR variableName IN expression     document.addEventListener(&#39;DOMCo
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/html/</guid>
-      <description>ATTR_GET   Source
+      <description>ATTR_GET Source
 ATTR_GET gets single or more attribute(s) of a given element.
-           Argument Type Default value Description   node HTMLPage HTMLDocument HTMLElement  Target node.   attrNames String, repeated  Attribute name(s).    Returns Object Key-value pairs of attribute values.
-  ATTR_QUERY   Source
-ATTR_QUERY finds a single or more attribute(s) by an query selector.</description>
+Argument Type Default value Description node HTMLPage HTMLDocument HTMLElement Target node. attrNames String, repeated Attribute name(s). Returns Object Key-value pairs of attribute values.
+ATTR_QUERY Source
+ATTR_QUERY finds a single or more attribute(s) by an query selector.
+Argument Type Default value Description node HTMLPage HTMLDocument HTMLElement Target node. selector String Query selector. attrName String, repeated Attr name(s). Returns Object Key-value pairs of attribute values.</description>
     </item>
     
     <item>
@@ -103,12 +110,12 @@ Motivation Nowadays data is everything and who owns data - owns the world.</desc
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/io-fs/</guid>
-      <description>IO::FS::READ   Source
+      <description>IO::FS::READ Source
 READ reads from a given file.
-           Argument Type Default value Description   path String  Path to file to read from.    Returns Binary File content in binary format.
-  IO::FS::WRITE   Source
+Argument Type Default value Description path String Path to file to read from. Returns Binary File content in binary format.
+IO::FS::WRITE Source
 WRITE writes the given data into the file.
-           Argument Type Default value Description   path String  File path to write into.</description>
+Argument Type Default value Description path String File path to write into. data Binary Data to write. params Object Additional parameters: params.mode String Write (default): will create a file if the specified file does not exist Returns None</description>
     </item>
     
     <item>
@@ -117,10 +124,12 @@ WRITE writes the given data into the file.
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/io-net-http/</guid>
-      <description>IO::NET::HTTP::DELETE   Source
+      <description>IO::NET::HTTP::DELETE Source
 DELETE makes a HTTP DELETE request.
-           Argument Type Default value Description   params Object  Request parameters.   params.url String  Target url   params.body Binary  Request data   params.headers Object  Http headers    Returns Binary Response in binary format
-  IO::NET::HTTP::DO   Source</description>
+Argument Type Default value Description params Object Request parameters. params.url String Target url params.body Binary Request data params.headers Object Http headers Returns Binary Response in binary format
+IO::NET::HTTP::DO Source
+REQUEST makes a HTTP request.
+Argument Type Default value Description params Object Request parameters. params.method String Http method params.url String Target url params.body Binary Request data params.headers Object Http headers Returns Binary Response in binary format</description>
     </item>
     
     <item>
@@ -129,12 +138,14 @@ DELETE makes a HTTP DELETE request.
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/math/</guid>
-      <description>ABS   Source
+      <description>ABS Source
 ABS returns the absolute value of a given number.
-           Argument Type Default value Description   number Int Float  Input number.    Returns Float The absolute value of a given number.
-  ACOS   Source
+Argument Type Default value Description number Int Float Input number. Returns Float The absolute value of a given number.
+ACOS Source
 ACOS returns the arccosine, in radians, of a given number.
-           Argument Type Default value Description   number Int Float  Input number.</description>
+Argument Type Default value Description number Int Float Input number. Returns Float The arccosine, in radians, of a given number.
+ASIN Source
+ASIN returns the arcsine, in radians, of a given number.</description>
     </item>
     
     <item>
@@ -143,12 +154,13 @@ ACOS returns the arccosine, in radians, of a given number.
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/objects/</guid>
-      <description>HAS   Source
+      <description>HAS Source
 HAS returns the value stored by the given key.
-           Argument Type Default value Description   key String  The key name string.    Returns Boolean True if the key exists else false.
-  KEEP_KEYS   Source
+Argument Type Default value Description key String The key name string. Returns Boolean True if the key exists else false.
+KEEP_KEYS Source
 KEEP_KEYS returns a new object with only given keys.
-           Argument Type Default value Description   obj Object  Source object.</description>
+Argument Type Default value Description obj Object Source object. keys String, repeated Keys that need to be kept. Returns Object New object with only given keys.
+KEYS Source</description>
     </item>
     
     <item>
@@ -157,11 +169,13 @@ KEEP_KEYS returns a new object with only given keys.
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/path/</guid>
-      <description>PATH::BASE   Source
+      <description>PATH::BASE Source
 BASE returns the last component of the path or the path itself if it does not contain any directory separators.
-           Argument Type Default value Description   path String  The path.    Returns String The last component of the path.
-  PATH::CLEAN   Source
-CLEAN returns the shortest path name equivalent to path.</description>
+Argument Type Default value Description path String The path. Returns String The last component of the path.
+PATH::CLEAN Source
+CLEAN returns the shortest path name equivalent to path.
+Argument Type Default value Description path String The path. Returns String The shortest path name equivalent to path
+PATH::DIR Source</description>
     </item>
     
     <item>
@@ -170,11 +184,12 @@ CLEAN returns the shortest path name equivalent to path.</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/strings/</guid>
-      <description>CONCAT   Source
+      <description>CONCAT Source
 CONCAT concatenates one or more instances of String, or an Array.
-           Argument Type Default value Description   src String, repeated String[]  The source string / array.    Returns String A string value.
-  CONCAT_SEPARATOR   Source
-CONCAT_SEPARATOR concatenates one or more instances of String, or an Array with a given separator.</description>
+Argument Type Default value Description src String, repeated String[] The source string / array. Returns String A string value.
+CONCAT_SEPARATOR Source
+CONCAT_SEPARATOR concatenates one or more instances of String, or an Array with a given separator.
+Argument Type Default value Description separator String The separator string. src String, repeated String[] The source string / array. Returns String Concatenated string.</description>
     </item>
     
     <item>
@@ -183,12 +198,15 @@ CONCAT_SEPARATOR concatenates one or more instances of String, or an Array with 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/testing/</guid>
-      <description>T::ARRAY   Source
+      <description>T::ARRAY Source
 ARRAY asserts that value is a array type.
-           Argument Type Default value Description   actual Any  Value to test.   message String  Message to display on error.    Returns None
-  T::BINARY   Source
+Argument Type Default value Description actual Any Value to test. message String Message to display on error. Returns None
+T::BINARY Source
 BINARY asserts that value is a binary type.
-           Argument Type Default value Description   actual Any  Value to test.</description>
+Argument Type Default value Description actual Any Value to test. message String Message to display on error. Returns None
+T::DATETIME Source
+DATETIME asserts that value is a datetime type.
+Argument Type Default value Description actual Any Value to test.</description>
     </item>
     
     <item>
@@ -197,12 +215,14 @@ BINARY asserts that value is a binary type.
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/types/</guid>
-      <description>IS_ARRAY   Source
+      <description>IS_ARRAY Source
 IS_ARRAY checks whether value is an array value.
-           Argument Type Default value Description   value Any  Input value of arbitrary type.    Returns Boolean Returns true if value is array, otherwise false.
-  IS_BINARY   Source
+Argument Type Default value Description value Any Input value of arbitrary type. Returns Boolean Returns true if value is array, otherwise false.
+IS_BINARY Source
 IS_BINARY checks whether value is a binary value.
-           Argument Type Default value Description   value Any  Input value of arbitrary type.</description>
+Argument Type Default value Description value Any Input value of arbitrary type. Returns Boolean Returns true if value is binary, otherwise false.
+IS_BOOL Source
+IS_BOOL checks whether value is a boolean value.</description>
     </item>
     
     <item>
@@ -211,12 +231,12 @@ IS_BINARY checks whether value is a binary value.
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/stdlib/utils/</guid>
-      <description>PRINT   Source
+      <description>PRINT Source
 PRINT writes messages into the system log.
-           Argument Type Default value Description   message Value, repeated  Print message.    Returns None
-  WAIT   Source
+Argument Type Default value Description message Value, repeated Print message. Returns None
+WAIT Source
 WAIT pauses the execution for a given period.
-           Argument Type Default value Description   timeout Int Float  Number value which indicates for how long to stop an execution.</description>
+Argument Type Default value Description timeout Int Float Number value which indicates for how long to stop an execution. Returns None</description>
     </item>
     
     <item>
@@ -238,7 +258,7 @@ $ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | LOCA
       <guid>https://www.montferret.dev/cookbook/pagination/</guid>
       <description>There are several way how to implement pagination.
 WHILE loop Since v0.13.0, pagination can be implemented with for-while loop.
-For paginations, it&#39;s recommended to use DO-WHILE variation of the loop, in order to process at least the first page.  Run LET doc = DOCUMENT(&#34;https://github.com/MontFerret/ferret/stargazers&#34;, { driver: &#34;cdp&#34; }) LET nextSelector = &#34;.paginate-container .BtnGroup a:nth-child(2)&#34; LET elementsSelector = &#39;.follow-list li&#39; FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector) LIMIT 3 LET wait = i  0 ?</description>
+For paginations, it&#39;s recommended to use DO-WHILE variation of the loop, in order to process at least the first page. Run LET doc = DOCUMENT(&#34;https://github.com/MontFerret/ferret/stargazers&#34;, { driver: &#34;cdp&#34; }) LET nextSelector = &#34;.paginate-container .BtnGroup a:nth-child(2)&#34; LET elementsSelector = &#39;.follow-list li&#39; FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector) LIMIT 3 LET wait = i &gt; 0 ?</description>
     </item>
     
     <item>
@@ -247,8 +267,8 @@ For paginations, it&#39;s recommended to use DO-WHILE variation of the loop, in 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/syntax/</guid>
-      <description>Syntax   Query types   An FQL query must return a result indicated by usage either of the RETURN or FOR IN or FOR WHILE  keywords. The FQL parser will return an error if it cannot find any of these two statements.
- Whitespace   Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces.</description>
+      <description>Syntax Query types An FQL query must return a result indicated by usage either of the RETURN or FOR IN or FOR WHILE keywords. The FQL parser will return an error if it cannot find any of these two statements.
+Whitespace Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces.</description>
     </item>
     
     <item>
@@ -257,8 +277,8 @@ For paginations, it&#39;s recommended to use DO-WHILE variation of the loop, in 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/data-types/</guid>
-      <description>Data types   FQL supports both primitive data types consisting of exactly one value and compound data types comprised of multiple values. The following types are available:
-  Data type Description     none An empty value, also: the absence of a value   boolean Boolean truth value with possible values false and true   integer Signed whole number   float Signed floating point number   string UTF-8 encoded text value   array Sequence of values, referred to by their positions   object Sequence of values, referred to by their names   binary Sequence of binary values   custom User defined types    Primitive types    None value   A none value can be used to represent an empty or absent value.</description>
+      <description>Data types FQL supports both primitive data types consisting of exactly one value and compound data types comprised of multiple values. The following types are available:
+Data type Description none An empty value, also: the absence of a value boolean Boolean truth value with possible values false and true integer Signed whole number float Signed floating point number string UTF-8 encoded text value array Sequence of values, referred to by their positions object Sequence of values, referred to by their names binary Sequence of binary values custom User defined types Primitive types None value A none value can be used to represent an empty or absent value.</description>
     </item>
     
     <item>
@@ -268,7 +288,7 @@ For paginations, it&#39;s recommended to use DO-WHILE variation of the loop, in 
       
       <guid>https://www.montferret.dev/docs/getting-started/</guid>
       <description>Quick start Browserless mode If you want to play with FQL and check its syntax, you can run CLI with the following commands to run Ferret CLI in REPL mode:
-$ ferret Welcome to Ferret REPL Please use `exit` or `Ctrl-D` to exit this program. &amp;gt;% &amp;gt;LET doc = DOCUMENT(&amp;#39;https://news.ycombinator.com/&amp;#39;) &amp;gt;FOR post IN ELEMENTS(doc, &amp;#39;.storylink&amp;#39;) &amp;gt;RETURN post.attributes.href &amp;gt;% NOTE: symbol % is used to start and end multi-line queries. You also can use the heredoc format.</description>
+$ ferret exec Welcome to Ferret REPL Please use `exit` or `Ctrl-D` to exit this program. &amp;gt; % &amp;gt; LET doc = DOCUMENT(&amp;#34;https://news.ycombinator.com/&amp;#34;) &amp;gt; FOR post IN ELEMENTS(doc, &amp;#39;.titleline &amp;gt; a&amp;#39;) &amp;gt; RETURN { &amp;gt; title: TRIM(INNER_TEXT(post)), &amp;gt; link: ATTR_GET(post, &amp;#39;href&amp;#39;) &amp;gt; } &amp;gt; % NOTE: symbol % is used to start and end multi-line queries.</description>
     </item>
     
     <item>
@@ -278,7 +298,7 @@ $ ferret Welcome to Ferret REPL Please use `exit` or `Ctrl-D` to exit this progr
       
       <guid>https://www.montferret.dev/cookbook/iframes/</guid>
       <description>In order to find a particular iframe, you need to find it by its name or src.
-Beware, a target iframe must be in the same domain, otherwise its properties and content will be unavailable.  Run LET page = DOCUMENT(&#34;https://www.w3schools.com/html/html_iframe.asp&#34;, { driver: &#34;cdp&#34; }) LET content = ( FOR f IN page.frames FILTER f.URL == &#34;https://www.w3schools.com/html/default.asp&#34; RETURN f.head.innerHTML ) RETURN FIRST(content)       document.addEventListener(&#39;DOMContentLoaded&#39;, function () { function createEditor(id, mode) { const editor = ace.</description>
+Beware, a target iframe must be in the same domain, otherwise its properties and content will be unavailable. Run LET page = DOCUMENT(&#34;https://www.w3schools.com/html/html_iframe.asp&#34;, { driver: &#34;cdp&#34; }) LET content = ( FOR f IN page.frames FILTER f.URL == &#34;https://www.w3schools.com/html/default.asp&#34; RETURN f.head.innerHTML ) RETURN FIRST(content) </description>
     </item>
     
     <item>
@@ -287,9 +307,9 @@ Beware, a target iframe must be in the same domain, otherwise its properties and
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/return/</guid>
-      <description>RETURN   The RETURN statement can be used to produce the result of a query. It is mandatory to specify a RETURN statement at the end of each block in a data-selection query, otherwise the query will be invalid. Using RETURN on the main level in data-modification queries is optional.
+      <description>RETURN The RETURN statement can be used to produce the result of a query. It is mandatory to specify a RETURN statement at the end of each block in a data-selection query, otherwise the query will be invalid. Using RETURN on the main level in data-modification queries is optional.
 The general syntax for RETURN is:
-RETURN expression     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.</description>
+RETURN expression The expression returned by RETURN is produced for each iteration in the block the RETURN statement is placed in.</description>
     </item>
     
     <item>
@@ -299,7 +319,7 @@ RETURN expression     document.addEventListener(&#39;DOMContentLoaded&#39;, func
       
       <guid>https://www.montferret.dev/cookbook/screenshot/</guid>
       <description>Output of the function is base64-encoded binary file.
-Run RETURN SCREENSHOT(&#34;https://www.montferret.dev/&#34;)       document.addEventListener(&#39;DOMContentLoaded&#39;, function () { function createEditor(id, mode) { const editor = ace.edit(id); editor.setTheme(&#34;ace\/theme\/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + mode); editor.setOptions({ displayIndentGuides: false, printMargin: false }); return editor; } const btn = document.querySelector(&#39;#code-editor-123-run-button&#39;); const textEditor = createEditor(&#39;code-editor-123-text&#39;, &#39;aql&#39;); const resultEditor = createEditor(&#39;code-editor-123-result&#39;, &#39;json&#39;); resultEditor.setReadOnly(true); function setContent(editor, content) { editor.setValue(content, -1); } let isRunning = false; function onStart() { isRunning = true; textEditor.</description>
+Run RETURN SCREENSHOT(&#34;https://www.montferret.dev/&#34;) </description>
     </item>
     
     <item>
@@ -308,9 +328,9 @@ Run RETURN SCREENSHOT(&#34;https://www.montferret.dev/&#34;)       document.addE
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/filter/</guid>
-      <description>FILTER   The FILTER statement can be used to restrict the results to elements that match an arbitrary logical condition.
+      <description>FILTER The FILTER statement can be used to restrict the results to elements that match an arbitrary logical condition.
 The general syntax for FILTER is:
-FILTER expression     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-301-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.renderer.$cursorLayer.element.style.display = &#34;none&#34; }, false);   expression must be a condition that evaluates to either false or true.</description>
+FILTER expression expression must be a condition that evaluates to either false or true. If the condition result is false, the current element is skipped, so it will not be processed further and not be part of the result. If the condition is true, the current element is not skipped and can be further processed.</description>
     </item>
     
     <item>
@@ -319,7 +339,7 @@ FILTER expression     document.addEventListener(&#39;DOMContentLoaded&#39;, func
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/cookbook/navigation/</guid>
-      <description>Navigate by url Run LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; }) LET header1 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content NAVIGATE(page, &#34;https://github.com/features&#34;, 10000) LET header2 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content RETURN [header1, header2]       document.addEventListener(&#39;DOMContentLoaded&#39;, function () { function createEditor(id, mode) { const editor = ace.edit(id); editor.setTheme(&#34;ace\/theme\/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + mode); editor.setOptions({ displayIndentGuides: false, printMargin: false }); return editor; } const btn = document.querySelector(&#39;#code-editor-640-run-button&#39;); const textEditor = createEditor(&#39;code-editor-640-text&#39;, &#39;aql&#39;); const resultEditor = createEditor(&#39;code-editor-640-result&#39;, &#39;json&#39;); resultEditor.</description>
+      <description>Navigate by url Run LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; }) LET header1 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content NAVIGATE(page, &#34;https://github.com/features&#34;, 10000) LET header2 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content RETURN [header1, header2] Navigate back Run LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; }) NAVIGATE(page, &#34;https://github.com/features&#34;, 10000) LET header1 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content NAVIGATE_BACK(page) LET header2 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content RETURN [header1, header2] Navigate forward Run LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; }) NAVIGATE(page, &#34;https://github.com/features&#34;, 10000) LET header1 = ELEMENT(page, &#39;meta[name=&#34;</description>
     </item>
     
     <item>
@@ -328,8 +348,9 @@ FILTER expression     document.addEventListener(&#39;DOMContentLoaded&#39;, func
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/sort/</guid>
-      <description>SORT   The SORT statement will force a sort of the array of already produced intermediate results in the current block. SORT allows specifying one or multiple sort criteria and directions. The general syntax is:
-SORT expression direction     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-515-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.</description>
+      <description>SORT The SORT statement will force a sort of the array of already produced intermediate results in the current block. SORT allows specifying one or multiple sort criteria and directions. The general syntax is:
+SORT expression direction Example query that is sorting by lastName (in ascending order), then firstName (in ascending order), then by id (in descending order):
+Run LET users = [{&#34;id&#34;:1,&#34;firstName&#34;:&#34;Johny&#34;,&#34;lastName&#34;:&#34;Purdie&#34;},{&#34;id&#34;:2,&#34;firstName&#34;:&#34;Wayland&#34;,&#34;lastName&#34;:&#34;Bewshaw&#34;},{&#34;id&#34;:3,&#34;firstName&#34;:&#34;Julius&#34;,&#34;lastName&#34;:&#34;Taplin&#34;},{&#34;id&#34;:4,&#34;firstName&#34;:&#34;Jarrad&#34;,&#34;lastName&#34;:&#34;Dollman&#34;},{&#34;id&#34;:5,&#34;firstName&#34;:&#34;Leia&#34;,&#34;lastName&#34;:&#34;Meechan&#34;}] FOR u IN users SORT u.lastName, u.</description>
     </item>
     
     <item>
@@ -338,8 +359,8 @@ SORT expression direction     document.addEventListener(&#39;DOMContentLoaded&#3
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/limit/</guid>
-      <description>LIMIT   The LIMIT statement allows slicing the result array using an offset and a count. It reduces the number of elements in the result to at most the specified number. Two general forms of LIMIT are followed:
-LIMIT count LIMIT offset, count     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-264-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.</description>
+      <description>LIMIT The LIMIT statement allows slicing the result array using an offset and a count. It reduces the number of elements in the result to at most the specified number. Two general forms of LIMIT are followed:
+LIMIT count LIMIT offset, count The first form allows specifying only the count value whereas the second form allows specifying both offset and count. The first form is identical using the second form with an offset value of 0.</description>
     </item>
     
     <item>
@@ -348,7 +369,7 @@ LIMIT count LIMIT offset, count     document.addEventListener(&#39;DOMContentLoa
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/bind-parameters/</guid>
-      <description>Bind parameters   FQL supports the usage of bind parameters, thus allowing to separate the query text from literal values used in the query. It is good practice to separate the query text from the literal values because it allows to reuse same query in different scenarios.
+      <description>Bind parameters FQL supports the usage of bind parameters, thus allowing to separate the query text from literal values used in the query. It is good practice to separate the query text from the literal values because it allows to reuse same query in different scenarios.
 Using bind parameters, the meaning of an existing query cannot be changed. Bind parameters can be used everywhere in a query where literals can be used.</description>
     </item>
     
@@ -358,9 +379,10 @@ Using bind parameters, the meaning of an existing query cannot be changed. Bind 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/let/</guid>
-      <description>LET   The LET statement can be used to assign an arbitrary value to a variable. The variable is then introduced in the scope the LET statement is placed in.
+      <description>LET The LET statement can be used to assign an arbitrary value to a variable. The variable is then introduced in the scope the LET statement is placed in.
 The general syntax is:
-LET variableName = expression     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-360-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.</description>
+LET variableName = expression Variables are immutable in FQL, which means they can not be re-assigned:
+LET a = [1, 2, 3] // initial assignment a = PUSH(a, 4) // syntax error, unexpected identifier LET a = PUSH(a, 4) // parsing error, variable &#39;a&#39; is assigned multiple times LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4] LET statements are mostly used to declare complex computations and to avoid repeated computations of the same value at multiple parts of a query.</description>
     </item>
     
     <item>
@@ -369,10 +391,10 @@ LET variableName = expression     document.addEventListener(&#39;DOMContentLoade
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/operators/high-level/collect/</guid>
-      <description>COLLECT   The COLLECT keyword can be used to group an array by one or multiple group criteria.
+      <description>COLLECT The COLLECT keyword can be used to group an array by one or multiple group criteria.
 The COLLECT statement will eliminate all local variables in the current scope. After COLLECT only the variables introduced by COLLECT itself are available.
 There are several syntax variants for COLLECT operations:
-COLLECT variableName = expression COLLECT variableName = expression INTO groupsVariable COLLECT variableName = expression INTO groupsVariable = projectionExpression COLLECT variableName = expression INTO groupsVariable KEEP keepVariable COLLECT variableName = expression WITH COUNT INTO countVariable COLLECT variableName = expression AGGREGATE variableName = aggregateExpression COLLECT variableName = expression AGGREGATE variableName = aggregateExpression INTO groupsVariable COLLECT AGGREGATE variableName = aggregateExpression COLLECT AGGREGATE variableName = aggregateExpression INTO groupsVariable COLLECT WITH COUNT INTO countVariable     document.</description>
+COLLECT variableName = expression COLLECT variableName = expression INTO groupsVariable COLLECT variableName = expression INTO groupsVariable = projectionExpression COLLECT variableName = expression INTO groupsVariable KEEP keepVariable COLLECT variableName = expression WITH COUNT INTO countVariable COLLECT variableName = expression AGGREGATE variableName = aggregateExpression COLLECT variableName = expression AGGREGATE variableName = aggregateExpression INTO groupsVariable COLLECT AGGREGATE variableName = aggregateExpression COLLECT AGGREGATE variableName = aggregateExpression INTO groupsVariable COLLECT WITH COUNT INTO countVariable Grouping syntaxes The first syntax form of COLLECT only groups the result by the defined group criteria specified in expression.</description>
     </item>
     
     <item>
@@ -381,7 +403,7 @@ COLLECT variableName = expression COLLECT variableName = expression INTO groupsV
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/type-value-order/</guid>
-      <description>Type and value order   When checking for equality or inequality or when determining the sort order of values, FQL uses a deterministic algorithm that takes both the data types and the actual values into account.
+      <description>Type and value order When checking for equality or inequality or when determining the sort order of values, FQL uses a deterministic algorithm that takes both the data types and the actual values into account.
 The compared operands are first compared by their data types, and only by their data values if the operands have the same data types.
 The following type order is used when comparing data types:</description>
     </item>
@@ -392,9 +414,9 @@ The following type order is used when comparing data types:</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/query-results/</guid>
-      <description>Query results   Unlike AQL, the result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
+      <description>Query results Unlike AQL, the result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
 For example, when the RETURN statement is used as the last query statement, a values gets returned as it is:
-RETURN 1     document.addEventListener(&#39;DOMContentLoaded&#39;, function () { const editor = ace.edit(&#39;code-646-text&#39;); editor.setTheme(&#34;ace/theme/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + &#39;aql&#39;); editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, displayIndentGuides: false, printMargin: false }); editor.</description>
+RETURN 1 1 RETURN { foo: &#34;bar&#34; } { &#34;foo&#34;: &#34;bar&#34; } However, when returning data from an iteration, the result values will be always an array:</description>
     </item>
     
     <item>
@@ -403,8 +425,8 @@ RETURN 1     document.addEventListener(&#39;DOMContentLoaded&#39;, function () {
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/docs/fql/query-errors/</guid>
-      <description>Query errors   Issuing an invalid query to Ferret will result in a parse error if the query is syntactically invalid. The Ferret compiler will detect such errors during query inspection and abort further processing. Instead, an error message are returned so that the errors can be fixed.
-Under some circumstances, executing a query may also produce run-time errors that cannot be predicted from inspecting the query text alone.</description>
+      <description>Query errors Issuing an invalid query to Ferret will result in a parse error if the query is syntactically invalid. The Ferret compiler will detect such errors during query inspection and abort further processing. Instead, an error message are returned so that the errors can be fixed.
+Under some circumstances, executing a query may also produce run-time errors that cannot be predicted from inspecting the query text alone. This is because queries may use data from collections that may also be inhomogeneous.</description>
     </item>
     
     <item>
@@ -442,7 +464,7 @@ What&amp;rsquo;s added Support of document charset in HTTP driver If your target
       <guid>https://www.montferret.dev/blog/say-hello-to-new-cli/</guid>
       <description>Hello fellas,
 We are happy to announce that we finally have a brand new Ferret CLI!
- As the project grows, it became clear that we need to separate Ferret Runtime and CLI, to let the projects evolve on their own.
+As the project grows, it became clear that we need to separate Ferret Runtime and CLI, to let the projects evolve on their own.
 The separation allowed us to review what we need from CLI and rebuild it from the ground up.
 Thus, let&amp;rsquo;s dive in and see what&amp;rsquo;s in there.
 Get started First of all, we need to install it:</description>
@@ -498,7 +520,7 @@ $ docker pull montferret/lab If you are macOS/Linux user, you can install the la
 We are happy to announce a new Ferret release - Ferret v0.12.0.
 This release has a new useful module in the standard library - testing!
 Let&amp;rsquo;s dig in. The full changelog you can find here.
- What&amp;rsquo;s added Assertion library A new T namespace has been added to the standard library that provides some helpful methods for making assertions. The functions can be used to test UI, validate data and ensure the correctnes of a script.</description>
+What&amp;rsquo;s added Assertion library A new T namespace has been added to the standard library that provides some helpful methods for making assertions. The functions can be used to test UI, validate data and ensure the correctnes of a script.</description>
     </item>
     
     <item>
@@ -520,7 +542,7 @@ Ferret v0.11.1 has been released with a hotfix that solves an error in some func
       <description>Hello fellow miners,
 Today, we are living in unprecedented times. There are almost 5 million people infected by COVID-19 and thousands die every day in the world.
 During this time, the highest priority is to stay safe and healthy, take care of family.
- Ferret team has been locked down in their homes with their families as everyone around the globe, but still has managed to make new Ferret v0.11.0 release!</description>
+Ferret team has been locked down in their homes with their families as everyone around the globe, but still has managed to make new Ferret v0.11.0 release!</description>
     </item>
     
     <item>
@@ -610,7 +632,7 @@ It&amp;rsquo;s a relatively easy task to write one or two web scrapers if the am
       
       <guid>https://www.montferret.dev/fixtures/iframe/</guid>
       <description>iFrame example
-&#34;  </description>
+&#34; </description>
     </item>
     
     <item>
@@ -619,7 +641,7 @@ It&amp;rsquo;s a relatively easy task to write one or two web scrapers if the am
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://www.montferret.dev/try/</guid>
-      <description>Share Run LET doc = DOCUMENT(&#39;https://soundcloud.com/charts/top&#39;, { driver: &#39;cdp&#39; }) WAIT_ELEMENT(doc, &#39;.chartTrack__details&#39;, 5000) LET tracks = ELEMENTS(doc, &#39;.chartTrack__details&#39;) FOR track IN tracks RETURN { artist: TRIM(INNER_TEXT(track, &#39;.chartTrack__username&#39;)), track: TRIM(INNER_TEXT(track, &#39;.chartTrack__title&#39;)) }       document.addEventListener(&#39;DOMContentLoaded&#39;, function () { function createEditor(id, mode) { const editor = ace.edit(id); editor.setTheme(&#34;ace\/theme\/tomorrow_night&#34;); editor.session.setMode(&#34;ace/mode/&#34; + mode); editor.setOptions({ displayIndentGuides: false, printMargin: false }); return editor; } const btn = document.querySelector(&#39;#code-editor-38-run-button&#39;); const textEditor = createEditor(&#39;code-editor-38-text&#39;, &#39;aql&#39;); const resultEditor = createEditor(&#39;code-editor-38-result&#39;, &#39;json&#39;); resultEditor.</description>
+      <description> Share Run LET doc = DOCUMENT(&#39;https://soundcloud.com/charts/top&#39;, { driver: &#39;cdp&#39; }) WAIT_ELEMENT(doc, &#39;.chartTrack__details&#39;, 5000) LET tracks = ELEMENTS(doc, &#39;.chartTrack__details&#39;) FOR track IN tracks RETURN { artist: TRIM(INNER_TEXT(track, &#39;.chartTrack__username&#39;)), track: TRIM(INNER_TEXT(track, &#39;.chartTrack__title&#39;)) } </description>
     </item>
     
   </channel>

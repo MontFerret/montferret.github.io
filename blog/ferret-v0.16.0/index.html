@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.88.1" />
+    <meta name="generator" content="Hugo 0.111.3">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.868c6b9520de92915da09f910b4c0c2ec4196c39e0bb489259db3724a0e14795.css" />
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.abb9ad2a13db31eb59f44083603c76c8239bcbf3b2193f634e670e9b2f270b08.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -189,9 +189,9 @@
 </ul>
 <h3 id="navigation">Navigation</h3>
 <p><code>navigation</code> event is intended to replace <code>WAIT_NAVIGATION</code> function which will be deprecated in the next release and focused to be more flexible.</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">WAITFOR EVENT &quot;navigation&quot; IN page
+<pre tabindex="0"><code class="language-fql" data-lang="fql">WAITFOR EVENT &#34;navigation&#34; IN page
 </code></pre><p>While the simple version of the statement provides extra readability, it also provides extra control over navigation using <code>FILTER</code> statement</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">WAITFOR EVENT &quot;navigation&quot; IN page FILTER CURREN.url LIKE &quot;MY_DESIRABLE_URL&quot;
+<pre tabindex="0"><code class="language-fql" data-lang="fql">WAITFOR EVENT &#34;navigation&#34; IN page FILTER CURREN.url LIKE &#34;MY_DESIRABLE_URL&#34;
 </code></pre><p>You may have noticed <code>CURRENT</code> keyword inside the filter statement.
 This is a pseudo-variable that provides access to the current event object. The event object will depend on the type of an event, in the case of navigation, the object has the following fields:</p>
 <pre tabindex="0"><code class="language-fql" data-lang="fql">{
@@ -200,7 +200,7 @@ This is a pseudo-variable that provides access to the current event object. The 
  mimeType
 }
 </code></pre><p><code>frame</code> property allows to wait for a navigation event in one of nested frames:</p>
-<pre tabindex="0"><code class="language-fql" data-lang="fql">WAITFOR EVENT &quot;navigation&quot; IN page FILTER CURREN.frame == nested_doc
+<pre tabindex="0"><code class="language-fql" data-lang="fql">WAITFOR EVENT &#34;navigation&#34; IN page FILTER CURREN.frame == nested_doc
 </code></pre><h3 id="ajax">AJAX</h3>
 <p><code>request</code> and <code>response</code> are the events you can use to subscribe to AJAX request/response operations:</p>
 
@@ -215,11 +215,11 @@ This is a pseudo-variable that provides access to the current event object. The 
 
     
 
-    <button id="code-editor-154-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-838-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-154-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-838-text" class="code-editor-text" style="height: 300px;">
                 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 
@@ -233,7 +233,7 @@ RETURN evt.headers
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-154-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-838-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -252,9 +252,9 @@ RETURN evt.headers
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-154-run-button');
-            const textEditor = createEditor('code-editor-154-text', 'aql');
-            const resultEditor = createEditor('code-editor-154-result', 'json');
+            const btn = document.querySelector('#code-editor-838-run-button');
+            const textEditor = createEditor('code-editor-838-text', 'aql');
+            const resultEditor = createEditor('code-editor-838-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -297,12 +297,28 @@ RETURN evt.headers
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -327,11 +343,11 @@ RETURN evt.headers
 
     
 
-    <button id="code-editor-62-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-804-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-62-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-804-text" class="code-editor-text" style="height: 250px;">
                 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 
@@ -345,7 +361,7 @@ RETURN JSON_PARSE(evt.body)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-62-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-804-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -364,9 +380,9 @@ RETURN JSON_PARSE(evt.body)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-62-run-button');
-            const textEditor = createEditor('code-editor-62-text', 'aql');
-            const resultEditor = createEditor('code-editor-62-result', 'json');
+            const btn = document.querySelector('#code-editor-804-run-button');
+            const textEditor = createEditor('code-editor-804-text', 'aql');
+            const resultEditor = createEditor('code-editor-804-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -409,12 +425,28 @@ RETURN JSON_PARSE(evt.body)
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -448,11 +480,11 @@ RETURN JSON_PARSE(evt.body)
 
     
 
-    <button id="code-editor-358-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-530-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-358-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-530-text" class="code-editor-text" style="height: 100px;">
                 
 LET foo = { bar: NONE }
 RETURN foo?.bar?.baz
@@ -460,7 +492,7 @@ RETURN foo?.bar?.baz
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-358-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-530-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -479,9 +511,9 @@ RETURN foo?.bar?.baz
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-358-run-button');
-            const textEditor = createEditor('code-editor-358-text', 'aql');
-            const resultEditor = createEditor('code-editor-358-result', 'json');
+            const btn = document.querySelector('#code-editor-530-run-button');
+            const textEditor = createEditor('code-editor-530-text', 'aql');
+            const resultEditor = createEditor('code-editor-530-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -524,12 +556,28 @@ RETURN foo?.bar?.baz
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -550,11 +598,11 @@ RETURN foo?.bar?.baz
 
     
 
-    <button id="code-editor-792-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-881-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-792-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-881-text" class="code-editor-text" style="height: 100px;">
                 
 LET el = ELEMENT(NONE, "#el")?
 
@@ -563,7 +611,7 @@ RETURN el == NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-792-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-881-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -582,9 +630,9 @@ RETURN el == NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-792-run-button');
-            const textEditor = createEditor('code-editor-792-text', 'aql');
-            const resultEditor = createEditor('code-editor-792-result', 'json');
+            const btn = document.querySelector('#code-editor-881-run-button');
+            const textEditor = createEditor('code-editor-881-text', 'aql');
+            const resultEditor = createEditor('code-editor-881-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -627,12 +675,28 @@ RETURN el == NONE
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -651,11 +715,11 @@ RETURN el == NONE
 
     
 
-    <button id="code-editor-883-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-646-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-883-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-646-text" class="code-editor-text" style="height: 100px;">
                 
 LET el = ELEMENT(NONE, "#el")
 
@@ -664,7 +728,7 @@ RETURN el == NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-883-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-646-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -683,9 +747,9 @@ RETURN el == NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-883-run-button');
-            const textEditor = createEditor('code-editor-883-text', 'aql');
-            const resultEditor = createEditor('code-editor-883-result', 'json');
+            const btn = document.querySelector('#code-editor-646-run-button');
+            const textEditor = createEditor('code-editor-646-text', 'aql');
+            const resultEditor = createEditor('code-editor-646-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -728,12 +792,28 @@ RETURN el == NONE
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -752,11 +832,11 @@ RETURN el == NONE
 
     
 
-    <button id="code-editor-824-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-95-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-824-text" class="code-editor-text" style="height: 150px;">
+            <div id="code-editor-95-text" class="code-editor-text" style="height: 150px;">
                 
 LET page = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 LET evt = (WAITFOR EVENT "navigation" IN page)?
@@ -766,7 +846,7 @@ RETURN evt == NONE ? "not navigated" : "navigated"
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-824-result" class="code-editor-result" style="height: 150px;"></div>
+            <div id="code-editor-95-result" class="code-editor-result" style="height: 150px;"></div>
         </div>
     </div>
     
@@ -785,9 +865,9 @@ RETURN evt == NONE ? "not navigated" : "navigated"
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-824-run-button');
-            const textEditor = createEditor('code-editor-824-text', 'aql');
-            const resultEditor = createEditor('code-editor-824-result', 'json');
+            const btn = document.querySelector('#code-editor-95-run-button');
+            const textEditor = createEditor('code-editor-95-text', 'aql');
+            const resultEditor = createEditor('code-editor-95-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -830,12 +910,28 @@ RETURN evt == NONE ? "not navigated" : "navigated"
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -856,11 +952,11 @@ With updated interface of HTML driver componenets, it is possible to pass XPath 
 
     
 
-    <button id="code-editor-779-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-544-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-779-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-544-text" class="code-editor-text" style="height: 250px;">
                 
 LET page = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 WAIT_ELEMENT(page, X("//div[contains(@class, 'chartTrack__details')]"), 5000)
@@ -875,7 +971,7 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-779-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-544-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -894,9 +990,9 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-779-run-button');
-            const textEditor = createEditor('code-editor-779-text', 'aql');
-            const resultEditor = createEditor('code-editor-779-result', 'json');
+            const btn = document.querySelector('#code-editor-544-run-button');
+            const textEditor = createEditor('code-editor-544-text', 'aql');
+            const resultEditor = createEditor('code-editor-544-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -939,12 +1035,28 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -966,11 +1078,11 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
 
     
 
-    <button id="code-editor-961-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-421-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-961-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-421-text" class="code-editor-text" style="height: 250px;">
                 
 LET _ = (
     FOR num IN 1..10
@@ -983,7 +1095,7 @@ RETURN _
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-961-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-421-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -1002,9 +1114,9 @@ RETURN _
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-961-run-button');
-            const textEditor = createEditor('code-editor-961-text', 'aql');
-            const resultEditor = createEditor('code-editor-961-result', 'json');
+            const btn = document.querySelector('#code-editor-421-run-button');
+            const textEditor = createEditor('code-editor-421-text', 'aql');
+            const resultEditor = createEditor('code-editor-421-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -1047,12 +1159,28 @@ RETURN _
                     },
                     body: JSON.stringify(body)
                 })
-                    .then(r => r.json())
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
                     .then((data) => {
                         onEnd(JSON.stringify(data, null, 4));
                     })
                     .catch((err) => {
-                        onEnd(err.toString());
+                        onEnd(err.message);
                     });
             });
         }, false);
@@ -1079,7 +1207,7 @@ Thanks everyone who contributed to the project!</p>
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2021 MontFerret Team
+                    © 2018-2023 MontFerret Team
                 </a>
             </p>
             <p>
