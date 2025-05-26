@@ -162,16 +162,16 @@
 
 
 <div class="code-editor">
-    <input id="code-editor-194-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
+    <input id="code-editor-856-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
 
     
-    <button id="code-editor-194-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
+    <button id="code-editor-856-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
 
-    <button id="code-editor-194-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-856-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-194-text" class="code-editor-text" style="height: 400px;">
+            <div id="code-editor-856-text" class="code-editor-text" style="height: 400px;">
                 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
     driver: 'cdp'
@@ -190,7 +190,7 @@ FOR track IN tracks
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-194-result" class="code-editor-result" style="height: 400px;"></div>
+            <div id="code-editor-856-result" class="code-editor-result" style="height: 400px;"></div>
         </div>
     </div>
     
@@ -209,16 +209,16 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-194-run-button');
-            const textEditor = createEditor('code-editor-194-text', 'aql');
-            const resultEditor = createEditor('code-editor-194-result', 'json');
+            const btn = document.querySelector('#code-editor-856-run-button');
+            const textEditor = createEditor('code-editor-856-text', 'aql');
+            const resultEditor = createEditor('code-editor-856-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
-                const clibboardEl = document.querySelector('#code-editor-194-share-clipboard');
-                const shareBtn = document.querySelector('#code-editor-194-share-button');
+                const clibboardEl = document.querySelector('#code-editor-856-share-clipboard');
+                const shareBtn = document.querySelector('#code-editor-856-share-button');
 
                 shareBtn.addEventListener('click', () => {
                     try {
@@ -287,6 +287,7 @@ FOR track IN tracks
                     headers: {
                         'Content-Type': 'application/json,encoding=utf-8'
                     },
+                    signal: AbortSignal.timeout(1000 * 60), 
                     body: JSON.stringify(body)
                 })
                     .then(r => {
@@ -327,7 +328,7 @@ FOR track IN tracks
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2023 MontFerret Team
+                    © 2018-2025 MontFerret Team
                 </a>
             </p>
             <p>

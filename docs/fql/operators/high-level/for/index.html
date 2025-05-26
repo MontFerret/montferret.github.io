@@ -790,7 +790,7 @@ FOR-IN
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-354-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-552-text" class="code-editor-text" style="height: 80px;">
                 
 FOR variableName IN expression
 
@@ -800,7 +800,7 @@ FOR variableName IN expression
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-354-text');
+            const editor = ace.edit('code-552-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -827,11 +827,11 @@ Each element returned by expression is visited exactly once. The current element
 <div class="code-editor">
 
     
-    <button id="code-editor-203-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-966-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-203-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-966-text" class="code-editor-text" style="height: 100px;">
                 
 FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
   RETURN i
@@ -841,7 +841,7 @@ FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-203-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-966-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -860,9 +860,9 @@ FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-203-run-button');
-            const textEditor = createEditor('code-editor-203-text', 'aql');
-            const resultEditor = createEditor('code-editor-203-result', 'json');
+            const btn = document.querySelector('#code-editor-966-run-button');
+            const textEditor = createEditor('code-editor-966-text', 'aql');
+            const resultEditor = createEditor('code-editor-966-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -902,6 +902,7 @@ FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
                     headers: {
                         'Content-Type': 'application/json,encoding=utf-8'
                     },
+                    signal: AbortSignal.timeout(1000 * 60), 
                     body: JSON.stringify(body)
                 })
                     .then(r => {
@@ -945,11 +946,11 @@ FOR i IN JSON_PARSE(IO::NET::HTTP::GET('http://country.io/continent.json'))
 <div class="code-editor">
 
     
-    <button id="code-editor-858-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-186-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-858-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-186-text" class="code-editor-text" style="height: 100px;">
                 
 FOR year IN [ 2011, 2012, 2013 ]
   RETURN { "year" : year, "isLeapYear" : year % 4 == 0 && (year % 100 != 0 || year % 400 == 0) }
@@ -959,7 +960,7 @@ FOR year IN [ 2011, 2012, 2013 ]
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-858-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-186-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -978,9 +979,9 @@ FOR year IN [ 2011, 2012, 2013 ]
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-858-run-button');
-            const textEditor = createEditor('code-editor-858-text', 'aql');
-            const resultEditor = createEditor('code-editor-858-result', 'json');
+            const btn = document.querySelector('#code-editor-186-run-button');
+            const textEditor = createEditor('code-editor-186-text', 'aql');
+            const resultEditor = createEditor('code-editor-186-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1020,6 +1021,7 @@ FOR year IN [ 2011, 2012, 2013 ]
                     headers: {
                         'Content-Type': 'application/json,encoding=utf-8'
                     },
+                    signal: AbortSignal.timeout(1000 * 60), 
                     body: JSON.stringify(body)
                 })
                     .then(r => {
@@ -1061,11 +1063,11 @@ FOR year IN [ 2011, 2012, 2013 ]
 <div class="code-editor">
 
     
-    <button id="code-editor-359-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-608-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-359-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-608-text" class="code-editor-text" style="height: 100px;">
                 
 FOR m IN [ 2019, 2020, 2021 ]
   FOR y IN [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sept", "oct", "nov", "dec" ]
@@ -1076,7 +1078,7 @@ FOR m IN [ 2019, 2020, 2021 ]
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-359-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-608-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -1095,9 +1097,9 @@ FOR m IN [ 2019, 2020, 2021 ]
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-359-run-button');
-            const textEditor = createEditor('code-editor-359-text', 'aql');
-            const resultEditor = createEditor('code-editor-359-result', 'json');
+            const btn = document.querySelector('#code-editor-608-run-button');
+            const textEditor = createEditor('code-editor-608-text', 'aql');
+            const resultEditor = createEditor('code-editor-608-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1137,6 +1139,7 @@ FOR m IN [ 2019, 2020, 2021 ]
                     headers: {
                         'Content-Type': 'application/json,encoding=utf-8'
                     },
+                    signal: AbortSignal.timeout(1000 * 60), 
                     body: JSON.stringify(body)
                 })
                     .then(r => {
@@ -1182,7 +1185,7 @@ FOR-WHILE
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-112-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-381-text" class="code-editor-text" style="height: 80px;">
                 
 FOR variableName [DO] WHILE expression
 
@@ -1192,7 +1195,7 @@ FOR variableName [DO] WHILE expression
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-112-text');
+            const editor = ace.edit('code-381-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -1221,7 +1224,7 @@ FOR variableName [DO] WHILE expression
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2023 MontFerret Team
+                    © 2018-2025 MontFerret Team
                 </a>
             </p>
             <p>

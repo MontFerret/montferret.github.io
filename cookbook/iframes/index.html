@@ -281,11 +281,11 @@ Beware, a target iframe must be in the same domain, otherwise its properties and
 
     
 
-    <button id="code-editor-559-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-616-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-559-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-616-text" class="code-editor-text" style="height: 250px;">
                 
 LET page = DOCUMENT("https://www.w3schools.com/html/html_iframe.asp", {
     driver: "cdp"
@@ -302,7 +302,7 @@ RETURN FIRST(content)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-559-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-616-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -321,9 +321,9 @@ RETURN FIRST(content)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-559-run-button');
-            const textEditor = createEditor('code-editor-559-text', 'aql');
-            const resultEditor = createEditor('code-editor-559-result', 'json');
+            const btn = document.querySelector('#code-editor-616-run-button');
+            const textEditor = createEditor('code-editor-616-text', 'aql');
+            const resultEditor = createEditor('code-editor-616-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -363,6 +363,7 @@ RETURN FIRST(content)
                     headers: {
                         'Content-Type': 'application/json,encoding=utf-8'
                     },
+                    signal: AbortSignal.timeout(1000 * 60), 
                     body: JSON.stringify(body)
                 })
                     .then(r => {
@@ -403,7 +404,7 @@ RETURN FIRST(content)
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2023 MontFerret Team
+                    © 2018-2025 MontFerret Team
                 </a>
             </p>
             <p>

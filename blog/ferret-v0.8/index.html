@@ -187,11 +187,11 @@ When a page gets loaded, Ferret finds all available elements and provieds an acc
 
     
 
-    <button id="code-editor-421-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-815-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-421-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-815-text" class="code-editor-text" style="height: 250px;">
                 
 LET page = DOCUMENT("https://www.w3schools.com/html/html_iframe.asp", {
 	driver: "cdp"
@@ -208,7 +208,7 @@ RETURN FIRST(content)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-421-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-815-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -227,9 +227,9 @@ RETURN FIRST(content)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-421-run-button');
-            const textEditor = createEditor('code-editor-421-text', 'aql');
-            const resultEditor = createEditor('code-editor-421-result', 'json');
+            const btn = document.querySelector('#code-editor-815-run-button');
+            const textEditor = createEditor('code-editor-815-text', 'aql');
+            const resultEditor = createEditor('code-editor-815-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -270,6 +270,7 @@ RETURN FIRST(content)
                     headers: {
                         'Content-Type': 'application/json,encoding=utf-8'
                     },
+                    signal: AbortSignal.timeout(1000 * 60), 
                     body: JSON.stringify(body)
                 })
                     .then(r => {
@@ -314,7 +315,7 @@ RETURN FIRST(content)
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-150-text" class="code-editor-text" style="height: 120px;">
+            <div id="code-932-text" class="code-editor-text" style="height: 120px;">
                 
 LET blob = DOWNLOAD("https://raw.githubusercontent.com/MontFerret/ferret/master/assets/logo.png")
 
@@ -326,7 +327,7 @@ RETURN IO::FS::WRITE("logo.png", blob)
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-150-text');
+            const editor = ace.edit('code-932-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -348,7 +349,7 @@ RETURN IO::FS::WRITE("logo.png", blob)
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-332-text" class="code-editor-text" style="height: 380px;">
+            <div id="code-132-text" class="code-editor-text" style="height: 380px;">
                 
 package main
 
@@ -376,7 +377,7 @@ func main() {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-332-text');
+            const editor = ace.edit('code-132-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
@@ -404,7 +405,7 @@ It automatically detects the output value type and deserializes them accordingly
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-162-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-606-text" class="code-editor-text" style="height: 90px;">
                 
 RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 
@@ -414,7 +415,7 @@ RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-162-text');
+            const editor = ace.edit('code-606-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -435,7 +436,7 @@ RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-469-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-51-text" class="code-editor-text" style="height: 90px;">
                 
 RETURN XPATH(page, "count(//div)")
 
@@ -445,7 +446,7 @@ RETURN XPATH(page, "count(//div)")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-469-text');
+            const editor = ace.edit('code-51-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -473,7 +474,7 @@ RETURN XPATH(page, "count(//div)")
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-555-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-453-text" class="code-editor-text" style="height: 90px;">
                 
 LET result = "foo" =~ "^f[o].$" // returns "true"
 
@@ -483,7 +484,7 @@ LET result = "foo" =~ "^f[o].$" // returns "true"
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-555-text');
+            const editor = ace.edit('code-453-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -504,7 +505,7 @@ LET result = "foo" =~ "^f[o].$" // returns "true"
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-908-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-363-text" class="code-editor-text" style="height: 90px;">
                 
 LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 
@@ -514,7 +515,7 @@ LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-908-text');
+            const editor = ace.edit('code-363-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -537,7 +538,7 @@ LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-492-text" class="code-editor-text" style="height: 185px;">
+            <div id="code-182-text" class="code-editor-text" style="height: 185px;">
                 
 // Using document and selector
 INNER_HTML_SET(doc, "body", "<span>Hello</span>")
@@ -553,7 +554,7 @@ INNER_TEXT_SET(doc.body, "Hello")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-492-text');
+            const editor = ace.edit('code-182-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -576,7 +577,7 @@ INNER_TEXT_SET(doc.body, "Hello")
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-904-text" class="code-editor-text" style="height: 185px;">
+            <div id="code-438-text" class="code-editor-text" style="height: 185px;">
                 
 LET doc = DOCUMENT(@url, {
     driver: 'cdp',
@@ -592,7 +593,7 @@ LET doc = DOCUMENT(@url, {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-904-text');
+            const editor = ace.edit('code-438-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'aql');
             editor.setOptions({
@@ -625,7 +626,7 @@ LET doc = DOCUMENT(@url, {
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-899-text" class="code-editor-text" style="height: 440px;">
+            <div id="code-627-text" class="code-editor-text" style="height: 440px;">
                 
 type HTMLPage interface {
 	core.Value
@@ -657,7 +658,7 @@ type HTMLPage interface {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-899-text');
+            const editor = ace.edit('code-627-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
@@ -682,7 +683,7 @@ type HTMLPage interface {
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-251-text" class="code-editor-text" style="height: 150px;">
+            <div id="code-529-text" class="code-editor-text" style="height: 150px;">
                 
 type Driver interface {
 	io.Closer
@@ -696,7 +697,7 @@ type Driver interface {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-251-text');
+            const editor = ace.edit('code-529-text');
             editor.setTheme("ace/theme/tomorrow_night");
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
@@ -722,7 +723,7 @@ type Driver interface {
         <div class="column is-4 is-hidden-mobile">
             <p>
                 <a href="https://github.com/MontFerret">
-                    © 2018-2023 MontFerret Team
+                    © 2018-2025 MontFerret Team
                 </a>
             </p>
             <p>
