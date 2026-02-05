@@ -28,7 +28,12 @@ $ docker pull montferret/lab
 If you are macOS/Linux user, you can install the latest binary with the shell script:
 
 ```bash
-$ curl https://raw.githubusercontent.com/MontFerret/lab/master/install.sh | sudo sh
+$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh
+```
+
+Or, source code:
+```bash
+go install github.com/MontFerret/cli/ferret@latest
 ```
 
 In this tutorial, we are going to use a local binary.
