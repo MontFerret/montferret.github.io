@@ -162,35 +162,46 @@
 
 
 <div class="code-editor">
-    <input id="code-editor-34-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
+    <input id="code-editor-515-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
 
     
-    <button id="code-editor-34-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
+    <button id="code-editor-515-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
 
-    <button id="code-editor-34-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-515-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-34-text" class="code-editor-text" style="height: 400px;">
+            <div id="code-editor-515-text" class="code-editor-text" style="height: 400px;">
                 
+// Open the SoundCloud Top Charts page using a browser-based driver (CDP)
+// This allows Ferret to execute JavaScript and work with dynamic content
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
     driver: 'cdp'
 })
 
+// Wait until at least one chart tile is present on the page
+// This is important because SoundCloud loads content asynchronously
 WAIT_ELEMENT(doc, '.audibleTile', 5000)
 
+// Select all track tiles from the page
 LET tracks = ELEMENTS(doc, '.audibleTile')
 
+// Iterate over each track tile and extract useful data
 FOR track IN tracks
-RETURN {
-    chart: TRIM(INNER_TEXT(track, '.playableTile__descriptionContainer')),
-    link: "https://soundcloud.com" + TRIM(ELEMENT(track, '.playableTile__artworkLink')?.attributes.href)
-}
+    RETURN {
+        // Chart position / description text shown on the tile
+        chart: TRIM(INNER_TEXT(track, '.playableTile__descriptionContainer')),
+        
+        // Build an absolute URL to the track page
+        // The link on the page is relative, so we prepend the SoundCloud domain
+        link: "https://soundcloud.com" +
+                  TRIM(ELEMENT(track, '.playableTile__artworkLink')?.attributes.href)
+        }
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-34-result" class="code-editor-result" style="height: 400px;"></div>
+            <div id="code-editor-515-result" class="code-editor-result" style="height: 400px;"></div>
         </div>
     </div>
     
@@ -209,16 +220,16 @@ RETURN {
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-34-run-button');
-            const textEditor = createEditor('code-editor-34-text', 'aql');
-            const resultEditor = createEditor('code-editor-34-result', 'json');
+            const btn = document.querySelector('#code-editor-515-run-button');
+            const textEditor = createEditor('code-editor-515-text', 'aql');
+            const resultEditor = createEditor('code-editor-515-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
-                const clibboardEl = document.querySelector('#code-editor-34-share-clipboard');
-                const shareBtn = document.querySelector('#code-editor-34-share-button');
+                const clibboardEl = document.querySelector('#code-editor-515-share-clipboard');
+                const shareBtn = document.querySelector('#code-editor-515-share-button');
 
                 shareBtn.addEventListener('click', () => {
                     try {
