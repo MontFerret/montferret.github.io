@@ -764,23 +764,47 @@
         <section id="main" class="column is-8">
             <article id="content" class="has-text-justified">
     <h1 id="installation">Installation</h1>
-<h3 id="cli">CLI</h3>
-<h4 id="from-binary">From binary</h4>
-<p>You can either download latest binaries from <a href="https://github.com/MontFerret/cli/releases">here</a></p>
-<p>or use the following shell script:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | LOCATION<span style="color:#f92672">=</span>. sh
-</span></span></code></pre></div><h4 id="from-the-source">From the source</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ go get github.com/MontFerret/cli
+<p>Ferret can be used either as a <strong>command-line tool</strong> or as a <strong>Go library</strong>, depending on your use case.</p>
+<ul>
+<li>Use the <strong>CLI</strong> to run queries locally, in scripts, or in CI</li>
+<li>Use the <strong>library</strong> to embed Ferret into your Go applications</li>
+</ul>
+<hr>
+<h2 id="cli">CLI</h2>
+<h3 id="from-binary-recommended">From binary (recommended)</h3>
+<p>Download the latest prebuilt binaries from the releases page:</p>
+<p><a href="https://github.com/MontFerret/cli/releases">https://github.com/MontFerret/cli/releases</a></p>
+<p>Alternatively, you can install using the provided shell script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh
+</span></span></code></pre></div><blockquote>
+<p>This script downloads the correct binary for your platform and installs it into your PATH.</p>
+</blockquote>
+<p>If you prefer to inspect the script first:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh
+</span></span><span style="display:flex;"><span>less install.sh
+</span></span><span style="display:flex;"><span>sh install.sh
+</span></span></code></pre></div><h3 id="from-source">From source</h3>
+<p>If you have Go installed, you can build and install the CLI from source:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go install github.com/MontFerret/cli/ferret@latest
 </span></span></code></pre></div><h3 id="library">Library</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ go get github.com/MontFerret/ferret
-</span></span></code></pre></div><hr />
-<h1 id="environment">Environment</h1>
-<p>In order to use all Ferret features, you will need to have Chrome/Chromium either installed locally or running in Docker. For ease of use we recommend to run Chrome/Chromium inside a Docker container.</p>
-<p>You can use any Chromium-based headless image, but we&rsquo;ve put together an image that&rsquo;s ready to go:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ docker pull montferret/chromium
-</span></span><span style="display:flex;"><span>$ docker run -d -p 9222:9222 montferret/chromium
-</span></span></code></pre></div><p>If you&rsquo;d rather see what&rsquo;s happening during query execution, just start launch Chrome from your host with the remote debugging port set:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ chrome.exe --remote-debugging-port<span style="color:#f92672">=</span><span style="color:#ae81ff">9222</span>
+<p>To use Ferret as a Go library, add it to your project:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go get github.com/MontFerret/ferret@latest
+</span></span></code></pre></div><h1 id="runtime-requirements">Runtime requirements</h1>
+<p>Ferret can extract data from both static HTML and JavaScript-rendered pages.</p>
+<ul>
+<li>Static pages work out of the box</li>
+<li>Dynamic pages require Chrome or Chromium</li>
+</ul>
+<h2 id="using-docker-recommended">Using Docker (recommended)</h2>
+<p>For most setups, running Chrome in Docker is the easiest option.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker pull montferret/chromium
+</span></span><span style="display:flex;"><span>docker run -d -p 9222:9222 montferret/chromium
+</span></span></code></pre></div><p>This starts a headless Chromium instance with the remote debugging port enabled.</p>
+<h2 id="using-a-local-chrome-installation">Using a local Chrome installation</h2>
+<p>You can also run Chrome or Chromium directly on your machine with remote debugging enabled:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>chrome --remote-debugging-port<span style="color:#f92672">=</span><span style="color:#ae81ff">9222</span>
+</span></span></code></pre></div><p>On Windows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>chrome.exe --remote-debugging-port<span style="color:#f92672">=</span><span style="color:#ae81ff">9222</span>
 </span></span></code></pre></div>
 </article>
         </section>
