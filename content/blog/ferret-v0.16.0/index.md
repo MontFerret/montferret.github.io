@@ -207,5 +207,5 @@ Here is a list of important bug fixes:
 - HTTP driver makes multiple requests #642
 
 # Summary
-That's it, folks! Full list of changes you you can find [here](https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#0160).
+That's it, folks! Full list of changes you can find [here](https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#0160).
 Thanks everyone who contributed to the project!
