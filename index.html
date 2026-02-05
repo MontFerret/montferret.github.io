@@ -175,22 +175,39 @@
     <div class="columns">
         <div class="column">
             <h3>Declarative</h3>
-            <p>
-                ferret has a declarative query language that makes it easy to focus on a data that you need to get.
-            </p>
+            <span style="display: block;">
+                ferret uses a declarative query language
+            </span>
+            <span style="display: block;">
+                so you focus on the data you need,
+            </span>
+            <span style="display: block;">
+                not the code to get it.
+            </span>
         </div>
         <div class="column">
             <h3>Dynamic pages support</h3>
-            <p>
-                ferret has the ability to scrape JS rendered pages, handle all page events and emulate user
-                interactions.
-            </p>
+            <span style="display: block;">
+                ferret handles javascript-rendered pages,
+            </span>
+            <span style="display: block;">
+                page events, and user interactions
+            </span>
+            <span style="display: block;">
+                out of the box.
+            </span>
         </div>
         <div class="column">
             <h3>Embeddable</h3>
-            <p>
-                ferret was designed as a library from the ground up. it can be easily embedded into any Go application.
-            </p>
+            <span style="display: block;">
+                ferret is designed as a library first
+            </span>
+            <span style="display: block;">
+                and embeds cleanly into
+            </span>
+            <span style="display: block;">
+                any go application.
+            </span>
         </div>
     </div>
 </main>
@@ -199,25 +216,47 @@
     <hr />
     <div class="columns">
         <div class="column">
-            <h3>Hello, Ferret!</h3>
+            <h3>Declarative web data extraction</h3>
             <p>
-                ferret helps you to focus on the data you need using an easy to learn declarative language
+                ferret is a declarative language for extracting structured data from the web.
+            </p>
+            <p>
+                you focus on what data you want - lists, fields, transformations - while Ferret takes care of browsers, async loading, retries, and HTML quirks.
+            </p>
+            <p>
+                the result is concise, readable queries that scale from small experiments to production pipelines.
             </p>
         </div>
         <div class="column">
-            <div id="demo-1-query" data-type="query" data-lang="aql" class="code-editor-text" style="height: 265px;">
+            <div id="demo-1-query" data-type="query" data-lang="aql" class="code-editor-text" style="height:520px;">
+// Open the GitHub Topics page and load it as a document
 LET doc = DOCUMENT('https://github.com/topics')
 
+// Iterate over topic blocks on the page
+// Each ".py-4.border-bottom" element represents a single topic card
 FOR el IN ELEMENTS(doc, '.py-4.border-bottom')
+    // Limit the output to the first 10 topics
     LIMIT 10
-
+    
+    // Extract the main link element for the topic
     LET url = ELEMENT(el, 'a')
+    
+    // Extract the topic name element
     LET name = ELEMENT(el, '.f3')
+    
+    // Extract the topic description element
     LET description = ELEMENT(el, '.f5')
-
+    
+    // Build and return a structured object for each topic
     RETURN {
+        // Topic name text
         name: TRIM(name.innerText),
+        
+        // Short topic description
         description: TRIM(description.innerText),
+        
+        // Absolute URL to the topic page
+        // The link on the page is relative, so we prepend the GitHub domain
         url: 'https://github.com' + url.attributes.href
     }
             </div>
@@ -227,26 +266,39 @@ FOR el IN ELEMENTS(doc, '.py-4.border-bottom')
     <hr />
     <div class="columns">
         <div class="column">
-            <div id="demo-2-query" data-type="query" data-lang="aql" class="code-editor-text" style="height: 250px;">
+            <div id="demo-2-query" data-type="query" data-lang="aql" class="code-editor-text" style="height: 400px;">
+// Open the SoundCloud Top Charts page using a browser-based driver (CDP)
+// This allows Ferret to execute JavaScript and work with dynamic content
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
     driver: 'cdp'
 })
 
-WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
+// Wait until at least one chart tile is present on the page
+// This is important because SoundCloud loads content asynchronously
+WAIT_ELEMENT(doc, '.audibleTile', 5000)
 
-LET tracks = ELEMENTS(doc, '.chartTrack__details')
+// Select all track tiles from the page
+LET tracks = ELEMENTS(doc, '.audibleTile')
 
+// Iterate over each track tile and extract useful data
 FOR track IN tracks
     RETURN {
-        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
-        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
+        // Chart position / description text shown on the tile
+        chart: TRIM(INNER_TEXT(track, '.playableTile__descriptionContainer')),
+    
+        // Build an absolute URL to the track page
+        // The link on the page is relative, so we prepend the SoundCloud domain
+        link: "https://soundcloud.com" + TRIM(ELEMENT(track, '.playableTile__artworkLink')?.attributes.href)
     }
             </div>
         </div>
         <div class="column">
-            <h3>Dynamic pages handled easily</h3>
+            <h3>Dynamic pages, no extra work</h3>
             <p>
-                ferret uses Chrome/Chromium via Chrome Devtools Protocol to handle dynamically rendered web pages
+                modern websites rely heavily on JavaScript. Ferret handles that for you.
+            </p>
+            <p>
+                by running pages in a real browser via Chrome DevTools Protocol, Ferret lets you extract data from dynamic sites without custom scripts or brittle workarounds.
             </p>
         </div>
     </div>
@@ -254,28 +306,40 @@ FOR track IN tracks
     <hr />
     <div class="columns">
         <div class="column">
-            <h3>Simple extensibility</h3>
-            <p>ferret is extremely extensible - creating custom functions and types is super easy</p>
+            <h3>No plugins. No macros. Just Go.</h3>
+            <p>ferret exposes a minimal, explicit extension API that lets you bind Go functions and types into the query runtime.</p>
+            <p>this makes it easy to keep domain-specific logic in Go while using Ferret for data selection and transformation.</p>
         </div>
         <div class="column">
-            <div id="demo-3-query" data-type="query" data-lang="golang" class="code-editor-text" style="height: 330px;">
+            <div id="demo-3-query" data-type="query" data-lang="golang" class="code-editor-text" style="height: 500px;">
+// Define a Go function that can be called from a Ferret query
+// The function receives a context and a variadic list of Ferret values
 transform := func(ctx context.Context, args ...core.Value) (core.Value, error) {
+    // Extract the first argument and assert it to a string value
     str := args[0].(values.String)
-
+    
+    // Convert the string to upper case, append a suffix,
+    // and return it as a new Ferret string value
     return values.NewString(strings.ToUpper(str.String() + "_ferret")), nil
 }
 
+// A simple Ferret query that applies the custom TRANSFORM function
+// to each element in a list
 query := `
-    FOR el IN ["foo", "bar", "qaz"]
-        RETURN TRANSFORM(el)
+FOR el IN ["foo", "bar", "qaz"]
+    RETURN TRANSFORM(el)
 `
 
+// Create a new Ferret compiler instance
 comp := compiler.New()
 
+// Register the Go function so it becomes available inside queries
+// It will be exposed as TRANSFORM(...)
 if err := comp.RegisterFunction("transform", transform); err != nil {
     return nil, err
 }
 
+// Compile the query into an executable program
 program, err := comp.Compile(query)
             </div>
         </div>
