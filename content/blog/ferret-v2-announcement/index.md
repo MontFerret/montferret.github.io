@@ -32,7 +32,7 @@ And then they ask for features you never thought of.
 They report bugs you never imagined.
 They give you feedback that challenges your assumptions.
 
-## The slow realization
+## The Slow Realization
 
 After a while, I started noticing a pattern: people kept asking for things that made perfect sense, but adding them properly was more painful than it had any right to be. Not because the features were that hard, but because Ferret v1 was not built to grow in those directions.
 
