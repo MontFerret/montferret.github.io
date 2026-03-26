@@ -58,7 +58,7 @@ In Ferret v1, too many of those edges were structural:
 
 At some point, patching stops being enough. You have to step back and rethink the foundation.
 
-## Why a rewrite
+## Why a Rewrite
 
 Rewrites have a bad reputation, and not without reason. It is easy to spend a long time rebuilding something, only to end up with a cleaner system that is somehow missing the small practical details that made the old one useful.
 
