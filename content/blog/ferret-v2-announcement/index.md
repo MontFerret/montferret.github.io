@@ -11,7 +11,7 @@ Hello friends!
 
 Long time no see! I hope you all have been doing well, it's been a while since my last post. 
 
-Given the fact of Ferret v2 Alpha release, I thought it's a good time to share some thoughts about the journey that led us here, the design choices we made, and what you can expect from this new version.
+Given the Ferret v2 alpha release, I thought it was a good time to share some thoughts about the journey that led us here, the design choices we made, and what you can expect from this new version.
 
 ## How We Got Here
 
