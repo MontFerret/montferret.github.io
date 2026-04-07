@@ -11,21 +11,21 @@ Hello friends!
 
 The [previous post](/blog/ferret-v2-announcement/) covered why Ferret v2 exists - why a rewrite made sense, what changed philosophically, and why I decided it was time to move the project into a new chapter.
 
-This time I want to talk about something more concrete: execution. 
+This time I want to talk about something more concrete: execution.
 
 The new runtime isn't just a faster version of the old one. It's built on a different execution model entirely, and that change touches almost everything: performance, embeddability, tooling, future language features, and the kinds of optimizations Ferret can support.
 
 ## The wall
 
-As I explained it in the previous post, I wasn't trying to build some grand system. I needed something practical that worked, and I needed it soon, so I built it that way, and that was the right call. Ferret probably wouldn't exist otherwise.
+As I explained in the previous post, I wasn't trying to build some grand system. I needed something practical that worked, and I needed it quickly, so I built it that way, and that was the right call. Ferret probably wouldn't exist otherwise.
 
-Over time though, as the project grew, I started feeling the limits of those early decisions. New features were still possible, but they often felt harder to implement than they should have been. Performance work was possible too, but it felt too dependent on working around the existing shape of the runtime instead of improving it directly.
+But over time, as the project grew, I started to feel the limits of those early decisions. New features were still possible, but they often felt harder to implement than they should have been. Performance work was possible too, but too much of it depended on working around the existing shape of the runtime instead of improving it directly.
 
-I could have kept patching it, refactoring around the edges, and squeezing out incremental gains. But at some point it became clear that the real issue wasn't one bad subsystem or one annoying abstraction - it was the execution model itself. 
+I could have kept patching it, refactoring around the edges, and squeezing out incremental gains. But at some point it became clear that the real issue wasn't one bad subsystem or one annoying abstraction - it was the execution model itself.
 
 ## The conceptual shift
 
-Ferret v2 introduces a compiled execution pipeline built around bytecode and a register-based virtual machine. 
+Ferret v2 introduces a compiled execution pipeline built around bytecode and a register-based virtual machine.
 
 At a high level, the flow now looks like this:
 
@@ -35,9 +35,10 @@ source -> parser -> compiler -> bytecode program -> VM execution
 
 That may sound like an implementation detail, but it defines how the entire system works.
 
-In v1, execution and language behavior were tightly coupled - the system interpreted and processed queries in one tangled pass. 
-v2 draws a clear boundary between understanding the source code, compiling it into an executable form, and running that form efficiently. 
-The compiler can spend time shaping the program once, the VM can focus on running it well, and tooling can inspect the result in ways that were hard to pull off before.
+In v1, execution and language behavior were tightly coupled - the system interpreted and processed queries in one tangled pass.
+v2 draws a clear boundary between understanding the source code, compiling it into an executable form, and running that form efficiently.
+
+The compiler can spend time shaping the program once. The VM can focus on running it well. And tooling can inspect the result in ways that were much harder to support before.
 
 ## Register-based VM
 
@@ -62,15 +63,18 @@ r4 = c
 r5 = mul r3, r4
 ```
 
-The difference matters in a few ways. Data flow becomes explicit - you can see where values come from, where they go, and when they can be reused. It's simply easier to reason about.
-A stack machine spends a lot of effort shuffling values around indirectly, while a register machine can express the same work with fewer intermediate steps.
+The difference matters in a few ways.
+Data flow becomes explicit - you can see where values come from, where they go, and when they can be reused. That makes the system easier to reason about.
 
-But the biggest reason I went this direction is optimization. Once values live in named registers, the compiler can track temporaries, reuse slots, avoid unnecessary moves, and simplify expressions earlier. 
-It doesn't magically solve every performance problem, but it gives the runtime a shape that's far friendlier to optimization work down the road.
+A stack machine spends a lot of effort shuffling values around indirectly. A register machine can express the same work with fewer intermediate steps.
+
+But the biggest reason I went in this direction is optimization. Once values live in named registers, the compiler can track temporaries, reuse slots, avoid unnecessary moves, and simplify expressions earlier.
+
+It doesn't magically solve every performance problem, but it gives the runtime a shape that is far friendlier to optimization work down the road.
 
 ## The compilation pipeline
 
-One of the most important changes in v2 is that the compiler is no longer a thin step on the way to execution - it's a real part of the architecture now.
+One of the most important changes in v2 is that the compiler is no longer a thin step on the way to execution - it's now a real part of the architecture.
 
 The pipeline works roughly like this:
 
@@ -125,7 +129,7 @@ Next up: the language side of v2 - syntax changes, the overall direction, and ho
 Thanks for reading.
 
 ### Useful links
-- [The design of the Inferno virtual machine](https://inferno-os.org/inferno/papers/hotchips.pdf) - a short paper on register-based VM design that helped shape Ferret’s move to a register-based architecture.
+- [The design of the Inferno virtual machine](https://inferno-os.org/inferno/papers/hotchips.pdf) - a short paper on register-based VM design that helped shape Ferret's move to a register-based architecture.
 - [The Implementation of Lua 5.0](https://www.lua.org/doc/jucs05.pdf) -  a great paper on the design of the Lua 5 virtual machine and a very helpful resource for understanding how register-based VMs work.
 - [Virtual Machine Showdown: Stack Versus Registers](https://www.usenix.org/legacy/events/vee05/full_papers/p153-yunhe.pdf) - a great paper on the tradeoffs between stack-based and register-based VMs.
 - [Crafting interpreters](https://craftinginterpreters.com/) - a great book on building interpreters and virtual machines, and a valuable resource for anyone interested in compilers and language implementation.
