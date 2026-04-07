@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Ferret</title>
+
+    <meta name="generator" content="Hugo 0.159.1">
+
+    <link
+        href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.17ed29bf1daeec53da854869c780218bf0eb5b49eeffcf3d0a114e9fac4a35df.css" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png" />
+    <link
+        rel="apple-touch-icon"
+        sizes="114x114"
+        href="/favicon/apple-icon-114x114.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="120x120"
+        href="/favicon/apple-icon-120x120.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="144x144"
+        href="/favicon/apple-icon-144x144.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="152x152"
+        href="/favicon/apple-icon-152x152.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/favicon/apple-icon-180x180.png"
+    />
+    <link
+        rel="icon"
+        type="image/png"
+        sizes="192x192"
+        href="/favicon/android-icon-192x192.png"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/manifest.json" />
+    
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-135792752-1');
+    </script>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/img/logo.png" width="30" height="30" /> <small class="logo">ferret</small>
+            </a>
+
+            <a
+                id="navbar-burger"
+                role="button"
+                class="navbar-burger burger"
+                aria-label="menu"
+                aria-expanded="false"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        
+        <div id="primary-nav" class="navbar-menu">
+            <div class="navbar-start">
+                
+                
+                
+                        
+                        <a href="/try/" class="navbar-item "
+                        title=Try&#32;it id=repl>
+                            Try it
+                        </a>
+                
+                        
+                        <a href="/docs/introduction" class="navbar-item "
+                        title=Project&#32;documentation id=docs>
+                            Docs
+                        </a>
+                
+                        
+                        <a href="/blog/" class="navbar-item  active"
+                        title=Blog id=blog>
+                            Blog
+                        </a>
+                
+                        
+                        <a href="/cookbook/google-search" class="navbar-item "
+                        title=Cookbook id=cookbook>
+                            Cookbook
+                        </a>
+                
+            </div>
+
+            <div class="navbar-end">
+                
+                
+                        <a href="https://opencollective.com/ferret" class="navbar-item "
+                        title=Open&#32;collective id=donate>
+                            Donate
+                        </a>
+                
+                        <a href="https://github.com/MontFerret/ferret" class="navbar-item "
+                        title=GitHub&#32;repository id=github>
+                            GitHub
+                        </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    
+    
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+
+            el.classList.toggle("is-active");
+        })
+    })();
+</script><div id="content">
+    <div class="content section blog blog-post">
+        <div class="columns is-centered blog-post-header has-text-centered">
+            <div class="column is-10">
+                <p class="title is-2">
+                    Inside Ferret v2: The New Execution Model
+                </p>
+                <p class="subtitle is-4">
+                        A New Foundation
+                    </p>
+                <p class="subtitle is-6 has-text-grey">
+                    <span>April 7, 2026</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
+                </p>
+                <hr class="is-block-centered" />
+            </div>
+        </div>
+        <div class="columns is-centered blog-post-content has-text-justified">
+            <div class="column is-8">
+                <p>Hello friends!</p>
+<p>The <a href="/blog/ferret-v2-announcement/">previous post</a> covered why Ferret v2 exists - why a rewrite made sense, what changed philosophically, and why I decided it was time to move the project into a new chapter.</p>
+<p>This time I want to talk about something more concrete: execution.</p>
+<p>The new runtime isn&rsquo;t just a faster version of the old one. It&rsquo;s built on a different execution model entirely, and that change touches almost everything: performance, embeddability, tooling, future language features, and the kinds of optimizations Ferret can support.</p>
+<h2 id="the-wall">The wall</h2>
+<p>As I explained in the previous post, I wasn&rsquo;t trying to build some grand system. I needed something practical that worked, and I needed it quickly, so I built it that way, and that was the right call. Ferret probably wouldn&rsquo;t exist otherwise.</p>
+<p>But over time, as the project grew, I started to feel the limits of those early decisions. New features were still possible, but they often felt harder to implement than they should have been. Performance work was possible too, but too much of it depended on working around the existing shape of the runtime instead of improving it directly.</p>
+<p>I could have kept patching it, refactoring around the edges, and squeezing out incremental gains. But at some point it became clear that the real issue wasn&rsquo;t one bad subsystem or one annoying abstraction - it was the execution model itself.</p>
+<h2 id="the-conceptual-shift">The conceptual shift</h2>
+<p>Ferret v2 introduces a compiled execution pipeline built around bytecode and a register-based virtual machine.</p>
+<p>At a high level, the flow now looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>source -&gt; parser -&gt; compiler -&gt; bytecode program -&gt; VM execution
+</span></span></code></pre></div><p>That may sound like an implementation detail, but it defines how the entire system works.</p>
+<p>In v1, execution and language behavior were tightly coupled - the system interpreted and processed queries in one tangled pass.
+v2 draws a clear boundary between understanding the source code, compiling it into an executable form, and running that form efficiently.</p>
+<p>The compiler can spend time shaping the program once. The VM can focus on running it well. And tooling can inspect the result in ways that were much harder to support before.</p>
+<h2 id="register-based-vm">Register-based VM</h2>
+<p>There are different ways to design a virtual machine. Two common approaches are stack-based and register-based execution.
+Ferret v2 uses registers - instructions work with explicit slots instead of pushing and popping values from a stack.</p>
+<p>Conceptually, instead of this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>PUSH a
+</span></span><span style="display:flex;"><span>PUSH b
+</span></span><span style="display:flex;"><span>ADD
+</span></span><span style="display:flex;"><span>PUSH c
+</span></span><span style="display:flex;"><span>MUL
+</span></span></code></pre></div><p>you get something closer to this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>r1 = a
+</span></span><span style="display:flex;"><span>r2 = b
+</span></span><span style="display:flex;"><span>r3 = add r1, r2
+</span></span><span style="display:flex;"><span>r4 = c
+</span></span><span style="display:flex;"><span>r5 = mul r3, r4
+</span></span></code></pre></div><p>The difference matters in a few ways.
+Data flow becomes explicit - you can see where values come from, where they go, and when they can be reused. That makes the system easier to reason about.</p>
+<p>A stack machine spends a lot of effort shuffling values around indirectly. A register machine can express the same work with fewer intermediate steps.</p>
+<p>But the biggest reason I went in this direction is optimization. Once values live in named registers, the compiler can track temporaries, reuse slots, avoid unnecessary moves, and simplify expressions earlier.</p>
+<p>It doesn&rsquo;t magically solve every performance problem, but it gives the runtime a shape that is far friendlier to optimization work down the road.</p>
+<h2 id="the-compilation-pipeline">The compilation pipeline</h2>
+<p>One of the most important changes in v2 is that the compiler is no longer a thin step on the way to execution - it&rsquo;s now a real part of the architecture.</p>
+<p>The pipeline works roughly like this:</p>
+<ol>
+<li>
+<p><strong>Parse the query.</strong> The parser turns FQL source into a structured representation of the program. This is the stage that understands syntax.</p>
+</li>
+<li>
+<p><strong>Lower it into executable operations.</strong> The compiler takes that structure and translates it into bytecode instructions for the VM. Higher-level language constructs become a lower-level execution plan.</p>
+</li>
+<li>
+<p><strong>Apply optimizations.</strong> Once the program exists in explicit form, the compiler can optimize it before it ever reaches the VM - one of the biggest practical benefits of the new design.</p>
+</li>
+<li>
+<p><strong>Execute the bytecode.</strong> The VM runs the compiled program using a register file and explicit execution state: call frames, scratch memory, exception handling, and other runtime machinery that&rsquo;s now straightforward to reason about.</p>
+</li>
+</ol>
+<h2 id="optimization">Optimization</h2>
+<p>This is where the redesign starts to pay off.</p>
+<p>Because the program compiles down to bytecode with explicit registers, v2 can support optimizations that were previously hard, brittle, or simply not worth attempting.</p>
+<p>Temporary values don&rsquo;t have to live forever - once the compiler knows a register is no longer needed, that slot gets recycled.
+Expressions that can be partially or fully resolved at compile time get folded before execution begins.
+Small instruction sequences get simplified into better equivalents through peephole optimization, which sounds minor on its own but adds up across a whole program.
+Jumps, branches, calls, and catch regions are all represented explicitly, so the runtime can reason about control flow cleanly.</p>
+<p>And as Ferret grows more expressive, function calls need to be cheap and predictable - a register-based VM gives me a far better starting point for that than the old model ever could.</p>
+<h2 id="future-optimization-headroom">Future optimization headroom</h2>
+<p>Some of these optimizations are already in place, others are still experimental or partial. But the important thing is that v2 has an architecture where they actually make sense to pursue.</p>
+<p>Faster function dispatch, smarter register allocation, more precomputation during warmup - these are all natural next steps now.</p>
+<p>In v1, most of them were either awkward to implement or too fragile to force into the existing design.
+v2 isn&rsquo;t just something I can optimize today; it&rsquo;s something I can keep optimizing without fighting the runtime every step of the way.</p>
+<h2 id="beyond-speed">Beyond speed</h2>
+<p>v2 is faster in many cases, but speed isn&rsquo;t really the point. The point is that the runtime now has a shape you can actually build on.</p>
+<p>The internal architecture is clearer - the compiler compiles, the VM executes, and the boundaries between them are clean, which makes the whole project easier to work on and reason about.</p>
+<p>Ferret isn&rsquo;t just a CLI tool; it&rsquo;s also a library that other systems embed, and a compiled program backed by a dedicated VM gives that embedding story a proper foundation.
+Disassembly, debugging, inspection, serialization, caching, analysis - all of these become natural once execution is backed by a real program representation instead of a loose runtime path.
+When execution is explicit, behavior is easier to trace, which helps with debugging, performance work, and confidence when adding new features.</p>
+<p>And maybe most importantly: a weak execution model limits the language above it. A strong one lets the language expand without every new feature turning into a special case.</p>
+<h2 id="whats-next">What&rsquo;s next</h2>
+<p>The move to a compiled pipeline and a register-based VM is one of the biggest technical changes in the project. It improves performance, but more importantly, it gives Ferret a real foundation to build on.</p>
+<p>Next up: the language side of v2 - syntax changes, the overall direction, and how Ferret is becoming more expressive without losing what made it Ferret in the first place.</p>
+<p>Thanks for reading.</p>
+<h3 id="useful-links">Useful links</h3>
+<ul>
+<li><a href="https://inferno-os.org/inferno/papers/hotchips.pdf">The design of the Inferno virtual machine</a> - a short paper on register-based VM design that helped shape Ferret&rsquo;s move to a register-based architecture.</li>
+<li><a href="https://www.lua.org/doc/jucs05.pdf">The Implementation of Lua 5.0</a> -  a great paper on the design of the Lua 5 virtual machine and a very helpful resource for understanding how register-based VMs work.</li>
+<li><a href="https://www.usenix.org/legacy/events/vee05/full_papers/p153-yunhe.pdf">Virtual Machine Showdown: Stack Versus Registers</a> - a great paper on the tradeoffs between stack-based and register-based VMs.</li>
+<li><a href="https://craftinginterpreters.com/">Crafting interpreters</a> - a great book on building interpreters and virtual machines, and a valuable resource for anyone interested in compilers and language implementation.</li>
+<li><a href="https://github.com/expr-lang/expr">The Expr expression language</a> - a very nice expression language for Go with a stack-based VM. I used it as a reference in the early stages of the project.</li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+
+        </div><footer class="footer">
+    <div class="columns">
+        <div class="column is-4 is-hidden-mobile">
+            <p>
+                <a href="https://github.com/MontFerret">
+                    © 2018-2026 MontFerret Team
+                </a>
+            </p>
+            <p>
+                <a href="https://www.montferret.dev/blog/index.xml">RSS</a>
+            </p>
+        </div>
+        <div class="column is-4 has-text-centered">
+            <img src="/img/logo.png" width="30" height="30" />
+        </div>
+        <div class="column is-4 has-text-right is-hidden-mobile">
+            <a href="#">BACK TO TOP Δ</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
+        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+</footer></body>
+</html>
