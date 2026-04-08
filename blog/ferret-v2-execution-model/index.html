@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.160.0">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -159,7 +159,7 @@
                         A New Foundation
                     </p>
                 <p class="subtitle is-6 has-text-grey">
-                    <span>April 7, 2026</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
+                    <span>April 8, 2026</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
                 </p>
                 <hr class="is-block-centered" />
             </div>
@@ -171,20 +171,22 @@
 <p>This time I want to talk about something more concrete: execution.</p>
 <p>The new runtime isn&rsquo;t just a faster version of the old one. It&rsquo;s built on a different execution model entirely, and that change touches almost everything: performance, embeddability, tooling, future language features, and the kinds of optimizations Ferret can support.</p>
 <h2 id="the-wall">The wall</h2>
-<p>As I explained in the previous post, I wasn&rsquo;t trying to build some grand system. I needed something practical that worked, and I needed it quickly, so I built it that way, and that was the right call. Ferret probably wouldn&rsquo;t exist otherwise.</p>
+<p>As I explained in the previous post, I wasn&rsquo;t trying to build some grand system. I needed something practical that worked, and I needed it quickly, so I built it that way. That was the right call. Ferret probably wouldn&rsquo;t exist otherwise.</p>
 <p>But over time, as the project grew, I started to feel the limits of those early decisions. New features were still possible, but they often felt harder to implement than they should have been. Performance work was possible too, but too much of it depended on working around the existing shape of the runtime instead of improving it directly.</p>
 <p>I could have kept patching it, refactoring around the edges, and squeezing out incremental gains. But at some point it became clear that the real issue wasn&rsquo;t one bad subsystem or one annoying abstraction - it was the execution model itself.</p>
+<p>In v1, higher-level language behavior and runtime execution were too tightly intertwined. Evaluating a construct often meant mixing syntax-level intent, runtime control flow, temporary value management, and host integration in the same path. That made the system harder to reason about, harder to inspect, and much harder to optimize in a principled way.</p>
+<p>What v2 changes is not just the implementation. It changes the shape of the system.</p>
 <h2 id="the-conceptual-shift">The conceptual shift</h2>
 <p>Ferret v2 introduces a compiled execution pipeline built around bytecode and a register-based virtual machine.</p>
 <p>At a high level, the flow now looks like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>source -&gt; parser -&gt; compiler -&gt; bytecode program -&gt; VM execution
 </span></span></code></pre></div><p>That may sound like an implementation detail, but it defines how the entire system works.</p>
-<p>In v1, execution and language behavior were tightly coupled - the system interpreted and processed queries in one tangled pass.
+<p>In v1, execution and language behavior were tightly coupled - the system interpreted and processed queries in one tangled pass.<br>
 v2 draws a clear boundary between understanding the source code, compiling it into an executable form, and running that form efficiently.</p>
 <p>The compiler can spend time shaping the program once. The VM can focus on running it well. And tooling can inspect the result in ways that were much harder to support before.</p>
+<p>That separation matters more than it may seem at first. Once a query becomes an explicit program, it stops being just &ldquo;something the runtime is currently doing&rdquo; and becomes a real artifact with structure: instructions, constants, source locations, control flow, and exception regions. That gives Ferret something stable to execute, inspect, serialize, cache, and optimize.</p>
 <h2 id="register-based-vm">Register-based VM</h2>
-<p>There are different ways to design a virtual machine. Two common approaches are stack-based and register-based execution.
-Ferret v2 uses registers - instructions work with explicit slots instead of pushing and popping values from a stack.</p>
+<p>There are different ways to design a virtual machine. Two common approaches are stack-based and register-based execution. Ferret v2 uses registers - instructions work with explicit slots instead of pushing and popping values from a stack.</p>
 <p>Conceptually, instead of this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>PUSH a
 </span></span><span style="display:flex;"><span>PUSH b
@@ -197,11 +199,38 @@ Ferret v2 uses registers - instructions work with explicit slots instead of push
 </span></span><span style="display:flex;"><span>r3 = add r1, r2
 </span></span><span style="display:flex;"><span>r4 = c
 </span></span><span style="display:flex;"><span>r5 = mul r3, r4
-</span></span></code></pre></div><p>The difference matters in a few ways.
-Data flow becomes explicit - you can see where values come from, where they go, and when they can be reused. That makes the system easier to reason about.</p>
+</span></span></code></pre></div><p>The difference matters in a few ways.</p>
+<p>Data flow becomes explicit - you can see where values come from, where they go, and when they can be reused. That makes the system easier to reason about.</p>
 <p>A stack machine spends a lot of effort shuffling values around indirectly. A register machine can express the same work with fewer intermediate steps.</p>
 <p>But the biggest reason I went in this direction is optimization. Once values live in named registers, the compiler can track temporaries, reuse slots, avoid unnecessary moves, and simplify expressions earlier.</p>
 <p>It doesn&rsquo;t magically solve every performance problem, but it gives the runtime a shape that is far friendlier to optimization work down the road.</p>
+<p>In Ferret&rsquo;s case, instructions operate on explicit operands, usually a destination plus one or two source operands. That makes the bytecode easy to analyze and relatively easy to transform. It also means the VM does not have to infer intent from stack position or reconstruct temporary state on the fly. The compiler makes those decisions up front, and the VM executes the result.</p>
+<h2 id="a-tiny-example">A tiny example</h2>
+<p>A small example makes the shift clearer.</p>
+<p>Take a trivial query like this:</p>
+<pre tabindex="0"><code class="language-fql" data-lang="fql">LET x = 1 + 2
+RETURN x * 3
+</code></pre><p>At the source level, this is simple enough that you barely think about it. But internally, v2 can treat it as a proper compilation problem:</p>
+<ol>
+<li>Parse the source into a structured representation.</li>
+<li>Lower the expressions into explicit operations.</li>
+<li>Assign registers to intermediate values.</li>
+<li>Fold constant work where possible.</li>
+<li>Emit a compact bytecode program for the VM.</li>
+</ol>
+<p>Conceptually, an early lowered form might look something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>r1 = const 1
+</span></span><span style="display:flex;"><span>r2 = const 2
+</span></span><span style="display:flex;"><span>r3 = add r1, r2
+</span></span><span style="display:flex;"><span>r4 = const 3
+</span></span><span style="display:flex;"><span>r5 = mul r3, r4
+</span></span><span style="display:flex;"><span>return r5
+</span></span></code></pre></div><p>And after simple optimization, it may become closer to this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>r1 = const 3
+</span></span><span style="display:flex;"><span>r2 = const 9
+</span></span><span style="display:flex;"><span>return r2
+</span></span></code></pre></div><p>That is intentionally simplified, but it shows the important part: the compiler can see the work explicitly. Once the query becomes a real program, constant folding, register reuse, and instruction cleanup become straightforward compiler passes instead of runtime guesswork.</p>
+<p>Even when the query is far more dynamic than this, the same principle holds. The compiler turns higher-level language constructs into explicit operations, and the VM runs those operations against a well-defined execution state.</p>
 <h2 id="the-compilation-pipeline">The compilation pipeline</h2>
 <p>One of the most important changes in v2 is that the compiler is no longer a thin step on the way to execution - it&rsquo;s now a real part of the architecture.</p>
 <p>The pipeline works roughly like this:</p>
@@ -213,42 +242,59 @@ Data flow becomes explicit - you can see where values come from, where they go, 
 <p><strong>Lower it into executable operations.</strong> The compiler takes that structure and translates it into bytecode instructions for the VM. Higher-level language constructs become a lower-level execution plan.</p>
 </li>
 <li>
-<p><strong>Apply optimizations.</strong> Once the program exists in explicit form, the compiler can optimize it before it ever reaches the VM - one of the biggest practical benefits of the new design.</p>
+<p><strong>Apply optimizations.</strong> Once the program exists in explicit form, the compiler can optimize it before it ever reaches the VM. This is one of the biggest practical benefits of the new design.</p>
 </li>
 <li>
-<p><strong>Execute the bytecode.</strong> The VM runs the compiled program using a register file and explicit execution state: call frames, scratch memory, exception handling, and other runtime machinery that&rsquo;s now straightforward to reason about.</p>
+<p><strong>Execute the bytecode.</strong> The VM runs the compiled program using a register file and explicit execution state: call frames, scratch memory, exception handling, and other runtime machinery that is now much easier to reason about.</p>
 </li>
 </ol>
+<p>This is also where Ferret starts to benefit from having a real program representation instead of a loosely structured runtime path. Calls are explicit. Jumps are explicit. Catch regions are explicit. Source locations can be preserved. The compiler can emit something the VM can execute directly, and tooling can inspect that same representation without needing to reverse-engineer runtime behavior after the fact.</p>
+<h2 id="what-the-vm-actually-owns">What the VM actually owns</h2>
+<p>At runtime, the VM is no longer trying to &ldquo;figure out&rdquo; the query as it goes. Its job is narrower and cleaner.</p>
+<p>It receives a compiled program and executes it against explicit state:</p>
+<ul>
+<li>a register file for values</li>
+<li>parameter and constant access</li>
+<li>call frames for function execution</li>
+<li>scratch state for intermediate runtime needs</li>
+<li>structured exception and catch handling</li>
+<li>source mapping data for diagnostics and tooling</li>
+</ul>
+<p>That sounds like an internal detail, but it changes the feel of the entire system. The VM is no longer a place where language semantics, temporary bookkeeping, and host behavior blur together. It becomes an execution engine with a defined contract.</p>
+<p>That makes behavior easier to trace, easier to test, and easier to evolve.</p>
 <h2 id="optimization">Optimization</h2>
-<p>This is where the redesign starts to pay off.</p>
+<p>This is where the redesign starts to justify itself.</p>
 <p>Because the program compiles down to bytecode with explicit registers, v2 can support optimizations that were previously hard, brittle, or simply not worth attempting.</p>
-<p>Temporary values don&rsquo;t have to live forever - once the compiler knows a register is no longer needed, that slot gets recycled.
-Expressions that can be partially or fully resolved at compile time get folded before execution begins.
-Small instruction sequences get simplified into better equivalents through peephole optimization, which sounds minor on its own but adds up across a whole program.
-Jumps, branches, calls, and catch regions are all represented explicitly, so the runtime can reason about control flow cleanly.</p>
-<p>And as Ferret grows more expressive, function calls need to be cheap and predictable - a register-based VM gives me a far better starting point for that than the old model ever could.</p>
+<p>Temporary values don&rsquo;t have to live forever - once the compiler knows a register is no longer needed, that slot gets recycled.</p>
+<p>Expressions that can be partially or fully resolved at compile time get folded before execution begins.</p>
+<p>Small instruction sequences get simplified into better equivalents through peephole optimization. That sounds minor on its own, but it adds up across a whole program.</p>
+<p>Jumps, branches, calls, and catch regions are all represented explicitly, so the runtime can reason about control flow cleanly instead of treating it as an accidental byproduct of evaluation.</p>
+<p>And as Ferret grows more expressive, function calls need to be cheap and predictable. A register-based VM gives me a much better starting point for that than the old model ever could.</p>
+<p>The important part here is not just that optimizations are possible. It&rsquo;s that they now have a proper place to live. They can happen on a stable intermediate form before execution starts, rather than being forced into ad hoc runtime shortcuts.</p>
 <h2 id="future-optimization-headroom">Future optimization headroom</h2>
-<p>Some of these optimizations are already in place, others are still experimental or partial. But the important thing is that v2 has an architecture where they actually make sense to pursue.</p>
-<p>Faster function dispatch, smarter register allocation, more precomputation during warmup - these are all natural next steps now.</p>
-<p>In v1, most of them were either awkward to implement or too fragile to force into the existing design.
+<p>Some of these optimizations are already in place. Others are still experimental or partial. But the important thing is that v2 has an architecture where they actually make sense to pursue.</p>
+<p>Faster function dispatch, smarter register allocation, more precomputation during warmup, better call fast paths, and broader instruction-level simplification - these are all natural next steps now.</p>
+<p>In v1, most of them were either awkward to implement or too fragile to force into the existing design.<br>
 v2 isn&rsquo;t just something I can optimize today; it&rsquo;s something I can keep optimizing without fighting the runtime every step of the way.</p>
+<p>That matters to me more than any single benchmark result. A runtime that improves once is nice. A runtime that can keep improving is much more valuable.</p>
 <h2 id="beyond-speed">Beyond speed</h2>
 <p>v2 is faster in many cases, but speed isn&rsquo;t really the point. The point is that the runtime now has a shape you can actually build on.</p>
-<p>The internal architecture is clearer - the compiler compiles, the VM executes, and the boundaries between them are clean, which makes the whole project easier to work on and reason about.</p>
-<p>Ferret isn&rsquo;t just a CLI tool; it&rsquo;s also a library that other systems embed, and a compiled program backed by a dedicated VM gives that embedding story a proper foundation.
-Disassembly, debugging, inspection, serialization, caching, analysis - all of these become natural once execution is backed by a real program representation instead of a loose runtime path.
-When execution is explicit, behavior is easier to trace, which helps with debugging, performance work, and confidence when adding new features.</p>
-<p>And maybe most importantly: a weak execution model limits the language above it. A strong one lets the language expand without every new feature turning into a special case.</p>
+<p>The internal architecture is clearer - the compiler compiles, the VM executes, and the boundary between them is clean. That makes the whole project easier to work on and easier to reason about.</p>
+<p>Ferret isn&rsquo;t just a CLI tool. It&rsquo;s also a library that other systems embed, and a compiled program backed by a dedicated VM gives that embedding story a proper foundation.</p>
+<p>Disassembly, debugging, inspection, serialization, caching, analysis - all of these become natural once execution is backed by a real program representation instead of a loose runtime path.</p>
+<p>When execution is explicit, behavior is easier to trace, which helps with debugging, performance work, and confidence when adding new features.</p>
+<p>And maybe most importantly, a weak execution model limits the language above it. A strong one lets the language expand without every new feature turning into a special case.</p>
+<p>That is the real value of the rewrite. Not just that v2 can run queries better, but that it gives Ferret a foundation solid enough to support the language I want it to grow into.</p>
 <h2 id="whats-next">What&rsquo;s next</h2>
 <p>The move to a compiled pipeline and a register-based VM is one of the biggest technical changes in the project. It improves performance, but more importantly, it gives Ferret a real foundation to build on.</p>
 <p>Next up: the language side of v2 - syntax changes, the overall direction, and how Ferret is becoming more expressive without losing what made it Ferret in the first place.</p>
 <p>Thanks for reading.</p>
 <h3 id="useful-links">Useful links</h3>
 <ul>
-<li><a href="https://inferno-os.org/inferno/papers/hotchips.pdf">The design of the Inferno virtual machine</a> - a short paper on register-based VM design that helped shape Ferret&rsquo;s move to a register-based architecture.</li>
-<li><a href="https://www.lua.org/doc/jucs05.pdf">The Implementation of Lua 5.0</a> -  a great paper on the design of the Lua 5 virtual machine and a very helpful resource for understanding how register-based VMs work.</li>
+<li><a href="https://inferno-os.org/inferno/papers/hotchips.pdf">The design of the Inferno virtual machine</a> - a short paper on register-based VM design that helped shape Ferret’s move to a register-based architecture.</li>
+<li><a href="https://www.lua.org/doc/jucs05.pdf">The Implementation of Lua 5.0</a> - a great paper on the design of the Lua 5 virtual machine and a very helpful resource for understanding how register-based VMs work.</li>
 <li><a href="https://www.usenix.org/legacy/events/vee05/full_papers/p153-yunhe.pdf">Virtual Machine Showdown: Stack Versus Registers</a> - a great paper on the tradeoffs between stack-based and register-based VMs.</li>
-<li><a href="https://craftinginterpreters.com/">Crafting interpreters</a> - a great book on building interpreters and virtual machines, and a valuable resource for anyone interested in compilers and language implementation.</li>
+<li><a href="https://craftinginterpreters.com/">Crafting Interpreters</a> - a great book on building interpreters and virtual machines, and a valuable resource for anyone interested in compilers and language implementation.</li>
 <li><a href="https://github.com/expr-lang/expr">The Expr expression language</a> - a very nice expression language for Go with a stack-based VM. I used it as a reference in the early stages of the project.</li>
 </ul>
 
