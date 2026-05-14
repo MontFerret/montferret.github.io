@@ -5,6 +5,7 @@
 {{ $params := default "{}" ( .Get "params" ) }}
 {{ $orientation := default "vertical" ( .Get "orientation") }}
 {{ $sharable := default "false" ( .Get "sharable" ) }}
+{{ $apiVersion := default "400px" ( .Get "apiVersion" )}}
 
 <div class="code-editor">
     {{- if eq $sharable "true" }}
@@ -139,9 +140,15 @@
                         text: textEditor.getValue(),
                         params: JSON.parse({{ $params }})
                 };
+                
+                {{- if eq $apiVersion "2" }}
+                const url = "{{ $.Site.Data.repl.workerV2URL }}";
+                {{- else }}
+                const url = "{{ $.Site.Data.repl.workerURL }}";
+                {{- end }}
 
                 onStart();
-                fetch("{{ $.Site.Data.repl.workerURL }}", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -161,6 +168,10 @@
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }

@@ -3,14 +3,31 @@ Language: FQL
 Category: common, scripting
 */
 function registerFQL(hljs) {
-    var IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*';
+    var IDENT_RE = '[A-Za-z_][0-9A-Za-z_]*';
     var KEYWORDS = {
       keyword:
-        'USE FOR IN RETURN LET AND OR LIMIT FILTER DISTINCT SORT COLLECT ASC DESC' +
-        'INTO KEEP WITH COUNT ALL ANY AGGREGATE LIKE NOT WHILE DO'
+        'USE AS FOR IN RETURN LET VAR AND OR LIMIT FILTER DISTINCT SORT COLLECT ASC DESC ' +
+        'INTO KEEP WITH COUNT ALL ANY AGGREGATE LIKE NOT WHILE DO ' +
+        'MATCH WHEN FUNC QUERY USING WAITFOR DISPATCH OPTIONS TIMEOUT EVERY BACKOFF JITTER ' +
+        'EXISTS VALUE ONE AT LEAST EVENT ON ERROR FAIL RETRY DELAY'
       ,
       literal:
-        'TRUE true FALSE false NONE',
+        'TRUE FALSE NONE NULL',
+    };
+    var PARAM = {
+      className: 'variable',
+      begin: '@' + IDENT_RE,
+      relevance: 0
+    };
+    var NAMESPACE = {
+      className: 'symbol',
+      begin: '\\b' + IDENT_RE + '(?=::)',
+      relevance: 0
+    };
+    var DURATION = {
+      className: 'number',
+      begin: '\\b[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?(?:MS|S|M|H|D)\\b',
+      relevance: 0
     };
     var NUMBER = {
       className: 'number',
@@ -39,6 +56,8 @@ function registerFQL(hljs) {
       hljs.APOS_STRING_MODE,
       hljs.QUOTE_STRING_MODE,
       TEMPLATE_STRING,
+      PARAM,
+      DURATION,
       NUMBER,
       hljs.REGEXP_MODE
     ]
@@ -57,7 +76,23 @@ function registerFQL(hljs) {
         TEMPLATE_STRING,
         hljs.C_LINE_COMMENT_MODE,
         hljs.C_BLOCK_COMMENT_MODE,
+        PARAM,
+        NAMESPACE,
+        DURATION,
         NUMBER,
+        {
+          className: 'function',
+          beginKeywords: 'FUNC',
+          end: /\(/,
+          excludeEnd: true,
+          contains: [
+            {
+              className: 'title',
+              begin: IDENT_RE,
+              relevance: 0
+            }
+          ]
+        },
         { // object attr container
           begin: /[{,]\s*/, relevance: 0,
           contains: [
