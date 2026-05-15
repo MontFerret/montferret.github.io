@@ -234,7 +234,7 @@ That distinction matters: use `[* FILTER ...]` when you want the matching values
 
 Array contraction is useful when querying nested collections:
 
-{{< editor lang="fql" height="128px" apiVersion="2" >}}
+{{< editor lang="fql" height="152px" apiVersion="2" >}}
 LET doc = DOCUMENT("https://www.montferret.dev")
 LET sections = QUERY "section" IN doc USING css
 LET linksBySection = sections[* RETURN  .[~ css`a`]]
@@ -371,7 +371,7 @@ One important distinction is that `LET` prevents rebinding the variable itself. 
 
 For objects and other mutable values, Ferret uses familiar assignment syntax:
 
-{{< editor lang="fql" height="256px" apiVersion="2" >}}
+{{< editor lang="fql" height="312px" apiVersion="2" >}}
 LET user = {
     name: "Bob",
     profile: {
@@ -407,7 +407,7 @@ Pages are dynamic. Data may appear after a network request, a DOM update, an ani
 
 Ferret v2 makes waiting explicit:
 
-{{< editor lang="fql" height="128px" apiVersion="2" >}}
+{{< editor lang="fql" height="156px" apiVersion="2" >}}
 LET doc = DOCUMENT("https://www.montferret.dev")
 RETURN WAITFOR VALUE doc[~ css`.foobar`]
     TIMEOUT 5s
@@ -541,24 +541,23 @@ FUNC normalizePrice(input) (
     RETURN TO_FLOAT(numeric)
 )
 
-LET doc = DOCUMENT("https://www.amazon.com/s?k=ferret", { driver: "cdp" })
-
-LET product = WAITFOR VALUE (QUERY ONE ".listitem" IN doc USING css)
-    TIMEOUT 10s
-    EVERY 250ms
-    ON TIMEOUT RETURN NONE
-
-RETURN MATCH product (
-    NONE => {
-        found: false,
-        price: NONE
-    },
-    _ => {
-        found: true,
-        title: QUERY VALUE ".title-recipe" IN product USING css,
-        price: normalizePrice(QUERY VALUE ".price-recipe" IN product USING css)
+FUNC processItem(product) (
+    LET info = product[~ css`[class*="ProductInfoContainer"]`]
+    
+    RETURN {
+        title: info[~ css`h2`].textContent,
+        price: 0
     }
 )
+
+LET doc = DOCUMENT("https://www.petco.com/shop/en/petcostore/search?query=ferret", { driver: "cdp" })
+LET frame = doc.frames[0]
+LET products = WAITFOR VALUE (QUERY "[data-track-product-id]" IN frame.body USING css)
+    TIMEOUT 10s
+    EVERY 250ms
+    ON TIMEOUT RETURN []
+
+RETURN products[* RETURN processItem(.)]
 {{</ editor >}}
 
 This is the kind of script Ferret v2 is designed to make easier to write: query the page, wait for dynamic content, handle missing data explicitly, normalize the result, and return a clean structured value.

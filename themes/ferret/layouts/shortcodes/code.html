@@ -1,8 +1,8 @@
 {{ $id := printf "%s-%d" "code" (index (seq 1000 | shuffle | first 1) 0) }}
-{{ $lang := default "aql" ( .Get "lang" )}}
+{{ $lang := default "fql" ( .Get "lang" )}}
 
-{{- if eq $lang "fql" -}}
-{{ $lang = "aql" }}
+{{- if eq $lang "aql" -}}
+{{ $lang = "fql" }}
 {{- end -}}
 {{ $height := default "400px" ( .Get "height" )}}
 {{ $width := default "100%" ( .Get "height" ) }}
