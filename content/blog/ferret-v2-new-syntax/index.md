@@ -33,7 +33,7 @@ Ferret v2 introduces syntax-level support for these concepts not because the lan
 
 A function call can perform the same work, but it cannot always describe the same intent.
 
-For example, a compiler can understand that `QUERY VALUE "#price" IN document USING css` is a query operation. It can attach better diagnostics to the selector, apply query-specific policies, validate dialect support, and eventually optimize or trace the operation as part of the execution model.
+For example, a compiler can understand that `QUERY ".product-item" IN document USING css` is a query operation. It can attach better diagnostics to the selector, apply query-specific policies, validate dialect support, and eventually optimize or trace the operation as part of the execution model.
 
 With a plain function call, most of that meaning is hidden behind an arbitrary host function boundary.
 
@@ -58,8 +58,8 @@ In Ferret v1, querying was strongly associated with documents, elements, and sel
 In Ferret v2, querying becomes a general language capability. A value can support queries if it implements the queryable capability.
 
 {{< editor lang="fql" height="132px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://www.montferret.dev")
-LET title = QUERY "h3" IN doc USING css
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET title = QUERY "h1" IN doc USING css
 RETURN title
 {{</ editor >}}
 
@@ -78,47 +78,124 @@ Instead, the target value and the selected dialect decide how the query is inter
 
 This is one of the main design directions in Ferret v2: keep the syntax stable, but allow capabilities to define behavior.
 
-### Query shorthand
-
-For common cases, the long form can be too verbose. Ferret v2 also supports a shorthand form:
-
-{{< editor lang="fql" height="132px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://www.montferret.dev")
-LET title = doc[~ css`h3`]
-RETURN title
-{{</ editor >}}
-
-The shorthand is meant for simple literal queries where readability matters. More dynamic query expressions should use the long form:
-
-{{< code lang="fql" height="96px" >}}
-LET selector = ".product[data-id='" + id + "']"
-LET product = QUERY selector IN doc USING css WITH { timeout: 5000 }
-{{</ code >}}
-
-This gives Ferret both sides: concise syntax for everyday cases, and explicit syntax for cases that need more control.
-
-The shorthand is intentionally limited. It should make common scripts pleasant to write, but it should not become a second full query language hidden inside brackets.
-
 ### Query modifiers
 
-Queries often need different result shapes. Sometimes you want all matches. Sometimes you want one value. Sometimes you only care whether something exists.
+Queries often need different result shapes. Sometimes you want all matches. Sometimes you want one match. Sometimes you only care whether something exists or how many matches there are.
 
 Ferret v2 introduces query modifiers for those cases:
 
 {{< code lang="fql" height="128px" >}}
+LET products = QUERY ".product" IN doc USING css
 LET hasLogin = QUERY EXISTS "form.login" IN doc USING css
 LET count = QUERY COUNT ".product" IN doc USING css
 LET first = QUERY ONE ".product" IN doc USING css
-LET text = QUERY VALUE "h1" IN doc USING css
 {{</ code >}}
 
-These modifiers are partly about convenience, but more importantly, they express intent.
+By default, `QUERY` returns the normal result shape for the selected dialect and target value. For CSS-style document queries, that usually means a collection of matching elements.
 
-A query that checks existence is different from a query that returns all matches.
+`QUERY EXISTS` returns a boolean value:
 
-A query that extracts a scalar value is different from a query that returns an element.
+{{< editor lang="fql" height="84px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+RETURN QUERY EXISTS "h1" IN doc USING css
+{{</ editor >}}
+
+`QUERY COUNT` returns the number of matches:
+
+{{< editor lang="fql" height="84px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/categories/laptops/")
+RETURN QUERY COUNT ".product-card" IN doc USING css
+{{</ editor >}}
+
+`QUERY ONE` returns a single matching result:
+
+{{< editor lang="fql" height="84px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/categories/laptops/")
+RETURN QUERY ONE ".product-card" IN doc USING css
+{{</ editor >}}
+
+This is useful for the common case where a script expects one element and does not want to query a collection and then index into it manually.
+
+Instead of writing:
+
+{{< code lang="fql" height="84px" >}}
+LET products = QUERY ".product-card" IN doc USING css
+LET product = products[0]
+{{</ code >}}
+
+A script can express the intent directly:
+
+{{< code lang="fql" height="84px" >}}
+LET product = QUERY ONE ".product" IN doc USING css
+{{</ code >}}
+
+The modifier makes cardinality visible. A query that returns all matches is different from a query that returns one match. A query that checks existence is different from a query that counts matches.
 
 By making that intent visible in the syntax, Ferret can make scripts easier to read and potentially easier to optimize.
+
+It also gives the runtime and diagnostics a clearer model. If a script asks for one result, Ferret can treat that as a distinct operation instead of a collection query followed by an index access.
+
+### Query shorthand
+
+For common cases, the long form can be too verbose. Ferret v2 also supports shorthand query expressions.
+
+The regular shorthand uses `~`:
+
+{{< editor lang="fql" height="112px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET headings = doc[~ css`h1`]
+RETURN headings
+{{</ editor >}}
+
+This is equivalent to a regular query:
+
+{{< code lang="fql" height="84px" >}}
+LET headings = QUERY "h1" IN doc USING css
+{{</ code >}}
+
+When a script expects a single result, Ferret also supports the `~?` shorthand:
+
+{{< editor lang="fql" height="112px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET title = doc[~? css`h1`]
+RETURN title
+{{</ editor >}}
+
+This is equivalent to `QUERY ONE`:
+
+{{< code lang="fql" height="84px" >}}
+LET title = QUERY ONE "h3" IN doc USING css
+{{</ code >}}
+
+The distinction is small, but important.
+
+`~` asks for the normal query result shape. For CSS-style document queries, that usually means a collection of matching elements.
+
+`~?` asks for one matching result.
+
+That makes the common “give me the first matching thing” case more readable without forcing scripts to query a collection and then index into it manually:
+
+{{< code lang="fql" height="128px" >}}
+LET title = doc[~? css`h1`]
+
+// instead of
+LET title = doc[~ css`h1`][0]
+{{</ code >}}
+
+More dynamic query expressions should still use the long form:
+
+{{< code lang="fql" height="96px" >}}
+LET selector = ".product[data-id='" + id + "']"
+LET product = QUERY ONE selector IN doc USING css WITH { timeout: 5000 }
+{{</ code >}}
+
+{{< code lang="fql" height="96px" >}}
+LET product = QUERY ONE "SELECT * FROM products WHERE id = ?" IN doc USING css WITH { params: [@id] }
+{{</ code >}}
+
+This gives Ferret both sides: concise syntax for everyday cases, and explicit syntax for cases that need more control.
+
+The shorthand forms are intentionally limited. They should make common scripts pleasant to write, but they should not become a second full query language hidden inside brackets.
 
 ## Array operators for data shaping
 
@@ -163,7 +240,7 @@ The basic operators cover the most common cases:
 The `[*]` operator is especially useful after queries. For example, extracting all link targets from a page can stay compact:
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://www.montferret.dev")
+LET doc = DOCUMENT("https://mockery.montferret.dev/")
 RETURN doc[~ css`a`][*].attributes.href
 {{</ editor >}}
 
@@ -235,7 +312,7 @@ That distinction matters: use `[* FILTER ...]` when you want the matching values
 Array contraction is useful when querying nested collections:
 
 {{< editor lang="fql" height="152px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://www.montferret.dev")
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/")
 LET sections = QUERY "section" IN doc USING css
 LET linksBySection = sections[* RETURN  .[~ css`a`]]
 
@@ -335,20 +412,91 @@ The pattern system will continue to evolve, but object pattern matching is alrea
 
 This is especially useful in extraction workflows, where scripts often need to classify responses, handle missing values, normalize data, or branch based on page state.
 
+## String templates
+
+Ferret v2 also adds string templates for cases where scripts need to build readable strings from values.
+
+Extraction scripts often need to create URLs, format labels, build messages, or normalize output fields. Plain string concatenation works, but it quickly becomes noisy.
+
+{{< code lang="fql" height="96px" >}}
+LET name = @user
+LET message = "Hello " + name
+RETURN message
+{{</ code >}}
+
+With string templates, the same expression is easier to read:
+
+{{< code lang="fql" height="96px" >}}
+LET message = `Hello ${@user}`
+RETURN message
+{{</ code >}}
+
+Expressions inside `${...}` are evaluated and inserted into the final string:
+
+{{< editor lang="fql" height="160px" apiVersion="2" >}}
+LET product = {
+    title: "Keyboard",
+    price: 99.99
+}
+
+RETURN `${product.title}: $${product.price}`
+{{</ editor >}}
+
+String templates are especially useful when building dynamic query strings or URLs:
+
+{{< editor lang="fql" height="128px" apiVersion="2" >}}
+LET category = "phones"
+LET page = 2
+
+LET url = `https://mockery.montferret.dev/scenarios/ecommerce/categories/${category}/page/${page}`
+RETURN WEB::ARTICLE::EXTRACT(DOCUMENT(url))
+{{</ editor >}}
+
+They also work well for shaping final output:
+
+{{< editor lang="fql" height="224px" apiVersion="2" >}}
+LET product = {
+    title: "Keyboard",
+    price: 99.99,
+    available: true
+}
+
+RETURN {
+    title: product.title,
+    label: `${product.title} - $${product.price}`,
+    status: `available: ${product.available}`
+}
+{{</ editor >}}
+
+The goal is simple: keep common string-building cases readable without forcing scripts into long chains of concatenation.
+
 ## Mutable values and assignment
 
 Ferret has traditionally favored query-style expression flow, but some tasks are simply easier with local mutable state.
 
 Ferret v2 separates immutable and mutable bindings:
 
-{{< editor lang="fql" height="192px" apiVersion="2" >}}
-LET baseUrl = "https://example.com"
-VAR attempts = 0
+{{< editor lang="fql" height="352px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/categories/laptops/", {
+    driver: "cdp"
+})
+LET pages = doc[~ css`[data-testid="page-link"]`][* RETURN TO_INT(.innerText)]
+VAR current = 1
 
-FOR WHILE attempts < 3
-attempts += 1
+LET aggregated = (FOR WHILE current < LENGTH(pages)
+    current += 1
+    LET products = doc[~ css`.product-card`][* RETURN {
+        title: `${.[~? css`.product-brand`].textContent} ${.[~? css`.product-title`].textContent}`,
+        price: TO_FLOAT(.[~? css`.product-price`].attributes["data-price"]) ON ERROR RETURN NONE
+    }]
 
-RETURN attempts
+    DISPATCH "click" IN doc[~? css`:nth(${current}, [data-testid])`]
+    WAITFOR EVENT "navigation" IN doc TIMEOUT 10s
+
+    RETURN products
+)
+
+RETURN aggregated[**]
 {{</ editor >}}
 
 `LET` remains immutable. `VAR` is explicit. Reassignment is allowed only when the nearest binding is mutable.
@@ -358,7 +506,7 @@ LET baseUrl = "https://example.com"
 LET attempts = 0
 
 FOR WHILE attempts < 3
-attempts += 1
+    attempts += 1
 
 RETURN attempts
 {{</ editor >}}
@@ -399,6 +547,62 @@ RETURN user
 
 The goal is not to make Ferret more imperative than necessary. The goal is to support the cases where mutation describes the workflow more naturally, while preserving immutability as the default style.
 
+### Deleting properties
+
+Assignment lets scripts create or update values, but extraction workflows also often need to remove data.
+
+A script may need to clean up intermediate fields, remove deprecated metadata, drop optional values, or normalize an object before returning it.
+
+Ferret v2 adds `DELETE` for removing properties from mutable values:
+
+{{< editor lang="fql" height="240px" apiVersion="2" >}}
+LET user = {
+    name: "Alice",
+    profile: {
+        active: true,
+        deprecated: true
+    }
+}
+
+DELETE user.profile.deprecated
+
+RETURN user
+{{</ editor >}}
+
+This removes the final property in the path. It does not delete the whole object. In this example, `profile` remains, but `profile.deprecated` is removed.
+
+Bracket access is supported as well:
+
+{{< editor lang="fql" height="240px" apiVersion="2" >}}
+LET user = {
+    name: "Alice",
+    metadata: {
+        source: "import",
+        temp: true
+    }
+}
+
+DELETE user.metadata["temp"]
+
+RETURN user
+{{</ editor >}}
+
+Safe access can be used when intermediate values may be missing:
+
+{{< editor lang="fql" height="152px" apiVersion="2" >}}
+LET user = NONE
+
+DELETE user?.profile?.deprecated
+
+RETURN user
+{{</ editor >}}
+
+This makes deletion safe and explicit. If the path cannot be reached because a safe segment evaluates to `NONE`, the operation does nothing.
+
+Like assignment, `DELETE` works on values that support mutation. The statement describes the operation, while the value decides how that operation is applied.
+
+The goal is to make cleanup and normalization code readable without introducing helper functions for basic property removal.
+
 ## Waiting as part of extraction
 
 Waiting is another operation that deserves first-class treatment in web extraction.
@@ -407,10 +611,14 @@ Pages are dynamic. Data may appear after a network request, a DOM update, an ani
 
 Ferret v2 makes waiting explicit:
 
-{{< editor lang="fql" height="156px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://www.montferret.dev")
-RETURN WAITFOR VALUE doc[~ css`.foobar`]
-    TIMEOUT 5s
+{{< editor lang="fql" height="224px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/delayed-rendering/", {
+    driver: "cdp"
+})
+
+RETURN WAITFOR VALUE doc[~ css`[data-testid="delayed-long"]`]
+    WHEN LENGTH(.) > 0 AND FIRST(.).attributes["data-state"] == "ready"
+    TIMEOUT 10s
     EVERY 250ms
     ON TIMEOUT RETURN NONE
 {{</ editor >}}
@@ -419,6 +627,75 @@ This describes the operation directly: evaluate the value repeatedly, use a poll
 
 The result is easier to read than hand-written retry logic, and easier for the runtime to trace, optimize, and explain.
 
+### Waiting for network activity
+
+Some extraction workflows depend not only on the DOM, but also on network activity.
+
+Modern pages often load data lazily through background requests. A product list, search result, price, availability status, or recommendation block may appear only after one or more API calls finish.
+
+The CDP driver exposes network lifecycle events that can be observed from Ferret scripts:
+
+- `network.request_started`
+- `network.response_received`
+- `network.request_finished`
+- `network.request_failed`
+- `network.idle`
+
+This makes it possible to wait for network behavior directly instead of guessing with fixed delays.
+
+For example, a script can wait until the page becomes network-idle before querying the DOM:
+
+{{< editor lang="fql" height="224px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/network-idle/", {
+    driver: "cdp"
+})
+
+WAITFOR EVENT "network.idle" IN doc TIMEOUT 10s
+
+RETURN doc[~ css`#network-log li`][*].textContent
+{{</ editor >}}
+
+A script can also wait for a specific request to finish before reading the updated page state:
+
+{{< editor lang="fql" height="224px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/delayed-requests/", {
+    driver: "cdp"
+})
+
+RETURN WAITFOR EVENT "network.request_finished" IN doc
+    WHEN CONTAINS(.url, "slow-1.json")
+    TIMEOUT 10s
+{{</ editor >}}
+
+Network events are also useful for debugging or collecting metadata from a page session:
+
+{{< editor lang="fql" height="384px" apiVersion="2" >}}
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/polling/", {
+    driver: "cdp"
+})
+
+LET response = WAITFOR EVENT "network.response_received" IN doc
+    WHEN CONTAINS(.url, ".json")
+    TIMEOUT 10s
+    ON TIMEOUT RETURN NONE
+
+RETURN MATCH response (
+    NONE => {
+        ok: false,
+        reason: "products_api_not_seen"
+    },
+    _ => {
+        ok: true,
+        url: response.url,
+        status: response.status
+    }
+)
+{{</ editor >}}
+
+The important part is that network activity becomes observable through the same language-level waiting model. Ferret does not need a separate `WAITFOR NETWORK` construct. The CDP driver can expose network activity as events, and `WAITFOR EVENT` can observe them.
+
+This keeps the language general while still supporting browser-specific workflows.
+
 ## Error and timeout policies close to the operation
 
 Web data extraction often fails for normal reasons: a page is slow, an element is missing, a network request times out, or a site returns an unexpected response.
@@ -426,7 +703,7 @@ Web data extraction often fails for normal reasons: a page is slow, an element i
 In Ferret v2, failure policy can live close to the operation that may fail.
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://www.montferret.dev")
+LET doc = DOCUMENT("https://mockery.montferret.dev")
 RETURN QUERY VALUE "#price" IN doc USING css 
     ON ERROR RETURN NONE
 {{</ editor >}}
@@ -434,7 +711,7 @@ RETURN QUERY VALUE "#price" IN doc USING css
 Timeout behavior can be expressed in a similar way where supported:
 
 {{< editor lang="fql" height="146px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://www.montferret.dev")
+LET doc = DOCUMENT("https://mockery.montferret.dev")
 RETURN WAITFOR VALUE doc[~ css`.loaded`]
     TIMEOUT 5s
     EVERY 250ms
@@ -444,6 +721,11 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
 This keeps the happy path readable while making fallback behavior explicit.
 
 It also gives Ferret a clearer execution model. A timeout policy or fallback value is not hidden inside arbitrary user code. It is part of the operation itself.
+
+{{< editor lang="fql" height="120px" apiVersion="2" >}}
+LET parsed = TO_FLOAT("not a number") ON ERROR RETURN 42
+RETURN parsed
+{{</ editor >}}
 
 ## User-defined functions
 
@@ -501,7 +783,7 @@ A Ferret script does not manually attach capabilities to a value. Capabilities c
 For example, an HTML module can expose a document value that supports CSS queries:
 
 {{< code lang="fql" height="96px" >}}
-LET document = HTML::PARSE(page)
+LET document = PARSE(page)
 LET title = QUERY VALUE "h1" IN document USING css
 {{</ code >}}
 
@@ -530,11 +812,33 @@ This is especially important for the Ferret ecosystem. Core Ferret can stay smal
 
 This is what allows Ferret to stay small at the language level while still being extensible at the runtime and module level.
 
+## Module aliases with USE
+
+Ferret v2 also improves how scripts work with modules.
+
+Modules can expose host functions, but fully-qualified names can become noisy when a script uses the same module repeatedly.
+
+`USE` lets a script create a local alias for a module namespace:
+
+{{< editor lang="fql" height="160px" apiVersion="2" >}}
+USE IO::NET::HTTP::GET AS GET
+
+LET out = GET("https://mockery.montferret.dev/api/products/index.json")
+
+RETURN JSON_PARSE(out)
+{{</ editor >}}
+
+This keeps module-based scripts readable without pulling individual functions directly into local scope.
+
+The important part is that `USE` does not hide where functionality comes from. The function call is still namespaced, but the namespace can be made shorter and more convenient for the script.
+
+This keeps Ferret explicit while making module-heavy scripts easier to read.
+
 ## Putting it together
 
 The individual features are useful on their own, but they are designed to work together.
 
-{{< editor lang="fql" height="320px" apiVersion="2" >}}
+{{< editor lang="fql" height="520px" apiVersion="2" >}}
 FUNC normalizePrice(input) (
     LET cleaned = TRIM(input)
     LET numeric = SUBSTITUTE(cleaned, "$", "")
@@ -542,22 +846,27 @@ FUNC normalizePrice(input) (
 )
 
 FUNC processItem(product) (
-    LET info = product[~ css`[class*="ProductInfoContainer"]`]
-    
     RETURN {
-        title: info[~ css`h2`].textContent,
-        price: 0
+        title: product[~ css`product-title`][0]?.textContent,
+        price: normalizePrice(product[~ css`.product-price`][0]?.textContent)
     }
 )
 
-LET doc = DOCUMENT("https://www.petco.com/shop/en/petcostore/search?query=ferret", { driver: "cdp" })
-LET frame = doc.frames[0]
-LET products = WAITFOR VALUE (QUERY "[data-track-product-id]" IN frame.body USING css)
-    TIMEOUT 10s
-    EVERY 250ms
-    ON TIMEOUT RETURN []
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/dynamic-products/load-more/", { driver: "cdp" })
 
-RETURN products[* RETURN processItem(.)]
+DISPATCH "scroll" IN doc WITH { to: "bottom", behavior: "smooth" }
+LET btn = FIRST(doc[~ css`#load-more-products`])
+
+LET _ = (
+    FOR WHILE btn.attributes["data-complete"] != "true"
+        DISPATCH "click" IN btn
+
+        RETURN WAITFOR EVENT "network.idle" IN doc TIMEOUT 40s 
+)
+
+LET products = doc[~ css`.product-card`]
+
+RETURN products[* LIMIT 5 RETURN processItem(.)]
 {{</ editor >}}
 
 This is the kind of script Ferret v2 is designed to make easier to write: query the page, wait for dynamic content, handle missing data explicitly, normalize the result, and return a clean structured value.
