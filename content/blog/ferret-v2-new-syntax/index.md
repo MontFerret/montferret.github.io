@@ -15,7 +15,7 @@ Ferret v2 is not meant to be a completely different language. The goal is to pre
 
 The familiar Ferret style remains: small scripts, readable data flow, structured values, and extraction-focused operations. The new syntax is there to make those scripts clearer, not to make Ferret feel like a large general-purpose programming language.
 
-That means adding new keywords, statements, and expressions where they help describe common extraction workflows more clearly: querying data, dispatching events, updating values, handling failures, waiting for conditions, and defining reusable functions.
+That means adding new keywords, statements, and expressions where they help describe common extraction workflows more clearly: querying data, shaping arrays, building strings, dispatching events, updating and deleting values, handling failures, waiting for conditions, aliasing module namespaces, and defining reusable functions.
 
 So this post is not about replacing Ferret’s identity. It is about giving the language a stronger foundation for the next stage of the project.
 
@@ -126,7 +126,7 @@ LET product = products[0]
 A script can express the intent directly:
 
 {{< code lang="fql" height="84px" >}}
-LET product = QUERY ONE ".product" IN doc USING css
+LET product = QUERY ONE ".product-card" IN doc USING css
 {{</ code >}}
 
 The modifier makes cardinality visible. A query that returns all matches is different from a query that returns one match. A query that checks existence is different from a query that counts matches.
@@ -164,7 +164,7 @@ RETURN title
 This is equivalent to `QUERY ONE`:
 
 {{< code lang="fql" height="84px" >}}
-LET title = QUERY ONE "h3" IN doc USING css
+LET title = QUERY ONE "h1" IN doc USING css
 {{</ code >}}
 
 The distinction is small, but important.
@@ -189,8 +189,10 @@ LET selector = ".product[data-id='" + id + "']"
 LET product = QUERY ONE selector IN doc USING css WITH { timeout: 5000 }
 {{</ code >}}
 
+The same applies to other dialects that need explicit options:
+
 {{< code lang="fql" height="96px" >}}
-LET product = QUERY ONE "SELECT * FROM products WHERE id = ?" IN doc USING css WITH { params: [@id] }
+LET product = QUERY ONE "SELECT * FROM products WHERE id = ?" IN db USING sql WITH { params: [@id] }
 {{</ code >}}
 
 This gives Ferret both sides: concise syntax for everyday cases, and explicit syntax for cases that need more control.
@@ -217,8 +219,8 @@ LET products = [
 ]
 
 LET names = products[*].name
-LET expensive = products[? FILTER .price > 100]
-LET firstThree = products[* LIMIT 2]
+LET expensive = products[* FILTER .price > 100]
+LET firstThree = products[* LIMIT 3]
 
 RETURN {
     names: names,
@@ -314,7 +316,7 @@ Array contraction is useful when querying nested collections:
 {{< editor lang="fql" height="152px" apiVersion="2" >}}
 LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/")
 LET sections = QUERY "section" IN doc USING css
-LET linksBySection = sections[* RETURN  .[~ css`a`]]
+LET linksBySection = sections[* RETURN .[~ css`a`]]
 
 RETURN linksBySection[**].attributes.href
 {{</ editor >}}
@@ -348,7 +350,7 @@ DISPATCH "input" IN searchBox WITH {
 For simple payload-less signals, Ferret v2 also has a concise shorthand:
 
 {{< code lang="fql" height="84px" >}}
-button <- "click"  
+button <- "click"
 {{</ code >}}
 
 This reads as: send the click signal to button.
@@ -439,7 +441,7 @@ LET product = {
     price: 99.99
 }
 
-RETURN `${product.title}: $${product.price}`
+RETURN `${product.title}: ${product.price} USD`
 {{</ editor >}}
 
 String templates are especially useful when building dynamic query strings or URLs:
@@ -476,7 +478,7 @@ Ferret has traditionally favored query-style expression flow, but some tasks are
 
 Ferret v2 separates immutable and mutable bindings:
 
-{{< editor lang="fql" height="352px" apiVersion="2" >}}
+{{< editor lang="fql" height="192px" apiVersion="2" >}}
 VAR attempts = 0
 
 FOR WHILE attempts < 3
@@ -488,7 +490,6 @@ RETURN attempts
 `LET` remains immutable. `VAR` is explicit. Reassignment is allowed only when the nearest binding is mutable.
 
 {{< editor lang="fql" height="192px" apiVersion="2" >}}
-
 LET attempts = 0
 
 FOR WHILE attempts < 3
@@ -769,8 +770,8 @@ A Ferret script does not manually attach capabilities to a value. Capabilities c
 For example, an HTML module can expose a document value that supports CSS queries:
 
 {{< code lang="fql" height="96px" >}}
-LET document = PARSE(page)
-LET title = QUERY VALUE "h1" IN document USING css
+LET document = HTML::PARSE(page)
+LET title = QUERY ONE "h1" IN document USING css
 {{</ code >}}
 
 A DOM element can be both queryable and dispatchable:
@@ -794,23 +795,21 @@ As the compiler and runtime mature, this model also gives Ferret a clearer way t
 
 For example, `QUERY ... IN value USING css` requires the target value to support querying with the selected dialect. If it does not, Ferret can report that directly.
 
-This is especially important for the Ferret ecosystem. Core Ferret can stay small, while modules can add support for new document types, protocols, storage systems, APIs, or browser/runtime integrations without requiring new syntax for each one.
+For the Ferret ecosystem, this separation matters.
 
-This is what allows Ferret to stay small at the language level while still being extensible at the runtime and module level.
+Core Ferret can stay small, while modules add support for new document types, protocols, storage systems, APIs, browser integrations, and runtime-specific behavior without requiring new syntax for each one.
 
-This is also why HTML drivers are no longer treated as part of the language core.
+That boundary keeps the language compact while leaving plenty of room for extension at the runtime and module level. 
 
-Ferret v2 separates the language from the drivers that provide browser and document capabilities. The core language defines operations such as `QUERY`, `DISPATCH`, and `WAITFOR`; HTML drivers provide values that know how to participate in those operations.
+It is also the reason HTML drivers are no longer treated as part of the language core. They were moved to <b><a href="https://github.com/MontFerret/contrib">a separate repository</a></b> to make it easier to iterate on browser-specific behavior without affecting the core language. The same applies to other domain-specific modules that may come in the future.
 
-That separation lets HTML drivers evolve independently and in parallel with the language. Static HTML parsing, CDP integration, browser behavior, network events, waiting logic, and future driver-specific features can improve without requiring each one to become a new core language feature.
-
-## Module aliases with USE
+## Namespace aliases with USE
 
 Ferret v2 also improves how scripts work with modules.
 
-Modules can expose host functions, but fully-qualified names can become noisy when a script uses the same module repeatedly.
+Modules can expose host functions, but fully-qualified names can become noisy when a script repeatedly uses functions from the same module or namespace.
 
-`USE` lets a script create a local alias for a module namespace:
+`USE` lets a script create a local alias for a fully-qualified namespace or symbol:
 
 {{< editor lang="fql" height="160px" apiVersion="2" >}}
 USE IO::NET::HTTP::GET AS GET
@@ -820,9 +819,9 @@ LET out = GET("https://mockery.montferret.dev/api/products/index.json")
 RETURN JSON_PARSE(out)
 {{</ editor >}}
 
-This keeps module-based scripts readable without pulling individual functions directly into local scope.
+This keeps module-based scripts readable without pulling an entire module directly into local scope.
 
-The important part is that `USE` does not hide where functionality comes from. The function call is still namespaced, but the namespace can be made shorter and more convenient for the script.
+The important part is that `USE` does not hide where functionality comes from. It creates an explicit local alias for a fully-qualified namespace or symbol, so scripts can stay concise while still making the shortcut visible at the top of the file.
 
 This keeps Ferret explicit while making module-heavy scripts easier to read.
 
@@ -833,10 +832,13 @@ The common thread behind these additions is capability-oriented design.
 Ferret v2 does not need every domain to become a new language feature. Instead, the language provides a small set of operations that can work across different kinds of values:
 
 - `QUERY` for values that can be queried.
+- array operators for transforming and filtering collections.
+- string templates for readable string construction.
 - `DISPATCH` for values that can receive events or signals.
 - `WAITFOR` for values or expressions that can be observed over time.
 - `MATCH` for structured branching.
-- assignment for local and object mutation.
+- assignment and `DELETE` for local/object mutation and property removal.
+- `USE` for explicit aliases to fully-qualified names.
 - operation-level policies for errors and timeouts.
 
 The goal is not to turn every useful library operation into syntax. Only operations that shape the structure of extraction workflows should become language constructs.
