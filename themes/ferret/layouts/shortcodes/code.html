@@ -1,4 +1,4 @@
-{{ $id := printf "%s-%d" "code" (index (seq 1000 | shuffle | first 1) 0) }}
+{{ $id := printf "code-%d" .Ordinal }}
 {{ $lang := default "fql" ( .Get "lang" )}}
 
 {{- if eq $lang "aql" -}}
@@ -20,6 +20,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const editor = ace.edit('{{ $id }}-text');
             editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + '{{ $lang }}');
             editor.setOptions({
                 readOnly: true,
