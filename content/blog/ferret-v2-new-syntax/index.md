@@ -849,6 +849,16 @@ That is what makes Ferret more than a browser scripting language. Browser automa
 
 Ferret should help developers turn messy websites and data sources into clean structured data. These language-level capabilities are designed around that goal.
 
+## Try it in the playground
+
+The best way to understand the new syntax is to try it.
+
+Ferret v2 is available in the playground, so you can experiment with queries, array operators, string templates, pattern matching, waiting, and other language features directly in the browser:
+
+<b>[Try Ferret v2 in the Playground](https://www.montferret.dev/try/next)</b>
+
+The playground is especially useful for small examples. You can tweak selectors, change return shapes, test query modifiers, and get a feel for how the new language capabilities work together.
+
 ## Closing thoughts
 
 Ferret v2 is still evolving, but the direction is intentional.

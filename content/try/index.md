@@ -5,29 +5,29 @@ type: "repl"
 draft: false
 ---
 
+<p style="margin-bottom: 2em;">
+    <a class="button is-dark is-radiusless" href="/try/next/">Try Ferret v2</a>
+</p>
+
 {{< editor id="replEditor" sharable="true" >}}
-// Open the SoundCloud Top Charts page using a browser-based driver (CDP)
+// Open the the product listing page using a browser-based driver (CDP)
 // This allows Ferret to execute JavaScript and work with dynamic content
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
+LET doc = DOCUMENT('https://mockery.montferret.dev/scenarios/dynamic-products/basic/', {
     driver: 'cdp'
 })
 
-// Wait until at least one chart tile is present on the page
-// This is important because SoundCloud loads content asynchronously
-WAIT_ELEMENT(doc, '.audibleTile', 5000)
+// Wait until at least one product card is present on the page
+// This is important because the page loads content asynchronously
+WAIT_ELEMENT(doc, '.product-card', 5000)
 
-// Select all track tiles from the page
-LET tracks = ELEMENTS(doc, '.audibleTile')
+// Select all product cards from the page
+LET products = ELEMENTS(doc, '.product-card')
 
-// Iterate over each track tile and extract useful data
-FOR track IN tracks
+// Iterate over each product card and extract useful data
+FOR product IN products
     RETURN {
-        // Chart position / description text shown on the tile
-        chart: TRIM(INNER_TEXT(track, '.playableTile__descriptionContainer')),
-        
-        // Build an absolute URL to the track page
-        // The link on the page is relative, so we prepend the SoundCloud domain
-        link: "https://soundcloud.com" +
-                  TRIM(ELEMENT(track, '.playableTile__artworkLink')?.attributes.href)
-        }
+        brand: TRIM(INNER_TEXT(product, '.product-brand')),
+        title: TRIM(INNER_TEXT(product, '.product-title')),
+        price: TO_FLOAT(SUBSTITUTE(INNER_TEXT(product, '.product-price'), '$', ''))
+    }
 {{</ editor >}}
