@@ -59,8 +59,8 @@ In Ferret v2, querying becomes a general language capability. A value can suppor
 
 {{< editor lang="fql" height="132px" apiVersion="2" >}}
 LET doc = DOCUMENT("https://mockery.montferret.dev")
-LET title = QUERY "h1" IN doc USING css
-RETURN title
+LET elements = QUERY "article h2" IN doc USING css
+RETURN elements
 {{</ editor >}}
 
 The important part is `USING css`. The query string does not define the meaning by itself. The dialect does.
@@ -97,21 +97,21 @@ By default, `QUERY` returns the normal result shape for the selected dialect and
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
 LET doc = DOCUMENT("https://mockery.montferret.dev")
-RETURN QUERY EXISTS "h1" IN doc USING css
+RETURN QUERY EXISTS "article h2" IN doc USING css
 {{</ editor >}}
 
 `QUERY COUNT` returns the number of matches:
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/categories/laptops/")
-RETURN QUERY COUNT ".product-card" IN doc USING css
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+RETURN QUERY COUNT "article h2" IN doc USING css
 {{</ editor >}}
 
 `QUERY ONE` returns a single matching result:
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/categories/laptops/")
-RETURN QUERY ONE ".product-card" IN doc USING css
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+RETURN QUERY ONE "article h2" IN doc USING css
 {{</ editor >}}
 
 This is useful for the common case where a script expects one element and does not want to query a collection and then index into it manually.
@@ -143,28 +143,26 @@ The regular shorthand uses `~`:
 
 {{< editor lang="fql" height="112px" apiVersion="2" >}}
 LET doc = DOCUMENT("https://mockery.montferret.dev")
-LET headings = doc[~ css`h1`]
-RETURN headings
+RETURN doc[~ css`article h2`]
 {{</ editor >}}
 
 This is equivalent to a regular query:
 
 {{< code lang="fql" height="84px" >}}
-LET headings = QUERY "h1" IN doc USING css
+QUERY "article h2" IN doc USING css
 {{</ code >}}
 
 When a script expects a single result, Ferret also supports the `~?` shorthand:
 
 {{< editor lang="fql" height="112px" apiVersion="2" >}}
 LET doc = DOCUMENT("https://mockery.montferret.dev")
-LET title = doc[~? css`h1`]
-RETURN title
+RETURN doc[~? css`article h2`]
 {{</ editor >}}
 
 This is equivalent to `QUERY ONE`:
 
 {{< code lang="fql" height="84px" >}}
-LET title = QUERY ONE "h1" IN doc USING css
+QUERY ONE "article h2" IN doc USING css
 {{</ code >}}
 
 The distinction is small, but important.
@@ -176,10 +174,10 @@ The distinction is small, but important.
 That makes the common “give me the first matching thing” case more readable without forcing scripts to query a collection and then index into it manually:
 
 {{< code lang="fql" height="128px" >}}
-LET title = doc[~? css`h1`]
+LET title = doc[~? css`article h2`]
 
 // instead of
-LET title = doc[~ css`h1`][0]
+LET title = doc[~ css`article h2`][0]
 {{</ code >}}
 
 More dynamic query expressions should still use the long form:
