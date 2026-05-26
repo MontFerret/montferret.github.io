@@ -365,7 +365,9 @@ Values with dispatch capabilities are provided by registered host modules.
 
 Ferret v2 also improves control flow with `MATCH`.
 
-The goal is not to make simple `IF` expressions obsolete. The goal is to provide a better structure when branching logic grows beyond one or two conditions.
+The goal is not to make Ferret feel imperative. The goal is to provide enough control flow for real extraction logic while preserving the language’s declarative feel.
+
+Ternary expressions are still useful for small choices. `MATCH` is meant for cases where branching logic grows beyond one or two conditions and benefits from a more structured form.
 
 Guard-style matching can express condition-based branching:
 
