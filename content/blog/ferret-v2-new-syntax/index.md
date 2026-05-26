@@ -4,7 +4,7 @@ subtitle: "New Statements, Capabilities, and Syntax"
 draft: false
 author: "Tim Voronov"
 authorLink: "https://github.com/ziflex"
-date: "2026-05-04"
+date: "2026-05-25"
 ---
 
 Hello friends,
@@ -477,32 +477,18 @@ Ferret has traditionally favored query-style expression flow, but some tasks are
 Ferret v2 separates immutable and mutable bindings:
 
 {{< editor lang="fql" height="352px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/categories/laptops/", {
-    driver: "cdp"
-})
-LET pages = doc[~ css`[data-testid="page-link"]`][* RETURN TO_INT(.innerText)]
-VAR current = 1
+VAR attempts = 0
 
-LET aggregated = (FOR WHILE current < LENGTH(pages)
-    current += 1
-    LET products = doc[~ css`.product-card`][* RETURN {
-        title: `${.[~? css`.product-brand`].textContent} ${.[~? css`.product-title`].textContent}`,
-        price: TO_FLOAT(.[~? css`.product-price`].attributes["data-price"]) ON ERROR RETURN NONE
-    }]
+FOR WHILE attempts < 3
+    attempts += 1
 
-    DISPATCH "click" IN doc[~? css`:nth(${current}, [data-testid])`]
-    WAITFOR EVENT "navigation" IN doc TIMEOUT 10s
-
-    RETURN products
-)
-
-RETURN aggregated[**]
+RETURN attempts
 {{</ editor >}}
 
 `LET` remains immutable. `VAR` is explicit. Reassignment is allowed only when the nearest binding is mutable.
 
 {{< editor lang="fql" height="192px" apiVersion="2" >}}
-LET baseUrl = "https://example.com"
+
 LET attempts = 0
 
 FOR WHILE attempts < 3
@@ -704,7 +690,7 @@ In Ferret v2, failure policy can live close to the operation that may fail.
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
 LET doc = DOCUMENT("https://mockery.montferret.dev")
-RETURN QUERY VALUE "#price" IN doc USING css 
+RETURN QUERY ONE "#price" IN doc USING css 
     ON ERROR RETURN NONE
 {{</ editor >}}
 
@@ -812,6 +798,12 @@ This is especially important for the Ferret ecosystem. Core Ferret can stay smal
 
 This is what allows Ferret to stay small at the language level while still being extensible at the runtime and module level.
 
+This is also why HTML drivers are no longer treated as part of the language core.
+
+Ferret v2 separates the language from the drivers that provide browser and document capabilities. The core language defines operations such as `QUERY`, `DISPATCH`, and `WAITFOR`; HTML drivers provide values that know how to participate in those operations.
+
+That separation lets HTML drivers evolve independently and in parallel with the language. Static HTML parsing, CDP integration, browser behavior, network events, waiting logic, and future driver-specific features can improve without requiring each one to become a new core language feature.
+
 ## Module aliases with USE
 
 Ferret v2 also improves how scripts work with modules.
@@ -833,43 +825,6 @@ This keeps module-based scripts readable without pulling individual functions di
 The important part is that `USE` does not hide where functionality comes from. The function call is still namespaced, but the namespace can be made shorter and more convenient for the script.
 
 This keeps Ferret explicit while making module-heavy scripts easier to read.
-
-## Putting it together
-
-The individual features are useful on their own, but they are designed to work together.
-
-{{< editor lang="fql" height="520px" apiVersion="2" >}}
-FUNC normalizePrice(input) (
-    LET cleaned = TRIM(input)
-    LET numeric = SUBSTITUTE(cleaned, "$", "")
-    RETURN TO_FLOAT(numeric)
-)
-
-FUNC processItem(product) (
-    RETURN {
-        title: product[~ css`product-title`][0]?.textContent,
-        price: normalizePrice(product[~ css`.product-price`][0]?.textContent)
-    }
-)
-
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/dynamic-products/load-more/", { driver: "cdp" })
-
-DISPATCH "scroll" IN doc WITH { to: "bottom", behavior: "smooth" }
-LET btn = FIRST(doc[~ css`#load-more-products`])
-
-LET _ = (
-    FOR WHILE btn.attributes["data-complete"] != "true"
-        DISPATCH "click" IN btn
-
-        RETURN WAITFOR EVENT "network.idle" IN doc TIMEOUT 40s 
-)
-
-LET products = doc[~ css`.product-card`]
-
-RETURN products[* LIMIT 5 RETURN processItem(.)]
-{{</ editor >}}
-
-This is the kind of script Ferret v2 is designed to make easier to write: query the page, wait for dynamic content, handle missing data explicitly, normalize the result, and return a clean structured value.
 
 ## The bigger idea: capability-oriented syntax
 

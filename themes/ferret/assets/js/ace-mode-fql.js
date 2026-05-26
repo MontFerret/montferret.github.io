@@ -18,7 +18,7 @@ ace.define(
       var keywords = [
         "USE", "AS", "MATCH", "WHEN", "FUNC", "FOR", "RETURN", "QUERY",
         "USING", "WAITFOR", "DISPATCH", "OPTIONS", "TIMEOUT", "EVERY",
-        "BACKOFF", "JITTER", "EXISTS", "COUNT", "VALUE", "ONE",
+        "BACKOFF", "JITTER", "EXISTS", "COUNT", "ONE",
         "DISTINCT", "FILTER", "SORT", "LIMIT", "LET", "VAR", "COLLECT",
         "ASC", "DESC", "AT", "LEAST", "INTO", "KEEP", "WITH", "ALL",
         "ANY", "AGGREGATE", "EVENT", "LIKE", "NOT", "IN", "DO", "WHILE",
