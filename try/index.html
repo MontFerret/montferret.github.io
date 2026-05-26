@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -153,7 +153,11 @@
     <div class="hero is-primary">
     <div class="hero-body">
         <div class="container repl-content">
-            
+            <p style="margin-bottom: 2em;">
+    <a class="button is-dark is-radiusless" href="/try/next/">Try Ferret v2</a>
+</p>
+
+
 
 
 
@@ -162,46 +166,42 @@
 
 
 <div class="code-editor">
-    <input id="code-editor-672-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
+    <input id="code-editor-67-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
 
     
-    <button id="code-editor-672-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
+    <button id="code-editor-67-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
 
-    <button id="code-editor-672-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-67-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-672-text" class="code-editor-text" style="height: 400px;">
+            <div id="code-editor-67-text" class="code-editor-text" style="height: 400px;">
                 
-// Open the SoundCloud Top Charts page using a browser-based driver (CDP)
+// Open the the product listing page using a browser-based driver (CDP)
 // This allows Ferret to execute JavaScript and work with dynamic content
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
+LET doc = DOCUMENT('https://mockery.montferret.dev/scenarios/dynamic-products/basic/', {
     driver: 'cdp'
 })
 
-// Wait until at least one chart tile is present on the page
-// This is important because SoundCloud loads content asynchronously
-WAIT_ELEMENT(doc, '.audibleTile', 5000)
+// Wait until at least one product card is present on the page
+// This is important because the page loads content asynchronously
+WAIT_ELEMENT(doc, '.product-card', 5000)
 
-// Select all track tiles from the page
-LET tracks = ELEMENTS(doc, '.audibleTile')
+// Select all product cards from the page
+LET products = ELEMENTS(doc, '.product-card')
 
-// Iterate over each track tile and extract useful data
-FOR track IN tracks
+// Iterate over each product card and extract useful data
+FOR product IN products
     RETURN {
-        // Chart position / description text shown on the tile
-        chart: TRIM(INNER_TEXT(track, '.playableTile__descriptionContainer')),
-        
-        // Build an absolute URL to the track page
-        // The link on the page is relative, so we prepend the SoundCloud domain
-        link: "https://soundcloud.com" +
-                  TRIM(ELEMENT(track, '.playableTile__artworkLink')?.attributes.href)
-        }
+        brand: TRIM(INNER_TEXT(product, '.product-brand')),
+        title: TRIM(INNER_TEXT(product, '.product-title')),
+        price: TO_FLOAT(SUBSTITUTE(INNER_TEXT(product, '.product-price'), '$', ''))
+    }
 
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-672-result" class="code-editor-result" style="height: 400px;"></div>
+            <div id="code-editor-67-result" class="code-editor-result" style="height: 400px;"></div>
         </div>
     </div>
     
@@ -220,16 +220,16 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-672-run-button');
-            const textEditor = createEditor('code-editor-672-text', 'aql');
-            const resultEditor = createEditor('code-editor-672-result', 'json');
+            const btn = document.querySelector('#code-editor-67-run-button');
+            const textEditor = createEditor('code-editor-67-text', 'fql');
+            const resultEditor = createEditor('code-editor-67-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
-                const clibboardEl = document.querySelector('#code-editor-672-share-clipboard');
-                const shareBtn = document.querySelector('#code-editor-672-share-button');
+                const clibboardEl = document.querySelector('#code-editor-67-share-clipboard');
+                const shareBtn = document.querySelector('#code-editor-67-share-button');
 
                 shareBtn.addEventListener('click', () => {
                     try {
@@ -290,9 +290,10 @@ FOR track IN tracks
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -312,6 +313,10 @@ FOR track IN tracks
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -328,6 +333,7 @@ FOR track IN tracks
         }, false);
     </script>
 </div>
+
 
         </div>
     </div>
@@ -356,8 +362,8 @@ FOR track IN tracks
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -366,5 +372,6 @@ FOR track IN tracks
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

@@ -1,0 +1,5576 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Ferret</title>
+
+    <meta name="generator" content="Hugo 0.161.1">
+
+    <link
+        href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://www.montferret.dev/sass/main.min.17ed29bf1daeec53da854869c780218bf0eb5b49eeffcf3d0a114e9fac4a35df.css" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png" />
+    <link
+        rel="apple-touch-icon"
+        sizes="114x114"
+        href="/favicon/apple-icon-114x114.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="120x120"
+        href="/favicon/apple-icon-120x120.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="144x144"
+        href="/favicon/apple-icon-144x144.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="152x152"
+        href="/favicon/apple-icon-152x152.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/favicon/apple-icon-180x180.png"
+    />
+    <link
+        rel="icon"
+        type="image/png"
+        sizes="192x192"
+        href="/favicon/android-icon-192x192.png"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/manifest.json" />
+    
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-135792752-1');
+    </script>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/img/logo.png" width="30" height="30" /> <small class="logo">ferret</small>
+            </a>
+
+            <a
+                id="navbar-burger"
+                role="button"
+                class="navbar-burger burger"
+                aria-label="menu"
+                aria-expanded="false"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        
+        <div id="primary-nav" class="navbar-menu">
+            <div class="navbar-start">
+                
+                
+                
+                        
+                        <a href="/try/" class="navbar-item "
+                        title=Try&#32;it id=repl>
+                            Try it
+                        </a>
+                
+                        
+                        <a href="/docs/introduction" class="navbar-item "
+                        title=Project&#32;documentation id=docs>
+                            Docs
+                        </a>
+                
+                        
+                        <a href="/blog/" class="navbar-item  active"
+                        title=Blog id=blog>
+                            Blog
+                        </a>
+                
+                        
+                        <a href="/cookbook/google-search" class="navbar-item "
+                        title=Cookbook id=cookbook>
+                            Cookbook
+                        </a>
+                
+            </div>
+
+            <div class="navbar-end">
+                
+                
+                        <a href="https://opencollective.com/ferret" class="navbar-item "
+                        title=Open&#32;collective id=donate>
+                            Donate
+                        </a>
+                
+                        <a href="https://github.com/MontFerret/ferret" class="navbar-item "
+                        title=GitHub&#32;repository id=github>
+                            GitHub
+                        </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    
+    
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+
+            el.classList.toggle("is-active");
+        })
+    })();
+</script><div id="content">
+    <div class="content section blog blog-post">
+        <div class="columns is-centered blog-post-header has-text-centered">
+            <div class="column is-10">
+                <p class="title is-2">
+                    Inside Ferret v2: New Language Capabilities
+                </p>
+                <p class="subtitle is-4">
+                        New Statements, Capabilities, and Syntax
+                    </p>
+                <p class="subtitle is-6 has-text-grey">
+                    <span>May 25, 2026</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
+                </p>
+                <hr class="is-block-centered" />
+            </div>
+        </div>
+        <div class="columns is-centered blog-post-content has-text-justified">
+            <div class="column is-8">
+                <p>Hello friends,</p>
+<p>Today I want to talk about one of the most exciting parts of Ferret v2: new language capabilities that are now available directly in the syntax.</p>
+<p>Ferret v2 is not meant to be a completely different language. The goal is to preserve the original spirit of Ferret - a practical language for extracting structured data from messy websites - while making the language more expressive, more consistent, and easier to extend.</p>
+<p>The familiar Ferret style remains: small scripts, readable data flow, structured values, and extraction-focused operations. The new syntax is there to make those scripts clearer, not to make Ferret feel like a large general-purpose programming language.</p>
+<p>That means adding new keywords, statements, and expressions where they help describe common extraction workflows more clearly: querying data, shaping arrays, building strings, dispatching events, updating and deleting values, handling failures, waiting for conditions, aliasing module namespaces, and defining reusable functions.</p>
+<p>So this post is not about replacing Ferret’s identity. It is about giving the language a stronger foundation for the next stage of the project.</p>
+<h2 id="why-add-new-language-capabilities">Why add new language capabilities?</h2>
+<p>Ferret v1 proved that a query-oriented language can be useful for web automation and data extraction. It allowed developers to describe browser interaction and data shaping in a way that felt more focused than stitching together low-level automation calls.</p>
+<p>That idea is still at the center of Ferret v2.</p>
+<p>But as Ferret grew, it became clear that some concepts deserved to be represented more directly in the language. Querying is one example. Waiting for something to appear is another. Dispatching an event, updating a value, or choosing an error strategy are all common parts of extraction workflows.</p>
+<p>In Ferret v1, some of these ideas had to be expressed indirectly through functions or domain-specific helpers. That works, but it has limits. It can make scripts harder to read, harder to optimize, and harder to explain through good diagnostics.</p>
+<p>Ferret v2 introduces syntax-level support for these concepts not because the language needs to look different, but because these operations are important enough to be first-class.</p>
+<p>A function call can perform the same work, but it cannot always describe the same intent.</p>
+<p>For example, a compiler can understand that <code>QUERY &quot;.product-item&quot; IN document USING css</code> is a query operation. It can attach better diagnostics to the selector, apply query-specific policies, validate dialect support, and eventually optimize or trace the operation as part of the execution model.</p>
+<p>With a plain function call, most of that meaning is hidden behind an arbitrary host function boundary.</p>
+<p>This also matters for error reporting. When the compiler understands that a piece of code is a query, a dispatch operation, a wait condition, or an assignment path, it can point to the part of the script that actually caused the problem. Better syntax gives Ferret better structure, and better structure leads to better diagnostics.</p>
+<p>The goals are simple:</p>
+<ul>
+<li>keep common extraction workflows readable.</li>
+<li>make behavior explicit where it matters.</li>
+<li>make the language easier to compile and optimize.</li>
+<li>improve diagnostics by giving the compiler clearer structure.</li>
+<li>make Ferret extensible beyond a single hardcoded domain.</li>
+</ul>
+<p>In other words, Ferret v2 is still Ferret. It just has a more capable language foundation.</p>
+<h2 id="query-as-a-language-capability">Query as a language capability</h2>
+<p>The most important example is querying.</p>
+<p>In Ferret v1, querying was strongly associated with documents, elements, and selectors, but was implemented via host functions like <code>ELEMENTS</code> or <code>XPATH</code>.</p>
+<p>In Ferret v2, querying becomes a general language capability. A value can support queries if it implements the queryable capability.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-167-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-167-text" class="code-editor-text" style="height: 132px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET title = QUERY "h1" IN doc USING css
+RETURN title
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-167-result" class="code-editor-result" style="height: 132px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-167-run-button');
+            const textEditor = createEditor('code-editor-167-text', 'fql');
+            const resultEditor = createEditor('code-editor-167-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The important part is <code>USING css</code>. The query string does not define the meaning by itself. The dialect does.</p>
+<p>That means the same language construct can work with different query dialects:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-67-text" class="code-editor-text" style="height: 96px;">
+                
+LET products = QUERY ".product" IN doc USING css
+LET rows = QUERY "SELECT * FROM products WHERE price > 100" IN db USING sql
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-67-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>The language does not need separate statements for CSS selectors, XPath, SQL, JSONPath, or future query systems.</p>
+<p>Instead, the target value and the selected dialect decide how the query is interpreted.</p>
+<p>This is one of the main design directions in Ferret v2: keep the syntax stable, but allow capabilities to define behavior.</p>
+<h3 id="query-modifiers">Query modifiers</h3>
+<p>Queries often need different result shapes. Sometimes you want all matches. Sometimes you want one match. Sometimes you only care whether something exists or how many matches there are.</p>
+<p>Ferret v2 introduces query modifiers for those cases:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-737-text" class="code-editor-text" style="height: 128px;">
+                
+LET products = QUERY ".product" IN doc USING css
+LET hasLogin = QUERY EXISTS "form.login" IN doc USING css
+LET count = QUERY COUNT ".product" IN doc USING css
+LET first = QUERY ONE ".product" IN doc USING css
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-737-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>By default, <code>QUERY</code> returns the normal result shape for the selected dialect and target value. For CSS-style document queries, that usually means a collection of matching elements.</p>
+<p><code>QUERY EXISTS</code> returns a boolean value:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-710-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-710-text" class="code-editor-text" style="height: 84px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+RETURN QUERY EXISTS "h1" IN doc USING css
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-710-result" class="code-editor-result" style="height: 84px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-710-run-button');
+            const textEditor = createEditor('code-editor-710-text', 'fql');
+            const resultEditor = createEditor('code-editor-710-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p><code>QUERY COUNT</code> returns the number of matches:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-879-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-879-text" class="code-editor-text" style="height: 84px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/categories/laptops/")
+RETURN QUERY COUNT ".product-card" IN doc USING css
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-879-result" class="code-editor-result" style="height: 84px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-879-run-button');
+            const textEditor = createEditor('code-editor-879-text', 'fql');
+            const resultEditor = createEditor('code-editor-879-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p><code>QUERY ONE</code> returns a single matching result:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-693-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-693-text" class="code-editor-text" style="height: 84px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/categories/laptops/")
+RETURN QUERY ONE ".product-card" IN doc USING css
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-693-result" class="code-editor-result" style="height: 84px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-693-run-button');
+            const textEditor = createEditor('code-editor-693-text', 'fql');
+            const resultEditor = createEditor('code-editor-693-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This is useful for the common case where a script expects one element and does not want to query a collection and then index into it manually.</p>
+<p>Instead of writing:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-951-text" class="code-editor-text" style="height: 84px;">
+                
+LET products = QUERY ".product-card" IN doc USING css
+LET product = products[0]
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-951-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>A script can express the intent directly:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-113-text" class="code-editor-text" style="height: 84px;">
+                
+LET product = QUERY ONE ".product-card" IN doc USING css
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-113-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>The modifier makes cardinality visible. A query that returns all matches is different from a query that returns one match. A query that checks existence is different from a query that counts matches.</p>
+<p>By making that intent visible in the syntax, Ferret can make scripts easier to read and potentially easier to optimize.</p>
+<p>It also gives the runtime and diagnostics a clearer model. If a script asks for one result, Ferret can treat that as a distinct operation instead of a collection query followed by an index access.</p>
+<h3 id="query-shorthand">Query shorthand</h3>
+<p>For common cases, the long form can be too verbose. Ferret v2 also supports shorthand query expressions.</p>
+<p>The regular shorthand uses <code>~</code>:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-109-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-109-text" class="code-editor-text" style="height: 112px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET headings = doc[~ css`h1`]
+RETURN headings
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-109-result" class="code-editor-result" style="height: 112px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-109-run-button');
+            const textEditor = createEditor('code-editor-109-text', 'fql');
+            const resultEditor = createEditor('code-editor-109-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This is equivalent to a regular query:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-337-text" class="code-editor-text" style="height: 84px;">
+                
+LET headings = QUERY "h1" IN doc USING css
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-337-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>When a script expects a single result, Ferret also supports the <code>~?</code> shorthand:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-879-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-879-text" class="code-editor-text" style="height: 112px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET title = doc[~? css`h1`]
+RETURN title
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-879-result" class="code-editor-result" style="height: 112px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-879-run-button');
+            const textEditor = createEditor('code-editor-879-text', 'fql');
+            const resultEditor = createEditor('code-editor-879-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This is equivalent to <code>QUERY ONE</code>:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-578-text" class="code-editor-text" style="height: 84px;">
+                
+LET title = QUERY ONE "h1" IN doc USING css
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-578-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>The distinction is small, but important.</p>
+<p><code>~</code> asks for the normal query result shape. For CSS-style document queries, that usually means a collection of matching elements.</p>
+<p><code>~?</code> asks for one matching result.</p>
+<p>That makes the common “give me the first matching thing” case more readable without forcing scripts to query a collection and then index into it manually:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-578-text" class="code-editor-text" style="height: 128px;">
+                
+LET title = doc[~? css`h1`]
+
+// instead of
+LET title = doc[~ css`h1`][0]
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-578-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>More dynamic query expressions should still use the long form:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-943-text" class="code-editor-text" style="height: 96px;">
+                
+LET selector = ".product[data-id='" + id + "']"
+LET product = QUERY ONE selector IN doc USING css WITH { timeout: 5000 }
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-943-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>The same applies to other dialects that need explicit options:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-52-text" class="code-editor-text" style="height: 96px;">
+                
+LET product = QUERY ONE "SELECT * FROM products WHERE id = ?" IN db USING sql WITH { params: [@id] }
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-52-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>This gives Ferret both sides: concise syntax for everyday cases, and explicit syntax for cases that need more control.</p>
+<p>The shorthand forms are intentionally limited. They should make common scripts pleasant to write, but they should not become a second full query language hidden inside brackets.</p>
+<h2 id="array-operators-for-data-shaping">Array operators for data shaping</h2>
+<p>Web extraction rarely returns one perfectly shaped value.</p>
+<p>More often, a script gets a list of elements, rows, links, products, or records, and then needs to transform that list into clean structured output.</p>
+<p>Ferret v2 brings array operators inspired by ArangoDB’s AQL into the language to make this kind of data shaping easier to express.</p>
+<p>Instead of writing loops for every small transformation, scripts can map, filter, slice, and project arrays directly.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-602-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-602-text" class="code-editor-text" style="height: 356px;">
+                
+LET products = [
+    { name: "Widget", price: 19.99 },
+    { name: "Gadget", price: 149.99 },
+    { name: "Thingamajig", price: 49.99 },
+    { name: "Doodad", price: 9.99 },
+    { name: "Doohickey", price: 199.99 }
+]
+
+LET names = products[*].name
+LET expensive = products[* FILTER .price > 100]
+LET firstThree = products[* LIMIT 3]
+
+RETURN {
+    names: names,
+    expensive: expensive,
+    firstThree: firstThree
+}
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-602-result" class="code-editor-result" style="height: 356px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-602-run-button');
+            const textEditor = createEditor('code-editor-602-text', 'fql');
+            const resultEditor = createEditor('code-editor-602-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The basic operators cover the most common cases:</p>
+<ul>
+<li><code>[n]</code> accesses an array element by index.</li>
+<li><code>[*]</code> expands an array and allows projecting fields from each item.</li>
+<li><code>[**]</code>, <code>[***]</code>, and deeper forms flatten nested arrays.</li>
+<li><code>[* FILTER ...]</code> filters an array while expanding it.</li>
+<li><code>[* LIMIT ...]</code> limits the expanded result.</li>
+<li><code>[* RETURN ...]</code> projects each expanded item into a new shape.</li>
+<li><code>[? ...]</code> checks whether an array contains values matching a condition.</li>
+</ul>
+<p>The <code>[*]</code> operator is especially useful after queries. For example, extracting all link targets from a page can stay compact:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-828-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-828-text" class="code-editor-text" style="height: 128px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev/")
+RETURN doc[~ css`a`][*].attributes.href
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-828-result" class="code-editor-result" style="height: 128px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-828-run-button');
+            const textEditor = createEditor('code-editor-828-text', 'fql');
+            const resultEditor = createEditor('code-editor-828-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Inline expressions make filtering and projection more explicit. They use <code>.</code> to refer to the current array item:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-970-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-970-text" class="code-editor-text" style="height: 328px;">
+                
+LET products = [
+    { name: "Widget", price: 19.99 },
+    { name: "Gadget", price: 149.99 },
+    { name: "Thingamajig", price: 49.99 },
+    { name: "Doodad", price: 9.99 },
+    { name: "Doohickey", price: 199.99 }
+]
+
+RETURN products[*
+    FILTER .price > 100
+    RETURN {
+        title: .name,
+        price: .price
+    }
+]
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-970-result" class="code-editor-result" style="height: 328px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-970-run-button');
+            const textEditor = createEditor('code-editor-970-text', 'fql');
+            const resultEditor = createEditor('code-editor-970-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p><code>FILTER</code>, <code>LIMIT</code>, and <code>RETURN</code> can be combined in that order:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-430-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-430-text" class="code-editor-text" style="height: 376px;">
+                
+LET products = [
+    { name: "Widget", price: 19.99 },
+    { name: "Gadget", price: 149.99 },
+    { name: "Thingamajig", price: 49.99 },
+    { name: "Doodad", price: 9.99 },
+    { name: "Doohickey", price: 199.99 },
+    { name: "Whatchamacallit", price: 129.99 },
+    { name: "Contraption", price: 89.99 },
+    { name: "Gizmo", price: 179.99 }
+]
+
+RETURN products[*
+    FILTER .price > 100
+    LIMIT 3
+    RETURN {
+        title: .name,
+        price: TO_FLOAT(.price)
+    }
+]
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-430-result" class="code-editor-result" style="height: 376px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-430-run-button');
+            const textEditor = createEditor('code-editor-430-text', 'fql');
+            const resultEditor = createEditor('code-editor-430-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The question-mark operator is different. It does not return the filtered items. It answers whether matching items exist.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-234-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-234-text" class="code-editor-text" style="height: 274px;">
+                
+LET products = [
+    { name: "Widget", price: 19.99 },
+    { name: "Gadget", price: 149.99 },
+    { name: "Thingamajig", price: 49.99 },
+    { name: "Doodad", price: 9.99 },
+    { name: "Doohickey", price: 199.99 },
+    { name: "Whatchamacallit", price: 129.99 },
+    { name: "Contraption", price: 89.99 },
+    { name: "Gizmo", price: 179.99 }
+]
+
+RETURN products[? ANY FILTER .price > 100]
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-234-result" class="code-editor-result" style="height: 274px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-234-run-button');
+            const textEditor = createEditor('code-editor-234-text', 'fql');
+            const resultEditor = createEditor('code-editor-234-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This returns a boolean value.</p>
+<p>That distinction matters: use <code>[* FILTER ...]</code> when you want the matching values, and <code>[? ...]</code> when you want to test whether matching values exist.</p>
+<p>Array contraction is useful when querying nested collections:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-335-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-335-text" class="code-editor-text" style="height: 152px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/")
+LET sections = QUERY "section" IN doc USING css
+LET linksBySection = sections[* RETURN .[~ css`a`]]
+
+RETURN linksBySection[**].attributes.href
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-335-result" class="code-editor-result" style="height: 152px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-335-run-button');
+            const textEditor = createEditor('code-editor-335-text', 'fql');
+            const resultEditor = createEditor('code-editor-335-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This is especially useful after a query. <code>QUERY</code> gives the script a collection of values, and array operators help turn that collection into the shape the caller actually needs.</p>
+<p>The goal is the same as with the rest of Ferret v2 syntax: make common extraction workflows readable without forcing every small data transformation into a manual loop.</p>
+<h2 id="dispatch-as-a-language-capability">Dispatch as a language capability</h2>
+<p>Many values are not only queryable. They can also receive events, commands, or signals.</p>
+<p>In browser automation, clicking an element is the obvious example. But dispatch is not limited to DOM events. A queue, actor, stream, workflow, or custom host object could also expose dispatch behavior.</p>
+<p>Ferret v2 represents this with <code>DISPATCH</code>:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-322-text" class="code-editor-text" style="height: 84px;">
+                
+DISPATCH "click" IN button
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-322-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>With payload and options, the same statement stays explicit:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-279-text" class="code-editor-text" style="height: 128px;">
+                
+DISPATCH "input" IN searchBox WITH {
+    value: "ferret"
+} OPTIONS {
+    bubbles: true
+}
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-279-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>For simple payload-less signals, Ferret v2 also has a concise shorthand:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-369-text" class="code-editor-text" style="height: 84px;">
+                
+button <- "click"
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-369-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>This reads as: send the click signal to button.</p>
+<p>The shorthand is intentionally narrow. Once payloads, options, or more explicit behavior are needed, the long form is clearer.</p>
+<p>Again, the important part is not only the browser use case. The important part is that dispatch becomes a language-level operation over values that support the dispatchable capability.</p>
+<p>The value itself decides how to interpret the signal, what to do with the payload, and how to handle options.</p>
+<p>Values with dispatch capabilities are provided by registered host modules.</p>
+<h2 id="match-for-structured-control-flow">Match for structured control flow</h2>
+<p>Ferret v2 also improves control flow with <code>MATCH</code>.</p>
+<p>The goal is not to make simple <code>IF</code> expressions obsolete. The goal is to provide a better structure when branching logic grows beyond one or two conditions.</p>
+<p>Guard-style matching can express condition-based branching:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-701-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-701-text" class="code-editor-text" style="height: 160px;">
+                
+LET status = 501
+RETURN MATCH (
+    WHEN status == 404 => "not_found",
+    WHEN status == 403 => "forbidden",
+    WHEN status >= 500 => "server_error",
+    _ => "ok"
+)
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-701-result" class="code-editor-result" style="height: 160px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-701-run-button');
+            const textEditor = createEditor('code-editor-701-text', 'fql');
+            const resultEditor = createEditor('code-editor-701-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Scrutinee-style matching can inspect a value directly:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-42-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-42-text" class="code-editor-text" style="height: 160px;">
+                
+LET status = 404
+RETURN MATCH status (
+    200 => "ok",
+    404 => "not_found",
+    _ => "unknown"
+)
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-42-result" class="code-editor-result" style="height: 160px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-42-run-button');
+            const textEditor = createEditor('code-editor-42-text', 'fql');
+            const resultEditor = createEditor('code-editor-42-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Ferret v2 also supports object pattern matching. This is useful when a script needs to branch based on the shape or selected fields of a value:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-279-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-279-text" class="code-editor-text" style="height: 256px;">
+                
+LET response = {
+    status: 500,
+    body: "Internal Server Error"
+}
+
+RETURN MATCH response (
+    { status: 200, body: body } => body,
+    { status: 404 } => NONE,
+    { status: status } WHEN status >= 500 => "server_error",
+    _ => "unknown"
+)
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-279-result" class="code-editor-result" style="height: 256px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-279-run-button');
+            const textEditor = createEditor('code-editor-279-text', 'fql');
+            const resultEditor = createEditor('code-editor-279-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This makes common extraction and normalization logic easier to express. Instead of pulling fields out first and then writing a chain of conditions, the match arm can describe the shape it expects and bind the values it needs.</p>
+<p>The pattern system will continue to evolve, but object pattern matching is already supported and is part of Ferret’s current direction. <code>MATCH</code> should become the primary way to express structured branching when a script has multiple cases to handle.</p>
+<p>This is especially useful in extraction workflows, where scripts often need to classify responses, handle missing values, normalize data, or branch based on page state.</p>
+<h2 id="string-templates">String templates</h2>
+<p>Ferret v2 also adds string templates for cases where scripts need to build readable strings from values.</p>
+<p>Extraction scripts often need to create URLs, format labels, build messages, or normalize output fields. Plain string concatenation works, but it quickly becomes noisy.</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-275-text" class="code-editor-text" style="height: 96px;">
+                
+LET name = @user
+LET message = "Hello " + name
+RETURN message
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-275-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>With string templates, the same expression is easier to read:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-348-text" class="code-editor-text" style="height: 96px;">
+                
+LET message = `Hello ${@user}`
+RETURN message
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-348-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>Expressions inside <code>${...}</code> are evaluated and inserted into the final string:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-485-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-485-text" class="code-editor-text" style="height: 160px;">
+                
+LET product = {
+    title: "Keyboard",
+    price: 99.99
+}
+
+RETURN `${product.title}: ${product.price} USD`
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-485-result" class="code-editor-result" style="height: 160px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-485-run-button');
+            const textEditor = createEditor('code-editor-485-text', 'fql');
+            const resultEditor = createEditor('code-editor-485-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>String templates are especially useful when building dynamic query strings or URLs:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-171-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-171-text" class="code-editor-text" style="height: 128px;">
+                
+LET category = "phones"
+LET page = 2
+
+LET url = `https://mockery.montferret.dev/scenarios/ecommerce/categories/${category}/page/${page}`
+RETURN WEB::ARTICLE::EXTRACT(DOCUMENT(url))
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-171-result" class="code-editor-result" style="height: 128px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-171-run-button');
+            const textEditor = createEditor('code-editor-171-text', 'fql');
+            const resultEditor = createEditor('code-editor-171-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>They also work well for shaping final output:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-960-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-960-text" class="code-editor-text" style="height: 224px;">
+                
+LET product = {
+    title: "Keyboard",
+    price: 99.99,
+    available: true
+}
+
+RETURN {
+    title: product.title,
+    label: `${product.title} - $${product.price}`,
+    status: `available: ${product.available}`
+}
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-960-result" class="code-editor-result" style="height: 224px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-960-run-button');
+            const textEditor = createEditor('code-editor-960-text', 'fql');
+            const resultEditor = createEditor('code-editor-960-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The goal is simple: keep common string-building cases readable without forcing scripts into long chains of concatenation.</p>
+<h2 id="mutable-values-and-assignment">Mutable values and assignment</h2>
+<p>Ferret has traditionally favored query-style expression flow, but some tasks are simply easier with local mutable state.</p>
+<p>Ferret v2 separates immutable and mutable bindings:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-407-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-407-text" class="code-editor-text" style="height: 192px;">
+                
+VAR attempts = 0
+
+FOR WHILE attempts < 3
+    attempts += 1
+
+RETURN attempts
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-407-result" class="code-editor-result" style="height: 192px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-407-run-button');
+            const textEditor = createEditor('code-editor-407-text', 'fql');
+            const resultEditor = createEditor('code-editor-407-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p><code>LET</code> remains immutable. <code>VAR</code> is explicit. Reassignment is allowed only when the nearest binding is mutable.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-925-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-925-text" class="code-editor-text" style="height: 192px;">
+                
+LET attempts = 0
+
+FOR WHILE attempts < 3
+    attempts += 1
+
+RETURN attempts
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-925-result" class="code-editor-result" style="height: 192px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-925-run-button');
+            const textEditor = createEditor('code-editor-925-text', 'fql');
+            const resultEditor = createEditor('code-editor-925-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The second example is invalid because <code>attempts</code> was declared with <code>LET</code>.</p>
+<p>This keeps mutation available without making every binding mutable by default.</p>
+<p>One important distinction is that <code>LET</code> prevents rebinding the variable itself. It does not necessarily make the underlying value deeply immutable. If a value supports mutation, its fields may still be updated.</p>
+<p>For objects and other mutable values, Ferret uses familiar assignment syntax:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-13-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-13-text" class="code-editor-text" style="height: 312px;">
+                
+LET user = {
+    name: "Bob",
+    profile: {
+        active: false
+    },
+    stats: {
+        visits: 0
+    }
+}
+
+user.name = "Alice"
+user.profile.active = true
+user.stats.visits += 1
+
+RETURN user
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-13-result" class="code-editor-result" style="height: 312px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-13-run-button');
+            const textEditor = createEditor('code-editor-13-text', 'fql');
+            const resultEditor = createEditor('code-editor-13-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Safe access also applies naturally to mutation paths:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-117-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-117-text" class="code-editor-text" style="height: 128px;">
+                
+LET user = NONE
+user?.profile?.active = true
+RETURN user
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-117-result" class="code-editor-result" style="height: 128px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-117-run-button');
+            const textEditor = createEditor('code-editor-117-text', 'fql');
+            const resultEditor = createEditor('code-editor-117-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The goal is not to make Ferret more imperative than necessary. The goal is to support the cases where mutation describes the workflow more naturally, while preserving immutability as the default style.</p>
+<h3 id="deleting-properties">Deleting properties</h3>
+<p>Assignment lets scripts create or update values, but extraction workflows also often need to remove data.</p>
+<p>A script may need to clean up intermediate fields, remove deprecated metadata, drop optional values, or normalize an object before returning it.</p>
+<p>Ferret v2 adds <code>DELETE</code> for removing properties from mutable values:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-778-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-778-text" class="code-editor-text" style="height: 240px;">
+                
+LET user = {
+    name: "Alice",
+    profile: {
+        active: true,
+        deprecated: true
+    }
+}
+
+DELETE user.profile.deprecated
+
+RETURN user
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-778-result" class="code-editor-result" style="height: 240px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-778-run-button');
+            const textEditor = createEditor('code-editor-778-text', 'fql');
+            const resultEditor = createEditor('code-editor-778-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This removes the final property in the path. It does not delete the whole object. In this example, <code>profile</code> remains, but <code>profile.deprecated</code> is removed.</p>
+<p>Bracket access is supported as well:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-713-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-713-text" class="code-editor-text" style="height: 240px;">
+                
+LET user = {
+    name: "Alice",
+    metadata: {
+        source: "import",
+        temp: true
+    }
+}
+
+DELETE user.metadata["temp"]
+
+RETURN user
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-713-result" class="code-editor-result" style="height: 240px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-713-run-button');
+            const textEditor = createEditor('code-editor-713-text', 'fql');
+            const resultEditor = createEditor('code-editor-713-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Safe access can be used when intermediate values may be missing:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-555-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-555-text" class="code-editor-text" style="height: 152px;">
+                
+LET user = NONE
+
+DELETE user?.profile?.deprecated
+
+RETURN user
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-555-result" class="code-editor-result" style="height: 152px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-555-run-button');
+            const textEditor = createEditor('code-editor-555-text', 'fql');
+            const resultEditor = createEditor('code-editor-555-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This makes deletion safe and explicit. If the path cannot be reached because a safe segment evaluates to <code>NONE</code>, the operation does nothing.</p>
+<p>Like assignment, <code>DELETE</code> works on values that support mutation. The statement describes the operation, while the value decides how that operation is applied.</p>
+<p>The goal is to make cleanup and normalization code readable without introducing helper functions for basic property removal.</p>
+<h2 id="waiting-as-part-of-extraction">Waiting as part of extraction</h2>
+<p>Waiting is another operation that deserves first-class treatment in web extraction.</p>
+<p>Pages are dynamic. Data may appear after a network request, a DOM update, an animation, or a client-side route change. In Ferret v1, this kind of behavior often had to be expressed through helper functions or custom retry logic.</p>
+<p>Ferret v2 makes waiting explicit:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-823-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-823-text" class="code-editor-text" style="height: 224px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/delayed-rendering/", {
+    driver: "cdp"
+})
+
+RETURN WAITFOR VALUE doc[~ css`[data-testid="delayed-long"]`]
+    WHEN LENGTH(.) > 0 AND FIRST(.).attributes["data-state"] == "ready"
+    TIMEOUT 10s
+    EVERY 250ms
+    ON TIMEOUT RETURN NONE
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-823-result" class="code-editor-result" style="height: 224px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-823-run-button');
+            const textEditor = createEditor('code-editor-823-text', 'fql');
+            const resultEditor = createEditor('code-editor-823-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This describes the operation directly: evaluate the value repeatedly, use a polling interval, stop after a timeout, and choose a fallback if the condition is not met.</p>
+<p>The result is easier to read than hand-written retry logic, and easier for the runtime to trace, optimize, and explain.</p>
+<h3 id="waiting-for-network-activity">Waiting for network activity</h3>
+<p>Some extraction workflows depend not only on the DOM, but also on network activity.</p>
+<p>Modern pages often load data lazily through background requests. A product list, search result, price, availability status, or recommendation block may appear only after one or more API calls finish.</p>
+<p>The CDP driver exposes network lifecycle events that can be observed from Ferret scripts:</p>
+<ul>
+<li><code>network.request_started</code></li>
+<li><code>network.response_received</code></li>
+<li><code>network.request_finished</code></li>
+<li><code>network.request_failed</code></li>
+<li><code>network.idle</code></li>
+</ul>
+<p>This makes it possible to wait for network behavior directly instead of guessing with fixed delays.</p>
+<p>For example, a script can wait until the page becomes network-idle before querying the DOM:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-735-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-735-text" class="code-editor-text" style="height: 224px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/network-idle/", {
+    driver: "cdp"
+})
+
+WAITFOR EVENT "network.idle" IN doc TIMEOUT 10s
+
+RETURN doc[~ css`#network-log li`][*].textContent
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-735-result" class="code-editor-result" style="height: 224px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-735-run-button');
+            const textEditor = createEditor('code-editor-735-text', 'fql');
+            const resultEditor = createEditor('code-editor-735-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>A script can also wait for a specific request to finish before reading the updated page state:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-731-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-731-text" class="code-editor-text" style="height: 224px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/delayed-requests/", {
+    driver: "cdp"
+})
+
+RETURN WAITFOR EVENT "network.request_finished" IN doc
+    WHEN CONTAINS(.url, "slow-1.json")
+    TIMEOUT 10s
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-731-result" class="code-editor-result" style="height: 224px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-731-run-button');
+            const textEditor = createEditor('code-editor-731-text', 'fql');
+            const resultEditor = createEditor('code-editor-731-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Network events are also useful for debugging or collecting metadata from a page session:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-933-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-933-text" class="code-editor-text" style="height: 384px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/polling/", {
+    driver: "cdp"
+})
+
+LET response = WAITFOR EVENT "network.response_received" IN doc
+    WHEN CONTAINS(.url, ".json")
+    TIMEOUT 10s
+    ON TIMEOUT RETURN NONE
+
+RETURN MATCH response (
+    NONE => {
+        ok: false,
+        reason: "products_api_not_seen"
+    },
+    _ => {
+        ok: true,
+        url: response.url,
+        status: response.status
+    }
+)
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-933-result" class="code-editor-result" style="height: 384px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-933-run-button');
+            const textEditor = createEditor('code-editor-933-text', 'fql');
+            const resultEditor = createEditor('code-editor-933-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The important part is that network activity becomes observable through the same language-level waiting model. Ferret does not need a separate <code>WAITFOR NETWORK</code> construct. The CDP driver can expose network activity as events, and <code>WAITFOR EVENT</code> can observe them.</p>
+<p>This keeps the language general while still supporting browser-specific workflows.</p>
+<h2 id="error-and-timeout-policies-close-to-the-operation">Error and timeout policies close to the operation</h2>
+<p>Web data extraction often fails for normal reasons: a page is slow, an element is missing, a network request times out, or a site returns an unexpected response.</p>
+<p>In Ferret v2, failure policy can live close to the operation that may fail.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-716-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-716-text" class="code-editor-text" style="height: 128px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+RETURN QUERY ONE "#price" IN doc USING css 
+    ON ERROR RETURN NONE
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-716-result" class="code-editor-result" style="height: 128px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-716-run-button');
+            const textEditor = createEditor('code-editor-716-text', 'fql');
+            const resultEditor = createEditor('code-editor-716-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Timeout behavior can be expressed in a similar way where supported:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-641-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-641-text" class="code-editor-text" style="height: 146px;">
+                
+LET doc = DOCUMENT("https://mockery.montferret.dev")
+RETURN WAITFOR VALUE doc[~ css`.loaded`]
+    TIMEOUT 5s
+    EVERY 250ms
+    ON TIMEOUT RETURN NONE
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-641-result" class="code-editor-result" style="height: 146px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-641-run-button');
+            const textEditor = createEditor('code-editor-641-text', 'fql');
+            const resultEditor = createEditor('code-editor-641-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This keeps the happy path readable while making fallback behavior explicit.</p>
+<p>It also gives Ferret a clearer execution model. A timeout policy or fallback value is not hidden inside arbitrary user code. It is part of the operation itself.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-297-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-297-text" class="code-editor-text" style="height: 120px;">
+                
+LET parsed = TO_FLOAT("not a number") ON ERROR RETURN 42
+RETURN parsed
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-297-result" class="code-editor-result" style="height: 120px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-297-run-button');
+            const textEditor = createEditor('code-editor-297-text', 'fql');
+            const resultEditor = createEditor('code-editor-297-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<h2 id="user-defined-functions">User-defined functions</h2>
+<p>Ferret v2 is also moving toward user-defined functions.</p>
+<p>The goal is not to turn Ferret into a general-purpose application language. The goal is to let scripts define reusable extraction and normalization logic directly where it belongs.</p>
+<p>Functions are especially useful for normalization logic: parsing prices, cleaning text, mapping statuses, extracting IDs, and turning inconsistent page data into stable output shapes.</p>
+<p>For larger functions, the block form gives enough structure without relying on indentation-sensitive syntax or <code>END</code> markers.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-218-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-218-text" class="code-editor-text" style="height: 192px;">
+                
+FUNC normalizePrice(input) (
+    LET cleaned = TRIM(input)
+    LET numeric = SUBSTITUTE(cleaned, "$", "")
+    RETURN TO_FLOAT(numeric)
+)
+
+RETURN normalizePrice("$19.99")
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-218-result" class="code-editor-result" style="height: 192px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-218-run-button');
+            const textEditor = createEditor('code-editor-218-text', 'fql');
+            const resultEditor = createEditor('code-editor-218-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>For smaller functions, the body can stay compact:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-392-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-392-text" class="code-editor-text" style="height: 96px;">
+                
+FUNC add(a, b) => a + b
+RETURN add(2, 3)
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-392-result" class="code-editor-result" style="height: 96px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-392-run-button');
+            const textEditor = createEditor('code-editor-392-text', 'fql');
+            const resultEditor = createEditor('code-editor-392-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This should make Ferret scripts easier to organize while keeping the language focused.</p>
+<h3 id="control-flow-using-pattern-matching-and-user-defined-functions">Control flow using pattern matching and user-defined functions</h3>
+<p>With user-defined functions and pattern matching, Ferret can express more complex logic without relying on host functions or external code.</p>
+<p>This is an important step toward making Ferret a more self-contained language for data extraction and processing.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-290-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-290-text" class="code-editor-text" style="height: 196px;">
+                
+FUNC fib(n) (
+    RETURN MATCH n (
+        0 => 0,
+        1 => 1,
+        _ => fib(n - 1) + fib(n - 2)
+    )
+)
+
+RETURN fib(10)
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-290-result" class="code-editor-result" style="height: 196px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-290-run-button');
+            const textEditor = createEditor('code-editor-290-text', 'fql');
+            const resultEditor = createEditor('code-editor-290-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<h2 id="where-values-with-capabilities-come-from">Where values with capabilities come from</h2>
+<p>One important question is where these values with capabilities come from.</p>
+<p>A Ferret script does not manually attach capabilities to a value. Capabilities come from the runtime, modules, and host applications that embed or extend Ferret.</p>
+<p>For example, an HTML module can expose a document value that supports CSS queries:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-74-text" class="code-editor-text" style="height: 96px;">
+                
+LET document = HTML::PARSE(page)
+LET title = QUERY ONE "h1" IN document USING css
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-74-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>A DOM element can be both queryable and dispatchable:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-560-text" class="code-editor-text" style="height: 96px;">
+                
+LET button = QUERY ONE "button.submit" IN document USING css
+DISPATCH "click" IN button
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-560-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>A database module could expose a connection or table value that supports SQL queries:</p>
+
+
+
+
+<div class="code-editor">
+    <div class="columns">
+        <div class="column is-full">
+            <div id="code-79-text" class="code-editor-text" style="height: 96px;">
+                
+LET rows = QUERY "SELECT * FROM products" IN db USING sql
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-79-text');
+            editor.setTheme("ace/theme/tomorrow_night");
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>A host application embedding Ferret can also provide its own values. That could be a queue, cache, workflow object, browser session, API client, or any other domain-specific object.</p>
+<p>From the script’s point of view, these values participate in the same language constructs. The script does not need to know whether a value came from the standard library, a contrib module, or the embedding application. It only matters which capabilities the value exposes.</p>
+<p>As the compiler and runtime mature, this model also gives Ferret a clearer way to report capability errors. The problem is not just that a function failed, but that a value does not support the operation being requested.</p>
+<p>For example, <code>QUERY ... IN value USING css</code> requires the target value to support querying with the selected dialect. If it does not, Ferret can report that directly.</p>
+<p>For the Ferret ecosystem, this separation matters.</p>
+<p>Core Ferret can stay small, while modules add support for new document types, protocols, storage systems, APIs, browser integrations, and runtime-specific behavior without requiring new syntax for each one.</p>
+<p>That boundary keeps the language compact while leaving plenty of room for extension at the runtime and module level.</p>
+<p>It is also the reason HTML drivers are no longer treated as part of the language core. They were moved to <b><a href="https://github.com/MontFerret/contrib">a separate repository</a></b> to make it easier to iterate on browser-specific behavior without affecting the core language. The same applies to other domain-specific modules that may come in the future.</p>
+<h2 id="namespace-aliases-with-use">Namespace aliases with USE</h2>
+<p>Ferret v2 also improves how scripts work with modules.</p>
+<p>Modules can expose host functions, but fully-qualified names can become noisy when a script repeatedly uses functions from the same module or namespace.</p>
+<p><code>USE</code> lets a script create a local alias for a fully-qualified namespace or symbol:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor">
+
+    
+
+    <button id="code-editor-274-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+
+    <div class="columns">
+        <div class="column is-6">
+            <div id="code-editor-274-text" class="code-editor-text" style="height: 160px;">
+                
+USE IO::NET::HTTP::GET AS GET
+
+LET out = GET("https://mockery.montferret.dev/api/products/index.json")
+
+RETURN JSON_PARSE(out)
+
+            </div>
+        </div>
+        <div class="column is-6">
+            <div id="code-editor-274-result" class="code-editor-result" style="height: 160px;"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-274-run-button');
+            const textEditor = createEditor('code-editor-274-text', 'fql');
+            const resultEditor = createEditor('code-editor-274-result', 'json');
+            resultEditor.setReadOnly(true);
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>This keeps module-based scripts readable without pulling an entire module directly into local scope.</p>
+<p>The important part is that <code>USE</code> does not hide where functionality comes from. It creates an explicit local alias for a fully-qualified namespace or symbol, so scripts can stay concise while still making the shortcut visible at the top of the file.</p>
+<p>This keeps Ferret explicit while making module-heavy scripts easier to read.</p>
+<h2 id="the-bigger-idea-capability-oriented-syntax">The bigger idea: capability-oriented syntax</h2>
+<p>The common thread behind these additions is capability-oriented design.</p>
+<p>Ferret v2 does not need every domain to become a new language feature. Instead, the language provides a small set of operations that can work across different kinds of values:</p>
+<ul>
+<li><code>QUERY</code> for values that can be queried.</li>
+<li>array operators for transforming and filtering collections.</li>
+<li>string templates for readable string construction.</li>
+<li><code>DISPATCH</code> for values that can receive events or signals.</li>
+<li><code>WAITFOR</code> for values or expressions that can be observed over time.</li>
+<li><code>MATCH</code> for structured branching.</li>
+<li>assignment and <code>DELETE</code> for local/object mutation and property removal.</li>
+<li><code>USE</code> for explicit aliases to fully-qualified names.</li>
+<li>operation-level policies for errors and timeouts.</li>
+</ul>
+<p>The goal is not to turn every useful library operation into syntax. Only operations that shape the structure of extraction workflows should become language constructs.</p>
+<p>The syntax stays focused, while capabilities allow modules and host applications to define what those operations mean for their own values.</p>
+<p>That is what makes Ferret more than a browser scripting language. Browser automation remains an important use case, but the language is being shaped as a programmable data extraction engine.</p>
+<p>Ferret should help developers turn messy websites and data sources into clean structured data. These language-level capabilities are designed around that goal.</p>
+<h2 id="try-it-in-the-playground">Try it in the playground</h2>
+<p>The best way to understand the new syntax is to try it.</p>
+<p>Ferret v2 is available in the playground, so you can experiment with queries, array operators, string templates, pattern matching, waiting, and other language features directly in the browser:</p>
+<p><b><a href="https://www.montferret.dev/try/next">Try Ferret v2 in the Playground</a></b></p>
+<p>The playground is especially useful for small examples. You can tweak selectors, change return shapes, test query modifiers, and get a feel for how the new language capabilities work together.</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>Ferret v2 is still evolving, but the direction is intentional.</p>
+<p>The language should stay concise for common extraction tasks, explicit when behavior matters, and structured enough for better diagnostics, optimization, and tooling.</p>
+<p>The new language capabilities are not about changing Ferret for the sake of change. They are about giving important extraction concepts a clear place in the language.</p>
+<p>Ferret v2 is still Ferret: practical, focused, and built for developers who need reliable structured data from messy sources.</p>
+<p>It just has a stronger foundation now.</p>
+
+            </div>
+        </div>
+    </div>
+
+        </div><footer class="footer">
+    <div class="columns">
+        <div class="column is-4 is-hidden-mobile">
+            <p>
+                <a href="https://github.com/MontFerret">
+                    © 2018-2026 MontFerret Team
+                </a>
+            </p>
+            <p>
+                <a href="https://www.montferret.dev/blog/index.xml">RSS</a>
+            </p>
+        </div>
+        <div class="column is-4 has-text-centered">
+            <img src="/img/logo.png" width="30" height="30" />
+        </div>
+        <div class="column is-4 has-text-right is-hidden-mobile">
+            <a href="#">BACK TO TOP Δ</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+</footer>
+</body>
+</html>

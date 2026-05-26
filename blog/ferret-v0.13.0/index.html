@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -187,15 +187,16 @@
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-605-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-346-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-605-text" class="code-editor-text" style="height: 340px;">
+            <div id="code-editor-346-text" class="code-editor-text" style="height: 340px;">
                 
 LET doc = DOCUMENT("https://github.com/marketplace/category/api-management", { driver: "cdp"})
 LET nextSelector = ".paginate-container .BtnGroup a:nth-child(2)"
@@ -218,7 +219,7 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-605-result" class="code-editor-result" style="height: 340px;"></div>
+            <div id="code-editor-346-result" class="code-editor-result" style="height: 340px;"></div>
         </div>
     </div>
     
@@ -237,9 +238,9 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-605-run-button');
-            const textEditor = createEditor('code-editor-605-text', 'aql');
-            const resultEditor = createEditor('code-editor-605-result', 'json');
+            const btn = document.querySelector('#code-editor-346-run-button');
+            const textEditor = createEditor('code-editor-346-text', 'fql');
+            const resultEditor = createEditor('code-editor-346-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -272,9 +273,10 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -294,6 +296,10 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -310,6 +316,7 @@ FOR i DO WHILE ELEMENT_EXISTS(doc, nextSelector)
         }, false);
     </script>
 </div>
+
 <p>In this while loop, we are checking if the next button exists (external mutation) but always execute the loop body at least once just in case there is only one page.</p>
 <p>The <code>i</code> variable represents a loop counter that gives information which iteration we are in.
 Being an extension of <code>FOR-IN</code> loop gives us all statements that can be used with regular <code>FOR-IN</code> loop like <code>FILTER</code>, <code>LIMIT</code> and etc.</p>
@@ -324,15 +331,16 @@ Being an extension of <code>FOR-IN</code> loop gives us all statements that can 
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-845-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-463-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-845-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-463-text" class="code-editor-text" style="height: 200px;">
                 
 LET doc = DOCUMENT("https://github.com/", { driver: "cdp"})
 LET el = ELEMENT(doc, "#user_email")
@@ -345,7 +353,7 @@ RETURN {
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-845-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-463-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -364,9 +372,9 @@ RETURN {
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-845-run-button');
-            const textEditor = createEditor('code-editor-845-text', 'aql');
-            const resultEditor = createEditor('code-editor-845-result', 'json');
+            const btn = document.querySelector('#code-editor-463-run-button');
+            const textEditor = createEditor('code-editor-463-text', 'fql');
+            const resultEditor = createEditor('code-editor-463-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -399,9 +407,10 @@ RETURN {
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -421,6 +430,10 @@ RETURN {
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -437,8 +450,10 @@ RETURN {
         }, false);
     </script>
 </div>
+
 <h2 id="elements-parent-and-siblings">Element&rsquo;s parent and siblings</h2>
 <p>With this release, it&rsquo;s possible to direclty access parents and siblings of elements:</p>
+
 
 
 
@@ -451,11 +466,11 @@ RETURN {
 
     
 
-    <button id="code-editor-990-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-522-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-990-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-editor-522-text" class="code-editor-text" style="height: 200px;">
                 
 LET doc = DOCUMENT("https://getbootstrap.com/docs/4.5/components/list-group/", { driver: "cdp"})
 LET list = ELEMENT(doc, 'ul.list-group')
@@ -472,7 +487,7 @@ RETURN {
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-990-result" class="code-editor-result" style="height: 200px;"></div>
+            <div id="code-editor-522-result" class="code-editor-result" style="height: 200px;"></div>
         </div>
     </div>
     
@@ -491,9 +506,9 @@ RETURN {
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-990-run-button');
-            const textEditor = createEditor('code-editor-990-text', 'aql');
-            const resultEditor = createEditor('code-editor-990-result', 'json');
+            const btn = document.querySelector('#code-editor-522-run-button');
+            const textEditor = createEditor('code-editor-522-text', 'fql');
+            const resultEditor = createEditor('code-editor-522-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -526,9 +541,10 @@ RETURN {
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -548,6 +564,10 @@ RETURN {
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -564,6 +584,7 @@ RETURN {
         }, false);
     </script>
 </div>
+
 <h1 id="whats-fixed">What&rsquo;s fixed</h1>
 <h2 id="html-escaping">HTML escaping</h2>
 <p>Long lasting issue of HTML escaping has been finally fixed.</p>
@@ -595,8 +616,8 @@ RETURN {
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -605,5 +626,6 @@ RETURN {
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

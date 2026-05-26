@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -782,7 +782,7 @@ LIMIT
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-757-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-288-text" class="code-editor-text" style="height: 100px;">
                 
 LIMIT count
 LIMIT offset, count
@@ -793,9 +793,9 @@ LIMIT offset, count
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-757-text');
+            const editor = ace.edit('code-288-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -807,7 +807,9 @@ LIMIT offset, count
         }, false);
     </script>
 </div>
+
 <p>The first form allows specifying only the count value whereas the second form allows specifying both offset and count. The first form is identical using the second form with an offset value of 0.</p>
+
 
 
 
@@ -819,11 +821,11 @@ LIMIT offset, count
 <div class="code-editor">
 
     
-    <button id="code-editor-553-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-989-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-553-text" class="code-editor-text" style="height: 160px;">
+            <div id="code-editor-989-text" class="code-editor-text" style="height: 160px;">
                 
 LET users = [{"id":1,"firstName":"Johny","lastName":"Purdie"},{"id":2,"firstName":"Wayland","lastName":"Bewshaw"},{"id":3,"firstName":"Julius","lastName":"Taplin"},{"id":4,"firstName":"Jarrad","lastName":"Dollman"},{"id":5,"firstName":"Leia","lastName":"Meechan"}]
 
@@ -836,7 +838,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-553-result" class="code-editor-result" style="height: 160px;"></div>
+            <div id="code-editor-989-result" class="code-editor-result" style="height: 160px;"></div>
         </div>
     </div>
     
@@ -855,9 +857,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-553-run-button');
-            const textEditor = createEditor('code-editor-553-text', 'aql');
-            const resultEditor = createEditor('code-editor-553-result', 'json');
+            const btn = document.querySelector('#code-editor-989-run-button');
+            const textEditor = createEditor('code-editor-989-text', 'fql');
+            const resultEditor = createEditor('code-editor-989-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -889,9 +891,10 @@ FOR u IN users
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -911,6 +914,10 @@ FOR u IN users
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -927,8 +934,10 @@ FOR u IN users
         }, false);
     </script>
 </div>
+
 <p>Above query returns the first five elements of the array of user objects. It could also be written as <code>LIMIT 0, 5</code> for the same result.</p>
 <p>The <code>offset</code> value specifies how many elements from the result shall be skipped. It must be 0 or greater. The <code>count</code> value specifies how many elements should be at most included in the result.</p>
+
 
 
 
@@ -940,11 +949,11 @@ FOR u IN users
 <div class="code-editor">
 
     
-    <button id="code-editor-60-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-195-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-60-text" class="code-editor-text" style="height: 160px;">
+            <div id="code-editor-195-text" class="code-editor-text" style="height: 160px;">
                 
 LET users = [{"id":1,"firstName":"Johny","lastName":"Purdie"},{"id":2,"firstName":"Wayland","lastName":"Bewshaw"},{"id":3,"firstName":"Julius","lastName":"Taplin"},{"id":4,"firstName":"Jarrad","lastName":"Dollman"},{"id":5,"firstName":"Leia","lastName":"Meechan"}]
 
@@ -958,7 +967,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-60-result" class="code-editor-result" style="height: 160px;"></div>
+            <div id="code-editor-195-result" class="code-editor-result" style="height: 160px;"></div>
         </div>
     </div>
     
@@ -977,9 +986,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-60-run-button');
-            const textEditor = createEditor('code-editor-60-text', 'aql');
-            const resultEditor = createEditor('code-editor-60-result', 'json');
+            const btn = document.querySelector('#code-editor-195-run-button');
+            const textEditor = createEditor('code-editor-195-text', 'fql');
+            const resultEditor = createEditor('code-editor-195-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1011,9 +1020,10 @@ FOR u IN users
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1033,6 +1043,10 @@ FOR u IN users
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1049,6 +1063,7 @@ FOR u IN users
         }, false);
     </script>
 </div>
+
 <p>In above example, the objects of users are sorted, the first three results get skipped and it returns the next two user objects.</p>
 <div class="notification is-info">
     Note that variables, expressions and subqueries can not be used for offset and count. The values for offset and count must be known at query compile time, which means that you can only use number literals, bind parameters or expressions that can be resolved at query compile time.
@@ -1085,8 +1100,8 @@ FOR u IN users
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -1095,5 +1110,6 @@ FOR u IN users
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -783,7 +783,7 @@ FILTER
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-825-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-425-text" class="code-editor-text" style="height: 80px;">
                 
 FILTER expression
 
@@ -793,9 +793,9 @@ FILTER expression
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-825-text');
+            const editor = ace.edit('code-425-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -807,7 +807,9 @@ FILTER expression
         }, false);
     </script>
 </div>
+
 <p><code>expression</code> must be a condition that evaluates to either false or true. If the condition result is false, the current element is skipped, so it will not be processed further and not be part of the result. If the condition is true, the current element is not skipped and can be further processed. See <a href="https://www.montferret.dev/docs/fql/operators/" title="Operators"><code>Operators</code></a> for a list of comparison operators, logical operators etc. that you can use in conditions.</p>
+
 
 
 
@@ -819,11 +821,11 @@ FILTER expression
 <div class="code-editor">
 
     
-    <button id="code-editor-102-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-988-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-102-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-988-text" class="code-editor-text" style="height: 100px;">
                 
 FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
   FILTER country =~ 'A'
@@ -834,7 +836,7 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-102-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-988-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -853,9 +855,9 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-102-run-button');
-            const textEditor = createEditor('code-editor-102-text', 'aql');
-            const resultEditor = createEditor('code-editor-102-result', 'json');
+            const btn = document.querySelector('#code-editor-988-run-button');
+            const textEditor = createEditor('code-editor-988-text', 'fql');
+            const resultEditor = createEditor('code-editor-988-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -887,9 +889,10 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -909,6 +912,10 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -925,7 +932,9 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
         }, false);
     </script>
 </div>
+
 <p>It is allowed to specify multiple <code>FILTER</code> statements in a query, even in the same block. If multiple <code>FILTER</code> statements are used, their results will be combined with a logical <code>AND</code>, meaning all filter conditions must be true to include an element.</p>
+
 
 
 
@@ -937,11 +946,11 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
 <div class="code-editor">
 
     
-    <button id="code-editor-375-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-372-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-375-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-372-text" class="code-editor-text" style="height: 100px;">
                 
 FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
   FILTER country LIKE "A*"
@@ -953,7 +962,7 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-375-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-372-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -972,9 +981,9 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-375-run-button');
-            const textEditor = createEditor('code-editor-375-text', 'aql');
-            const resultEditor = createEditor('code-editor-375-result', 'json');
+            const btn = document.querySelector('#code-editor-372-run-button');
+            const textEditor = createEditor('code-editor-372-text', 'fql');
+            const resultEditor = createEditor('code-editor-372-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1006,9 +1015,10 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1028,6 +1038,10 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1044,6 +1058,7 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
         }, false);
     </script>
 </div>
+
 
 
 
@@ -1061,14 +1076,15 @@ Order of operations
 
 
 
+
 <div class="code-editor">
 
     
-    <button id="code-editor-724-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-168-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-724-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-168-text" class="code-editor-text" style="height: 100px;">
                 
 FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
   FILTER country LIKE "A*"
@@ -1079,7 +1095,7 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-724-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-168-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -1098,9 +1114,9 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-724-run-button');
-            const textEditor = createEditor('code-editor-724-text', 'aql');
-            const resultEditor = createEditor('code-editor-724-result', 'json');
+            const btn = document.querySelector('#code-editor-168-run-button');
+            const textEditor = createEditor('code-editor-168-text', 'fql');
+            const resultEditor = createEditor('code-editor-168-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1132,9 +1148,10 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1154,6 +1171,10 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1170,7 +1191,9 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
         }, false);
     </script>
 </div>
+
 <p>We can limit the result set to 5 countries at most:</p>
+
 
 
 
@@ -1182,11 +1205,11 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
 <div class="code-editor">
 
     
-    <button id="code-editor-933-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-405-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-933-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-405-text" class="code-editor-text" style="height: 100px;">
                 
 FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
   FILTER LIKE(country, "A%")
@@ -1198,7 +1221,7 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-933-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-405-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -1217,9 +1240,9 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-933-run-button');
-            const textEditor = createEditor('code-editor-933-text', 'aql');
-            const resultEditor = createEditor('code-editor-933-result', 'json');
+            const btn = document.querySelector('#code-editor-405-run-button');
+            const textEditor = createEditor('code-editor-405-text', 'fql');
+            const resultEditor = createEditor('code-editor-405-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1251,9 +1274,10 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1273,6 +1297,10 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1289,6 +1317,7 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
         }, false);
     </script>
 </div>
+
 <p>This may return strings Argentina, Anguilla, Armenia, Antarctica, American Samoa. Which ones are returned is undefined, since there is no SORT statement to ensure a particular order. If we add a second FILTER statement to only return women…</p>
 
 </article>
@@ -1321,8 +1350,8 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -1331,5 +1360,6 @@ FOR country IN JSON_PARSE(IO::NET::HTTP::GET("http://country.io/names.json"))
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

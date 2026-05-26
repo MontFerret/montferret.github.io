@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -183,15 +183,16 @@ The functions can be used to test UI, validate data and ensure the correctnes of
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-507-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-772-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-507-text" class="code-editor-text" style="height: 190px;">
+            <div id="code-editor-772-text" class="code-editor-text" style="height: 190px;">
                 
 
 LET doc = DOCUMENT('https://github.com/', { driver: "cdp" })
@@ -206,7 +207,7 @@ RETURN NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-507-result" class="code-editor-result" style="height: 190px;"></div>
+            <div id="code-editor-772-result" class="code-editor-result" style="height: 190px;"></div>
         </div>
     </div>
     
@@ -225,9 +226,9 @@ RETURN NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-507-run-button');
-            const textEditor = createEditor('code-editor-507-text', 'aql');
-            const resultEditor = createEditor('code-editor-507-result', 'json');
+            const btn = document.querySelector('#code-editor-772-run-button');
+            const textEditor = createEditor('code-editor-772-text', 'fql');
+            const resultEditor = createEditor('code-editor-772-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -260,9 +261,10 @@ RETURN NONE
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -282,6 +284,10 @@ RETURN NONE
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -298,9 +304,11 @@ RETURN NONE
         }, false);
     </script>
 </div>
+
 <p>Read about available functions <a href="https://www.montferret.dev/docs/stdlib/testing">here</a>.</p>
 <h2 id="new-frames-function">New FRAMES function</h2>
 <p>A new helper function that finds HTML frames by a given property selector.</p>
+
 
 
 
@@ -313,11 +321,11 @@ RETURN NONE
 
     
 
-    <button id="code-editor-698-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-594-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-698-text" class="code-editor-text" style="height: 190px;">
+            <div id="code-editor-594-text" class="code-editor-text" style="height: 190px;">
                 
 
 LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
@@ -332,7 +340,7 @@ RETURN FIRST(frame).url
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-698-result" class="code-editor-result" style="height: 190px;"></div>
+            <div id="code-editor-594-result" class="code-editor-result" style="height: 190px;"></div>
         </div>
     </div>
     
@@ -351,9 +359,9 @@ RETURN FIRST(frame).url
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-698-run-button');
-            const textEditor = createEditor('code-editor-698-text', 'aql');
-            const resultEditor = createEditor('code-editor-698-result', 'json');
+            const btn = document.querySelector('#code-editor-594-run-button');
+            const textEditor = createEditor('code-editor-594-text', 'fql');
+            const resultEditor = createEditor('code-editor-594-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -386,9 +394,10 @@ RETURN FIRST(frame).url
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -408,6 +417,10 @@ RETURN FIRST(frame).url
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -424,8 +437,10 @@ RETURN FIRST(frame).url
         }, false);
     </script>
 </div>
+
 <h2 id="iframe-navigation-handling">iFrame navigation handling</h2>
 <p>Finally, we can control navigation of nested iframes! Whenever your page has a nested iframe that performs some nested navigation, you can tell Ferret to wait for its completion.</p>
+
 
 
 
@@ -438,11 +453,11 @@ RETURN FIRST(frame).url
 
     
 
-    <button id="code-editor-974-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-175-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-974-text" class="code-editor-text" style="height: 580px;">
+            <div id="code-editor-175-text" class="code-editor-text" style="height: 580px;">
                 
 LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
     driver: 'cdp'
@@ -482,7 +497,7 @@ RETURN INNER_TEXT(innerPage3, ".content")
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-974-result" class="code-editor-result" style="height: 580px;"></div>
+            <div id="code-editor-175-result" class="code-editor-result" style="height: 580px;"></div>
         </div>
     </div>
     
@@ -501,9 +516,9 @@ RETURN INNER_TEXT(innerPage3, ".content")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-974-run-button');
-            const textEditor = createEditor('code-editor-974-text', 'aql');
-            const resultEditor = createEditor('code-editor-974-result', 'json');
+            const btn = document.querySelector('#code-editor-175-run-button');
+            const textEditor = createEditor('code-editor-175-text', 'fql');
+            const resultEditor = createEditor('code-editor-175-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -536,9 +551,10 @@ RETURN INNER_TEXT(innerPage3, ".content")
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -558,6 +574,10 @@ RETURN INNER_TEXT(innerPage3, ".content")
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -574,6 +594,7 @@ RETURN INNER_TEXT(innerPage3, ".content")
         }, false);
     </script>
 </div>
+
 <h1 id="whats-changed">What&rsquo;s changed</h1>
 <h2 id="removed-property-caching-and-tracking">Removed property caching and tracking</h2>
 <p>This <strong>could be</strong> a breaking change, so, please, test your scripts.
@@ -606,8 +627,8 @@ To tackle the problem, the caching and tracking were removed and thus, every tim
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -616,5 +637,6 @@ To tackle the problem, the caching and tracking were removed and thus, every tim
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

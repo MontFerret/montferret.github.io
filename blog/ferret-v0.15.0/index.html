@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -179,7 +179,7 @@
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-994-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-550-text" class="code-editor-text" style="height: 300px;">
                 
 LET page = DOCUMENT("www.non-utf8-page.co", {
     driver: "http",
@@ -192,9 +192,9 @@ LET page = DOCUMENT("www.non-utf8-page.co", {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-994-text');
+            const editor = ace.edit('code-550-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -206,9 +206,11 @@ LET page = DOCUMENT("www.non-utf8-page.co", {
         }, false);
     </script>
 </div>
+
 <h2 id="possibility-to-send-keyboard-events">Possibility to send keyboard events</h2>
 <p>Have you ever scraped a page with search input field that could be tirggered by pressing &ldquo;Enter&rdquo; key on your keyboard and there was no way of doing this using Ferret? Such a bumer!</p>
 <p>Well, now you can do that with new <code>PRESS</code> and <code>PRESS_SELECTOR</code> functions!</p>
+
 
 
 
@@ -221,11 +223,11 @@ LET page = DOCUMENT("www.non-utf8-page.co", {
 
     
 
-    <button id="code-editor-506-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-738-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-506-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-738-text" class="code-editor-text" style="height: 300px;">
                 
 LET page = DOCUMENT("https://soundcloud.com/", {
     driver: "cdp"
@@ -250,7 +252,7 @@ FOR track IN ELEMENTS(page, ".searchItem")
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-506-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-738-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -269,9 +271,9 @@ FOR track IN ELEMENTS(page, ".searchItem")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-506-run-button');
-            const textEditor = createEditor('code-editor-506-text', 'aql');
-            const resultEditor = createEditor('code-editor-506-result', 'json');
+            const btn = document.querySelector('#code-editor-738-run-button');
+            const textEditor = createEditor('code-editor-738-text', 'fql');
+            const resultEditor = createEditor('code-editor-738-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -304,9 +306,10 @@ FOR track IN ELEMENTS(page, ".searchItem")
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -326,6 +329,10 @@ FOR track IN ELEMENTS(page, ".searchItem")
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -342,6 +349,7 @@ FOR track IN ELEMENTS(page, ".searchItem")
         }, false);
     </script>
 </div>
+
 <h1 id="whats-fixed">What&rsquo;s fixed</h1>
 <p>Ok, now, let&rsquo;s take a look what bugs have been fixed!</p>
 <ul>
@@ -378,8 +386,8 @@ FOR track IN ELEMENTS(page, ".searchItem")
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -388,5 +396,6 @@ FOR track IN ELEMENTS(page, ".searchItem")
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

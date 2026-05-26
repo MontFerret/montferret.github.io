@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -211,15 +211,16 @@ This is a pseudo-variable that provides access to the current event object. The 
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-412-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-279-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-412-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-279-text" class="code-editor-text" style="height: 300px;">
                 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 
@@ -233,7 +234,7 @@ RETURN evt.headers
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-412-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-279-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -252,9 +253,9 @@ RETURN evt.headers
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-412-run-button');
-            const textEditor = createEditor('code-editor-412-text', 'aql');
-            const resultEditor = createEditor('code-editor-412-result', 'json');
+            const btn = document.querySelector('#code-editor-279-run-button');
+            const textEditor = createEditor('code-editor-279-text', 'fql');
+            const resultEditor = createEditor('code-editor-279-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -287,9 +288,10 @@ RETURN evt.headers
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -309,6 +311,10 @@ RETURN evt.headers
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -325,6 +331,7 @@ RETURN evt.headers
         }, false);
     </script>
 </div>
+
 <p>Request object:</p>
 <pre tabindex="0"><code class="language-fql" data-lang="fql">{
  url
@@ -340,15 +347,16 @@ RETURN evt.headers
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-997-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-375-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-997-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-375-text" class="code-editor-text" style="height: 250px;">
                 
 LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 
@@ -362,7 +370,7 @@ RETURN JSON_PARSE(evt.body)
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-997-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-375-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -381,9 +389,9 @@ RETURN JSON_PARSE(evt.body)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-997-run-button');
-            const textEditor = createEditor('code-editor-997-text', 'aql');
-            const resultEditor = createEditor('code-editor-997-result', 'json');
+            const btn = document.querySelector('#code-editor-375-run-button');
+            const textEditor = createEditor('code-editor-375-text', 'fql');
+            const resultEditor = createEditor('code-editor-375-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -416,9 +424,10 @@ RETURN JSON_PARSE(evt.body)
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -438,6 +447,10 @@ RETURN JSON_PARSE(evt.body)
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -454,6 +467,7 @@ RETURN JSON_PARSE(evt.body)
         }, false);
     </script>
 </div>
+
 <p>Response object:</p>
 <pre tabindex="0"><code class="language-fql" data-lang="fql">{
  url 
@@ -478,15 +492,16 @@ RETURN JSON_PARSE(evt.body)
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-937-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-976-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-937-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-976-text" class="code-editor-text" style="height: 100px;">
                 
 LET foo = { bar: NONE }
 RETURN foo?.bar?.baz
@@ -494,7 +509,7 @@ RETURN foo?.bar?.baz
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-937-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-976-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -513,9 +528,9 @@ RETURN foo?.bar?.baz
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-937-run-button');
-            const textEditor = createEditor('code-editor-937-text', 'aql');
-            const resultEditor = createEditor('code-editor-937-result', 'json');
+            const btn = document.querySelector('#code-editor-976-run-button');
+            const textEditor = createEditor('code-editor-976-text', 'fql');
+            const resultEditor = createEditor('code-editor-976-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -548,9 +563,10 @@ RETURN foo?.bar?.baz
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -570,6 +586,10 @@ RETURN foo?.bar?.baz
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -586,6 +606,7 @@ RETURN foo?.bar?.baz
         }, false);
     </script>
 </div>
+
 <p>The <code>?.</code> operator is like the <code>.</code> chaining operator, except that instead of returning an error if a reference is null, the expression short-circuits with a return value of <code>NONE</code>.</p>
 <h2 id="errors-suppression">Errors suppression</h2>
 <p>Errors suppression feature is somewhat similar to the optional chaining in allowing to tolerate insignificant errors during query execution and return <code>NONE</code> in case of occurred error:</p>
@@ -597,15 +618,16 @@ RETURN foo?.bar?.baz
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-613-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-888-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-613-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-888-text" class="code-editor-text" style="height: 100px;">
                 
 LET el = ELEMENT(NONE, "#el")?
 
@@ -614,7 +636,7 @@ RETURN el == NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-613-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-888-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -633,9 +655,9 @@ RETURN el == NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-613-run-button');
-            const textEditor = createEditor('code-editor-613-text', 'aql');
-            const resultEditor = createEditor('code-editor-613-result', 'json');
+            const btn = document.querySelector('#code-editor-888-run-button');
+            const textEditor = createEditor('code-editor-888-text', 'fql');
+            const resultEditor = createEditor('code-editor-888-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -668,9 +690,10 @@ RETURN el == NONE
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -690,6 +713,10 @@ RETURN el == NONE
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -706,6 +733,7 @@ RETURN el == NONE
         }, false);
     </script>
 </div>
+
 <p>If you try to execute the same query, but without <code>?</code> operator, it will fail:</p>
 
 
@@ -715,15 +743,16 @@ RETURN el == NONE
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-617-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-579-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-617-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-579-text" class="code-editor-text" style="height: 100px;">
                 
 LET el = ELEMENT(NONE, "#el")
 
@@ -732,7 +761,7 @@ RETURN el == NONE
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-617-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-579-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -751,9 +780,9 @@ RETURN el == NONE
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-617-run-button');
-            const textEditor = createEditor('code-editor-617-text', 'aql');
-            const resultEditor = createEditor('code-editor-617-result', 'json');
+            const btn = document.querySelector('#code-editor-579-run-button');
+            const textEditor = createEditor('code-editor-579-text', 'fql');
+            const resultEditor = createEditor('code-editor-579-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -786,9 +815,10 @@ RETURN el == NONE
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -808,6 +838,10 @@ RETURN el == NONE
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -824,6 +858,7 @@ RETURN el == NONE
         }, false);
     </script>
 </div>
+
 <p>The <code>?</code> operator is like the <code>?.</code> optional chaining operator, but for function calls and inline statements:</p>
 
 
@@ -833,15 +868,16 @@ RETURN el == NONE
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-197-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-812-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-197-text" class="code-editor-text" style="height: 150px;">
+            <div id="code-editor-812-text" class="code-editor-text" style="height: 150px;">
                 
 LET page = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 LET evt = (WAITFOR EVENT "navigation" IN page)?
@@ -851,7 +887,7 @@ RETURN evt == NONE ? "not navigated" : "navigated"
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-197-result" class="code-editor-result" style="height: 150px;"></div>
+            <div id="code-editor-812-result" class="code-editor-result" style="height: 150px;"></div>
         </div>
     </div>
     
@@ -870,9 +906,9 @@ RETURN evt == NONE ? "not navigated" : "navigated"
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-197-run-button');
-            const textEditor = createEditor('code-editor-197-text', 'aql');
-            const resultEditor = createEditor('code-editor-197-result', 'json');
+            const btn = document.querySelector('#code-editor-812-run-button');
+            const textEditor = createEditor('code-editor-812-text', 'fql');
+            const resultEditor = createEditor('code-editor-812-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -905,9 +941,10 @@ RETURN evt == NONE ? "not navigated" : "navigated"
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -927,6 +964,10 @@ RETURN evt == NONE ? "not navigated" : "navigated"
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -943,6 +984,7 @@ RETURN evt == NONE ? "not navigated" : "navigated"
         }, false);
     </script>
 </div>
+
 <h2 id="xpath-selectors">XPath selectors</h2>
 <p>This is one of the long waiting features - universal use of XPath selectors.
 With updated interface of HTML driver componenets, it is possible to pass XPath selectors to HTML API functions by using new <code>X</code> function:</p>
@@ -954,15 +996,16 @@ With updated interface of HTML driver componenets, it is possible to pass XPath 
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-744-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-832-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-744-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-832-text" class="code-editor-text" style="height: 250px;">
                 
 LET page = DOCUMENT('https://soundcloud.com/charts/top', { driver: "cdp" })
 WAIT_ELEMENT(page, X("//div[contains(@class, 'chartTrack__details')]"), 5000)
@@ -977,7 +1020,7 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-744-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-832-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -996,9 +1039,9 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-744-run-button');
-            const textEditor = createEditor('code-editor-744-text', 'aql');
-            const resultEditor = createEditor('code-editor-744-result', 'json');
+            const btn = document.querySelector('#code-editor-832-run-button');
+            const textEditor = createEditor('code-editor-832-text', 'fql');
+            const resultEditor = createEditor('code-editor-832-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -1031,9 +1074,10 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1053,6 +1097,10 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1069,6 +1117,7 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
         }, false);
     </script>
 </div>
+
 <p><code>X</code> function creates an XPath type of query selector which is supported by all HTML API functions now. The function automatically resolves returned value based on its type.</p>
 <h2 id="discard-results">Discard results</h2>
 <p>Sometimes we need to do some prep work in a <code>FOR</code> loop but are not interested in the returned result. With this release we can use Go-like <code>_</code> variable name to discard results.</p>
@@ -1081,15 +1130,16 @@ FOR el IN ELEMENTS(page, X("//div[contains(@class, 'chartTracks')]/ul/li"))
 
 
 
+
 <div class="code-editor">
 
     
 
-    <button id="code-editor-521-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-901-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-6">
-            <div id="code-editor-521-text" class="code-editor-text" style="height: 250px;">
+            <div id="code-editor-901-text" class="code-editor-text" style="height: 250px;">
                 
 LET _ = (
     FOR num IN 1..10
@@ -1102,7 +1152,7 @@ RETURN _
             </div>
         </div>
         <div class="column is-6">
-            <div id="code-editor-521-result" class="code-editor-result" style="height: 250px;"></div>
+            <div id="code-editor-901-result" class="code-editor-result" style="height: 250px;"></div>
         </div>
     </div>
     
@@ -1121,9 +1171,9 @@ RETURN _
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-521-run-button');
-            const textEditor = createEditor('code-editor-521-text', 'aql');
-            const resultEditor = createEditor('code-editor-521-result', 'json');
+            const btn = document.querySelector('#code-editor-901-run-button');
+            const textEditor = createEditor('code-editor-901-text', 'fql');
+            const resultEditor = createEditor('code-editor-901-result', 'json');
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -1156,9 +1206,10 @@ RETURN _
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1178,6 +1229,10 @@ RETURN _
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1194,6 +1249,7 @@ RETURN _
         }, false);
     </script>
 </div>
+
 <h1 id="whats-fixed">What&rsquo;s fixed</h1>
 <p>Here is a list of important bug fixes:</p>
 <ul>
@@ -1232,8 +1288,8 @@ Thanks everyone who contributed to the project!</p>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -1242,5 +1298,6 @@ Thanks everyone who contributed to the project!</p>
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

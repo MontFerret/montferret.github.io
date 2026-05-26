@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -783,7 +783,7 @@ LET
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-633-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-723-text" class="code-editor-text" style="height: 80px;">
                 
 LET variableName = expression
 
@@ -793,9 +793,9 @@ LET variableName = expression
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-633-text');
+            const editor = ace.edit('code-723-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -807,6 +807,7 @@ LET variableName = expression
         }, false);
     </script>
 </div>
+
 <p>Variables are immutable in FQL, which means they can not be re-assigned:</p>
 
 
@@ -815,7 +816,7 @@ LET variableName = expression
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-543-text" class="code-editor-text" style="height: 150px;">
+            <div id="code-520-text" class="code-editor-text" style="height: 150px;">
                 
 LET a = [1, 2, 3]  // initial assignment
 
@@ -829,9 +830,9 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-543-text');
+            const editor = ace.edit('code-520-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -843,7 +844,9 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]
         }, false);
     </script>
 </div>
+
 <p><code>LET</code> statements are mostly used to declare complex computations and to avoid repeated computations of the same value at multiple parts of a query.</p>
+
 
 
 
@@ -855,11 +858,11 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]
 <div class="code-editor">
 
     
-    <button id="code-editor-529-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-463-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-529-text" class="code-editor-text" style="height: 240px;">
+            <div id="code-editor-463-text" class="code-editor-text" style="height: 240px;">
                 
 LET users = [{"id":1,"firstName":"Kikelia","lastName":"Coper","cart":[{"Name":"Garlic","Price":"$7.46"},{"Name":"Flower - Commercial Spider","Price":"$6.59"}]},{"id":2,"firstName":"Toni","lastName":"MacTeggart","cart":[{"Name":"Spice - Paprika","Price":"$6.31"},{"Name":"Extract - Vanilla,artificial","Price":"$4.74"},{"Name":"Wine - White, Cooking","Price":"$1.50"},{"Name":"Nutmeg - Ground","Price":"$1.30"}]},{"id":3,"firstName":"Neile","lastName":"Saice","cart":[{"Name":"Mustard Prepared","Price":"$2.28"},{"Name":"Flower - Commercial Bronze","Price":"$4.80"}]}]
 
@@ -877,7 +880,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-529-result" class="code-editor-result" style="height: 240px;"></div>
+            <div id="code-editor-463-result" class="code-editor-result" style="height: 240px;"></div>
         </div>
     </div>
     
@@ -896,9 +899,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-529-run-button');
-            const textEditor = createEditor('code-editor-529-text', 'aql');
-            const resultEditor = createEditor('code-editor-529-result', 'json');
+            const btn = document.querySelector('#code-editor-463-run-button');
+            const textEditor = createEditor('code-editor-463-text', 'fql');
+            const resultEditor = createEditor('code-editor-463-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -930,9 +933,10 @@ FOR u IN users
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -952,6 +956,10 @@ FOR u IN users
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -968,8 +976,10 @@ FOR u IN users
         }, false);
     </script>
 </div>
+
 <p>In the above example, the computation of the number of cart items is factored out using a <code>LET</code> statement, thus avoiding computing the value twice in the <code>RETURN</code> statement.</p>
 <p>Another use case for <code>LET</code> is to declare a complex computation in a subquery, making the whole query more readable.</p>
+
 
 
 
@@ -981,11 +991,11 @@ FOR u IN users
 <div class="code-editor">
 
     
-    <button id="code-editor-615-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-370-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-615-text" class="code-editor-text" style="height: 300px;">
+            <div id="code-editor-370-text" class="code-editor-text" style="height: 300px;">
                 
 LET users = [{"id":1,"name":"Moises Grisewood"},{"id":2,"name":"Dell Marnes"},{"id":3,"name":"Tobin Bilbery"},{"id":4,"name":"Lorianne Posten"},{"id":5,"name":"Drucill Cryer"}]
 LET friends = [{"id":1,"name":"Maximo Massard","userId":1},{"id":2,"name":"Delainey Sancho","userId":1},{"id":3,"name":"Lindon Beale","userId":1},{"id":4,"name":"Gus Sprey","userId":3},{"id":5,"name":"Virgil Dallander","userId":3},{"id":6,"name":"Agretha Mackerel","userId":4},{"id":7,"name":"Christalle Aldins","userId":4},{"id":8,"name":"Karalynn Margery","userId":5},{"id":9,"name":"Rodolph Ladd","userId":5},{"id":10,"name":"Babette Brassill","userId":1}]
@@ -1008,7 +1018,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-615-result" class="code-editor-result" style="height: 300px;"></div>
+            <div id="code-editor-370-result" class="code-editor-result" style="height: 300px;"></div>
         </div>
     </div>
     
@@ -1027,9 +1037,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-615-run-button');
-            const textEditor = createEditor('code-editor-615-text', 'aql');
-            const resultEditor = createEditor('code-editor-615-result', 'json');
+            const btn = document.querySelector('#code-editor-370-run-button');
+            const textEditor = createEditor('code-editor-370-text', 'fql');
+            const resultEditor = createEditor('code-editor-370-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1061,9 +1071,10 @@ FOR u IN users
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1083,6 +1094,10 @@ FOR u IN users
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1099,6 +1114,7 @@ FOR u IN users
         }, false);
     </script>
 </div>
+
 
 </article>
         </section>
@@ -1130,8 +1146,8 @@ FOR u IN users
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -1140,5 +1156,6 @@ FOR u IN users
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

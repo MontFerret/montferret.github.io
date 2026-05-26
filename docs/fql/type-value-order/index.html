@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -781,7 +781,7 @@ Type and value order
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-477-text" class="code-editor-text" style="height: 90px;">
+            <div id="code-175-text" class="code-editor-text" style="height: 90px;">
                 
 none < bool < number < string < array/list < object
 
@@ -791,9 +791,9 @@ none < bool < number < string < array/list < object
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-477-text');
+            const editor = ace.edit('code-175-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -805,6 +805,7 @@ none < bool < number < string < array/list < object
         }, false);
     </script>
 </div>
+
 <p>This means none is the smallest type in FQL and object is the type with the highest order. If the compared operands have a different type, then the comparison result is determined and the comparison is finished.</p>
 <p>For example, the boolean true value will always be less than any numeric or string value, any array (even an empty array) or any object. Additionally, any string value (even an empty string) will always be greater than any numeric value, a boolean value, true or false</p>
 
@@ -814,7 +815,7 @@ none < bool < number < string < array/list < object
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-134-text" class="code-editor-text" style="height: 730px;">
+            <div id="code-862-text" class="code-editor-text" style="height: 730px;">
                 
 none < false
 none < true
@@ -864,9 +865,9 @@ true < { }
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-134-text');
+            const editor = ace.edit('code-862-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -878,6 +879,7 @@ true < { }
         }, false);
     </script>
 </div>
+
 <p>If the two compared operands have the same data types, then the operands values are compared. For the primitive types (none, boolean, number, and string), the result is defined as follows:</p>
 <ul>
 <li>none: none is equal to none</li>
@@ -898,7 +900,7 @@ true < { }
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-916-text" class="code-editor-text" style="height: 120px;">
+            <div id="code-616-text" class="code-editor-text" style="height: 120px;">
                 
 [ ] < [ 0 ]
 [ 1 ] < [ 2 ]
@@ -910,9 +912,9 @@ true < { }
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-916-text');
+            const editor = ace.edit('code-616-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -924,6 +926,7 @@ true < { }
         }, false);
     </script>
 </div>
+
 <p>Two object operands are compared by checking attribute names and value. The attribute names are compared first. Before attribute names are compared, a combined array of all attribute names from both operands is created and sorted lexicographically. This means that the order in which attributes are declared in an object is not relevant when comparing two objects.</p>
 <p>The combined and sorted array of attribute names is then traversed, and the respective attributes from the two compared operands are then looked up. If one of the objects does not have an attribute with the sought name, its attribute value is considered to be none. Finally, the attribute value of both objects is compared using the before mentioned data type and value comparison. The comparisons are performed for all object / document attributes until there is an unambiguous comparison result. If an unambiguous comparison result is found, the comparison is finished. If there is no unambiguous comparison result, the two compared objects are considered equal.</p>
 
@@ -933,7 +936,7 @@ true < { }
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-83-text" class="code-editor-text" style="height: 200px;">
+            <div id="code-612-text" class="code-editor-text" style="height: 200px;">
                 
 { } < { "a" : 1 }
 { } < { "a" : none }
@@ -950,9 +953,9 @@ true < { }
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-83-text');
+            const editor = ace.edit('code-612-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -964,6 +967,7 @@ true < { }
         }, false);
     </script>
 </div>
+
 
 </article>
         </section>
@@ -995,8 +999,8 @@ true < { }
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -1005,5 +1009,6 @@ true < { }
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

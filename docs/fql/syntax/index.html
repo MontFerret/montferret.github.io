@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -811,7 +811,7 @@ Comments can be embedded at any position in a query. The text contained in the c
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-166-text" class="code-editor-text" style="height: 170px;">
+            <div id="code-19-text" class="code-editor-text" style="height: 170px;">
                 
 /* this is a comment */ RETURN 1
 /* these */ RETURN /* are */ 1 /* multiple */ + /* comments */ 1
@@ -826,9 +826,9 @@ Comments can be embedded at any position in a query. The text contained in the c
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-166-text');
+            const editor = ace.edit('code-19-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -840,6 +840,7 @@ Comments can be embedded at any position in a query. The text contained in the c
         }, false);
     </script>
 </div>
+
 <p>
 
 
@@ -869,7 +870,7 @@ On the top level, FQL offers the following operations:</p>
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-284-text" class="code-editor-text" style="height: 180px;">
+            <div id="code-590-text" class="code-editor-text" style="height: 180px;">
                 
 LET page = DOCUMENT("https://github.com/trending")
 
@@ -885,9 +886,9 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-284-text');
+            const editor = ace.edit('code-590-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -899,6 +900,7 @@ FOR row IN ELEMENTS(page, "ol.repo-list li")
         }, false);
     </script>
 </div>
+
 <p>In this example query, the terms <code>FOR</code>, <code>FILTER</code>, and <code>RETURN</code> initiate the higher-level operation according to their name. These terms are also keywords, meaning that they have a special meaning in the language.</p>
 <p>For example, the query parser will use the keywords to find out which high-level operations to execute. That also means keywords can only be used at certain locations in a query. This also makes all keywords reserved words that must not be used for other purposes than they are intended for.</p>
 <p>At this moment, keywords are not case-insensitive, meaning they cannot be specified in lower or mixed case in queries.</p>
@@ -953,7 +955,7 @@ In general, names are used to identify objects (properties, variables, and funct
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-117-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-500-text" class="code-editor-text" style="height: 100px;">
                 
 FOR i IN [{ "RETURN": "foobar" }]
     RETURN i."RETURN"
@@ -964,9 +966,9 @@ FOR i IN [{ "RETURN": "foobar" }]
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-117-text');
+            const editor = ace.edit('code-500-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -978,6 +980,7 @@ FOR i IN [{ "RETURN": "foobar" }]
         }, false);
     </script>
 </div>
+
 <p>
 
 
@@ -994,7 +997,7 @@ FQL allows the user to assign values to additional variables in a query. All var
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-795-text" class="code-editor-text" style="height: 120px;">
+            <div id="code-595-text" class="code-editor-text" style="height: 120px;">
                 
 LET users = [{ name: "Steve" }]
 FOR u IN users
@@ -1006,9 +1009,9 @@ FOR u IN users
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-795-text');
+            const editor = ace.edit('code-595-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -1020,6 +1023,7 @@ FOR u IN users
         }, false);
     </script>
 </div>
+
 <p>Allowed characters in variable names are the letters a to z (both in lower and upper case), the numbers 0 to 9, the underscore (_) symbol and the dollar ($) sign. A variable name must not start with a number. If a variable name starts with the underscore character, the underscore must be followed by least one letter (a-z or A-Z) or digit (0-9).</p>
 
 </article>
@@ -1052,8 +1056,8 @@ FOR u IN users
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -1062,5 +1066,6 @@ FOR u IN users
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

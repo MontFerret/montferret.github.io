@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -783,7 +783,7 @@ RETURN
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-593-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-18-text" class="code-editor-text" style="height: 80px;">
                 
 RETURN expression
 
@@ -793,9 +793,9 @@ RETURN expression
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-593-text');
+            const editor = ace.edit('code-18-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -807,6 +807,7 @@ RETURN expression
         }, false);
     </script>
 </div>
+
 <p>The expression returned by <code>RETURN</code> is produced for each iteration in the block the <code>RETURN</code> statement is placed in. That means the result of a <code>RETURN</code> statement is always an array when inside <a href="https://www.montferret.dev/docs/fql/operators/high-level/for/" title="FOR"><code>FOR</code></a> loop.</p>
 <p>To return all elements from the currently iterated array without modification, the following simple form can be used:</p>
 
@@ -816,7 +817,7 @@ RETURN expression
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-945-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-473-text" class="code-editor-text" style="height: 100px;">
                 
 FOR variableName IN expression
   RETURN variableName
@@ -827,9 +828,9 @@ FOR variableName IN expression
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-945-text');
+            const editor = ace.edit('code-473-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -841,6 +842,7 @@ FOR variableName IN expression
         }, false);
     </script>
 </div>
+
 <p>As <code>RETURN</code> allows specifying an expression, arbitrary computations can be performed to calculate the result elements. Any of the variables valid in the scope the <code>RETURN</code> is placed in can be used for the computations.</p>
 <p>To iterate over all elements of an array of objects and return the full objects, you can write:</p>
 
@@ -851,14 +853,15 @@ FOR variableName IN expression
 
 
 
+
 <div class="code-editor">
 
     
-    <button id="code-editor-133-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-317-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-133-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-317-text" class="code-editor-text" style="height: 100px;">
                 
 FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
   RETURN i
@@ -868,7 +871,7 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-133-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-317-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -887,9 +890,9 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-133-run-button');
-            const textEditor = createEditor('code-editor-133-text', 'aql');
-            const resultEditor = createEditor('code-editor-133-result', 'json');
+            const btn = document.querySelector('#code-editor-317-run-button');
+            const textEditor = createEditor('code-editor-317-text', 'fql');
+            const resultEditor = createEditor('code-editor-317-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -921,9 +924,10 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -943,6 +947,10 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -959,6 +967,7 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
         }, false);
     </script>
 </div>
+
 <p>In each iteration of the for-loop, an element of the array is assigned to a variable <code>i</code> and returned unmodified in this example. To return only one attribute of each element, you could use a different return expression:</p>
 
 
@@ -968,14 +977,15 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
 
 
 
+
 <div class="code-editor">
 
     
-    <button id="code-editor-653-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-3-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-653-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-3-text" class="code-editor-text" style="height: 100px;">
                 
 FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
   RETURN i.name
@@ -985,7 +995,7 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-653-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-3-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -1004,9 +1014,9 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-653-run-button');
-            const textEditor = createEditor('code-editor-653-text', 'aql');
-            const resultEditor = createEditor('code-editor-653-result', 'json');
+            const btn = document.querySelector('#code-editor-3-run-button');
+            const textEditor = createEditor('code-editor-3-text', 'fql');
+            const resultEditor = createEditor('code-editor-3-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1038,9 +1048,10 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1060,6 +1071,10 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1076,6 +1091,7 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
         }, false);
     </script>
 </div>
+
 <p>Or to return multiple attributes, an object can be constructed like this:</p>
 
 
@@ -1085,14 +1101,15 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
 
 
 
+
 <div class="code-editor">
 
     
-    <button id="code-editor-118-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-749-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-118-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-749-text" class="code-editor-text" style="height: 100px;">
                 
 FOR i IN [{firstName: 'Mike', lastName: 'Wazowski', age: 30}, {firstName: 'James', lastName: 'Sullivan', age: 35}]
   RETURN { name: i.firstName + ' ' + i.lastName, age: i.age }
@@ -1102,7 +1119,7 @@ FOR i IN [{firstName: 'Mike', lastName: 'Wazowski', age: 30}, {firstName: 'James
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-118-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-749-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -1121,9 +1138,9 @@ FOR i IN [{firstName: 'Mike', lastName: 'Wazowski', age: 30}, {firstName: 'James
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-118-run-button');
-            const textEditor = createEditor('code-editor-118-text', 'aql');
-            const resultEditor = createEditor('code-editor-118-result', 'json');
+            const btn = document.querySelector('#code-editor-749-run-button');
+            const textEditor = createEditor('code-editor-749-text', 'fql');
+            const resultEditor = createEditor('code-editor-749-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1155,9 +1172,10 @@ FOR i IN [{firstName: 'Mike', lastName: 'Wazowski', age: 30}, {firstName: 'James
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1177,6 +1195,10 @@ FOR i IN [{firstName: 'Mike', lastName: 'Wazowski', age: 30}, {firstName: 'James
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1193,7 +1215,9 @@ FOR i IN [{firstName: 'Mike', lastName: 'Wazowski', age: 30}, {firstName: 'James
         }, false);
     </script>
 </div>
+
 <p>Dynamic attribute names are supported as well:</p>
+
 
 
 
@@ -1205,11 +1229,11 @@ FOR i IN [{firstName: 'Mike', lastName: 'Wazowski', age: 30}, {firstName: 'James
 <div class="code-editor">
 
     
-    <button id="code-editor-773-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-332-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-773-text" class="code-editor-text" style="height: 100px;">
+            <div id="code-editor-332-text" class="code-editor-text" style="height: 100px;">
                 
 FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
   RETURN { [i.name]: i.age }
@@ -1219,7 +1243,7 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-773-result" class="code-editor-result" style="height: 100px;"></div>
+            <div id="code-editor-332-result" class="code-editor-result" style="height: 100px;"></div>
         </div>
     </div>
     
@@ -1238,9 +1262,9 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-773-run-button');
-            const textEditor = createEditor('code-editor-773-text', 'aql');
-            const resultEditor = createEditor('code-editor-773-result', 'json');
+            const btn = document.querySelector('#code-editor-332-run-button');
+            const textEditor = createEditor('code-editor-332-text', 'fql');
+            const resultEditor = createEditor('code-editor-332-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -1272,9 +1296,10 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -1294,6 +1319,10 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -1310,6 +1339,7 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
         }, false);
     </script>
 </div>
+
 
 </article>
         </section>
@@ -1341,8 +1371,8 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -1351,5 +1381,6 @@ FOR i IN [{name: 'Mike', age: 30}, {name: 'James', age: 35}]
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>

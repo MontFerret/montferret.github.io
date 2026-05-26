@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.161.1">
 
     <link
         href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
@@ -782,7 +782,7 @@ SORT
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-73-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-263-text" class="code-editor-text" style="height: 80px;">
                 
 SORT expression direction
 
@@ -792,9 +792,9 @@ SORT expression direction
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-73-text');
+            const editor = ace.edit('code-263-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -806,7 +806,9 @@ SORT expression direction
         }, false);
     </script>
 </div>
+
 <p>Example query that is sorting by lastName (in ascending order), then firstName (in ascending order), then by id (in descending order):</p>
+
 
 
 
@@ -818,11 +820,11 @@ SORT expression direction
 <div class="code-editor">
 
     
-    <button id="code-editor-382-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
+    <button id="code-editor-956-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-382-text" class="code-editor-text" style="height: 160px;">
+            <div id="code-editor-956-text" class="code-editor-text" style="height: 160px;">
                 
 LET users = [{"id":1,"firstName":"Johny","lastName":"Purdie"},{"id":2,"firstName":"Wayland","lastName":"Bewshaw"},{"id":3,"firstName":"Julius","lastName":"Taplin"},{"id":4,"firstName":"Jarrad","lastName":"Dollman"},{"id":5,"firstName":"Leia","lastName":"Meechan"}]
 
@@ -835,7 +837,7 @@ FOR u IN users
     </div>
     <div class="columns">
         <div class="column is-12">
-            <div id="code-editor-382-result" class="code-editor-result" style="height: 160px;"></div>
+            <div id="code-editor-956-result" class="code-editor-result" style="height: 160px;"></div>
         </div>
     </div>
     
@@ -854,9 +856,9 @@ FOR u IN users
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-382-run-button');
-            const textEditor = createEditor('code-editor-382-text', 'aql');
-            const resultEditor = createEditor('code-editor-382-result', 'json');
+            const btn = document.querySelector('#code-editor-956-run-button');
+            const textEditor = createEditor('code-editor-956-text', 'fql');
+            const resultEditor = createEditor('code-editor-956-result', 'json');
             resultEditor.setReadOnly(true);
 
             function setContent(editor, content) {
@@ -888,9 +890,10 @@ FOR u IN users
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
 
                 onStart();
-                fetch("https:\/\/worker-pucbyp2omq-ue.a.run.app", {
+                fetch(url, {
                     method: 'post',
                     cache: 'no-cache',
                     headers: {
@@ -910,6 +913,10 @@ FOR u IN users
                         
                         if (r.status === 400) {
                             return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
                                 throw new Error(data.error);
                             });
                         }
@@ -926,6 +933,7 @@ FOR u IN users
         }, false);
     </script>
 </div>
+
 <p>Specifying the direction is optional. The default (implicit) direction for a sort expression is the ascending order. To explicitly specify the sort direction, the keywords <code>ASC</code> (ascending) and <code>DESC</code> can be used. Multiple sort criteria can be separated using commas. In this case the direction is specified for each expression separately. For example:</p>
 
 
@@ -934,7 +942,7 @@ FOR u IN users
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-454-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-72-text" class="code-editor-text" style="height: 80px;">
                 
 SORT u.lastName, u.firstName
 
@@ -944,9 +952,9 @@ SORT u.lastName, u.firstName
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-454-text');
+            const editor = ace.edit('code-72-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -958,6 +966,7 @@ SORT u.lastName, u.firstName
         }, false);
     </script>
 </div>
+
 <p>will first sort elements by lastName in ascending order and then by firstName in ascending order.</p>
 
 
@@ -966,7 +975,7 @@ SORT u.lastName, u.firstName
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-64-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-718-text" class="code-editor-text" style="height: 80px;">
                 
 SORT u.lastName DESC, u.firstName
 
@@ -976,9 +985,9 @@ SORT u.lastName DESC, u.firstName
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-64-text');
+            const editor = ace.edit('code-718-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -990,6 +999,7 @@ SORT u.lastName DESC, u.firstName
         }, false);
     </script>
 </div>
+
 <p>will first sort documents by lastName in descending order and then by firstName in ascending order.</p>
 
 
@@ -998,7 +1008,7 @@ SORT u.lastName DESC, u.firstName
 <div class="code-editor">
     <div class="columns">
         <div class="column is-full">
-            <div id="code-496-text" class="code-editor-text" style="height: 80px;">
+            <div id="code-402-text" class="code-editor-text" style="height: 80px;">
                 
 SORT u.lastName, u.firstName DESC
 
@@ -1008,9 +1018,9 @@ SORT u.lastName, u.firstName DESC
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-496-text');
+            const editor = ace.edit('code-402-text');
             editor.setTheme("ace/theme/tomorrow_night");
-            editor.session.setMode("ace/mode/" + 'aql');
+            editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -1022,6 +1032,7 @@ SORT u.lastName, u.firstName DESC
         }, false);
     </script>
 </div>
+
 <p>will first sort elements by lastName in ascending order and then by firstName in descending order.</p>
 
 </article>
@@ -1054,8 +1065,8 @@ SORT u.lastName, u.firstName DESC
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-aql.min.js"
-        integrity="sha256-X0EL61aEe9ZmA9OkWgfPw7QMJc2DPs3/RcarIt15j8Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.montferret.dev/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -1064,5 +1075,6 @@ SORT u.lastName, u.firstName DESC
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
-</footer></body>
+</footer>
+</body>
 </html>
