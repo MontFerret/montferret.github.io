@@ -10,15 +10,15 @@
                         <span class="hero-wordmark">Ferret</span>
                     </div>
 
-                    <p class="landing-eyebrow">Open-source Ferret ecosystem</p>
-                    <h1 id="landing-title">Declarative web data extraction and automation</h1>
+                    <p class="landing-eyebrow">DECLARATIVE DATA AUTOMATION</p>
+                    <h1 id="landing-title">Structured data extraction and automation</h1>
                     <p class="landing-hero-lead">
-                        Describe structured extraction workflows in FQL, run them against static or browser-rendered pages, and move the same scripts from local experiments to embedded or remote execution.
+                        Write reusable workflows in FQL, run them against websites, documents, APIs, or custom data sources, and move the same scripts from local experiments to embedded or remote execution.                   
                     </p>
 
                     <div class="landing-actions" aria-label="Primary actions">
-                        <a href="/docs/getting-started/" class="button is-primary">Get started</a>
-                        <a href="/try/next/" class="button is-light">Open playground</a>
+                        <a href="/try/next/" class="button is-primary">Open playground</a>
+                        <a href="/docs/getting-started/" class="button is-light">Read the docs</a>
                     </div>
 
                     <ul class="landing-hero-chips" aria-label="Ferret capabilities">
@@ -50,21 +50,17 @@
 
                             <div class="code-editor-pane">
                                 <div id="hero-query" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-// Load a JavaScript-rendered product page through CDP
-LET page = 'https://mockery.montferret.dev/scenarios/dynamic-products/basic/'
-LET doc = DOCUMENT(page, { driver: 'cdp' })
+LET doc = DOCUMENT(@page, { driver: "cdp" })
 
-// Wait until product cards are available
 LET products = WAITFOR VALUE doc[~ css`.product-card`]
     WHEN LENGTH(.) > 0
     TIMEOUT 5000
 
-// Return clean, structured data
 FOR product IN products
     RETURN {
         brand: product[~? css`.product-brand`].textContent,
         title: product[~? css`.product-title`].textContent,
-        price: TO_FLOAT(SUBSTITUTE(product[~? css`.product-price`], '$', '')) ON ERROR RETURN 0
+        price: product[~? css`.product-price`].textContent,
     }
                                 </div>
                             </div>
@@ -141,42 +137,43 @@ FOR product IN products
                 </div>
 
                 <div class="landing-suite-board">
-                    <div class="landing-suite-foundation" aria-label="Foundation components">
-                        {{ range where $landing.ecosystem "size" "foundation" }}
-                        {{ $featuredClass := cond .featured " is-featured" "" }}
-                        <a class="landing-suite-card is-foundation{{ $featuredClass }}" href="{{ .url }}">
-                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
-                            <span class="landing-card-group">{{ .group }}</span>
-                            <span class="landing-badge">{{ .badge }}</span>
-                            <h3>{{ .name }}</h3>
-                            <p>{{ .description }}</p>
-                            <span class="landing-card-link">{{ .action }}</span>
-                        </a>
-                        {{ end }}
-                    </div>
+                    {{ $ecosystemGroups := slice "Core" "Execution" "Developer tools" "Extensions" }}
+                    {{ range $category := $ecosystemGroups }}
+                    {{ $items := where $landing.ecosystem "category" $category }}
+                    {{ if $items }}
+                    {{ $groupID := printf "suite-%s" (urlize $category) }}
+                    <section class="landing-suite-group is-{{ urlize $category }}" aria-labelledby="{{ $groupID }}">
+                        <div class="landing-suite-group-heading">
+                            <h3 id="{{ $groupID }}">{{ $category }}</h3>
+                        </div>
 
-                    <div class="landing-suite-products" aria-label="Supporting components">
-                        {{ range where $landing.ecosystem "size" "component" }}
-                        {{ if .url }}
-                        <a class="landing-suite-card" href="{{ .url }}">
-                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
-                            <span class="landing-card-group">{{ .group }}</span>
-                            <span class="landing-badge">{{ .badge }}</span>
-                            <h3>{{ .name }}</h3>
-                            <p>{{ .description }}</p>
-                            <span class="landing-card-link">{{ .action }}</span>
-                        </a>
-                        {{ else }}
-                        <article class="landing-suite-card">
-                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
-                            <span class="landing-card-group">{{ .group }}</span>
-                            <span class="landing-badge">{{ .badge }}</span>
-                            <h3>{{ .name }}</h3>
-                            <p>{{ .description }}</p>
-                        </article>
-                        {{ end }}
-                        {{ end }}
-                    </div>
+                        <div class="landing-suite-group-grid">
+                            {{ range $items }}
+                            {{ $foundationClass := cond (eq .size "foundation") " is-foundation" "" }}
+                            {{ $featuredClass := cond .featured " is-featured" "" }}
+                            {{ if .url }}
+                            <a class="landing-suite-card{{ $foundationClass }}{{ $featuredClass }}" href="{{ .url }}">
+                                <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
+                                <span class="landing-card-group">{{ .group }}</span>
+                                <span class="landing-badge">{{ .badge }}</span>
+                                <h4>{{ .name }}</h4>
+                                <p>{{ .description }}</p>
+                                <span class="landing-card-link">{{ .action }}</span>
+                            </a>
+                            {{ else }}
+                            <article class="landing-suite-card{{ $foundationClass }}{{ $featuredClass }}">
+                                <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
+                                <span class="landing-card-group">{{ .group }}</span>
+                                <span class="landing-badge">{{ .badge }}</span>
+                                <h4>{{ .name }}</h4>
+                                <p>{{ .description }}</p>
+                            </article>
+                            {{ end }}
+                            {{ end }}
+                        </div>
+                    </section>
+                    {{ end }}
+                    {{ end }}
                 </div>
             </div>
         </section>
@@ -186,9 +183,9 @@ FOR product IN products
                 <div class="landing-positioning-panel">
                     <div class="landing-section-heading landing-section-heading-left">
                         <p class="landing-eyebrow">Why Ferret</p>
-                        <h2 id="why-ferret-title">Targeted extraction without custom browser glue</h2>
+                        <h2 id="why-ferret-title">Data workflows without custom glue</h2>
                         <p>
-                            Ferret is for developers who need repeatable, structured web data workflows that can move from prototype to production without changing shape.
+                            Ferret is for developers who need repeatable, structured data workflows that can move from experiments to production without rewriting the logic for each runtime.
                         </p>
                     </div>
 
