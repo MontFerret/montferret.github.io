@@ -8,7 +8,7 @@ $landing-electric-blue: #225fc0;
 $landing-grain-light: rgba(#fff, .018);
 $landing-grain-dark: rgba(#000, .028);
 
-@mixin landing-dimensional-gradient($angle: 135deg, $cyan-x: 82%, $cyan-y: 16%, $rose-x: 18%, $rose-y: 92%) {
+@mixin landing-dimensional-gradient($angle: 135deg, $cyan-x: 82%, $cyan-y: 16%, $rose-x: 18%, $rose-y: 92%, $blue-x: 72%, $blue-y: 38%) {
     background:
         repeating-linear-gradient(
             0deg,
@@ -24,10 +24,11 @@ $landing-grain-dark: rgba(#000, .028);
             transparent 1px,
             transparent 7px
         ),
-        radial-gradient(circle at #{$cyan-x} #{$cyan-y}, rgba($landing-cyan, .4) 0%, rgba($landing-cyan, .16) 28%, rgba($landing-cyan, 0) 52%),
-        radial-gradient(circle at #{$rose-x} #{$rose-y}, rgba($landing-rose, .4) 0%, rgba($landing-rose, .14) 30%, rgba($landing-rose, 0) 54%),
+        radial-gradient(ellipse at #{$cyan-x} #{$cyan-y}, rgba($landing-cyan, .24) 0%, rgba($landing-cyan, .1) 24%, rgba($landing-cyan, 0) 46%),
+        radial-gradient(ellipse at #{$blue-x} #{$blue-y}, rgba($landing-electric-blue, .34) 0%, rgba($landing-blue, .18) 36%, rgba($landing-blue, 0) 68%),
+        radial-gradient(circle at #{$rose-x} #{$rose-y}, rgba($landing-rose, .34) 0%, rgba($landing-rose, .12) 30%, rgba($landing-rose, 0) 56%),
         linear-gradient($angle, $landing-ink 0%, $landing-deep-purple 32%, $landing-electric-blue 67%, #1f5577 84%, $landing-rose 132%);
-    background-blend-mode: overlay, soft-light, screen, soft-light, normal;
+    background-blend-mode: overlay, soft-light, screen, screen, soft-light, normal;
 }
 
 .landing-page {
@@ -90,14 +91,14 @@ $landing-grain-dark: rgba(#000, .028);
 }
 
 .landing-hero-shell {
-    @include landing-dimensional-gradient(128deg, 86%, 15%, 12%, 95%);
+    @include landing-dimensional-gradient(128deg, 88%, 18%, 12%, 95%, 72%, 42%);
     border: 1px solid rgba(#fff, .13);
     border-radius: 8px;
     box-shadow: 0 28px 76px rgba($darkpurple, .2), 0 16px 42px rgba($landing-blue, .12);
     color: #fff;
     display: grid;
     gap: 2.25rem;
-    grid-template-columns: minmax(0, 1fr) minmax(360px, 520px);
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 500px);
     overflow: hidden;
     padding: 2rem;
     position: relative;
@@ -197,8 +198,8 @@ $landing-grain-dark: rgba(#000, .028);
 
     li {
         align-items: center;
-        background: rgba(#fff, .07);
-        border: 1px solid rgba(#fff, .13);
+        background: rgba(#fff, .095);
+        border: 1px solid rgba(#fff, .18);
         border-radius: 8px;
         display: flex;
         gap: .6rem;
@@ -237,6 +238,12 @@ $landing-grain-dark: rgba(#000, .028);
     display: grid;
     gap: .85rem;
     min-width: 0;
+
+    .landing-hero-shell & {
+        .code-editor .code-editor-shell {
+            box-shadow: 0 14px 38px rgba(#000, .18);
+        }
+    }
 }
 
 .landing-code-editor {
@@ -282,7 +289,9 @@ $landing-grain-dark: rgba(#000, .028);
 }
 
 .landing-workflow-section {
-    background: linear-gradient(180deg, #fff 0%, #fbfbfe 100%);
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba($landing-cyan, .09) 0%, rgba($landing-blue, .045) 32%, rgba($landing-blue, 0) 68%),
+        linear-gradient(180deg, #fff 0%, #fbfbfe 100%);
 }
 
 .landing-section-heading,
@@ -738,7 +747,7 @@ $landing-grain-dark: rgba(#000, .028);
 
 @media screen and (max-width: 1120px) {
     .landing-hero-shell {
-        grid-template-columns: minmax(0, 1fr) minmax(320px, 460px);
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 430px);
     }
 
     .landing-hero-copy h1 {
