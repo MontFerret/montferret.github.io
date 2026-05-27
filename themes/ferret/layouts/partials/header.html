@@ -1,44 +1,50 @@
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="container">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-                <img src="/img/logo.png" width="30" height="30" /> <small class="logo">ferret</small>
+<nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">ferret</span>
             </a>
 
-            <a
+            <button
                 id="navbar-burger"
-                role="button"
-                class="navbar-burger burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
                 aria-label="menu"
                 aria-expanded="false"
+                aria-controls="primary-nav"
                 data-target="primary-nav"
             >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
-            </a>
+            </button>
         </div>
-        
-        <div id="primary-nav" class="navbar-menu">
-            <div class="navbar-start">
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
                 {{ $currentPage := . }}
                 {{ $url := urls.Parse $currentPage.Permalink }}
                 {{ range .Site.Menus.left.ByWeight }}
-                        {{ $isActive := hasPrefix $url.Path .URL }}
-                        <a href="{{ .URL }}" class="navbar-item {{if $isActive }} active{{end}}"
-                        title={{ .Title }} id={{ .Identifier }}>
-                            {{ .Name }}
-                        </a>
+                    {{ $isActive := hasPrefix $url.Path .URL }}
+                    {{ $isPrimary := eq .Identifier "repl" }}
+                    <a href="{{ .URL }}" class="navbar-item site-navbar-link{{ if $isPrimary }} site-navbar-cta{{ end }}{{ if $isActive }} active is-active{{ end }}"
+                        title="{{ .Title }}" id="{{ .Identifier }}">
+                        {{ .Name }}
+                    </a>
                 {{ end }}
             </div>
 
-            <div class="navbar-end">
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
                 {{ $currentPage := . }}
                 {{ range .Site.Menus.right.ByWeight }}
-                        <a href="{{ .URL }}" class="navbar-item {{if or ($currentPage.IsMenuCurrent "right" .) ($currentPage.HasMenuCurrent "right" .) }} active{{end}}"
-                        title={{ .Title }} id={{ .Identifier }}>
-                            {{ .Name }}
-                        </a>
+                    {{ $isActive := or ($currentPage.IsMenuCurrent "right" .) ($currentPage.HasMenuCurrent "right" .) }}
+                    <a href="{{ .URL }}" class="navbar-item site-navbar-link site-navbar-link-secondary{{ if $isActive }} active is-active{{ end }}"
+                        title="{{ .Title }}" id="{{ .Identifier }}">
+                        {{ .Name }}
+                    </a>
                 {{ end }}
             </div>
         </div>
@@ -46,15 +52,22 @@
 </nav>
 
 <script>
-    // .nav-burger
-    // click handler for mobile menu
     (function(){
         let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
         navburger.addEventListener("click", function() {
             let target = this.getAttribute("data-target");
             let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
 
             el.classList.toggle("is-active");
-        })
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
     })();
 </script>
