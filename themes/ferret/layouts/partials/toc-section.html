@@ -8,10 +8,11 @@
 {{ $active := .ActivePage }}
 {{ $isTopLevel := eq $rootDir $pageDir }}
 {{ $noLabel := $page.Params.noLabel }}
+{{ $label := default $page.Title $page.Params.sidebarTitle }}
 
 {{ if not $noLabel}}
 <p class="menu-label">
-    {{ .Page.Title }}
+    {{ $label }}
 </p>
 {{ end }}
 
@@ -23,9 +24,10 @@
 
         {{ if $asPage }}
             {{ $isActive := (eq $active.Permalink .Permalink) }}
+            {{ $title := default .Title .Params.sidebarTitle }}
             <li>
                 <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
-                    {{ .Title }}
+                    {{ $title }}
                 </a>  
             </li>
 

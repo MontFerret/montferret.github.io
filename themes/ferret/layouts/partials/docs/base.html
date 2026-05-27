@@ -1,25 +1,13 @@
-<div class="content section docs">
-    <div class="columns">
-        <section class="column is-2">
+<div class="docs">
+    <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Docs navigation">
             {{ partial "toc.html" (dict "Dir" "/docs" "Page" .) }}
-        </section>
+        </aside>
 
-        <section id="main" class="column is-8">
+        <main id="main" class="docs-main">
             {{ partial "docs/content.html" . }}
-        </section>
-        
-        {{ if .Params.menu }}
-            <section id="menu" class="column is-2">
-                {{- $links := split "" "" }}
-                {{- range .Params.menu -}}
-                    {{ $link := (dict "title" (. | upper) "url" (printf "#%s" .))}}
-                    {{ $links = $links | append  $link }}
-                {{- end -}}
-                {{- $menu := (dict "items" $links "title" .Params.menuTitle) -}}
+        </main>
 
-                {{ partial "menu.html" $menu }}
-        </section>
-        {{ end }}
-
+        {{ partial "docs/page-toc.html" . }}
     </div>
 </div>
