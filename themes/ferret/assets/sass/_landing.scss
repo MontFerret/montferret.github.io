@@ -2,13 +2,22 @@ $landing-blue: #356bc2;
 $landing-cyan: #2aa7b8;
 $landing-rose: #c25177;
 $landing-amber: #e0a83e;
-$landing-ink: #1b1d48;
+$landing-ink: #17183f;
 $landing-deep-purple: #292b68;
 $landing-electric-blue: #225fc0;
-$landing-grain-light: rgba(#fff, .018);
-$landing-grain-dark: rgba(#000, .028);
+$landing-teal-deep: #176579;
+$landing-grain-light: rgba(#fff, .012);
+$landing-grain-dark: rgba(#000, .022);
 
-@mixin landing-dimensional-gradient($angle: 135deg, $cyan-x: 82%, $cyan-y: 16%, $rose-x: 18%, $rose-y: 92%, $blue-x: 72%, $blue-y: 38%) {
+@mixin landing-dimensional-gradient(
+    $angle: 132deg,
+    $cyan-x: 84%,
+    $cyan-y: 18%,
+    $rose-x: 14%,
+    $rose-y: 96%,
+    $blue-x: 70%,
+    $blue-y: 42%
+) {
     background:
         repeating-linear-gradient(
             0deg,
@@ -24,11 +33,57 @@ $landing-grain-dark: rgba(#000, .028);
             transparent 1px,
             transparent 7px
         ),
-        radial-gradient(ellipse at #{$cyan-x} #{$cyan-y}, rgba($landing-cyan, .24) 0%, rgba($landing-cyan, .1) 24%, rgba($landing-cyan, 0) 46%),
-        radial-gradient(ellipse at #{$blue-x} #{$blue-y}, rgba($landing-electric-blue, .34) 0%, rgba($landing-blue, .18) 36%, rgba($landing-blue, 0) 68%),
-        radial-gradient(circle at #{$rose-x} #{$rose-y}, rgba($landing-rose, .34) 0%, rgba($landing-rose, .12) 30%, rgba($landing-rose, 0) 56%),
-        linear-gradient($angle, $landing-ink 0%, $landing-deep-purple 32%, $landing-electric-blue 67%, #1f5577 84%, $landing-rose 132%);
-    background-blend-mode: overlay, soft-light, screen, screen, soft-light, normal;
+
+            // cool highlight near the visual/code side
+        radial-gradient(
+            ellipse at #{$cyan-x} #{$cyan-y},
+            rgba($landing-cyan, .30) 0%,
+            rgba($landing-cyan, .14) 24%,
+            rgba($landing-cyan, 0) 50%
+        ),
+
+            // main dimensional blue body
+        radial-gradient(
+            ellipse at #{$blue-x} #{$blue-y},
+            rgba($landing-electric-blue, .42) 0%,
+            rgba($landing-blue, .22) 34%,
+            rgba($landing-blue, 0) 66%
+        ),
+
+            // warmer counterweight
+        radial-gradient(
+            circle at #{$rose-x} #{$rose-y},
+            rgba($landing-rose, .36) 0%,
+            rgba($landing-rose, .14) 30%,
+            rgba($landing-rose, 0) 58%
+        ),
+
+            // subtle dark vignette to preserve text contrast
+        radial-gradient(
+            ellipse at 4% 12%,
+            rgba(#000, .22) 0%,
+            rgba(#000, .08) 34%,
+            rgba(#000, 0) 64%
+        ),
+
+            // calmer base; accents do the colorful work
+        linear-gradient(
+            $angle,
+            $landing-ink 0%,
+            $landing-deep-purple 34%,
+            #25477f 62%,
+            $landing-teal-deep 88%,
+            #62417a 128%
+        );
+
+    background-blend-mode:
+        overlay,
+        soft-light,
+        screen,
+        screen,
+        soft-light,
+        multiply,
+        normal;
 }
 
 .landing-page {
@@ -91,7 +146,7 @@ $landing-grain-dark: rgba(#000, .028);
 }
 
 .landing-hero-shell {
-    @include landing-dimensional-gradient(128deg, 88%, 18%, 12%, 95%, 72%, 42%);
+    @include landing-dimensional-gradient(128deg, 88%, 16%, 10%, 98%, 72%, 42%);
     border: 1px solid rgba(#fff, .13);
     border-radius: 8px;
     box-shadow: 0 28px 76px rgba($darkpurple, .2), 0 16px 42px rgba($landing-blue, .12);
@@ -423,7 +478,7 @@ $landing-grain-dark: rgba(#000, .028);
     padding: 1.25rem;
 
     &.is-featured {
-        @include landing-dimensional-gradient(136deg, 88%, 12%, 10%, 96%);
+        @include landing-dimensional-gradient(136deg, 90%, 14%, 8%, 98%, 68%, 44%);
         border-color: rgba(#fff, .14);
         color: #fff;
 
@@ -548,7 +603,7 @@ $landing-grain-dark: rgba(#000, .028);
     }
 
     &.is-foundation.is-featured {
-        @include landing-dimensional-gradient(136deg, 92%, 10%, 8%, 96%);
+        @include landing-dimensional-gradient(136deg, 92%, 12%, 8%, 98%, 70%, 42%);
         border-color: rgba(#fff, .14);
         color: #fff;
 
@@ -634,7 +689,7 @@ $landing-grain-dark: rgba(#000, .028);
 
 .landing-positioning-panel {
     align-items: start;
-    @include landing-dimensional-gradient(132deg, 86%, 18%, 14%, 92%);
+    @include landing-dimensional-gradient(136deg, 82%, 24%, 16%, 94%, 62%, 44%);
     border: 1px solid rgba(#fff, .12);
     border-radius: 8px;
     display: grid;
