@@ -234,6 +234,13 @@ FOR product IN products
         document.addEventListener('DOMContentLoaded', function () {
             function createEditor(id, mode) {
                 const editor = ace.edit(id);
+                const source = editor.getValue();
+                const normalizedSource = source.replace(/^\n+|\n+$/g, "");
+
+                if (source !== normalizedSource) {
+                    editor.setValue(normalizedSource, -1);
+                }
+
                 editor.setTheme("{{ hugo.Data.repl.theme }}");
                 editor.session.setUseWorker(false);
                 editor.session.setMode("ace/mode/" + mode);

@@ -8,6 +8,7 @@
 {{ $apiVersion := default "400px" ( .Get "apiVersion" )}}
 {{ $orientationClass := cond (eq $orientation "horizontal") "is-horizontal" "is-vertical" }}
 {{ $readonlyClass := cond (eq $isReadOnly "true") " is-readonly" "" }}
+{{ $source := trim .Inner "\n" }}
 
 <div class="code-editor {{ $orientationClass }}{{ $readonlyClass }}">
     {{- if eq $sharable "true" }}
@@ -36,9 +37,7 @@
                     <span>query.fql</span>
                     <span>FQL</span>
                 </div>
-                <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">
-{{ .Inner }}
-                </div>
+                <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">{{ $source }}</div>
             </div>
 
             <div class="code-editor-pane code-editor-pane-result">

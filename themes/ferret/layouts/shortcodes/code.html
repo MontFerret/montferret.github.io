@@ -6,6 +6,7 @@
 {{- end -}}
 {{ $height := default "400px" ( .Get "height" )}}
 {{ $width := default "100%" ( .Get "height" ) }}
+{{ $source := trim .Inner "\n" }}
 
 <div class="code-editor is-readonly">
     <div class="code-editor-shell">
@@ -18,9 +19,7 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">
-{{ .Inner }}
-            </div>
+            <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">{{ $source }}</div>
         </div>
     </div>
 
