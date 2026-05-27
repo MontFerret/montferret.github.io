@@ -1,6 +1,6 @@
 ---
 title: "Guides"
-weight: 60
+weight: 40
 draft: false
 description: "End-to-end Ferret workflows and scraping patterns."
 ---
