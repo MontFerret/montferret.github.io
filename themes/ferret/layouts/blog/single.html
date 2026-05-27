@@ -1,23 +1,33 @@
 {{ define "main" }}
-    <div class="content section blog blog-post">
-        <div class="columns is-centered blog-post-header has-text-centered">
-            <div class="column is-10">
-                <p class="title is-2">
-                    {{ .Title }}
-                </p>
-                <p class="subtitle is-4">
-                        {{ .Params.subtitle }}
-                    </p>
-                <p class="subtitle is-6 has-text-grey">
-                    <span>{{ .Date.Format "January 2, 2006" }}</span> by <a href="{{ .Params.authorLink }}">{{ .Params.author }}</a>
-                </p>
-                <hr class="is-block-centered" />
-            </div>
+<article class="blog-post">
+    <header class="blog-post-header">
+        <div class="blog-post-header-inner">
+            <p class="blog-post-kicker">Ferret Blog</p>
+
+            <h1 class="title is-2">
+                {{ .Title }}
+            </h1>
+
+            {{ with .Params.subtitle }}
+            <p class="subtitle is-4">
+                {{ . }}
+            </p>
+            {{ end }}
+
+            <p class="blog-post-meta">
+                <span>{{ .Date.Format "January 2, 2006" }}</span>
+                <span aria-hidden="true">/</span>
+                <span>by <a href="{{ .Params.authorLink }}">{{ .Params.author }}</a></span>
+            </p>
         </div>
-        <div class="columns is-centered blog-post-content has-text-justified">
-            <div class="column is-8">
-                {{ .Content }}
-            </div>
-        </div>
+    </header>
+
+    <div class="blog-post-content">
+        {{ .Content }}
     </div>
+
+    <nav class="blog-post-nav" aria-label="Blog navigation">
+        <a href="/blog/">← Back to blog</a>
+    </nav>
+</article>
 {{ end }}
