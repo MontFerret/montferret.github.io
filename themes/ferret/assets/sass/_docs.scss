@@ -46,6 +46,17 @@
         line-height: 1.2;
         margin: 1.55rem 0 .5rem;
         text-transform: uppercase;
+
+        a {
+            color: inherit;
+            text-decoration: none;
+
+            &:hover,
+            &:focus {
+                color: $landing-deep-purple;
+                text-decoration: none;
+            }
+        }
     }
 
     .menu-label:first-child {
@@ -399,19 +410,31 @@
         display: grid;
         gap: 1.5rem;
         grid-template-columns: minmax(0, 1fr);
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
     .docs-sidebar {
         border: 1px solid rgba($landing-deep-purple, .1);
         border-radius: 8px;
+        box-sizing: border-box;
         max-height: 22rem;
+        max-width: 100%;
         padding: 1rem;
         position: relative;
         top: auto;
+        width: 100%;
+    }
+
+    .docs-main {
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
     .docs-content {
+        box-sizing: border-box;
         max-width: none;
+        overflow-x: hidden;
         padding: 0 0 2rem;
     }
 }
@@ -437,6 +460,11 @@
         code {
             white-space: normal;
             word-break: break-word;
+        }
+
+        p,
+        li {
+            overflow-wrap: anywhere;
         }
     }
 }

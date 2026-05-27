@@ -34,7 +34,7 @@ RETURN NONE
 
 {{</ editor >}}
 
-Read about available functions [here](https://www.montferret.dev/docs/stdlib/testing).
+Read about available functions [here](https://www.montferret.dev/docs/standard-library/testing).
 
 ## New FRAMES function
 A new helper function that finds HTML frames by a given property selector.

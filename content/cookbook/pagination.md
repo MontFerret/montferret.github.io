@@ -81,7 +81,7 @@ RETURN FLATTEN(result)
 {{</ editor >}}
 
 ### Uncontrolled
-In turn, in uncontrolled pagination, we use a helper function [PAGINATION](/docs/stdlib/html/#pagination). The functions accepts an HTML element and a CSS selector for "Next" button. Once the the given selector returns empty result, iteration ends.    
+In turn, in uncontrolled pagination, we use a helper function [PAGINATION](/docs/standard-library/html/#pagination). The functions accepts an HTML element and a CSS selector for "Next" button. Once the the given selector returns empty result, iteration ends.
 
 {{< notification type="info">}}
 Iteration always starts with a current page.

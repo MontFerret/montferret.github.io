@@ -9,57 +9,65 @@
 {{ $isTopLevel := eq $rootDir $pageDir }}
 {{ $noLabel := $page.Params.noLabel }}
 {{ $label := default $page.Title $page.Params.sidebarTitle }}
+{{ $children := .Page.Pages.ByWeight }}
 
-{{ if not $noLabel}}
-<p class="menu-label">
-    {{ $label }}
-</p>
-{{ end }}
-
-<ul class="menu-list">
-    {{ range .Page.Pages.ByWeight}}
-        {{ $current := . }}
-        {{ $hasContent := gt (len .Content) 0 }}
-        {{ $asPage := or .IsPage (and .IsSection $hasContent)}}
-
-        {{ if $asPage }}
+{{ if and $isTopLevel $noLabel }}
+    {{ range $children }}
+        {{ if .IsSection }}
+            {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
+        {{ else }}
             {{ $isActive := (eq $active.Permalink .Permalink) }}
             {{ $title := default .Title .Params.sidebarTitle }}
-            <li>
-                <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
-                    {{ $title }}
-                </a>  
-            </li>
+            <ul class="menu-list">
+                <li>
+                    <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
+                        {{ $title }}
+                    </a>
+                </li>
+            </ul>
+        {{ end }}
+    {{ end }}
+{{ else }}
 
-            {{ if .IsSection }}
-                {{ range .Pages }}
-                    {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
+    {{ if not $noLabel}}
+    <p class="menu-label">
+        {{ if and $page.IsSection (gt (len $page.Content) 0) }}
+            <a href="{{ $page.Permalink }}">{{ $label }}</a>
+        {{ else }}
+            {{ $label }}
+        {{ end }}
+    </p>
+    {{ end }}
+
+    {{ if gt (len $children) 0 }}
+    <ul class="menu-list">
+        {{ range $children }}
+            {{ $hasContent := gt (len .Content) 0 }}
+            {{ $asPage := or .IsPage (and .IsSection $hasContent)}}
+
+            {{ if $asPage }}
+                {{ $isActive := (eq $active.Permalink .Permalink) }}
+                {{ $title := default .Title .Params.sidebarTitle }}
+                <li>
+                    <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
+                        {{ $title }}
+                    </a>
+                </li>
+            {{ else if and .IsSection .Pages }}
+                {{ $sectionURL := urls.Parse .Permalink }}
+
+                {{ if or $isTopLevel (hasPrefix $sectionURL.Path $pageURL.Path) }}
+                    {{ if $isTopLevel }}
+                        {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
+                    {{ else }}
+                        <li>
+                            {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
+                        </li>
+                    {{ end }}
                 {{ end }}
             {{ end }}
         {{ end }}
+    </ul>
     {{ end }}
 
-{{ if $isTopLevel }}
-</ul>
-{{ end }}
-
-{{ range $page.Sections}}
-    {{ $noContent := eq (len .Content) 0 }}
-    {{ if and .Pages $noContent }}
-        {{ $sectionURL := urls.Parse .Permalink }}
-
-        {{ if $isTopLevel }}
-            {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
-        {{ else }}
-            {{ if hasPrefix $sectionURL.Path $pageURL.Path }}
-                <li>
-                    {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
-                </li>
-            {{ end }}
-        {{end}}
-    {{ end }}
-{{ end }}
-
-{{ if not $isTopLevel }}
-</ul>
 {{ end }}
