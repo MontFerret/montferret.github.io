@@ -9,9 +9,8 @@ description: "Detailed Ferret reference documentation."
 
 Use reference pages when you already know the concept and need exact behavior, syntax, or compatibility details.
 
-<div class="docs-card-grid docs-card-grid-compact">
-  <a class="docs-card" href="/docs/reference/query-statements/">
-    <span class="docs-card-kicker">FQL</span>
+<div class="docs-section-card-grid">
+  <a class="docs-section-card" href="/docs/reference/query-statements/">
     <strong>Query Statements</strong>
     <span>Look up FOR, FILTER, RETURN, SORT, LIMIT, and COLLECT.</span>
   </a>

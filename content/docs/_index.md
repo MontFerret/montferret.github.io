@@ -12,12 +12,12 @@ Ferret is a web extraction runtime and query language for turning pages, documen
 
 <div class="docs-card-grid">
   <a class="docs-card" href="/docs/getting-started/installation/">
-    <span class="docs-card-kicker">Start</span>
+    <span class="docs-card-kicker">Setup</span>
     <strong>Install Ferret</strong>
     <span>Set up the CLI or add Ferret as a Go library.</span>
   </a>
   <a class="docs-card" href="/docs/getting-started/first-script/">
-    <span class="docs-card-kicker">Start</span>
+    <span class="docs-card-kicker">Learn</span>
     <strong>Run your first script</strong>
     <span>Execute a Ferret query against static or dynamic pages.</span>
   </a>
@@ -32,12 +32,12 @@ Ferret is a web extraction runtime and query language for turning pages, documen
     <span>Run Ferret test suites against local, HTTP, or browser runtimes.</span>
   </a>
   <a class="docs-card" href="/docs/embedding/">
-    <span class="docs-card-kicker">Build</span>
+    <span class="docs-card-kicker">Embed</span>
     <strong>Embed Ferret</strong>
     <span>Use Ferret from applications and services.</span>
   </a>
   <a class="docs-card" href="/docs/tools/worker/">
-    <span class="docs-card-kicker">Serve</span>
+    <span class="docs-card-kicker">Deploy</span>
     <strong>Run Worker</strong>
     <span>Plan service-style Ferret execution and deployment.</span>
   </a>
