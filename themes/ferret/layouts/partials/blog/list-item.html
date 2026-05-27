@@ -3,16 +3,30 @@
         <div class="media">
             <div class="media-content">
                 <p class="title is-4">
-                    <a href="{{.Permalink}}">
+                    <a href="{{ .Permalink }}">
                         {{ .Title }}
                     </a>
                 </p>
-                <p class="subtitle is-6 has-text-grey">
+
+                <p class="subtitle is-6 has-text-grey post-date">
                     <span>{{ .Date.Format "January 2, 2006" }}</span>
                 </p>
-                <p class="subtitle is-size-7 has-text-grey">
+
+                <p class="subtitle is-size-7 has-text-grey post-author">
                     by <a href="{{ .Params.authorLink }}">{{ .Params.author }}</a>
                 </p>
+
+                {{ with .Params.description }}
+                <p class="excerpt">{{ . }}</p>
+                {{ else }}
+                {{ with .Summary }}
+                <p class="excerpt">{{ . | plainify | truncate 150 }}</p>
+                {{ end }}
+                {{ end }}
+
+                <a class="read-more" href="{{ .Permalink }}" aria-label="Read {{ .Title }}">
+                    Read article <span aria-hidden="true">→</span>
+                </a>
             </div>
         </div>
     </div>
