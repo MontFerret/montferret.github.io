@@ -2,9 +2,9 @@
 {{ $landing := hugo.Data.landing }}
 
 <div class="landing-page">
-    <section class="landing-hero">
+    <section class="landing-hero" aria-labelledby="landing-title">
         <div class="container">
-            <div class="landing-hero-grid">
+            <div class="landing-hero-shell">
                 <div class="landing-hero-copy">
                     <div class="landing-brand">
                         <img src="/img/logo.png" width="54" height="54" alt="Ferret logo" />
@@ -12,7 +12,7 @@
                     </div>
 
                     <p class="landing-eyebrow">Open-source Ferret ecosystem</p>
-                    <h1>Declarative web data extraction and automation</h1>
+                    <h1 id="landing-title">Declarative web data extraction and automation</h1>
                     <p class="landing-hero-lead">
                         Describe structured extraction workflows in FQL, run them against static or browser-rendered pages, and move the same scripts from local experiments to embedded or remote execution.
                     </p>
@@ -22,28 +22,35 @@
                         <a href="/try/next/" class="button is-light is-radiusless">Open playground</a>
                     </div>
 
-                    <dl class="landing-hero-facts" aria-label="Ferret capabilities">
-                        <div>
-                            <dt>FQL</dt>
-                            <dd>declarative extraction language</dd>
-                        </div>
-                        <div>
-                            <dt>CDP</dt>
-                            <dd>browser automation support</dd>
-                        </div>
-                        <div>
-                            <dt>Go</dt>
-                            <dd>embeddable runtime</dd>
-                        </div>
-                    </dl>
+                    <ul class="landing-hero-chips" aria-label="Ferret capabilities">
+                        <li>
+                            <span aria-hidden="true">FQL</span>
+                            <strong>Declarative language</strong>
+                        </li>
+                        <li>
+                            <span aria-hidden="true">CDP</span>
+                            <strong>Browser execution</strong>
+                        </li>
+                        <li>
+                            <span aria-hidden="true">Go</span>
+                            <strong>Embeddable runtime</strong>
+                        </li>
+                    </ul>
                 </div>
 
-                <div class="landing-code-card" aria-label="Ferret query example">
-                    <div class="landing-code-toolbar">
-                        <span>product-feed.fql</span>
-                        <span>read-only example</span>
-                    </div>
-                    <div id="hero-query" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
+                <aside class="landing-product-visual" aria-label="Ferret workflow example">
+                    <div class="code-editor landing-hero-editor is-readonly">
+                        <div class="code-editor-shell">
+                            <div class="code-editor-header">
+                                <div class="code-editor-title">
+                                    <span class="code-editor-dot" aria-hidden="true"></span>
+                                    <span>product-feed.fql</span>
+                                </div>
+                                <span class="code-editor-meta">read-only workflow</span>
+                            </div>
+
+                            <div class="code-editor-pane">
+                                <div id="hero-query" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
 // Load a JavaScript-rendered product page through CDP
 LET page = 'https://mockery.montferret.dev/scenarios/dynamic-products/basic/'
 LET doc = DOCUMENT(page, { driver: 'cdp' })
@@ -60,81 +67,35 @@ FOR product IN products
         title: product[~? css`.product-title`].textContent,
         price: TO_FLOAT(SUBSTITUTE(product[~? css`.product-price`], '$', '')) ON ERROR RETURN 0
     }
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="landing-visual-strip" aria-label="Example output">
+                        <span>Output shape</span>
+                        <code>[{ brand, title, price }]</code>
+                    </div>
+                </aside>
             </div>
         </div>
     </section>
 
-    <main>
-        <section class="landing-section landing-section-muted" id="get-started">
+    <main class="landing-main">
+        <section class="landing-workflow-section" aria-labelledby="workflow-title">
             <div class="container">
-                <div class="landing-section-heading">
-                    <p class="landing-eyebrow">Get started</p>
-                    <h2>From query to repeatable workflow</h2>
+                <div class="landing-workflow-header">
+                    <p class="landing-eyebrow">Workflow</p>
+                    <h2 id="workflow-title">One language across the extraction path</h2>
                     <p>
-                        Start in the browser, install the CLI when you need local execution, then use the same language in services or tests.
+                        Ferret keeps the workflow explicit: describe the page state, execute against the right environment, and return structured data through the tool that fits the job.
                     </p>
                 </div>
 
-                <div class="landing-card-grid landing-card-grid-three">
-                    {{ range $landing.startingPoints }}
-                    <a class="landing-card landing-start-card" href="{{ .url }}">
-                        <span class="landing-card-eyebrow">{{ .eyebrow }}</span>
-                        <h3>{{ .title }}</h3>
-                        <p>{{ .description }}</p>
-                        <span class="landing-card-link">{{ .action }}</span>
-                    </a>
-                    {{ end }}
-                </div>
-            </div>
-        </section>
-
-        <section class="landing-section" id="ecosystem">
-            <div class="container">
-                <div class="landing-section-heading landing-section-heading-wide">
-                    <p class="landing-eyebrow">Ecosystem</p>
-                    <h2>A focused suite around FQL</h2>
-                    <p>
-                        Ferret is more than one binary. The core runtime stays small while official tools, services, images, and extensions cover local development, browser execution, testing, and remote workloads.
-                    </p>
-                </div>
-
-                <div class="landing-card-grid landing-ecosystem-grid">
-                    {{ range $landing.ecosystem }}
-                    {{ $featuredClass := cond .featured " is-featured" "" }}
-                    {{ if .url }}
-                    <a class="landing-card landing-ecosystem-card{{ $featuredClass }}" href="{{ .url }}">
-                        <span class="landing-badge">{{ .badge }}</span>
-                        <h3>{{ .name }}</h3>
-                        <p>{{ .description }}</p>
-                        <span class="landing-card-link">{{ .action }}</span>
-                    </a>
-                    {{ else }}
-                    <article class="landing-card landing-ecosystem-card{{ $featuredClass }}">
-                        <span class="landing-badge">{{ .badge }}</span>
-                        <h3>{{ .name }}</h3>
-                        <p>{{ .description }}</p>
-                    </article>
-                    {{ end }}
-                    {{ end }}
-                </div>
-            </div>
-        </section>
-
-        <section class="landing-section landing-section-dark" id="why-ferret">
-            <div class="container">
-                <div class="landing-section-heading">
-                    <p class="landing-eyebrow">Why Ferret</p>
-                    <h2>Built for targeted, structured extraction</h2>
-                    <p>
-                        Ferret is for developers who need repeatable extraction and automation workflows without turning every page into a custom browser script.
-                    </p>
-                </div>
-
-                <div class="landing-position-grid">
-                    {{ range $landing.positioning }}
-                    <article class="landing-position-item">
+                <div class="landing-workflow-rail">
+                    {{ range $landing.workflow }}
+                    <article class="landing-workflow-step">
+                        <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
                         <h3>{{ .title }}</h3>
                         <p>{{ .description }}</p>
                     </article>
@@ -143,22 +104,124 @@ FOR product IN products
             </div>
         </section>
 
-        <section class="landing-section landing-learn-section" id="learn-more">
+        <section class="landing-section landing-start-section" id="get-started" aria-labelledby="get-started-title">
             <div class="container">
-                <div class="landing-learn-layout">
+                <div class="landing-start-band">
                     <div class="landing-section-heading landing-section-heading-left">
-                        <p class="landing-eyebrow">Learn more</p>
-                        <h2>Docs, design notes, and source</h2>
+                        <p class="landing-eyebrow">Get started</p>
+                        <h2 id="get-started-title">Choose the shortest path to a working workflow</h2>
                         <p>
-                            Use the documentation for day-to-day work, the blog for project direction, and the repositories when you need implementation details.
+                            Start in the browser, move to local tooling when you need repeatability, then use the same FQL programs in services or jobs.
                         </p>
                     </div>
 
-                    <div class="landing-learn-list">
+                    <div class="landing-start-grid">
+                        {{ range $landing.startingPoints }}
+                        {{ $featuredClass := cond .featured " is-featured" "" }}
+                        <a class="landing-start-path{{ $featuredClass }}" href="{{ .url }}">
+                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
+                            <span class="landing-card-eyebrow">{{ .eyebrow }}</span>
+                            <h3>{{ .title }}</h3>
+                            <p>{{ .description }}</p>
+                            <span class="landing-card-link">{{ .action }}</span>
+                        </a>
+                        {{ end }}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section landing-suite-section" id="ecosystem" aria-labelledby="ecosystem-title">
+            <div class="container">
+                <div class="landing-section-heading landing-section-heading-wide">
+                    <p class="landing-eyebrow">Ecosystem</p>
+                    <h2 id="ecosystem-title">A focused product suite around FQL</h2>
+                    <p>
+                        The runtime stays compact while official extensions, tools, services, images, and editors cover development, execution, testing, and browser-backed workflows.
+                    </p>
+                </div>
+
+                <div class="landing-suite-board">
+                    <div class="landing-suite-foundation" aria-label="Foundation components">
+                        {{ range where $landing.ecosystem "size" "foundation" }}
+                        {{ $featuredClass := cond .featured " is-featured" "" }}
+                        <a class="landing-suite-card is-foundation{{ $featuredClass }}" href="{{ .url }}">
+                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
+                            <span class="landing-card-group">{{ .group }}</span>
+                            <span class="landing-badge">{{ .badge }}</span>
+                            <h3>{{ .name }}</h3>
+                            <p>{{ .description }}</p>
+                            <span class="landing-card-link">{{ .action }}</span>
+                        </a>
+                        {{ end }}
+                    </div>
+
+                    <div class="landing-suite-products" aria-label="Supporting components">
+                        {{ range where $landing.ecosystem "size" "component" }}
+                        {{ if .url }}
+                        <a class="landing-suite-card" href="{{ .url }}">
+                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
+                            <span class="landing-card-group">{{ .group }}</span>
+                            <span class="landing-badge">{{ .badge }}</span>
+                            <h3>{{ .name }}</h3>
+                            <p>{{ .description }}</p>
+                            <span class="landing-card-link">{{ .action }}</span>
+                        </a>
+                        {{ else }}
+                        <article class="landing-suite-card">
+                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
+                            <span class="landing-card-group">{{ .group }}</span>
+                            <span class="landing-badge">{{ .badge }}</span>
+                            <h3>{{ .name }}</h3>
+                            <p>{{ .description }}</p>
+                        </article>
+                        {{ end }}
+                        {{ end }}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section landing-positioning-section" id="why-ferret" aria-labelledby="why-ferret-title">
+            <div class="container">
+                <div class="landing-positioning-panel">
+                    <div class="landing-section-heading landing-section-heading-left">
+                        <p class="landing-eyebrow">Why Ferret</p>
+                        <h2 id="why-ferret-title">Targeted extraction without custom browser glue</h2>
+                        <p>
+                            Ferret is for developers who need repeatable, structured web data workflows that can move from prototype to production without changing shape.
+                        </p>
+                    </div>
+
+                    <div class="landing-position-grid">
+                        {{ range $landing.positioning }}
+                        <article class="landing-position-item">
+                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
+                            <h3>{{ .title }}</h3>
+                            <p>{{ .description }}</p>
+                        </article>
+                        {{ end }}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section landing-resource-section" id="learn-more" aria-labelledby="learn-more-title">
+            <div class="container">
+                <div class="landing-resource-strip">
+                    <div class="landing-resource-copy">
+                        <p class="landing-eyebrow">Learn more</p>
+                        <h2 id="learn-more-title">Docs, release notes, and source</h2>
+                    </div>
+
+                    <div class="landing-resource-links">
                         {{ range $landing.learnMore }}
-                        <a class="landing-learn-link" href="{{ .url }}">
-                            <span>{{ .title }}</span>
-                            <small>{{ .description }}</small>
+                        <a class="landing-resource-link" href="{{ .url }}">
+                            <span class="landing-icon-token" aria-hidden="true">{{ .icon }}</span>
+                            <span>
+                                <strong>{{ .title }}</strong>
+                                <small>{{ .description }}</small>
+                            </span>
                         </a>
                         {{ end }}
                     </div>
@@ -182,7 +245,7 @@ FOR product IN products
                     displayIndentGuides: false,
                     printMargin: false
                 });
-                editor.renderer.$cursorLayer.element.style.display = "none"
+                editor.renderer.$cursorLayer.element.style.display = "none";
 
                 return editor;
             }
@@ -190,7 +253,7 @@ FOR product IN products
             const elements = document.querySelectorAll('[data-type="landing-code"]');
 
             elements.forEach((el) => {
-                createEditor(el.id, el.attributes['data-lang'].value);
+                createEditor(el.id, el.getAttribute('data-lang'));
             });
         }, false);
     </script>

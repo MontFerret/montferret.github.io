@@ -7,11 +7,19 @@
 {{ $height := default "400px" ( .Get "height" )}}
 {{ $width := default "100%" ( .Get "height" ) }}
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
+<div class="code-editor is-readonly">
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.{{ $lang }}</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
             <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">
-                {{ .Inner }}
+{{ .Inner }}
             </div>
         </div>
     </div>
@@ -19,7 +27,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const editor = ace.edit('{{ $id }}-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            editor.setTheme("{{ hugo.Data.repl.theme }}");
             editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + '{{ $lang }}');
             editor.setOptions({

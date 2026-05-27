@@ -6,54 +6,56 @@
 {{ $orientation := default "vertical" ( .Get "orientation") }}
 {{ $sharable := default "false" ( .Get "sharable" ) }}
 {{ $apiVersion := default "400px" ( .Get "apiVersion" )}}
+{{ $orientationClass := cond (eq $orientation "horizontal") "is-horizontal" "is-vertical" }}
+{{ $readonlyClass := cond (eq $isReadOnly "true") " is-readonly" "" }}
 
-<div class="code-editor">
+<div class="code-editor {{ $orientationClass }}{{ $readonlyClass }}">
     {{- if eq $sharable "true" }}
-    <input id="{{ $id }}-share-clipboard" style="top: 0; left: 0; position: fixed;"></input>
+    <input id="{{ $id }}-share-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></input>
     {{- end }}
 
-    {{ if eq $orientation "vertical"}}
-    {{- if eq $sharable "true" }}
-    <button id="{{ $id }}-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
-    {{- end }}
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>workflow.fql</span>
+                <small>{{ if eq $apiVersion "2" }}Ferret v2{{ else }}Ferret{{ end }}</small>
+            </div>
 
-    <button id="{{ $id }}-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
-
-    <div class="columns">
-        <div class="column is-6">
-            <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">
-                {{ .Inner }}
+            <div class="code-editor-actions">
+                {{- if eq $sharable "true" }}
+                <button id="{{ $id }}-share-button" class="share button is-outlined is-light is-radiusless code-editor-button">Share</button>
+                {{- end }}
+                <button id="{{ $id }}-run-button" class="run button is-outlined is-light is-radiusless code-editor-button">Run</button>
             </div>
         </div>
-        <div class="column is-6">
-            <div id="{{ $id }}-result" class="code-editor-result" style="height: {{ $height }};"></div>
-        </div>
-    </div>
-    {{ else }}
-    {{- if eq $sharable "true" }}
-    <button id="{{ $id }}-share-button" class="share button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Share</button>
-    {{- end }}
-    <button id="{{ $id }}-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
-    <div class="columns">
-        <div class="column is-12">
-            <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">
-                {{ .Inner }}
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">
+{{ .Inner }}
+                </div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <span>output</span>
+                </div>
+                <div id="{{ $id }}-result" class="code-editor-result" style="height: {{ $height }};"></div>
             </div>
         </div>
     </div>
-    <div class="columns">
-        <div class="column is-12">
-            <div id="{{ $id }}-result" class="code-editor-result" style="height: {{ $height }};"></div>
-        </div>
-    </div>
-    {{ end }}
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             function createEditor(id, mode, useWorker) {
                 const editor = ace.edit(id);
-                editor.setTheme("{{ $.Site.Data.repl.theme }}");
+                editor.setTheme("{{ hugo.Data.repl.theme }}");
                 editor.session.setUseWorker(useWorker);
                 editor.session.setMode("ace/mode/" + mode);
                 editor.setOptions({
@@ -143,9 +145,9 @@
                 };
                 
                 {{- if eq $apiVersion "2" }}
-                const url = "{{ $.Site.Data.repl.workerV2URL }}";
+                const url = "{{ hugo.Data.repl.workerV2URL }}";
                 {{- else }}
-                const url = "{{ $.Site.Data.repl.workerURL }}";
+                const url = "{{ hugo.Data.repl.workerURL }}";
                 {{- end }}
 
                 onStart();

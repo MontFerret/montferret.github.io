@@ -1,18 +1,253 @@
+$editor-cyan: #2aa7b8;
+$editor-surface: #151724;
+$editor-toolbar: #202332;
+$editor-gutter: #10131d;
+
 .code-editor {
+    color: #fff;
+    margin: 1.5rem 0;
     position: relative;
 
-    .button {
-        position: absolute;
-        z-index: 1;
-        right: 1em;
-        width: 80px;
+    .code-editor-clipboard {
+        height: 1px;
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        width: 1px;
     }
 
-    button.run {
-        top: 2em;
+    .code-editor-shell {
+        background: $editor-surface;
+        border: 1px solid rgba($darkpurple, .16);
+        border-radius: 8px;
+        box-shadow: 0 18px 48px rgba($darkpurple, .12);
+        overflow: hidden;
     }
 
-    button.share {
-        top: 6em;
+    .code-editor-header {
+        align-items: center;
+        background: linear-gradient(90deg, $editor-toolbar 0%, #282d47 68%, rgba($editor-cyan, .22) 100%);
+        border-bottom: 1px solid rgba(#fff, .08);
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+        min-height: 3rem;
+        padding: .65rem .8rem;
+    }
+
+    .code-editor-title {
+        align-items: center;
+        color: #fff;
+        display: flex;
+        font-size: .78rem;
+        font-weight: 700;
+        gap: .55rem;
+        line-height: 1.3;
+        min-width: 0;
+
+        > span:not(.code-editor-dot) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        small {
+            color: rgba(#fff, .52);
+            font-size: .74rem;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+    }
+
+    .code-editor-dot {
+        background: linear-gradient(135deg, $accent 0%, $editor-cyan 100%);
+        border-radius: 999px;
+        display: inline-block;
+        flex: 0 0 auto;
+        height: .65rem;
+        width: .65rem;
+    }
+
+    .code-editor-meta {
+        color: rgba(#fff, .58);
+        font-size: .74rem;
+        line-height: 1.3;
+        white-space: nowrap;
+    }
+
+    .code-editor-actions {
+        display: flex;
+        flex: 0 0 auto;
+        flex-wrap: wrap;
+        gap: .5rem;
+        justify-content: flex-end;
+        margin-left: auto;
+    }
+
+    .button.code-editor-button {
+        background: rgba(#fff, .07);
+        border-color: rgba(#fff, .2);
+        color: #fff;
+        font-size: .72rem;
+        font-weight: 700;
+        height: 2rem;
+        line-height: 1;
+        min-width: 5rem;
+        padding: 0 .8rem;
+        position: static;
+        text-transform: uppercase;
+        width: auto;
+
+        &:hover,
+        &:focus {
+            background: rgba(#fff, .13);
+            border-color: rgba(#fff, .38);
+            color: #fff;
+        }
+
+        &:focus-visible {
+            outline: 3px solid rgba($accent, .42);
+            outline-offset: 2px;
+        }
+    }
+
+    .code-editor-grid {
+        background: linear-gradient(90deg, rgba($accent, .32) 0%, rgba($editor-cyan, .3) 100%);
+        display: grid;
+        gap: 1px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &.is-horizontal {
+        .code-editor-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .code-editor-pane {
+        background: $editor-surface;
+        min-width: 0;
+    }
+
+    .code-editor-pane-header {
+        align-items: center;
+        background: $editor-gutter;
+        border-bottom: 1px solid rgba(#fff, .07);
+        color: rgba(#fff, .58);
+        display: flex;
+        font-size: .7rem;
+        gap: .75rem;
+        justify-content: space-between;
+        line-height: 1.3;
+        padding: .5rem .75rem;
+        text-transform: uppercase;
+
+        span:first-child {
+            color: rgba(#fff, .82);
+            font-weight: 700;
+            text-transform: none;
+        }
+    }
+
+    .code-editor-text,
+    .code-editor-result {
+        background: $editor-surface;
+        color: #d9daee;
+        font-size: .88rem;
+        line-height: 1.5;
+        min-height: 7rem;
+        width: 100%;
+    }
+
+    .ace-tomorrow-night {
+        background-color: $editor-surface;
+        color: #d9daee;
+
+        .ace_gutter {
+            background: $editor-gutter;
+            color: rgba(#fff, .42);
+        }
+
+        .ace_gutter-active-line,
+        .ace_marker-layer .ace_active-line {
+            background: rgba(#fff, .05);
+        }
+
+        .ace_cursor {
+            color: #fff;
+        }
+
+        .ace_print-margin {
+            background: transparent;
+        }
+
+        .ace_comment {
+            color: rgba(#fff, .45);
+        }
+
+        .ace_keyword,
+        .ace_storage {
+            color: #c9a7ff;
+        }
+
+        .ace_string {
+            color: #d2dc78;
+        }
+
+        .ace_constant,
+        .ace_numeric {
+            color: #efb36b;
+        }
+
+        .ace_support,
+        .ace_function {
+            color: #7dd3e8;
+        }
+    }
+
+    .ace_scrollbar {
+        scrollbar-color: rgba(#fff, .24) transparent;
+    }
+}
+
+.landing-page {
+    .code-editor {
+        margin: 0;
+
+        .code-editor-shell {
+            border-color: rgba(#fff, .12);
+            box-shadow: 0 18px 50px rgba(#000, .24);
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .code-editor {
+        margin: 1.25rem 0;
+
+        .code-editor-header {
+            align-items: stretch;
+            flex-direction: column;
+            gap: .7rem;
+        }
+
+        .code-editor-title {
+            width: 100%;
+        }
+
+        .code-editor-actions {
+            margin-left: 0;
+            width: 100%;
+
+            .button.code-editor-button {
+                flex: 1 1 6rem;
+            }
+        }
+
+        .code-editor-grid {
+            grid-template-columns: 1fr;
+        }
     }
 }
