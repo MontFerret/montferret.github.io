@@ -4,6 +4,7 @@ weight: 40
 draft: false
 description: "Sort query results."
 aliases:
+  - /docs/language/control-flow/sort/
   - /docs/fql/operators/high-level/sort/
 ---
 

@@ -9,39 +9,50 @@ aliases:
 ---
 
 # What is Ferret?
-Ferret project is an ambitious initiative trying to bring the universal platform for writing scrapers without any hassle. It aims to simplify data extraction from the web for UI testing, machine learning, analytics and more.    
-      
-Ferret's main focus is on data abstraction. It implements its declarative language to get rid of the complexities of underlying technologies. 
+Ferret is a portable runtime and declarative query language for extracting structured data from web pages and documents. It lets you describe the data you need while Ferret handles the lower-level work of loading pages, querying HTML, waiting for browser state, and returning structured results.
 
-Ferret is extremely portable, extensible and fast.
+Use Ferret when you need repeatable extraction for UI testing, machine learning pipelines, analytics, monitoring, or internal automation.
 
-<hr />
+<div class="docs-card-grid docs-card-grid-compact">
+  <a class="docs-card" href="/docs/getting-started/installation/">
+    <span class="docs-card-kicker">1</span>
+    <strong>Install Ferret</strong>
+    <span>Set up the command-line tool or Go library.</span>
+  </a>
+  <a class="docs-card" href="/docs/getting-started/first-script/">
+    <span class="docs-card-kicker">2</span>
+    <strong>Run a first script</strong>
+    <span>Query static HTML or a JavaScript-rendered page.</span>
+  </a>
+  <a class="docs-card" href="/docs/web-extraction/">
+    <span class="docs-card-kicker">3</span>
+    <strong>Query HTML</strong>
+    <span>Understand documents, results, and extraction errors.</span>
+  </a>
+  <a class="docs-card" href="/docs/tools/lab/">
+    <span class="docs-card-kicker">4</span>
+    <strong>Test with Lab</strong>
+    <span>Move repeatable Ferret scripts into test suites.</span>
+  </a>
+</div>
 
-# Motivation
-Nowadays data is everything and who owns data - owns the world.
-
-[I](https://github.com/ziflex) have worked on multiple data-driven projects where data was an essential part of a system and I realized how cumbersome writing tons of scrapers is.   
-After some time looking for a tool that would let me to not write a code, but just express what data I need, decided to come up with my own solution.
-
-<hr />
-
-# Inspiration
-FQL (Ferret Query Language) is heavily inspired by AQL (ArangoDB Query Language).
-But due to the domain specifics, there are some differences in how things work.
-
-<hr />
-
-# How it works
+## How It Works
 
 <img src="/img/design.png"  />
 
 Ferret consists of the following main parts:
-- FQL parser, compiler and runtime
-- Standard library
-- User functions registry
-- HTML drivers and types (in-memory and Chrome Devtools Protocol based)
-- CLI
 
-In order to use CDP (Chrome Devtools Protocol based) driver, you should have running Chrome/Chromium with open debugging port (9222), so that Ferret could connect to it.
+- FQL parser, compiler, and runtime
+- Standard library and module functions
+- User function registry for application-specific behavior
+- HTML drivers and types for static documents and Chrome DevTools Protocol
+- Ecosystem tools including CLI, Lab, and Worker
 
-For in-memory page parsing and processing, no external dependencies are needed.
+For static page parsing, no external browser is required. For JavaScript-rendered pages, Ferret can connect to Chrome or Chromium through the Chrome DevTools Protocol.
+
+## Where To Go Next
+
+- Read [Language](/docs/language/) when you want the FQL concepts behind a query.
+- Read [Web Extraction](/docs/web-extraction/) when you want to work with documents and HTML results.
+- Read [Tools](/docs/tools/) when you need CLI commands, Lab, Worker, Docker images, or editor integrations.
+- Read [Reference](/docs/reference/) when you need detailed statement and API entries.

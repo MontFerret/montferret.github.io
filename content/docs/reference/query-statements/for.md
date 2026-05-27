@@ -4,6 +4,7 @@ weight: 10
 draft: false
 description: "Iterate over arrays, objects, and HTML element sets with FOR."
 aliases:
+  - /docs/language/control-flow/for/
   - /docs/fql/operators/high-level/for/
 ---
 

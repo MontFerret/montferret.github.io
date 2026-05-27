@@ -4,6 +4,7 @@ weight: 20
 draft: false
 description: "Filter query results with boolean conditions."
 aliases:
+  - /docs/language/control-flow/filter/
   - /docs/fql/operators/high-level/filter/
 ---
 

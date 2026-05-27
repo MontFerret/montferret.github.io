@@ -4,6 +4,7 @@ weight: 30
 draft: false
 description: "Return values from a query block."
 aliases:
+  - /docs/language/control-flow/return/
   - /docs/fql/operators/high-level/return/
 ---
 
@@ -19,7 +20,7 @@ The general syntax for ``RETURN`` is:
 RETURN expression
 {{</ code >}}
 
-The expression returned by ``RETURN`` is produced for each iteration in the block the ``RETURN`` statement is placed in. That means the result of a ``RETURN`` statement is always an array when inside [``FOR``]({{< ref "/docs/language/control-flow/for" >}} "FOR") loop.
+The expression returned by ``RETURN`` is produced for each iteration in the block the ``RETURN`` statement is placed in. That means the result of a ``RETURN`` statement is always an array when inside [``FOR``]({{< ref "/docs/reference/query-statements/for" >}} "FOR") loop.
 
 To return all elements from the currently iterated array without modification, the following simple form can be used:
 

@@ -1,73 +1,45 @@
 {{ $root := .RootPage }}
-{{ $site := .RootPage.Site }}
-{{ $rootURL := urls.Parse .RootPage.Permalink }}
+{{ $rootURL := urls.Parse $root.Permalink }}
 {{ $rootDir := path.Dir $rootURL.Path }}
 {{ $page := .Page }}
-{{ $pageURL := urls.Parse .Page.Permalink}}
+{{ $pageURL := urls.Parse $page.Permalink }}
 {{ $pageDir := path.Dir $pageURL.Path }}
 {{ $active := .ActivePage }}
+{{ $activeURL := urls.Parse $active.Permalink }}
+{{ $depth := default 0 .Depth }}
 {{ $isTopLevel := eq $rootDir $pageDir }}
 {{ $noLabel := $page.Params.noLabel }}
 {{ $label := default $page.Title $page.Params.sidebarTitle }}
-{{ $children := .Page.Pages.ByWeight }}
+{{ $children := $page.Pages.ByWeight }}
+{{ $isLinkable := or $page.IsPage $page.IsSection }}
+{{ $isActive := eq $active.Permalink $page.Permalink }}
+{{ $isAncestor := and (ne $page.Permalink $root.Permalink) (hasPrefix $activeURL.Path $pageURL.Path) }}
+{{ $isOpen := or $isActive $isAncestor }}
 
 {{ if and $isTopLevel $noLabel }}
-    {{ range $children }}
-        {{ if .IsSection }}
-            {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
-        {{ else }}
-            {{ $isActive := (eq $active.Permalink .Permalink) }}
-            {{ $title := default .Title .Params.sidebarTitle }}
-            <ul class="menu-list">
-                <li>
-                    <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
-                        {{ $title }}
-                    </a>
-                </li>
-            </ul>
-        {{ end }}
-    {{ end }}
-{{ else }}
-
-    {{ if not $noLabel}}
-    <p class="menu-label">
-        {{ if and $page.IsSection (gt (len $page.Content) 0) }}
-            <a href="{{ $page.Permalink }}">{{ $label }}</a>
-        {{ else }}
-            {{ $label }}
-        {{ end }}
-    </p>
-    {{ end }}
-
-    {{ if gt (len $children) 0 }}
-    <ul class="menu-list">
+    <ul class="docs-nav-root">
         {{ range $children }}
-            {{ $hasContent := gt (len .Content) 0 }}
-            {{ $asPage := or .IsPage (and .IsSection $hasContent)}}
-
-            {{ if $asPage }}
-                {{ $isActive := (eq $active.Permalink .Permalink) }}
-                {{ $title := default .Title .Params.sidebarTitle }}
-                <li>
-                    <a href="{{ .Permalink }}" class="{{ if $isActive }}is-active{{ end }}">
-                        {{ $title }}
-                    </a>
-                </li>
-            {{ else if and .IsSection .Pages }}
-                {{ $sectionURL := urls.Parse .Permalink }}
-
-                {{ if or $isTopLevel (hasPrefix $sectionURL.Path $pageURL.Path) }}
-                    {{ if $isTopLevel }}
-                        {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
-                    {{ else }}
-                        <li>
-                            {{ partial "toc-section.html" ( dict "RootPage" $root "Page" . "ActivePage" $active ) }}
-                        </li>
-                    {{ end }}
-                {{ end }}
-            {{ end }}
+            {{ partial "toc-section.html" (dict "RootPage" $root "Page" . "ActivePage" $active "Depth" 0) }}
         {{ end }}
     </ul>
-    {{ end }}
+{{ else }}
+    <li class="docs-nav-item docs-nav-depth-{{ $depth }}{{ if $page.IsSection }} docs-nav-section{{ end }}{{ if $isOpen }} is-open{{ end }}{{ if $isActive }} is-current{{ end }}">
+        {{ if $isLinkable }}
+            <a href="{{ $page.Permalink }}" class="docs-nav-link{{ if eq $depth 0 }} docs-nav-link-top{{ end }}{{ if $isActive }} is-active{{ else if $isAncestor }} is-ancestor{{ end }}"{{ if $isActive }} aria-current="page"{{ end }}>
+                {{ $label }}
+            </a>
+        {{ else }}
+            <span class="docs-nav-link docs-nav-label{{ if eq $depth 0 }} docs-nav-link-top{{ end }}{{ if $isActive }} is-active{{ else if $isAncestor }} is-ancestor{{ end }}">
+                {{ $label }}
+            </span>
+        {{ end }}
 
+        {{ if and (gt (len $children) 0) $isOpen }}
+            <ul class="docs-nav-list">
+                {{ range $children }}
+                    {{ partial "toc-section.html" (dict "RootPage" $root "Page" . "ActivePage" $active "Depth" (add $depth 1)) }}
+                {{ end }}
+            </ul>
+        {{ end }}
+    </li>
 {{ end }}

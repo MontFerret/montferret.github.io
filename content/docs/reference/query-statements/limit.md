@@ -4,6 +4,7 @@ weight: 50
 draft: false
 description: "Limit the number of query results."
 aliases:
+  - /docs/language/control-flow/limit/
   - /docs/fql/operators/high-level/limit/
 ---
 
@@ -47,4 +48,4 @@ In above example, the objects of users are sorted, the first three results get s
     Note that variables, expressions and subqueries can not be used for offset and count. The values for offset and count must be known at query compile time, which means that you can only use number literals, bind parameters or expressions that can be resolved at query compile time.
 </div>
 
-Where a ``LIMIT`` is used in relation to other operations in a query has meaning. ``LIMIT`` operations before ``FILTER``s in particular can change the result significantly, because the operations are executed in the order in which they are written in the query. See [``FILTER``]({{< ref "/docs/language/control-flow/filter" >}} "FILTER") for a detailed example.
+Where a ``LIMIT`` is used in relation to other operations in a query has meaning. ``LIMIT`` operations before ``FILTER``s in particular can change the result significantly, because the operations are executed in the order in which they are written in the query. See [``FILTER``]({{< ref "/docs/reference/query-statements/filter" >}} "FILTER") for a detailed example.

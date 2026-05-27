@@ -4,6 +4,7 @@ weight: 60
 draft: false
 description: "Group query results with COLLECT."
 aliases:
+  - /docs/language/control-flow/collect/
   - /docs/fql/operators/high-level/collect/
 ---
 
