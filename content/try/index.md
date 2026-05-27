@@ -6,7 +6,7 @@ draft: false
 ---
 
 <p style="margin-bottom: 2em;">
-    <a class="button is-dark is-radiusless" href="/try/next/">Try Ferret v2</a>
+    <a class="button is-dark" href="/try/next/">Try Ferret v2</a>
 </p>
 
 {{< editor id="replEditor" sharable="true" >}}
