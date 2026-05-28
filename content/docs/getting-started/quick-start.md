@@ -9,10 +9,15 @@ aliases:
 ---
 
 # Quick Start
-In this guide, you will run your first Ferret query and learn the basic shape of an FQL script.
 
-## 1. Run Ferret without a browser
+In this guide, you will run your first Ferret queries and learn the basic shape of an FQL script.
+
+Ferret scripts are written in FQL (Ferret Query Language). A script can define values, work with structured data, query documents, interact with web pages, and return a result. The examples below start with the smallest possible script and gradually introduce the pieces you will use in real-world extraction workflows.
+
+## Hello world: a simple expression
+
 Start with a simple expression:
+
 {{< tabs >}}
 
 {{< tab title="Terminal" >}}
@@ -29,8 +34,14 @@ RETURN 1 + 1
 
 {{< /tabs >}}
 
+This script does not open a page or use a browser. It evaluates an expression and returns the result.
 
-## 2. Work with structured data
+Every Ferret script produces its final value with `RETURN`. In this case, the returned value is the result of `1 + 1`.
+
+## Work with structured data
+
+Ferret can also work with objects, arrays, and function calls:
+
 {{< tabs >}}
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
@@ -63,7 +74,13 @@ RETURN {
 {{< /tab >}}
 {{< /tabs >}}
 
-## 3. Query HTML
+This example defines a variable with `LET`, creates an object, reads fields with dot notation, and returns a new object.
+
+`LET` creates a local binding. Here, user is an object with a name field and a roles array. The `RETURN` expression builds a new object from that data and uses `CONTAINS` to check whether the user has the admin role.
+
+## Query HTML
+
+Now let’s load a page and query HTML elements from it:
 
 {{< tabs >}}
 {{< tab title="Terminal" >}}
@@ -83,10 +100,18 @@ RETURN doc[~ css`article`]
 {{< /tab >}}
 {{< /tabs >}}
 
-## 4. Use a browser
+`DOCUMENT` loads the URL and returns a document value. The expression `doc[~ css'article']` queries that document using the CSS dialect and returns matchingarticleelements.
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
+The `~` shorthand is Ferret’s compact query form. It is useful when you want to query a value directly without writing the longer `QUERY ... IN ... USING ...` form.  
+
+HTML support is available in the CLI. When embedding Ferret in a Go application, HTML querying is provided through a module.  
+
+## Drive a browser  
+
+Some pages need JavaScript to render their content. For those cases, Ferret can use a browser-backed driver:  
+
+{{< tabs >}} 
+{{< tab title="Terminal" >}} 
 {{< terminal command="true" >}}
 ferret run -e '
 LET page = DOCUMENT("https://mockery.montferret.dev", { driver: "cdp" })
@@ -94,42 +119,36 @@ RETURN page.title
 '
 {{< /terminal >}}
 {{< /tab >}}
-
 {{< tab title="Browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = DOCUMENT("https://mockery.montferret.dev", { driver: "cdp" })
-RETURN page.title
-{{< /editor >}}
+LET page = DOCUMENT("https://mockery.montferret.dev", { driver: "cdp" }) 
+RETURN page.title {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
 
-## 5. Save a script
+This example uses the `cdp` driver, which talks to a browser through the Chrome DevTools Protocol.  
+Use browser mode when the page depends on JavaScript, client-side rendering, delayed content, user interaction, or browser APIs. 
+
+For static HTML pages, the non-browser mode is usually simpler and faster.  
+
+## Save a script  
+
+For anything longer than a small example, save the script to a `.fql` file:
+
 {{< terminal command="true" >}}
-echo 'LET name = @name ?: "Ferret"
-RETURN "Hello, " + name' > hello.fql
+echo 'LET name = @name ?: "Ferret" RETURN "Hello, " + name' > hello.fql 
 {{< /terminal >}}
+
+Then run it with a parameter:
 
 {{< terminal command="true" >}}
 ferret run hello.fql --param name=Steve
 {{< /terminal >}}
 
+Parameters are available through the `@` prefix. In this example, `@name` reads the name parameter passed from the CLI.
+
+The `?:` operator provides a fallback value. If name is not passed, the script returns `Hello, Ferret`.
+
 ## Where to go next
 
-And this is where your tiles are perfect:
-
-* CLI Usage
-* Embedding Ferret in Go
-* HTML Querying
-* Browser Automation
-* JavaScript Rendering
-* Custom Modules
-* Lab / Testing
-
-So the distinction becomes:
-
-Overview - what Ferret is, philosophy, use cases
-Installation - how to get it
-Quick Start - shortest successful hands-on path
-CLI Usage - all CLI commands and flags
-Language Guide - FQL syntax and semantics
-Modules / Drivers - HTML, browser, JS rendering, custom integrations
+{{< docs-related tiles="language,web-extraction,dynamic-pages,tools-cli" >}}

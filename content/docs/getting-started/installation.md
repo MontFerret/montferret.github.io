@@ -211,4 +211,4 @@ curl http://127.0.0.1:9222/json/version
 
 After installing Ferret, choose where you want to go next.
 
-{{< docs-related tiles="getting-started-quick-start,tools-cli,embedding,browser-runtime,html-querying,javascript-rendering,custom-modules" >}}
+{{< docs-related tiles="getting-started-quick-start,tools-cli,embedding,tools-lab" >}}
