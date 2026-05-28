@@ -182,40 +182,4 @@ These pieces are designed to work together while keeping the core language and r
 
 If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.
 
-<div class="docs-card-grid">
-  <a class="docs-card" href="{{< ref "installation" >}}">
-    <span class="docs-card-kicker">Setup</span>
-    <strong>Install Ferret</strong>
-    <span>Set up the CLI or add Ferret as a Go library.</span>
-  </a>
-  <a class="docs-card" href="{{< ref "quick-start" >}}">
-    <span class="docs-card-kicker">Try</span>
-    <strong>Run your first script</strong>
-    <span>Execute a Ferret query against static or dynamic pages.</span>
-  </a>
-  <a class="docs-card" href="/docs/getting-started/first-script/">
-    <span class="docs-card-kicker">Learn</span>
-    <strong>Learn the language basics</strong>
-    <span>Understand variables, expressions, arrays, objects, control flow, and functions.</span>
-  </a>
-  <a class="docs-card" href="/docs/getting-started/first-script/">
-    <span class="docs-card-kicker">Extract</span>
-    <strong>Query documents</strong>
-    <span>Use query expressions and dialects such as CSS to extract structured data.</span>
-  </a>
-  <a class="docs-card" href="/docs/getting-started/first-script/">
-    <span class="docs-card-kicker">Browse</span>
-    <strong>Work with dynamic pages</strong>
-    <span>Wait for elements, dispatch events, and automate browser interactions.</span>
-  </a>
-  <a class="docs-card" href="/docs/getting-started/first-script/">
-    <span class="docs-card-kicker">Embed</span>
-    <strong>Embed Ferret in Go</strong>
-    <span>Use Ferret as an embedded runtime or expression engine.</span>
-  </a>
-  <a class="docs-card" href="/docs/getting-started/first-script/">
-    <span class="docs-card-kicker">Test</span>
-    <strong>Test scripts with Lab</strong>
-    <span>Run Ferret scripts against controlled pages and scenarios.</span>
-  </a>
-</div>
+{{< docs-related tiles="getting-started-installation,getting-started-quick-start,language,web-extraction,dynamic-pages,embed-first-script,tools-lab" >}}

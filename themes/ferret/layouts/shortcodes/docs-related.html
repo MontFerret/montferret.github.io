@@ -1,0 +1,86 @@
+{{- $tilesParam := trim (default "" (.Get "tiles")) " \n\t" -}}
+{{- $catalog := hugo.Data.docs_tiles.tiles -}}
+{{- $defaultOrder := hugo.Data.docs_tiles.order -}}
+{{- $overrides := default dict (.Page.Param "relatedTileOverrides") -}}
+{{- $tileIDs := slice -}}
+{{- $usingDefaultOrder := false -}}
+{{- if not $catalog -}}
+    {{- errorf "The docs-related shortcode requires docs_tiles.tiles: %s" .Position -}}
+{{- end -}}
+{{- if $tilesParam -}}
+    {{- $tileIDs = split $tilesParam "," -}}
+{{- else -}}
+    {{- if not $defaultOrder -}}
+        {{- errorf "The docs-related shortcode requires docs_tiles.order when tiles is omitted: %s" .Position -}}
+    {{- end -}}
+    {{- $tileIDs = $defaultOrder -}}
+    {{- $usingDefaultOrder = true -}}
+{{- end -}}
+{{- if eq (len $tileIDs) 0 -}}
+    {{- errorf "The docs-related shortcode has no tiles to render: %s" .Position -}}
+{{- end -}}
+{{- if $usingDefaultOrder -}}
+    {{- $seen := dict -}}
+    {{- range $rawID := $tileIDs -}}
+        {{- $id := trim $rawID " \n\t" -}}
+        {{- if isset $seen $id -}}
+            {{- errorf "The docs-related default order contains duplicate tile %q: %s" $id $.Position -}}
+        {{- end -}}
+        {{- $seen = merge $seen (dict $id true) -}}
+    {{- end -}}
+    {{- if ne (len $seen) (len $catalog) -}}
+        {{- errorf "The docs-related default order must include every configured tile exactly once: %s" .Position -}}
+    {{- end -}}
+{{- end -}}
+
+<div class="docs-card-grid">
+{{- range $rawID := $tileIDs }}
+    {{- $id := trim $rawID " \n\t" -}}
+    {{- if not $id -}}
+        {{- errorf "The docs-related shortcode has an empty tile id in %q: %s" $tilesParam $.Position -}}
+    {{- end -}}
+
+    {{- $base := index $catalog $id -}}
+    {{- if not $base -}}
+        {{- errorf "The docs-related shortcode references unknown tile %q: %s" $id $.Position -}}
+    {{- end -}}
+
+    {{- $override := default dict (index $overrides $id) -}}
+    {{- $tile := merge $base $override -}}
+    {{- $pageRef := default "" (index $tile "page") -}}
+    {{- $url := default "" (index $tile "url") -}}
+    {{- if and (not $pageRef) (not $url) -}}
+        {{- errorf "The docs-related tile %q must define either page or url: %s" $id $.Position -}}
+    {{- end -}}
+
+    {{- $targetPage := "" -}}
+    {{- $href := $url -}}
+    {{- if $pageRef -}}
+        {{- $targetPage = site.GetPage $pageRef -}}
+        {{- if not $targetPage -}}
+            {{- errorf "The docs-related tile %q references missing page %q: %s" $id $pageRef $.Position -}}
+        {{- end -}}
+        {{- $href = $targetPage.RelPermalink -}}
+    {{- end -}}
+
+    {{- $kicker := default "" (index $tile "kicker") -}}
+    {{- $title := default "" (index $tile "title") -}}
+    {{- if and (not $title) $targetPage -}}
+        {{- $title = $targetPage.Title -}}
+    {{- end -}}
+    {{- $description := default "" (index $tile "description") -}}
+    {{- if and (not $description) $targetPage -}}
+        {{- $description = default "" $targetPage.Description -}}
+    {{- end -}}
+
+    <a class="docs-card" href="{{ $href }}">
+        {{- with $kicker }}
+        <span class="docs-card-kicker">{{ . }}</span>
+        {{- end }}
+        <strong>{{ $title }}</strong>
+        {{- with $description }}
+        <span>{{ . }}</span>
+        {{- end }}
+    </a>
+{{- end }}
+</div>

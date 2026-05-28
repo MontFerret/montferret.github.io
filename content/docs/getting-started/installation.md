@@ -5,6 +5,11 @@ draft: false
 description: "Install Ferret as a command-line tool, embed it as a Go library, and configure browser support for dynamic pages."
 aliases:
     - /docs/installation/
+relatedTileOverrides:
+  getting-started-quick-start:
+    kicker: "Start here"
+    title: "Quick Start"
+    description: "Run your first Ferret script and learn the basic workflow."
 ---
 
 # Installation
@@ -206,46 +211,4 @@ curl http://127.0.0.1:9222/json/version
 
 After installing Ferret, choose where you want to go next.
 
-<div class="docs-card-grid">
-  <a class="docs-card" href="/docs/quick-start/">
-    <span class="docs-card-kicker">Start here</span>
-    <strong>Quick Start</strong>
-    <span>Run your first Ferret script and learn the basic workflow.</span>
-  </a>
-
-  <a class="docs-card" href="/docs/cli/">
-    <span class="docs-card-kicker">Command line</span>
-    <strong>CLI Usage</strong>
-    <span>Use Ferret from your terminal, scripts, and automation jobs.</span>
-  </a>
-
-  <a class="docs-card" href="/docs/embedding/">
-    <span class="docs-card-kicker">Go library</span>
-    <strong>Embedding Ferret in Go</strong>
-    <span>Add Ferret to your application and register the capabilities you need.</span>
-  </a>
-
-  <a class="docs-card" href="/docs/browser/">
-    <span class="docs-card-kicker">Browser runtime</span>
-    <strong>Browser Automation</strong>
-    <span>Connect Ferret to Chrome or Chromium for browser-backed workflows.</span>
-  </a>
-
-  <a class="docs-card" href="/docs/html/">
-    <span class="docs-card-kicker">Web module</span>
-    <strong>HTML Querying</strong>
-    <span>Extract structured data from HTML documents using query capabilities.</span>
-  </a>
-
-  <a class="docs-card" href="/docs/javascript-rendering/">
-    <span class="docs-card-kicker">Dynamic pages</span>
-    <strong>JavaScript Rendering</strong>
-    <span>Work with pages that render content after scripts, network requests, or user interactions.</span>
-  </a>
-
-  <a class="docs-card" href="/docs/modules/custom/">
-    <span class="docs-card-kicker">Extensibility</span>
-    <strong>Custom Module Integration</strong>
-    <span>Extend Ferret by registering custom functions, capabilities, and integrations.</span>
-  </a>
-</div>
+{{< docs-related tiles="getting-started-quick-start,tools-cli,embedding,browser-runtime,html-querying,javascript-rendering,custom-modules" >}}
