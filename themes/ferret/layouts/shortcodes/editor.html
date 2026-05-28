@@ -59,7 +59,7 @@
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
-                        {{- if $isHorizontal }}
+                        {{- if and $isHorizontal (not $isAutoHeight) }}
                         <button id="{{ $id }}-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-result">Expand</button>
                         {{- end }}
                     </div>
@@ -90,20 +90,31 @@
             resultEditor.setReadOnly(true);
 
             {{- if or $isAutoHeight $isHorizontal }}
+            {{- if and $isHorizontal (not $isAutoHeight) }}
             const resultExpandBtn = document.querySelector('#{{ $id }}-result-expand-button');
+            {{- else }}
+            const resultExpandBtn = null;
+            {{- end }}
             const collapsedResultHeightStyle = resultEditor.container.style.height;
             let isResultExpanded = false;
 
-            function getSourceHeight() {
-                const lineHeight = textEditor.renderer.lineHeight || 21;
-                const screenLines = Math.max(textEditor.session.getScreenLength(), 1);
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
 
                 return Math.max(screenLines * lineHeight, 48);
             }
 
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
             function getCollapsedResultHeight() {
                 {{- if $isAutoHeight }}
-                return getSourceHeight();
+                return getEditorContentHeight(resultEditor);
                 {{- else }}
                 const previousHeight = resultEditor.container.style.height;
                 resultEditor.container.style.height = collapsedResultHeightStyle;
@@ -116,10 +127,8 @@
             }
 
             function getExpandedResultHeight(collapsedHeight) {
-                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || collapsedHeight;
                 const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
-                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-                const maxAllowedHeight = Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
                 const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
                 const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
                 const targetHeight = Math.min(contentHeight, maxAllowedHeight);
@@ -132,7 +141,7 @@
                     resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
                 } else {
                     {{- if $isAutoHeight }}
-                    resultEditor.container.style.height = `${collapsedHeight}px`;
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
                     {{- else }}
                     resultEditor.container.style.height = collapsedResultHeightStyle;
                     {{- end }}
@@ -143,9 +152,10 @@
 
             function syncEditorLayout() {
                 {{- if $isAutoHeight }}
-                const sourceHeight = getSourceHeight();
+                const sourceHeight = getEditorContentHeight(textEditor);
+                const resultHeight = getEditorContentHeight(resultEditor);
                 textEditor.container.style.height = `${sourceHeight}px`;
-                applyResultHeight(sourceHeight);
+                applyResultHeight(resultHeight);
                 {{- else }}
                 applyResultHeight(getCollapsedResultHeight());
                 {{- end }}
