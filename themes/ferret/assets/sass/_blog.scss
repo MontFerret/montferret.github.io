@@ -1,6 +1,6 @@
 .blog {
-    background: linear-gradient(180deg, #f8f7fb 0%, #fff 28%, #fbfbfe 100%);
-    color: $darkpurple;
+    background: linear-gradient(180deg, $blog-bg 0%, $site-surface 28%, mix($blog-bg, $site-surface, 70%) 100%);
+    color: $blog-text;
     padding: 2.5rem 1.5rem 4rem;
 
     .blog-list {
@@ -23,11 +23,11 @@
         }
 
         .card {
-            background: linear-gradient(135deg, #fff 0%, #fff 74%, rgba($landing-cyan, .055) 100%);
-            border: 1px solid rgba($darkpurple, .12);
+            background: linear-gradient(135deg, $site-surface 0%, $site-surface 74%, rgba($landing-cyan, .055) 100%);
+            border: 1px solid $site-border;
             border-radius: 8px;
             box-shadow: none;
-            color: $darkpurple;
+            color: $blog-text;
             height: 100%;
             min-height: 245px;
             overflow: hidden;
@@ -37,13 +37,13 @@
                 transform .16s ease;
 
             &:hover {
-                border-color: rgba($accent, .45);
-                box-shadow: 0 16px 36px rgba($darkpurple, .09);
+                border-color: rgba($site-accent, .45);
+                box-shadow: 0 16px 36px rgba($site-heading, .09);
                 transform: translateY(-2px);
 
                 .title a,
                 .read-more {
-                    color: $accent;
+                    color: $site-accent;
                 }
             }
         }
@@ -66,7 +66,7 @@
         }
 
         .title {
-            color: $darkpurple;
+            color: $site-heading;
             font-size: 1.06rem;
             font-weight: 700;
             letter-spacing: .02em;
@@ -79,7 +79,7 @@
                 transition: color .16s ease;
 
                 &:hover {
-                    color: $accent;
+                    color: $site-accent;
                 }
             }
         }
@@ -89,7 +89,7 @@
         }
 
         .post-date {
-            color: rgba($darkpurple, .52) !important;
+            color: rgba($blog-muted, .82) !important;
             font-size: .7rem;
             font-weight: 800;
             letter-spacing: .1em;
@@ -99,7 +99,7 @@
         }
 
         .post-author {
-            color: rgba($darkpurple, .62) !important;
+            color: $blog-muted !important;
             font-size: .68rem;
             font-weight: 800;
             letter-spacing: .1em;
@@ -108,19 +108,19 @@
             text-transform: uppercase;
 
             a {
-                color: $darkpurple;
+                color: $site-heading;
                 text-decoration: none;
                 transition: color .16s ease;
 
                 &:hover {
-                    color: $accent;
+                    color: $site-accent;
                     text-decoration: underline;
                 }
             }
         }
 
         .excerpt {
-            color: rgba($darkpurple, .62);
+            color: $blog-text;
             font-family: $family-sans-serif;
             font-size: .82rem;
             font-weight: 500;
@@ -131,7 +131,7 @@
 
         .read-more {
             align-items: center;
-            color: rgba($accent, .82);
+            color: rgba($site-accent, .82);
             display: inline-flex;
             font-family: $family-sans-serif;
             font-size: .72rem;
@@ -150,7 +150,7 @@
             }
 
             &:hover {
-                color: $accent;
+                color: $site-accent;
                 text-decoration: underline;
             }
         }
@@ -169,11 +169,11 @@
         .pagination-previous,
         .pagination-next {
             align-items: center;
-            background: rgba(#fff, .72);
-            border: 1px solid rgba($darkpurple, .16);
+            background: rgba($site-surface, .72);
+            border: 1px solid rgba($site-heading, .16);
             border-radius: 8px;
             box-shadow: none;
-            color: $darkpurple;
+            color: $site-heading;
             display: inline-flex;
             font-size: .86rem;
             font-weight: 700;
@@ -194,14 +194,14 @@
 
             &:hover {
                 background: rgba($lightpurple, .42);
-                border-color: rgba($accent, .48);
-                box-shadow: 0 12px 28px rgba($darkpurple, .08);
-                color: $darkpurple;
+                border-color: rgba($site-accent, .48);
+                box-shadow: 0 12px 28px rgba($site-heading, .08);
+                color: $site-heading;
                 transform: translateY(-1px);
             }
 
             &:focus-visible {
-                outline: 2px solid rgba($accent, .5);
+                outline: 2px solid rgba($site-accent, .5);
                 outline-offset: 3px;
             }
 
@@ -214,10 +214,10 @@
 
         .is-current,
         [aria-current="page"] {
-            background: $darkpurple;
-            border-color: rgba($darkpurple, .9);
-            box-shadow: 0 12px 30px rgba($darkpurple, .16);
-            color: #fff;
+            background: $site-heading;
+            border-color: rgba($site-heading, .9);
+            box-shadow: 0 12px 30px rgba($site-heading, .16);
+            color: $site-surface;
         }
 
         .is-disabled,
@@ -262,18 +262,19 @@
 }
 
 .blog-post {
-    background: linear-gradient(180deg, #f8f7fb 0%, #fff 24%, #fff 78%, #fbfbfe 100%);
-    color: $darkpurple;
+    background: linear-gradient(180deg, $blog-bg 0%, $site-surface 24%, $site-surface 78%, mix($blog-bg, $site-surface, 70%) 100%);
+    color: $blog-text;
     padding: 2.5rem 1.5rem 4.5rem;
 
     .blog-post-header {
-        @include landing-dimensional-gradient(132deg, 86%, 18%, 12%, 98%, 70%, 42%);
-        border: 1px solid rgba(#fff, .14);
+        background:
+            radial-gradient(circle at 12% 0%, rgba($site-accent, .08) 0%, rgba($site-accent, 0) 32%),
+            radial-gradient(ellipse at 88% 12%, rgba($landing-cyan, .11) 0%, rgba($landing-cyan, 0) 42%),
+            linear-gradient(135deg, $site-surface 0%, $blog-bg 100%);
+        border: 1px solid $site-border;
         border-radius: 8px;
-        box-shadow:
-            0 24px 64px rgba($darkpurple, .14),
-            0 12px 32px rgba($landing-blue, .1);
-        color: #fff;
+        box-shadow: 0 20px 54px rgba($site-heading, .1);
+        color: $blog-text;
         margin: 0 auto 2.25rem;
         max-width: 880px;
         overflow: hidden;
@@ -282,7 +283,7 @@
         &::after {
             background: linear-gradient(
                 90deg,
-                $accent 0%,
+                $site-accent 0%,
                 $landing-amber 30%,
                 $landing-cyan 68%,
                 #8563d5 100%
@@ -302,7 +303,7 @@
     }
 
     .blog-post-kicker {
-        color: rgba(#fff, .72);
+        color: $site-accent;
         font-family: $family-sans-serif;
         font-size: .72rem;
         font-weight: 800;
@@ -312,7 +313,7 @@
     }
 
     .title {
-        color: #fff;
+        color: $site-heading;
         font-size: clamp(2rem, 3.25vw, 2.85rem);
         font-weight: 700;
         letter-spacing: .012em;
@@ -323,7 +324,7 @@
     }
 
     .subtitle {
-        color: rgba(#fff, .78);
+        color: $blog-text;
         font-family: $family-sans-serif;
         font-size: 1.05rem;
         font-weight: 500;
@@ -334,7 +335,7 @@
 
     .blog-post-meta {
         align-items: center;
-        color: rgba(#fff, .72);
+        color: $blog-muted;
         display: flex;
         flex-wrap: wrap;
         font-family: $family-sans-serif;
@@ -347,7 +348,7 @@
         text-transform: uppercase;
 
         a {
-            color: #fff;
+            color: $site-heading;
             text-decoration: none;
 
             &:hover {
@@ -357,8 +358,8 @@
     }
 
     .blog-post-content {
-        border-top: 1px solid rgba($darkpurple, .08);
-        color: rgba($darkpurple, .82);
+        border-top: 1px solid $site-border;
+        color: $blog-text;
         font-family: $family-sans-serif;
         font-size: 1rem;
         line-height: 1.75;
@@ -384,7 +385,7 @@
         h2,
         h3,
         h4 {
-            color: $darkpurple;
+            color: $site-heading;
             font-family: $family-monospace;
             font-weight: 700;
             letter-spacing: .02em;
@@ -405,7 +406,7 @@
         }
 
         a {
-            color: $accent;
+            color: $site-accent;
             font-weight: 700;
             text-decoration: none;
 
@@ -415,11 +416,11 @@
         }
 
         blockquote {
-            background: linear-gradient(135deg, #fff 0%, #fff 72%, rgba($landing-cyan, .06) 100%);
-            border: 1px solid rgba($darkpurple, .1);
-            border-left: 4px solid $accent;
+            background: linear-gradient(135deg, $site-surface 0%, $site-surface 72%, rgba($landing-cyan, .06) 100%);
+            border: 1px solid $site-border;
+            border-left: 4px solid $site-accent;
             border-radius: 0 8px 8px 0;
-            color: rgba($darkpurple, .75);
+            color: $blog-text;
             margin: 1.75rem 0;
             padding: 1rem 1.25rem;
 
@@ -430,9 +431,9 @@
 
         code {
             background: rgba($lightpurple, .38);
-            border: 1px solid rgba($accent, .08);
+            border: 1px solid rgba($site-accent, .08);
             border-radius: 6px;
-            color: mix($accent, $darkpurple, 24%);
+            color: mix($site-accent, $site-heading, 24%);
             font-family: $family-monospace;
             font-weight: 600;
             font-size: .88em;
@@ -443,7 +444,7 @@
         pre {
             background: $landing-ink;
             border-radius: 8px;
-            color: #fff;
+            color: $site-surface;
             margin: 1.5rem 0;
             overflow-x: auto;
             padding: 1.1rem 1.25rem;
@@ -460,9 +461,9 @@
         }
 
         img {
-            border: 1px solid rgba($darkpurple, .1);
+            border: 1px solid $site-border;
             border-radius: 8px;
-            box-shadow: 0 16px 36px rgba($darkpurple, .08);
+            box-shadow: 0 16px 36px rgba($site-heading, .08);
             display: block;
             height: auto;
             margin: 1.75rem auto;
@@ -470,7 +471,7 @@
         }
 
         hr {
-            background: rgba($darkpurple, .1);
+            background: $site-border;
             border: 0;
             height: 1px;
             margin: 2.25rem 0;
@@ -484,7 +485,7 @@
 
             th,
             td {
-                border: 1px solid rgba($darkpurple, .12);
+                border: 1px solid $site-border;
                 padding: .65rem .75rem;
                 text-align: left;
                 vertical-align: top;
@@ -492,12 +493,12 @@
 
             th {
                 background: rgba($lightpurple, .42);
-                color: $darkpurple;
+                color: $site-heading;
                 font-weight: 800;
             }
 
             tr:nth-child(even) td {
-                background: rgba(#fff, .58);
+                background: rgba($site-surface, .58);
             }
         }
     }
@@ -507,7 +508,7 @@
         max-width: 780px;
 
         a {
-            color: rgba($accent, .86);
+            color: rgba($site-accent, .86);
             font-family: $family-sans-serif;
             font-size: .78rem;
             font-weight: 800;
@@ -516,7 +517,7 @@
             text-transform: uppercase;
 
             &:hover {
-                color: $accent;
+                color: $site-accent;
                 text-decoration: underline;
             }
         }
