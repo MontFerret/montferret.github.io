@@ -1,25 +1,43 @@
-{{ $id := printf "code-%d" .Ordinal }}
+{{- $idKey := "code-shortcode-id" -}}
+{{- $nextID := add (default 0 (.Page.Scratch.Get $idKey)) 1 -}}
+{{- .Page.Scratch.Set $idKey $nextID -}}
+{{- $id := printf "code-%d" $nextID -}}
 {{ $lang := default "fql" ( .Get "lang" )}}
 
 {{- if eq $lang "aql" -}}
 {{ $lang = "fql" }}
 {{- end -}}
 {{ $height := default "400px" ( .Get "height" )}}
+{{ $isAutoHeight := eq (lower $height) "auto" }}
+{{ $autoHeightClass := cond $isAutoHeight " is-auto-height" "" }}
+{{ $copyable := default "false" ( .Get "copy" ) }}
+{{ $isCopyable := eq (lower $copyable) "true" }}
 {{ $width := default "100%" ( .Get "height" ) }}
 {{ $source := trim .Inner "\n" }}
 
-<div class="code-editor is-readonly">
+<div class="code-editor is-readonly{{ $autoHeightClass }}">
+    {{- if $isCopyable }}
+    <textarea id="{{ $id }}-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
+    {{- end }}
+
     <div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.{{ $lang }}</span>
             </div>
+            {{- if $isCopyable }}
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="{{ $id }}-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+            {{- else }}
             <span class="code-editor-meta">read-only</span>
+            {{- end }}
         </div>
 
         <div class="code-editor-pane">
-            <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">{{ $source }}</div>
+            <div id="{{ $id }}-text" class="code-editor-text"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}>{{ $source }}</div>
         </div>
     </div>
 
@@ -37,6 +55,62 @@
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+
+            {{- if $isCopyable }}
+            const copyBtn = document.querySelector('#{{ $id }}-copy-button');
+            const copyClipboardEl = document.querySelector('#{{ $id }}-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            {{- end }}
+
+            {{- if $isAutoHeight }}
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+            {{- end }}
         }, false);
     </script>
 </div>

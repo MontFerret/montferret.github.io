@@ -1,18 +1,29 @@
-{{ $id := printf "code-editor-%d" .Ordinal }}
+{{- $idKey := "code-editor-shortcode-id" -}}
+{{- $nextID := add (default 0 (.Page.Scratch.Get $idKey)) 1 -}}
+{{- .Page.Scratch.Set $idKey $nextID -}}
+{{- $id := printf "code-editor-%d" $nextID -}}
 {{ $height := default "400px" ( .Get "height" )}}
+{{ $isAutoHeight := eq (lower $height) "auto" }}
+{{ $autoHeightClass := cond $isAutoHeight " is-auto-height" "" }}
 {{ $width := default "100%" ( .Get "height" ) }}
 {{ $isReadOnly := default "false" ( .Get "readonly" ) }}
 {{ $params := default "{}" ( .Get "params" ) }}
 {{ $orientation := default "vertical" ( .Get "orientation") }}
 {{ $sharable := default "false" ( .Get "sharable" ) }}
+{{ $copyable := default "false" ( .Get "copy" ) }}
+{{ $isCopyable := eq (lower $copyable) "true" }}
 {{ $apiVersion := default "400px" ( .Get "apiVersion" )}}
-{{ $orientationClass := cond (eq $orientation "horizontal") "is-horizontal" "is-vertical" }}
+{{ $isHorizontal := eq $orientation "horizontal" }}
+{{ $orientationClass := cond $isHorizontal "is-horizontal" "is-vertical" }}
 {{ $readonlyClass := cond (eq $isReadOnly "true") " is-readonly" "" }}
 {{ $source := trim .Inner "\n" }}
 
-<div class="code-editor {{ $orientationClass }}{{ $readonlyClass }}">
+<div class="code-editor {{ $orientationClass }}{{ $readonlyClass }}{{ $autoHeightClass }}">
     {{- if eq $sharable "true" }}
     <input id="{{ $id }}-share-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></input>
+    {{- end }}
+    {{- if $isCopyable }}
+    <textarea id="{{ $id }}-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
     {{- end }}
 
     <div class="code-editor-shell">
@@ -27,6 +38,9 @@
                 {{- if eq $sharable "true" }}
                 <button id="{{ $id }}-share-button" class="share button is-outlined is-light code-editor-button">Share</button>
                 {{- end }}
+                {{- if $isCopyable }}
+                <button id="{{ $id }}-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                {{- end }}
                 <button id="{{ $id }}-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
@@ -37,15 +51,20 @@
                     <span>query.fql</span>
                     <span>FQL</span>
                 </div>
-                <div id="{{ $id }}-text" class="code-editor-text" style="height: {{ $height }};">{{ $source }}</div>
+                <div id="{{ $id }}-text" class="code-editor-text"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}>{{ $source }}</div>
             </div>
 
             <div class="code-editor-pane code-editor-pane-result">
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
-                    <span>output</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        {{- if $isHorizontal }}
+                        <button id="{{ $id }}-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-result">Expand</button>
+                        {{- end }}
+                    </div>
                 </div>
-                <div id="{{ $id }}-result" class="code-editor-result" style="height: {{ $height }};"></div>
+                <div id="{{ $id }}-result" class="code-editor-result"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}></div>
             </div>
         </div>
     </div>
@@ -70,6 +89,88 @@
             const resultEditor = createEditor('{{ $id }}-result', 'json', false);
             resultEditor.setReadOnly(true);
 
+            {{- if or $isAutoHeight $isHorizontal }}
+            const resultExpandBtn = document.querySelector('#{{ $id }}-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getSourceHeight() {
+                const lineHeight = textEditor.renderer.lineHeight || 21;
+                const screenLines = Math.max(textEditor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getCollapsedResultHeight() {
+                {{- if $isAutoHeight }}
+                return getSourceHeight();
+                {{- else }}
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+                {{- end }}
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || collapsedHeight;
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+                const maxAllowedHeight = Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    {{- if $isAutoHeight }}
+                    resultEditor.container.style.height = `${collapsedHeight}px`;
+                    {{- else }}
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                    {{- end }}
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                {{- if $isAutoHeight }}
+                const sourceHeight = getSourceHeight();
+                textEditor.container.style.height = `${sourceHeight}px`;
+                applyResultHeight(sourceHeight);
+                {{- else }}
+                applyResultHeight(getCollapsedResultHeight());
+                {{- end }}
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+
+            {{- if $isAutoHeight }}
+            textEditor.session.on('change', syncEditorLayout);
+            {{- end }}
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+            {{- end }}
+
             {{- if eq $isReadOnly "true" }}
                 textEditor.setReadOnly(true);
             {{- end }}
@@ -77,6 +178,47 @@
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+
+            {{- if $isCopyable }}
+                const copyClipboardEl = document.querySelector('#{{ $id }}-copy-clipboard');
+                const copyBtn = document.querySelector('#{{ $id }}-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
+            {{- end }}
 
             {{- if eq $sharable "true" }}
                 const clibboardEl = document.querySelector('#{{ $id }}-share-clipboard');
@@ -131,6 +273,11 @@
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
+                {{- if or $isAutoHeight $isHorizontal }}
+                syncEditorLayout();
+                {{- else }}
+                resultEditor.resize();
+                {{- end }}
             }
 
             btn.addEventListener('click', () => {

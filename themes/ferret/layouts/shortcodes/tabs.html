@@ -1,0 +1,38 @@
+{{- $id := printf "docs-tabs-%d" .Ordinal -}}
+{{- $key := printf "%s-tabs" $id -}}
+{{- .Inner -}}
+{{- $tabs := .Page.Scratch.Get $key -}}
+
+{{- if eq (len $tabs) 0 -}}
+{{- errorf "The tabs shortcode requires at least one nested tab: %s" .Position -}}
+{{- end -}}
+
+{{- $selectedIndex := 0 -}}
+{{- $hasSelected := false -}}
+{{- range $index, $tab := $tabs -}}
+{{- if and (not $hasSelected) $tab.selected -}}
+{{- $selectedIndex = $index -}}
+{{- $hasSelected = true -}}
+{{- end -}}
+{{- end -}}
+
+<div id="{{ $id }}" class="docs-tabs" data-tabs>
+    <div class="docs-tabs-list" role="tablist">
+        {{- range $index, $tab := $tabs }}
+        {{- $isSelected := eq $index $selectedIndex }}
+        {{- $tabID := printf "%s-tab-%d" $id $index }}
+        {{- $panelID := printf "%s-panel-%d" $id $index }}
+        <button id="{{ $tabID }}" class="docs-tabs-tab" type="button" role="tab" aria-selected="{{ $isSelected }}" aria-controls="{{ $panelID }}" tabindex="{{ if $isSelected }}0{{ else }}-1{{ end }}">{{ $tab.title }}</button>
+        {{- end }}
+    </div>
+
+    {{- range $index, $tab := $tabs }}
+    {{- $isSelected := eq $index $selectedIndex }}
+    {{- $tabID := printf "%s-tab-%d" $id $index }}
+    {{- $panelID := printf "%s-panel-%d" $id $index }}
+    <div id="{{ $panelID }}" class="docs-tabs-panel" role="tabpanel" aria-labelledby="{{ $tabID }}"{{ if not $isSelected }} hidden{{ end }}>
+        {{ $tab.content | safeHTML }}
+    </div>
+    {{- end }}
+</div>
+{{- .Page.Scratch.Set $key slice -}}

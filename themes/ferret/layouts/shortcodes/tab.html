@@ -1,0 +1,12 @@
+{{- if not .Parent -}}
+{{- errorf "The tab shortcode must be nested inside tabs: %s" .Position -}}
+{{- end -}}
+
+{{- $title := .Get "title" -}}
+{{- if not $title -}}
+{{- errorf "The tab shortcode requires a title parameter: %s" .Position -}}
+{{- end -}}
+
+{{- $selected := eq (lower (default "false" (.Get "selected"))) "true" -}}
+{{- $key := printf "docs-tabs-%d-tabs" .Parent.Ordinal -}}
+{{- .Page.Scratch.Add $key (slice (dict "title" $title "selected" $selected "content" .Inner)) -}}

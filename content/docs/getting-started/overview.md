@@ -183,12 +183,12 @@ These pieces are designed to work together while keeping the core language and r
 If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.
 
 <div class="docs-card-grid">
-  <a class="docs-card" href="/docs/getting-started/installation/">
+  <a class="docs-card" href="{{< ref "installation" >}}">
     <span class="docs-card-kicker">Setup</span>
     <strong>Install Ferret</strong>
     <span>Set up the CLI or add Ferret as a Go library.</span>
   </a>
-  <a class="docs-card" href="/docs/getting-started/first-script/">
+  <a class="docs-card" href="{{< ref "quick-start" >}}">
     <span class="docs-card-kicker">Try</span>
     <strong>Run your first script</strong>
     <span>Execute a Ferret query against static or dynamic pages.</span>

@@ -1,0 +1,81 @@
+{{- $idKey := "terminal-shortcode-id" -}}
+{{- $nextID := add (default 0 (.Page.Scratch.Get $idKey)) 1 -}}
+{{- .Page.Scratch.Set $idKey $nextID -}}
+{{- $id := printf "terminal-%d" $nextID -}}
+{{ $prompt := default "$" ( .Get "prompt" ) }}
+{{ $height := .Get "height" }}
+{{ $copy := default "true" ( .Get "copy" ) }}
+{{ $isCopyable := ne (lower $copy) "false" }}
+{{ $command := default "false" ( .Get "command" ) }}
+{{ $isCommand := eq (lower $command) "true" }}
+{{ $source := trim .Inner "\n" }}
+{{ $lines := split $source "\n" }}
+
+<div class="code-editor terminal-shortcode{{ if $isCommand }} is-command{{ end }}">
+    {{- if $isCopyable }}
+    <textarea id="{{ $id }}-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">{{ $source }}</textarea>
+    {{- end }}
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+
+            {{- if $isCopyable }}
+            <div class="code-editor-actions">
+                <button id="{{ $id }}-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+            {{- end }}
+        </div>
+
+        <pre id="{{ $id }}-content" class="terminal-body"{{ with $height }} style="height: {{ . }};"{{ end }}><code>{{ range $index, $line := $lines }}<span class="terminal-row"><span class="terminal-prompt{{ if and $isCommand (gt $index 0) }} terminal-prompt-spacer{{ end }}" aria-hidden="true">{{ $prompt }}</span><span class="terminal-command">{{ $line }}</span></span>{{ end }}</code></pre>
+    </div>
+
+    {{- if $isCopyable }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#{{ $id }}-copy-button');
+            const copyClipboardEl = document.querySelector('#{{ $id }}-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+    {{- end }}
+</div>

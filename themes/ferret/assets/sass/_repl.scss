@@ -78,6 +78,7 @@ $editor-gutter: #10131d;
     }
 
     .code-editor-actions {
+        align-items: center;
         display: flex;
         flex: 0 0 auto;
         flex-wrap: wrap;
@@ -140,10 +141,47 @@ $editor-gutter: #10131d;
         padding: .5rem .75rem;
         text-transform: uppercase;
 
-        span:first-child {
+        > span:first-child {
             color: rgba(#fff, .82);
             font-weight: 700;
             text-transform: none;
+        }
+    }
+
+    .code-editor-pane-header-actions {
+        align-items: center;
+        display: flex;
+        gap: .5rem;
+        justify-content: flex-end;
+        margin-left: auto;
+        min-width: 0;
+    }
+
+    .code-editor-pane-button {
+        background: transparent;
+        border: 1px solid rgba(#fff, .18);
+        border-radius: 4px;
+        color: rgba(#fff, .76);
+        cursor: pointer;
+        font: inherit;
+        font-size: .64rem;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1;
+        padding: .28rem .45rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+
+        &:hover,
+        &:focus {
+            background: rgba(#fff, .08);
+            border-color: rgba(#fff, .34);
+            color: #fff;
+        }
+
+        &:focus-visible {
+            outline: 2px solid rgba($editor-cyan, .55);
+            outline-offset: 2px;
         }
     }
 
@@ -155,6 +193,56 @@ $editor-gutter: #10131d;
         line-height: 1.5;
         min-height: 7rem;
         width: 100%;
+    }
+
+    &.is-auto-height {
+        .code-editor-text,
+        .code-editor-result {
+            min-height: 3rem;
+            overflow: hidden;
+        }
+    }
+
+    &.terminal-shortcode {
+        .terminal-body {
+            background: $editor-surface;
+            color: #d9daee;
+            font-size: .88rem;
+            line-height: 1.55;
+            margin: 0;
+            min-height: 0;
+            overflow: auto;
+            padding: .8rem 0;
+            width: 100%;
+
+            code {
+                display: block;
+            }
+        }
+
+        .terminal-row {
+            display: flex;
+            gap: .75rem;
+            min-width: max-content;
+            padding: .08rem .9rem;
+        }
+
+        .terminal-prompt {
+            color: $editor-cyan;
+            flex: 0 0 auto;
+            min-width: 1.25rem;
+            text-align: right;
+            user-select: none;
+        }
+
+        .terminal-prompt-spacer {
+            visibility: hidden;
+        }
+
+        .terminal-command {
+            color: #d9daee;
+            white-space: pre;
+        }
     }
 
     .ace-tomorrow-night {
