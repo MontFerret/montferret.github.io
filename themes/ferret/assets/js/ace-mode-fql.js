@@ -30,7 +30,7 @@ ace.define(
       var keywordMapper = this.createKeywordMapper({
         "keyword": keywords,
         "constant.language": literals
-      }, "identifier", true);
+      }, "identifier", false);
 
       this.$rules = {
         start: [

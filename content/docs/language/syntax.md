@@ -2,140 +2,382 @@
 title: "Syntax"
 weight: 20
 draft: false
-description: "The basic syntax rules for Ferret queries."
+description: "Learn the basic structure of an FQL script."
 aliases:
   - /docs/fql/syntax/
 ---
 
-{{< header >}}
-Syntax
-{{</ header >}}
+# Script Structure
 
-{{< header size="3" >}}
-Query types
-{{</ header >}}
+An FQL script is a sequence of statements that produce a final value.
 
-An FQL query must return a result indicated by usage either of the ``RETURN`` or ``FOR IN`` or ``FOR WHILE `` keywords. The FQL parser will return an error if it cannot find any of these two statements.
+Most scripts follow a simple shape:
 
-{{< header size="3" >}}
-Whitespace
-{{</ header >}}
-Whitespaces (blanks, carriage returns, line feeds, and tab stops) can be used in the query text to increase its readability. Tokens have to be separated by any number of whitespaces. Whitespace within strings or names must be enclosed in quotes in order to be preserved.
+1. declare or receive input
+2. transform data
+3. return a result
 
-{{< header size="3" >}}
-Comments
-{{</ header >}}
-Comments can be embedded at any position in a query. The text contained in the comment is ignored by the FQL parser.
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET user = {
+    name: "Ada",
+    roles: ["admin", "editor"]
+}
 
-Multi-line comments cannot be nested, which means subsequent comment starts within comments are ignored, comment ends will end the comment.
+LET isAdmin = CONTAINS(user.roles, "admin")
 
-FQL supports two types of comments:
+RETURN {
+    name: user.name,
+    isAdmin: isAdmin
+}
+{{< /editor >}}
 
-- Single line comments: These start with a double forward slash and end at the end of the line, or the end of the query string (whichever is first).
-- Multi line comments: These start with a forward slash and asterisk, and end with an asterisk and a following forward slash. They can span as many lines as necessary.
+The final value may be produced by a top-level `RETURN`, or by another terminal statement such as a top-level `FOR` expression-style block.
 
-{{< code lang="fql" height="170px" >}}
-/* this is a comment */ RETURN 1
-/* these */ RETURN /* are */ 1 /* multiple */ + /* comments */ 1
-/* this is
-   a multi line
-   comment */
-// a single line comment
-{{</ code >}}
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+FOR role IN ["admin", "editor", "viewer"]
+    RETURN UPPER(role)
+{{< /editor >}}
 
-{{< header size="3" >}}
-Keywords
-{{</ header >}}
-On the top level, FQL offers the following operations:
+In both cases, the script produces a value that can be returned to the CLI, a host application, a test runner, or another runtime.
 
-- ``USE``: allows the use of types in a namespace without typing full type path.
-- ``FOR``: iteration over a data source or logical condition
-- ``RETURN``: results projection
-- ``FILTER``: non-view results filtering
-- ``SEARCH``: view results filtering
-- ``SORT``: result sorting
-- ``LIMIT``: result slicing
-- ``LET``: variable assignment
-- ``COLLECT``: result grouping
+## Statements
 
-Each of the above operations can be initiated in a query by using a keyword of the same name. An FQL query can (and typically does) consist of multiple of the above operations.
+A script is made of statements.
 
-An example FQL query may look like this:
+Common statements include:
 
-{{< code lang="fql" height="180px" >}}
-LET page = DOCUMENT("https://github.com/trending")
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET name = "Ada"
 
-FOR row IN ELEMENTS(page, "ol.repo-list li")
-    LET name = INNER_TEXT(row, "div:nth-child(1)")
-    LET description = INNER_TEXT(row, "div:nth-child(3)")
-    
-    RETURN { name, description }
-{{</ code >}}
+RETURN name
+{{< /editor >}}
 
-In this example query, the terms ``FOR``, ``FILTER``, and ``RETURN`` initiate the higher-level operation according to their name. These terms are also keywords, meaning that they have a special meaning in the language.
+`LET` creates an immutable binding.
 
-For example, the query parser will use the keywords to find out which high-level operations to execute. That also means keywords can only be used at certain locations in a query. This also makes all keywords reserved words that must not be used for other purposes than they are intended for.
+`RETURN` produces the final result of the script.
 
-At this moment, keywords are not case-insensitive, meaning they cannot be specified in lower or mixed case in queries.
+When a value needs to change over time, FQL also supports `VAR`:
 
-There are a few more keywords in addition to the higher-level operation keywords. Additional keywords may be added in future versions of Ferret. The complete list of keywords is currently:
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+VAR count = 0
+count = count + 1
 
-<div class="columns">
-    <div class="column">
-    <ul>
-        <li>AGGREGATE</li>
-        <li>ALL</li>
-        <li>AND</li>
-        <li>ANY</li>
-        <li>ASC</li>
-        <li>COLLECT</li>
-        <li>DESC</li>
-        <li>DISTINCT</li>
-        <li>FALSE</li>
-        <li>FILTER</li>
-        <li>FOR</li>
-    </ul>
-    </div>
-    <div class="column">
-        <ul>
-            <li>IN</li>
-            <li>WHILE</li>
-            <li>LET</li>
-            <li>LIMIT</li>
-            <li>NONE</li>
-            <li>NOT</li>
-            <li>NULL</li>
-            <li>OR</li>
-            <li>RETURN</li>
-            <li>SORT</li>
-            <li>TRUE</li>
-        </ul>
-    </div>
-</div>
+RETURN count
+{{< /editor >}}
 
-{{< header size="3" >}}
-Names
-{{</ header >}}
-In general, names are used to identify objects (properties, variables, and functions) in FQL queries.
+Most scripts should prefer `LET` unless mutation is actually needed.
 
-The maximum supported length of any name is 64 bytes. Names in FQL are always case-sensitive.
+More advanced scripts may also use statements such as `FOR`, `FILTER`, `COLLECT`, `WAITFOR`, `DISPATCH`, or function declarations, depending on what the script needs to do.
 
-Keywords must not be used as names. If a reserved keyword should be used as a name, the name must be enclosed in single or double quotes. Enclosing a name in quotes makes it possible to use otherwise reserved keywords as names. An example for this is:
+## Expressions
+Most of the useful work in FQL happens inside expressions. Expressions can be simple values, function calls, or complex combinations of operators and nested expressions.
 
-{{< code lang="fql" height="100px" >}}
-FOR i IN [{ "RETURN": "foobar" }]
-    RETURN i."RETURN"
-{{</ code >}}
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN 1 + 2
+{{< /editor >}}
 
-{{< header size="3" >}}
-Variable names
-{{</ header >}}
-FQL allows the user to assign values to additional variables in a query. All variables that are assigned a value must have a name that is unique within the context of the query.
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN UPPER("hello")
+{{< /editor >}}
 
-{{< code lang="fql" height="120px" >}}
-LET users = [{ name: "Steve" }]
-FOR u IN users
-  RETURN { name : u.name }
-{{</ code >}}
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN (1 + 2) * 3
+{{< /editor >}}
 
-Allowed characters in variable names are the letters a to z (both in lower and upper case), the numbers 0 to 9, the underscore (_) symbol and the dollar ($) sign. A variable name must not start with a number. If a variable name starts with the underscore character, the underscore must be followed by least one letter (a-z or A-Z) or digit (0-9).
+Expressions can be assigned to variables and used in subsequent statements:
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET user = {
+    firstName: "Ada",
+    lastName: "Lovelace"
+}
+LET fullName = user.firstName + " " + user.lastName
+
+RETURN fullName
+{{< /editor >}}
+
+They can also be nested inside larger expressions:
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET user = {
+    name: "Ada",
+    roles: ["admin", "editor"]
+}
+
+RETURN {
+    name: user.name,
+    roleCount: LENGTH(user.roles)
+}
+{{< /editor >}}
+
+Expressions are the building blocks of FQL scripts. Statements describe the flow of the script, while expressions produce the values that move through that flow.
+
+## Producing a result
+Every script that is meant to produce a result needs a terminal statement.
+
+The most common terminal statement is `RETURN`.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN "Hello, world!"
+{{< /editor >}}
+
+The returned value can be any FQL value:
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN 42
+{{< /editor >}}
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN ["a", "b", "c"]
+{{< /editor >}}
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN {
+    ok: true,
+    items: []
+}
+{{< /editor >}}
+
+A `FOR` loop can also be terminal when the script produces a collection.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+FOR i IN 1..10
+    RETURN i * i
+{{< /editor >}}
+
+In this form, the loop itself produces the script result.
+This is useful when the script is primarily a projection, extraction, or transformation over a collection.
+
+You can also declare intermediate values before and inside the loop to support more complex logic:
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET products = [
+    { name: "Widget", price: 9.99, active: true },
+    { name: "Gadget", price: 19.99, active: false },
+    { name: "Doohickey", price: 14.99, active: true }
+]
+LET discount = 0.1
+
+FOR product IN products
+    LET discountedPrice = product.price * (1 - discount)
+    FILTER product.active AND discountedPrice < 15
+    LET productName = product.name + " (discounted)"
+    RETURN {
+        name: productName,
+        price: discountedPrice
+    }
+{{< /editor >}}
+
+## Top-level flow
+
+FQL scripts are usually written from top to bottom. The flow of execution follows the order of statements, with each statement able to reference values declared in previous statements.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET price = 19.99
+LET tax = price * 0.08
+
+RETURN price + tax
+{{< /editor >}}
+
+A statement cannot use a value before it has been declared:
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET total = price + tax
+LET price = 19.99
+LET tax = price * 0.08
+
+RETURN total
+{{< /editor >}}
+
+## Bindings
+
+Bindings created by `LET` and `VAR` are immutable and mutable, respectively. They can be used in subsequent statements but cannot be re-declared.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET name = "Ada"
+LET name = "Grace"  // Error: name is already declared
+
+RETURN name
+{{< /editor >}}
+
+A binding lets you give a meaningful name to an intermediate value. This can make your script easier to read and maintain, especially when the value is used multiple times.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET price = 19.99
+LET tax = price * 0.08
+LET total = price + tax
+LET message = "The total price is $" + ROUND(total)
+
+RETURN message
+{{< /editor >}}
+
+## Parameters
+
+Parameters are a special kind of binding that receive their value from outside the script. They are variables prefixed with `@`.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN "Hello, " + @name + "!"
+{{< /editor >}}
+
+For example, a host application or CLI command can pass name at runtime instead of hardcoding it in the script.
+
+Parameters are often used as the starting point of a script:
+
+{{< code lang="fql" >}}
+FOR product IN @products
+    FILTER product.inStock
+    RETURN {
+        title: product.title,
+        price: product.price
+    }
+{{< /code >}}
+
+## Structured results
+
+FQL scripts can return any valid FQL value, including complex objects and collections.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN {
+    user: {
+        name: "Ada",
+        roles: ["admin", "editor"]
+    },
+    stats: {
+        posts: 42,
+        followers: 1000
+    },
+    recentActivity: [
+        { type: "post", title: "My latest post" },
+        { type: "comment", content: "Great article!" }
+    ],
+    createdAt: NOW()
+}
+{{< /editor >}}
+
+This is especially useful for extraction and automation workflows, where the script should return predictable output.
+
+## Blocks
+
+Some statements, such as `FOR`, `MATCH`, and function declarations, create a new block scope. This means that variables declared inside the block are not accessible outside of it.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+LET res = (FOR i IN 1..5
+    LET square = i * i
+    RETURN square
+)
+RETURN [res, square]  // Error: square is not defined outside the block
+{{< /editor >}}
+
+Inside the loop, FILTER controls which items are included, and RETURN describes the value produced for each included item.
+
+Blocks let you describe a local flow of work without leaving the declarative style of the language.
+
+The exact block structure depends on the statement being used. For example, FOR, MATCH, WAITFOR, and function declarations each have their own shape.
+
+## Whitespace
+FQL is whitespace-insensitive, which means that you can use spaces, tabs, and newlines to format your code in a way that is most readable to you.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN 1 +     2
+{{< /editor >}}
+
+Spaces, tabs, and line breaks separate tokens. Whitespace inside strings is preserved.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN "Hello,     world!"
+{{< /editor >}}
+
+## Comments
+
+FQL supports single-line comments that start with `//` and continue to the end of the line.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+// This is a comment
+RETURN "Hello, world!"  // This is another comment
+{{< /editor >}}
+
+It also supports multi-line comments enclosed in `/*` and `*/`.
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+/*
+This is a multi-line comment.
+It can span multiple lines.
+*/
+RETURN "Hello, world!"
+{{< /editor >}}
+
+## Names and keywords
+
+Names identify variables, object fields, functions, and other script-level symbols. They must start with a letter or underscore, followed by letters, digits, or underscores.
+
+{{< code lang="fql"  >}}
+LET _name = "Ada"
+LET name2 = "Grace"
+LET Name = "Turing"
+{{< /code >}}
+
+Keywords are words with special meaning in FQL.
+
+{{< code lang="fql"  >}}
+USE
+AS
+MATCH 
+WHEN 
+FUNC 
+FOR 
+RETURN 
+QUERY
+USING 
+WAITFOR 
+DISPATCH 
+OPTIONS 
+TIMEOUT 
+EVERY
+BACKOFF 
+JITTER 
+EXISTS 
+COUNT 
+ONE
+DISTINCT 
+FILTER 
+SORT 
+LIMIT 
+LET 
+VAR 
+COLLECT
+ASC 
+DESC 
+AT 
+LEAST 
+INTO 
+KEEP 
+WITH 
+ALL
+ANY 
+AGGREGATE 
+EVENT 
+LIKE 
+NOT 
+IN 
+DO 
+WHILE
+AND 
+OR 
+ON 
+ERROR 
+FAIL 
+RETRY 
+DELAY 
+DELETE 
+VALUE
+{{< /code >}}
+
+Keywords are case-sensitive and are conventionally written in uppercase.
+
+When an object field has the same name as a keyword, quote the field name:
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+RETURN {
+    "return": "This field is named 'return', which is a keyword, so it is quoted."
+}
+{{< /editor >}}

@@ -2,7 +2,7 @@
 {{- $nextID := add (default 0 (.Page.Scratch.Get $idKey)) 1 -}}
 {{- .Page.Scratch.Set $idKey $nextID -}}
 {{- $id := printf "code-editor-%d" $nextID -}}
-{{ $height := default "400px" ( .Get "height" )}}
+{{ $height := default "auto" ( .Get "height" )}}
 {{ $isAutoHeight := eq (lower $height) "auto" }}
 {{ $autoHeightClass := cond $isAutoHeight " is-auto-height" "" }}
 {{ $width := default "100%" ( .Get "height" ) }}
@@ -17,6 +17,7 @@
 {{ $orientationClass := cond $isHorizontal "is-horizontal" "is-vertical" }}
 {{ $readonlyClass := cond (eq $isReadOnly "true") " is-readonly" "" }}
 {{ $source := trim .Inner "\n" }}
+{{ $name := default "example" ( .Get "name" )}}
 
 <div class="code-editor {{ $orientationClass }}{{ $readonlyClass }}{{ $autoHeightClass }}">
     {{- if eq $sharable "true" }}
@@ -30,7 +31,7 @@
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>workflow.fql</span>
+                <span>{{ $name }}.fql</span>
                 <small>{{ if eq $apiVersion "2" }}Ferret v2{{ else }}Ferret{{ end }}</small>
             </div>
 

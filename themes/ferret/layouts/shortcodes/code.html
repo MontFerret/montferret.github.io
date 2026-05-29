@@ -7,13 +7,14 @@
 {{- if eq $lang "aql" -}}
 {{ $lang = "fql" }}
 {{- end -}}
-{{ $height := default "400px" ( .Get "height" )}}
+{{ $height := default "auto" ( .Get "height" )}}
 {{ $isAutoHeight := eq (lower $height) "auto" }}
 {{ $autoHeightClass := cond $isAutoHeight " is-auto-height" "" }}
 {{ $copyable := default "false" ( .Get "copy" ) }}
 {{ $isCopyable := eq (lower $copyable) "true" }}
 {{ $width := default "100%" ( .Get "height" ) }}
 {{ $source := trim .Inner "\n" }}
+{{ $name := default "example" ( .Get "name" )}}
 
 <div class="code-editor is-readonly{{ $autoHeightClass }}">
     {{- if $isCopyable }}
@@ -24,7 +25,7 @@
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.{{ $lang }}</span>
+                <span>{{ $name }}.{{ $lang }}</span>
             </div>
             {{- if $isCopyable }}
             <div class="code-editor-actions">
