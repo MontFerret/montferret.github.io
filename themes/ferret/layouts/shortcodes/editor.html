@@ -47,27 +47,33 @@
             </div>
         </div>
 
-        <div id="{{ $id }}-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="{{ $id }}-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="{{ $id }}-text" class="code-editor-text"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}>{{ $source }}</div>
-            </div>
-
-            <div id="{{ $id }}-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        {{- if and $isHorizontal (not $isAutoHeight) }}
-                        <button id="{{ $id }}-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-result">Expand</button>
-                        {{- end }}
-                        <button id="{{ $id }}-result-close-button" class="code-editor-pane-button" type="button" aria-controls="{{ $id }}-result-pane">Close</button>
+        <div class="code-editor-stage">
+            <div id="{{ $id }}-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="{{ $id }}-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
                     </div>
+                    <div id="{{ $id }}-text" class="code-editor-text"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}>{{ $source }}</div>
                 </div>
-                <div id="{{ $id }}-result" class="code-editor-result"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}></div>
+
+                <div id="{{ $id }}-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            {{- if and $isHorizontal (not $isAutoHeight) }}
+                            <button id="{{ $id }}-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-result">Expand</button>
+                            {{- end }}
+                            <button id="{{ $id }}-result-close-button" class="code-editor-pane-button" type="button" aria-controls="{{ $id }}-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="{{ $id }}-result" class="code-editor-result"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}></div>
+                </div>
+            </div>
+            <div id="{{ $id }}-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -98,6 +104,7 @@
             const resultExpandBtn = null;
             {{- end }}
             const editorGrid = document.querySelector('#{{ $id }}-grid');
+            const runLoader = document.querySelector('#{{ $id }}-loader');
             const resultPane = document.querySelector('#{{ $id }}-result-pane');
             const resultToggleBtn = document.querySelector('#{{ $id }}-result-toggle-button');
             const resultCloseBtn = document.querySelector('#{{ $id }}-result-close-button');
@@ -327,13 +334,19 @@
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
