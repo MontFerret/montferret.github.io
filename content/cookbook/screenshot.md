@@ -7,5 +7,5 @@ draft: false
 Output of the function is base64-encoded binary file.
 
 {{< editor height="85px" >}}
-RETURN SCREENSHOT("https://www.montferret.dev/")
+RETURN SCREENSHOT("https://www.ferretlang.org/")
 {{< /editor >}}

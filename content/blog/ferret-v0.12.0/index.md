@@ -34,32 +34,30 @@ RETURN NONE
 
 {{</ editor >}}
 
-Read about available functions [here](https://www.montferret.dev/docs/standard-library/testing).
+Read about available functions [here](https://www.ferretlang.org/docs/standard-library/testing).
 
 ## New FRAMES function
 A new helper function that finds HTML frames by a given property selector.
 
 {{< editor lang="fql" height="190px" readonly="true" >}}
-
-LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
+LET page = DOCUMENT('https://mockery.ferretlang.org/scenarios/iframes/', {
     driver: 'cdp'
 })
 
-LET frame = FRAMES(page, "url", "https://www.montferret.dev/")
+LET frame = FRAMES(page, "url", "https://mockery.ferretlang.org/")
 
 RETURN FIRST(frame).url
-
 {{</ editor >}}
 
 ## iFrame navigation handling
 Finally, we can control navigation of nested iframes! Whenever your page has a nested iframe that performs some nested navigation, you can tell Ferret to wait for its completion.
 
 {{< editor lang="fql" height="580px" readonly="true" >}}
-LET page = DOCUMENT('https://www.montferret.dev/fixtures/iframe/', {
+LET page = DOCUMENT('https://mockery.ferretlang.org/scenarios/iframes/', {
     driver: 'cdp'
 })
 
-LET innerPage = FIRST(FRAMES(page, "url", "https://www.montferret.dev/"))
+LET innerPage = FIRST(FRAMES(page, "url", "https://www.mockery.ferretlang.org/"))
 
 T::NOT::NONE(innerPage)
 
@@ -72,7 +70,7 @@ WAIT_NAVIGATION(page, {
 })
 
 // We need to get a new document that we have navigated to
-LET innerPage2 = FIRST(FRAMES(page, "url", "https://www.montferret.dev/blog/"))
+LET innerPage2 = FIRST(FRAMES(page, "url", "https://www.ferretlang.org/blog/"))
 
 WAIT_ELEMENT(innerPage2, ".blog")
 

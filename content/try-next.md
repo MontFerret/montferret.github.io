@@ -8,7 +8,7 @@ draft: false
 {{< editor id="replEditorNext" sharable="true" apiVersion="2" height="384px" >}}
 // Open the the product listing page using a browser-based driver (CDP)
 // This allows Ferret to execute JavaScript and work with dynamic content
-LET doc = DOCUMENT('https://mockery.montferret.dev/scenarios/dynamic-products/basic/', {
+LET doc = DOCUMENT('https://mockery.ferretlang.org/scenarios/dynamic-products/basic/', {
     driver: 'cdp'
 })
 

@@ -176,6 +176,6 @@ Let's summarize what we've learned.
 
 ``lab`` can be useful to test correctness of your scraping queries by running them and validating their outputs.
 
-Also, ``lab`` can help in testing UI by using the new [assertion library](https://www.montferret.dev/docs/standard-library/testing/).
+Also, ``lab`` can help in testing UI by using the new [assertion library](https://www.ferretlang.org/docs/standard-library/testing/).
 
 In some scenarios, it can be used as a batch script runner that can execute your scripts in parallel that will simplify your infrastructure.

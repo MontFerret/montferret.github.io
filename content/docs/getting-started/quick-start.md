@@ -86,7 +86,7 @@ Now let’s load a page and query HTML elements from it:
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN doc[~ css`article`]
 '
 {{< /terminal >}}
@@ -94,7 +94,7 @@ RETURN doc[~ css`article`]
 
 {{< tab title="Browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN doc[~ css`article`]
 {{< /editor >}}
 {{< /tab >}}
@@ -114,14 +114,14 @@ Some pages need JavaScript to render their content. For those cases, Ferret can 
 {{< tab title="Terminal" >}} 
 {{< terminal command="true" >}}
 ferret run -e '
-LET page = DOCUMENT("https://mockery.montferret.dev", { driver: "cdp" })
+LET page = DOCUMENT("https://mockery.ferretlang.org", { driver: "cdp" })
 RETURN page.title
 '
 {{< /terminal >}}
 {{< /tab >}}
 {{< tab title="Browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = DOCUMENT("https://mockery.montferret.dev", { driver: "cdp" }) 
+LET page = DOCUMENT("https://mockery.ferretlang.org", { driver: "cdp" }) 
 RETURN page.title {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}

@@ -58,7 +58,7 @@ In Ferret v1, querying was strongly associated with documents, elements, and sel
 In Ferret v2, querying becomes a general language capability. A value can support queries if it implements the queryable capability.
 
 {{< editor lang="fql" height="132px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 LET elements = QUERY "article h2" IN doc USING css
 RETURN elements
 {{</ editor >}}
@@ -96,21 +96,21 @@ By default, `QUERY` returns the normal result shape for the selected dialect and
 `QUERY EXISTS` returns a boolean value:
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN QUERY EXISTS "article h2" IN doc USING css
 {{</ editor >}}
 
 `QUERY COUNT` returns the number of matches:
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN QUERY COUNT "article h2" IN doc USING css
 {{</ editor >}}
 
 `QUERY ONE` returns a single matching result:
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN QUERY ONE "article h2" IN doc USING css
 {{</ editor >}}
 
@@ -142,7 +142,7 @@ For common cases, the long form can be too verbose. Ferret v2 also supports shor
 The regular shorthand uses `~`:
 
 {{< editor lang="fql" height="112px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN doc[~ css`article h2`]
 {{</ editor >}}
 
@@ -155,7 +155,7 @@ QUERY "article h2" IN doc USING css
 When a script expects a single result, Ferret also supports the `~?` shorthand:
 
 {{< editor lang="fql" height="112px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN doc[~? css`article h2`]
 {{</ editor >}}
 
@@ -240,7 +240,7 @@ The basic operators cover the most common cases:
 The `[*]` operator is especially useful after queries. For example, extracting all link targets from a page can stay compact:
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/")
+LET doc = DOCUMENT("https://mockery.ferretlang.org/")
 RETURN doc[~ css`a`][*].attributes.href
 {{</ editor >}}
 
@@ -312,7 +312,7 @@ That distinction matters: use `[* FILTER ...]` when you want the matching values
 Array contraction is useful when querying nested collections:
 
 {{< editor lang="fql" height="152px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/")
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/")
 LET sections = QUERY "section" IN doc USING css
 LET linksBySection = sections[* RETURN .[~ css`a`]]
 
@@ -450,7 +450,7 @@ String templates are especially useful when building dynamic query strings or UR
 LET category = "phones"
 LET page = 2
 
-LET url = `https://mockery.montferret.dev/scenarios/ecommerce/categories/${category}/page/${page}`
+LET url = `https://mockery.ferretlang.org/scenarios/ecommerce/categories/${category}/page/${page}`
 RETURN WEB::ARTICLE::EXTRACT(DOCUMENT(url))
 {{</ editor >}}
 
@@ -599,7 +599,7 @@ Pages are dynamic. Data may appear after a network request, a DOM update, an ani
 Ferret v2 makes waiting explicit:
 
 {{< editor lang="fql" height="224px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/delayed-rendering/", {
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/delayed-rendering/", {
     driver: "cdp"
 })
 
@@ -633,7 +633,7 @@ This makes it possible to wait for network behavior directly instead of guessing
 For example, a script can wait until the page becomes network-idle before querying the DOM:
 
 {{< editor lang="fql" height="224px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/network-idle/", {
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/network-idle/", {
     driver: "cdp"
 })
 
@@ -645,7 +645,7 @@ RETURN doc[~ css`#network-log li`][*].textContent
 A script can also wait for a specific request to finish before reading the updated page state:
 
 {{< editor lang="fql" height="224px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/delayed-requests/", {
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", {
     driver: "cdp"
 })
 
@@ -657,7 +657,7 @@ RETURN WAITFOR EVENT "network.request_finished" IN doc
 Network events are also useful for debugging or collecting metadata from a page session:
 
 {{< editor lang="fql" height="384px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/polling/", {
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/polling/", {
     driver: "cdp"
 })
 
@@ -690,7 +690,7 @@ Web data extraction often fails for normal reasons: a page is slow, an element i
 In Ferret v2, failure policy can live close to the operation that may fail.
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN QUERY ONE "#price" IN doc USING css 
     ON ERROR RETURN NONE
 {{</ editor >}}
@@ -698,7 +698,7 @@ RETURN QUERY ONE "#price" IN doc USING css
 Timeout behavior can be expressed in a similar way where supported:
 
 {{< editor lang="fql" height="146px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN WAITFOR VALUE doc[~ css`.loaded`]
     TIMEOUT 5s
     EVERY 250ms
@@ -814,7 +814,7 @@ Modules can expose host functions, but fully-qualified names can become noisy wh
 {{< editor lang="fql" height="160px" apiVersion="2" >}}
 USE IO::NET::HTTP::GET AS GET
 
-LET out = GET("https://mockery.montferret.dev/api/products/index.json")
+LET out = GET("https://mockery.ferretlang.org/api/products/index.json")
 
 RETURN JSON_PARSE(out)
 {{</ editor >}}
@@ -855,7 +855,7 @@ The best way to understand the new syntax is to try it.
 
 Ferret v2 is available in the playground, so you can experiment with queries, array operators, string templates, pattern matching, waiting, and other language features directly in the browser:
 
-<b>[Try Ferret v2 in the Playground](https://www.montferret.dev/try/next)</b>
+<b>[Try Ferret v2 in the Playground](https://www.ferretlang.org/try/next)</b>
 
 The playground is especially useful for small examples. You can tweak selectors, change return shapes, test query modifiers, and get a feel for how the new language capabilities work together.
 

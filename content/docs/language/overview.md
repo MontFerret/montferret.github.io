@@ -186,14 +186,14 @@ RETURN CONTAINS(roles, "admin")
 Query expressions produce values:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/products/")
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 RETURN doc[~? css`.product-card`]
 {{< /editor >}}
 
 Waiting expressions produce values:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/delayed-requests/", { driver: "cdp" })
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
 RETURN WAITFOR EXISTS doc[~ css`.network-result-card`]
     TIMEOUT 5s
     EVERY 250ms
@@ -241,7 +241,7 @@ This is especially helpful in data extraction workflows, where a script often ha
 For example:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/products/")
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 LET cards = doc[~ css`.product-card`]  
 LET names = (
     FOR card IN cards 
@@ -286,7 +286,7 @@ This style is useful for extraction scripts because raw data is rarely in the ex
 You might extract a list of elements from a page, filter out irrelevant ones, map each element into an object, and return a clean array.
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/products/")
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 FOR item IN doc[~ css`.product-card`]
     FILTER item.attributes["data-in-stock"] == "true"  
     RETURN {
@@ -308,7 +308,7 @@ A value can support one or more query dialects. If it does, FQL can query that v
 For example, an HTML document may support CSS queries:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/products/")
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 LET links = doc[~ css`a[href]`]
 RETURN links
 {{< /editor >}}
@@ -316,7 +316,7 @@ RETURN links
 or XPATH queries:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/products/")
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 LET links = doc[~ xpath`//a[@href]`]
 RETURN links
 {{< /editor >}}
@@ -327,7 +327,7 @@ The target value is the same, but the dialect changes how the query text is inte
 The long form is more explicit:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/ecommerce/products/")
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 RETURN QUERY `a[href]` IN doc USING css
 {{< /editor >}}
 
@@ -378,7 +378,7 @@ Static values can usually be queried immediately, but dynamic workflows often in
 FQL includes waiting constructs for these cases.
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/delayed-requests/", { driver: "cdp" })
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
 RETURN WAITFOR VALUE doc[~? css`.network-result-card p`]
     TIMEOUT 5s
     EVERY 250ms
@@ -400,7 +400,7 @@ By making waiting explicit, FQL makes dynamic workflows easier to read and safer
 A script can say:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/delayed-requests/", { driver: "cdp" })
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
 
 RETURN WAITFOR EXISTS doc[~ css`.foobar`]
     TIMEOUT 1s
@@ -411,7 +411,7 @@ RETURN WAITFOR EXISTS doc[~ css`.foobar`]
 Or it can choose a softer failure mode:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev/scenarios/network/delayed-requests/", { driver: "cdp" })
+LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
 RETURN WAITFOR EXISTS doc[~ css`.foobar`]
     TIMEOUT 1s
     EVERY 500ms
@@ -486,7 +486,7 @@ RETURN doc
 A module can provide query behavior:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 
 RETURN WEB::ARTICLE::EXTRACT(doc)
 {{< /editor >}}
@@ -526,7 +526,7 @@ Real-world extraction workflows often involve partial or uncertain conditions: a
 FQL is designed to keep the handling of those cases close to the operation itself, so the script makes its failure and fallback behavior explicit.
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN QUERY ONE "#price" IN doc USING css
     ON ERROR RETURN NONE
 {{</ editor >}}
@@ -539,7 +539,7 @@ RETURN parsed
 Timeout behavior can be expressed in a similar way where supported:
 
 {{< editor lang="fql" height="146px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 RETURN WAITFOR VALUE doc[~ css`.loaded`]
     TIMEOUT 5s
     EVERY 250ms

@@ -31,7 +31,7 @@ RETURN user.name
 But it can also work with values that represent external resources:
 
 {{< code lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev") 
+LET doc = DOCUMENT("https://mockery.ferretlang.org") 
 
 RETURN doc.title
 {{< /code >}}
@@ -171,7 +171,7 @@ They behave like FQL values, but they may represent things that live outside the
 For example:
 
 {{< code lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 
 RETURN doc.title
 {{< /code >}}
@@ -231,7 +231,7 @@ Host values can expose capabilities as well.
 For example, a document value may expose fields such as `title` or `url`:
 
 {{< code lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 
 RETURN doc.title
 {{< /code >}}
@@ -282,7 +282,7 @@ From the script author's perspective, a host value is still a value. It can be a
 For example, DOCUMENT(...) may return a document value:
 
 {{< code lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.montferret.dev")
+LET doc = DOCUMENT("https://mockery.ferretlang.org")
 
 RETURN doc.title
 {{< /code >}}
