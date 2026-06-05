@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.c6df3663e03c0f922f353580f31b35a551d999dfcb6ed296d6159d1bcc9af8fb.css" />
     
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -646,13 +646,14 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
             </div>
         </div>
 
-        <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-1-text" class="code-editor-text" style="height: 240px;">LET users = [{&#34;id&#34;:1,&#34;firstName&#34;:&#34;Kikelia&#34;,&#34;lastName&#34;:&#34;Coper&#34;,&#34;cart&#34;:[{&#34;Name&#34;:&#34;Garlic&#34;,&#34;Price&#34;:&#34;$7.46&#34;},{&#34;Name&#34;:&#34;Flower - Commercial Spider&#34;,&#34;Price&#34;:&#34;$6.59&#34;}]},{&#34;id&#34;:2,&#34;firstName&#34;:&#34;Toni&#34;,&#34;lastName&#34;:&#34;MacTeggart&#34;,&#34;cart&#34;:[{&#34;Name&#34;:&#34;Spice - Paprika&#34;,&#34;Price&#34;:&#34;$6.31&#34;},{&#34;Name&#34;:&#34;Extract - Vanilla,artificial&#34;,&#34;Price&#34;:&#34;$4.74&#34;},{&#34;Name&#34;:&#34;Wine - White, Cooking&#34;,&#34;Price&#34;:&#34;$1.50&#34;},{&#34;Name&#34;:&#34;Nutmeg - Ground&#34;,&#34;Price&#34;:&#34;$1.30&#34;}]},{&#34;id&#34;:3,&#34;firstName&#34;:&#34;Neile&#34;,&#34;lastName&#34;:&#34;Saice&#34;,&#34;cart&#34;:[{&#34;Name&#34;:&#34;Mustard Prepared&#34;,&#34;Price&#34;:&#34;$2.28&#34;},{&#34;Name&#34;:&#34;Flower - Commercial Bronze&#34;,&#34;Price&#34;:&#34;$4.80&#34;}]}]
+        <div class="code-editor-stage">
+            <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-1-text" class="code-editor-text" style="height: 240px;">LET users = [{&#34;id&#34;:1,&#34;firstName&#34;:&#34;Kikelia&#34;,&#34;lastName&#34;:&#34;Coper&#34;,&#34;cart&#34;:[{&#34;Name&#34;:&#34;Garlic&#34;,&#34;Price&#34;:&#34;$7.46&#34;},{&#34;Name&#34;:&#34;Flower - Commercial Spider&#34;,&#34;Price&#34;:&#34;$6.59&#34;}]},{&#34;id&#34;:2,&#34;firstName&#34;:&#34;Toni&#34;,&#34;lastName&#34;:&#34;MacTeggart&#34;,&#34;cart&#34;:[{&#34;Name&#34;:&#34;Spice - Paprika&#34;,&#34;Price&#34;:&#34;$6.31&#34;},{&#34;Name&#34;:&#34;Extract - Vanilla,artificial&#34;,&#34;Price&#34;:&#34;$4.74&#34;},{&#34;Name&#34;:&#34;Wine - White, Cooking&#34;,&#34;Price&#34;:&#34;$1.50&#34;},{&#34;Name&#34;:&#34;Nutmeg - Ground&#34;,&#34;Price&#34;:&#34;$1.30&#34;}]},{&#34;id&#34;:3,&#34;firstName&#34;:&#34;Neile&#34;,&#34;lastName&#34;:&#34;Saice&#34;,&#34;cart&#34;:[{&#34;Name&#34;:&#34;Mustard Prepared&#34;,&#34;Price&#34;:&#34;$2.28&#34;},{&#34;Name&#34;:&#34;Flower - Commercial Bronze&#34;,&#34;Price&#34;:&#34;$4.80&#34;}]}]
 
 FOR u IN users
   LET numProducts = LENGTH(u.cart)
@@ -662,18 +663,23 @@ FOR u IN users
     &#34;numProducts&#34; : numProducts, 
     &#34;discount&#34; : numProducts &gt;= 3
   } </div>
-            </div>
-
-            <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
-                        <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-1-result" class="code-editor-result" style="height: 240px;"></div>
+
+                <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
+                            <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-1-result" class="code-editor-result" style="height: 240px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-1-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -699,6 +705,7 @@ FOR u IN users
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-1-result-expand-button');
             const editorGrid = document.querySelector('#code-editor-1-grid');
+            const runLoader = document.querySelector('#code-editor-1-loader');
             const resultPane = document.querySelector('#code-editor-1-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-1-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-1-result-close-button');
@@ -818,13 +825,19 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -918,13 +931,14 @@ FOR u IN users
             </div>
         </div>
 
-        <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-2-text" class="code-editor-text" style="height: 300px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Moises Grisewood&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Dell Marnes&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Tobin Bilbery&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Lorianne Posten&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Drucill Cryer&#34;}]
+        <div class="code-editor-stage">
+            <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-2-text" class="code-editor-text" style="height: 300px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Moises Grisewood&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Dell Marnes&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Tobin Bilbery&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Lorianne Posten&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Drucill Cryer&#34;}]
 LET friends = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Maximo Massard&#34;,&#34;userId&#34;:1},{&#34;id&#34;:2,&#34;name&#34;:&#34;Delainey Sancho&#34;,&#34;userId&#34;:1},{&#34;id&#34;:3,&#34;name&#34;:&#34;Lindon Beale&#34;,&#34;userId&#34;:1},{&#34;id&#34;:4,&#34;name&#34;:&#34;Gus Sprey&#34;,&#34;userId&#34;:3},{&#34;id&#34;:5,&#34;name&#34;:&#34;Virgil Dallander&#34;,&#34;userId&#34;:3},{&#34;id&#34;:6,&#34;name&#34;:&#34;Agretha Mackerel&#34;,&#34;userId&#34;:4},{&#34;id&#34;:7,&#34;name&#34;:&#34;Christalle Aldins&#34;,&#34;userId&#34;:4},{&#34;id&#34;:8,&#34;name&#34;:&#34;Karalynn Margery&#34;,&#34;userId&#34;:5},{&#34;id&#34;:9,&#34;name&#34;:&#34;Rodolph Ladd&#34;,&#34;userId&#34;:5},{&#34;id&#34;:10,&#34;name&#34;:&#34;Babette Brassill&#34;,&#34;userId&#34;:1}]
 
 FOR u IN users
@@ -939,18 +953,23 @@ FOR u IN users
     &#34;friends&#34; : friends, 
     &#34;numFriends&#34; : LENGTH(friends)
   }</div>
-            </div>
-
-            <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
-                        <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-2-result" class="code-editor-result" style="height: 300px;"></div>
+
+                <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
+                            <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-2-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-2-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -976,6 +995,7 @@ FOR u IN users
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-2-result-expand-button');
             const editorGrid = document.querySelector('#code-editor-2-grid');
+            const runLoader = document.querySelector('#code-editor-2-loader');
             const resultPane = document.querySelector('#code-editor-2-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-2-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-2-result-close-button');
@@ -1095,13 +1115,19 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);

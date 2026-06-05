@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.c6df3663e03c0f922f353580f31b35a551d999dfcb6ed296d6159d1bcc9af8fb.css" />
     
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -205,13 +205,14 @@
             </div>
         </div>
 
-        <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-1-text" class="code-editor-text" style="height: 250px;">LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; })
+        <div class="code-editor-stage">
+            <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-1-text" class="code-editor-text" style="height: 250px;">LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; })
 LET header1 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content
 
 NAVIGATE(page, &#34;https://github.com/features&#34;, 10000)
@@ -219,17 +220,22 @@ NAVIGATE(page, &#34;https://github.com/features&#34;, 10000)
 LET header2 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content
 
 RETURN [header1, header2]</div>
-            </div>
-
-            <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-1-result" class="code-editor-result" style="height: 250px;"></div>
+
+                <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-1-result" class="code-editor-result" style="height: 250px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-1-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -255,6 +261,7 @@ RETURN [header1, header2]</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = null;
             const editorGrid = document.querySelector('#code-editor-1-grid');
+            const runLoader = document.querySelector('#code-editor-1-loader');
             const resultPane = document.querySelector('#code-editor-1-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-1-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-1-result-close-button');
@@ -316,13 +323,19 @@ RETURN [header1, header2]</div>
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -415,13 +428,14 @@ RETURN [header1, header2]</div>
             </div>
         </div>
 
-        <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-2-text" class="code-editor-text" style="height: 250px;">LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; })
+        <div class="code-editor-stage">
+            <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-2-text" class="code-editor-text" style="height: 250px;">LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; })
 
 NAVIGATE(page, &#34;https://github.com/features&#34;, 10000)
 
@@ -432,17 +446,22 @@ NAVIGATE_BACK(page)
 LET header2 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content
 
 RETURN [header1, header2]</div>
-            </div>
-
-            <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-2-result" class="code-editor-result" style="height: 250px;"></div>
+
+                <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-2-result" class="code-editor-result" style="height: 250px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-2-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -468,6 +487,7 @@ RETURN [header1, header2]</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = null;
             const editorGrid = document.querySelector('#code-editor-2-grid');
+            const runLoader = document.querySelector('#code-editor-2-loader');
             const resultPane = document.querySelector('#code-editor-2-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-2-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-2-result-close-button');
@@ -529,13 +549,19 @@ RETURN [header1, header2]</div>
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -628,13 +654,14 @@ RETURN [header1, header2]</div>
             </div>
         </div>
 
-        <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-3-text" class="code-editor-text" style="height: 250px;">LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; })
+        <div class="code-editor-stage">
+            <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-3-text" class="code-editor-text" style="height: 250px;">LET page = DOCUMENT(&#34;https://github.com/&#34;, { driver: &#34;cdp&#34; })
 
 NAVIGATE(page, &#34;https://github.com/features&#34;, 10000)
 
@@ -646,17 +673,22 @@ NAVIGATE_FORWARD(page)
 LET header2 = ELEMENT(page, &#39;meta[name=&#34;description&#34;]&#39;).attributes.content
 
 RETURN [header1, header2]</div>
-            </div>
-
-            <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-3-result" class="code-editor-result" style="height: 250px;"></div>
+
+                <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-3-result" class="code-editor-result" style="height: 250px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-3-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -682,6 +714,7 @@ RETURN [header1, header2]</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = null;
             const editorGrid = document.querySelector('#code-editor-3-grid');
+            const runLoader = document.querySelector('#code-editor-3-loader');
             const resultPane = document.querySelector('#code-editor-3-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-3-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-3-result-close-button');
@@ -743,13 +776,19 @@ RETURN [header1, header2]</div>
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);

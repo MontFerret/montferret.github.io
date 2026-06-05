@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.c6df3663e03c0f922f353580f31b35a551d999dfcb6ed296d6159d1bcc9af8fb.css" />
     
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -197,13 +197,14 @@
             </div>
         </div>
 
-        <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-1-text" class="code-editor-text" style="height: 300px;">LET page = DOCUMENT(&#34;https://soundcloud.com&#34;, { driver: &#34;cdp&#34;})
+        <div class="code-editor-stage">
+            <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-1-text" class="code-editor-text" style="height: 300px;">LET page = DOCUMENT(&#34;https://soundcloud.com&#34;, { driver: &#34;cdp&#34;})
 LET doc = page.mainFrame
 
 WAIT_ELEMENT(doc, &#34;.trendingTracks&#34;)
@@ -219,17 +220,22 @@ RETURN {
     page: page.url,
     doc: doc.url
 }</div>
-            </div>
-
-            <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-1-result" class="code-editor-result" style="height: 300px;"></div>
+
+                <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-1-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-1-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -255,6 +261,7 @@ RETURN {
             resultEditor.setReadOnly(true);
             const resultExpandBtn = null;
             const editorGrid = document.querySelector('#code-editor-1-grid');
+            const runLoader = document.querySelector('#code-editor-1-loader');
             const resultPane = document.querySelector('#code-editor-1-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-1-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-1-result-close-button');
@@ -317,13 +324,19 @@ RETURN {
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -472,30 +485,36 @@ And now, <code>LIKE</code> operator has finally landed!</p>
             </div>
         </div>
 
-        <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-2-text" class="code-editor-text" style="height: 300px;">LET values = (
+        <div class="code-editor-stage">
+            <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-2-text" class="code-editor-text" style="height: 300px;">LET values = (
     FOR str IN [&#34;foo&#34;, &#34;bar&#34;, &#34;qaz&#34;]
 				FILTER str LIKE &#34;*a*&#34;
 				RETURN str 
 )
 
 RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#39; </div>
-            </div>
-
-            <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-2-result" class="code-editor-result" style="height: 300px;"></div>
+
+                <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-2-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-2-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -521,6 +540,7 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
             resultEditor.setReadOnly(true);
             const resultExpandBtn = null;
             const editorGrid = document.querySelector('#code-editor-2-grid');
+            const runLoader = document.querySelector('#code-editor-2-loader');
             const resultPane = document.querySelector('#code-editor-2-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-2-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-2-result-close-button');
@@ -582,13 +602,19 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -683,13 +709,14 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
             </div>
         </div>
 
-        <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-3-text" class="code-editor-text" style="height: 300px;">LET p = DOCUMENT(&#34;https://www.gettyimages.com/&#34;, {
+        <div class="code-editor-stage">
+            <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-3-text" class="code-editor-text" style="height: 300px;">LET p = DOCUMENT(&#34;https://www.gettyimages.com/&#34;, {
     driver: &#34;cdp&#34;,
     ignore: {
         resources: [
@@ -702,17 +729,22 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
 })
 
 RETURN NONE</div>
-            </div>
-
-            <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-3-result" class="code-editor-result" style="height: 300px;"></div>
+
+                <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-3-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-3-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -738,6 +770,7 @@ RETURN NONE</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = null;
             const editorGrid = document.querySelector('#code-editor-3-grid');
+            const runLoader = document.querySelector('#code-editor-3-loader');
             const resultPane = document.querySelector('#code-editor-3-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-3-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-3-result-close-button');
@@ -800,13 +833,19 @@ RETURN NONE</div>
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -901,13 +940,14 @@ RETURN NONE</div>
             </div>
         </div>
 
-        <div id="code-editor-4-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-4-text" class="code-editor-text" style="height: 300px;">LET p = DOCUMENT(&#34;https://www.gettyimages.com/&#34;, {
+        <div class="code-editor-stage">
+            <div id="code-editor-4-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-4-text" class="code-editor-text" style="height: 300px;">LET p = DOCUMENT(&#34;https://www.gettyimages.com/&#34;, {
     ignore: {
         statusCodes: [
             {
@@ -919,17 +959,22 @@ RETURN NONE</div>
 })
 
 RETURN NONE</div>
-            </div>
-
-            <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
-                    </div>
                 </div>
-                <div id="code-editor-4-result" class="code-editor-result" style="height: 300px;"></div>
+
+                <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-4-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-4-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -955,6 +1000,7 @@ RETURN NONE</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = null;
             const editorGrid = document.querySelector('#code-editor-4-grid');
+            const runLoader = document.querySelector('#code-editor-4-loader');
             const resultPane = document.querySelector('#code-editor-4-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-4-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-4-result-close-button');
@@ -1016,13 +1062,19 @@ RETURN NONE</div>
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -1117,24 +1169,30 @@ RETURN NONE</div>
             </div>
         </div>
 
-        <div id="code-editor-5-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-5-text" class="code-editor-text" style="height: 80px;">RETURN DOCUMENT_EXISTS(&#34;www.asdadasda.sds&#34;)</div>
-            </div>
-
-            <div id="code-editor-5-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-5-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-5-result-pane">Close</button>
+        <div class="code-editor-stage">
+            <div id="code-editor-5-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
                     </div>
+                    <div id="code-editor-5-text" class="code-editor-text" style="height: 80px;">RETURN DOCUMENT_EXISTS(&#34;www.asdadasda.sds&#34;)</div>
                 </div>
-                <div id="code-editor-5-result" class="code-editor-result" style="height: 80px;"></div>
+
+                <div id="code-editor-5-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-5-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-5-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-5-result" class="code-editor-result" style="height: 80px;"></div>
+                </div>
+            </div>
+            <div id="code-editor-5-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
+                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
+                <span>Running</span>
             </div>
         </div>
     </div>
@@ -1160,6 +1218,7 @@ RETURN NONE</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = null;
             const editorGrid = document.querySelector('#code-editor-5-grid');
+            const runLoader = document.querySelector('#code-editor-5-loader');
             const resultPane = document.querySelector('#code-editor-5-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-5-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-5-result-close-button');
@@ -1221,13 +1280,19 @@ RETURN NONE</div>
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
+                runLoader.hidden = false;
+                editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
+                btn.setAttribute('aria-busy', 'true');
             }
 
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
+                runLoader.hidden = true;
+                editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
+                btn.setAttribute('aria-busy', 'false');
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
