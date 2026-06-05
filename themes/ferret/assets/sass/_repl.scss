@@ -34,7 +34,9 @@ $editor-gutter: #10131d;
         gap: 1rem;
         justify-content: space-between;
         min-height: 3rem;
+        overflow: hidden;
         padding: .65rem .8rem;
+        position: relative;
     }
 
     .code-editor-title {
@@ -117,47 +119,42 @@ $editor-gutter: #10131d;
         }
     }
 
-    .code-editor-stage {
-        position: relative;
-    }
-
-    .code-editor-loader {
-        align-items: center;
-        background: rgba($editor-gutter, .9);
-        border: 1px solid rgba($editor-cyan, .48);
-        border-radius: 8px;
-        box-shadow: 0 16px 42px rgba(#000, .28);
-        color: #fff;
-        display: flex;
-        font-size: .8rem;
-        font-weight: 700;
-        gap: .65rem;
-        left: 50%;
-        line-height: 1;
-        max-width: calc(100% - 1.5rem);
-        min-height: 3rem;
-        padding: .8rem 1rem;
+    .code-editor-progress {
+        background: rgba(#fff, .08);
+        bottom: 0;
+        height: 3px;
+        left: 0;
+        overflow: hidden;
         pointer-events: none;
         position: absolute;
-        text-transform: uppercase;
-        top: .85rem;
-        transform: translateX(-50%);
-        z-index: 4;
+        right: 0;
+        z-index: 1;
 
         &[hidden] {
             display: none;
         }
+
+        &::before {
+            animation: code-editor-progress-slide 1.05s ease-in-out infinite;
+            background: linear-gradient(90deg, transparent 0%, #fff 18%, $editor-cyan 52%, $accent 100%);
+            content: "";
+            height: 100%;
+            left: -42%;
+            position: absolute;
+            top: 0;
+            width: 42%;
+        }
     }
 
-    .code-editor-loader-spinner {
-        animation: code-editor-loader-spin .8s linear infinite;
-        border: .18rem solid rgba(#fff, .24);
-        border-radius: 999px;
-        border-right-color: rgba($editor-cyan, .95);
-        border-top-color: #fff;
-        flex: 0 0 auto;
-        height: 1.45rem;
-        width: 1.45rem;
+    .code-editor-sr-only {
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
     }
 
     .code-editor-grid {
@@ -360,9 +357,9 @@ $editor-gutter: #10131d;
     }
 }
 
-@keyframes code-editor-loader-spin {
+@keyframes code-editor-progress-slide {
     to {
-        transform: rotate(360deg);
+        left: 100%;
     }
 }
 
