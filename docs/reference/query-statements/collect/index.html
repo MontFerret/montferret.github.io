@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.c6df3663e03c0f922f353580f31b35a551d999dfcb6ed296d6159d1bcc9af8fb.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.fd342da08727b6c5ad772e57dfc86855590afed38a3fbe17c22a8b9bb949b98d.css" />
     
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -608,7 +608,7 @@ Grouping syntaxes
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-1-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -619,16 +619,17 @@ Grouping syntaxes
                 <button id="code-editor-1-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result-pane">Output</button>
                 <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-1-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-1-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-1-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;}]
+        <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-1-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;}]
 
 FOR u IN users
   COLLECT city = u.city
@@ -636,23 +637,18 @@ FOR u IN users
   RETURN { 
     &#34;city&#34; : city 
   }</div>
-                </div>
-
-                <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
-                            <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-1-result" class="code-editor-result" style="height: 200px;"></div>
-                </div>
             </div>
-            <div id="code-editor-1-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
+                        <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-1-result" class="code-editor-result" style="height: 200px;"></div>
             </div>
         </div>
     </div>
@@ -677,8 +673,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-1-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-1-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-1-header');
             const editorGrid = document.querySelector('#code-editor-1-grid');
-            const runLoader = document.querySelector('#code-editor-1-loader');
+            const runProgress = document.querySelector('#code-editor-1-progress');
+            const runStatus = document.querySelector('#code-editor-1-run-status');
             const resultPane = document.querySelector('#code-editor-1-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-1-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-1-result-close-button');
@@ -798,7 +796,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -807,7 +807,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -890,7 +892,7 @@ FOR u IN users
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-2-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -901,16 +903,17 @@ FOR u IN users
                 <button id="code-editor-2-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result-pane">Output</button>
                 <button id="code-editor-2-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-2-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-2-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-2-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;}]
+        <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-2-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;}]
 
 FOR u IN users
   COLLECT city = u.city INTO groups
@@ -919,23 +922,18 @@ FOR u IN users
     &#34;city&#34; : city, 
     &#34;usersInCity&#34; : groups 
   }</div>
-                </div>
-
-                <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
-                            <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-2-result" class="code-editor-result" style="height: 200px;"></div>
-                </div>
             </div>
-            <div id="code-editor-2-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
+                        <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-2-result" class="code-editor-result" style="height: 200px;"></div>
             </div>
         </div>
     </div>
@@ -960,8 +958,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-2-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-2-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-2-header');
             const editorGrid = document.querySelector('#code-editor-2-grid');
-            const runLoader = document.querySelector('#code-editor-2-loader');
+            const runProgress = document.querySelector('#code-editor-2-progress');
+            const runStatus = document.querySelector('#code-editor-2-run-status');
             const resultPane = document.querySelector('#code-editor-2-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-2-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-2-result-close-button');
@@ -1081,7 +1081,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -1090,7 +1092,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -1174,7 +1178,7 @@ FOR u IN users
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-3-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -1185,16 +1189,17 @@ FOR u IN users
                 <button id="code-editor-3-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result-pane">Output</button>
                 <button id="code-editor-3-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-3-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-3-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-3-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;}]
+        <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-3-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;}]
 
 FOR u IN users
   COLLECT country = u.country, city = u.city INTO groups
@@ -1204,23 +1209,18 @@ FOR u IN users
     &#34;city&#34; : city, 
     &#34;usersInCity&#34; : groups 
   }</div>
-                </div>
-
-                <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-3-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result">Expand</button>
-                            <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-3-result" class="code-editor-result" style="height: 200px;"></div>
-                </div>
             </div>
-            <div id="code-editor-3-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-3-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result">Expand</button>
+                        <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-3-result" class="code-editor-result" style="height: 200px;"></div>
             </div>
         </div>
     </div>
@@ -1245,8 +1245,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-3-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-3-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-3-header');
             const editorGrid = document.querySelector('#code-editor-3-grid');
-            const runLoader = document.querySelector('#code-editor-3-loader');
+            const runProgress = document.querySelector('#code-editor-3-progress');
+            const runStatus = document.querySelector('#code-editor-3-run-status');
             const resultPane = document.querySelector('#code-editor-3-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-3-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-3-result-close-button');
@@ -1366,7 +1368,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -1375,7 +1379,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -1467,7 +1473,7 @@ Discarding obsolete variables
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-4-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -1478,16 +1484,17 @@ Discarding obsolete variables
                 <button id="code-editor-4-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result-pane">Output</button>
                 <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-4-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-4-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-4-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-4-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;}]
+        <div id="code-editor-4-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-4-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;}]
 
 FOR u IN users
   COLLECT country = u.country, city = u.city INTO groups = u.name
@@ -1497,23 +1504,18 @@ FOR u IN users
     &#34;city&#34; : city, 
     &#34;userNames&#34; : groups 
   }</div>
-                </div>
-
-                <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-4-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result">Expand</button>
-                            <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-4-result" class="code-editor-result" style="height: 200px;"></div>
-                </div>
             </div>
-            <div id="code-editor-4-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-4-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result">Expand</button>
+                        <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-4-result" class="code-editor-result" style="height: 200px;"></div>
             </div>
         </div>
     </div>
@@ -1538,8 +1540,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-4-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-4-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-4-header');
             const editorGrid = document.querySelector('#code-editor-4-grid');
-            const runLoader = document.querySelector('#code-editor-4-loader');
+            const runProgress = document.querySelector('#code-editor-4-progress');
+            const runStatus = document.querySelector('#code-editor-4-run-status');
             const resultPane = document.querySelector('#code-editor-4-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-4-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-4-result-close-button');
@@ -1659,7 +1663,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -1668,7 +1674,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -1752,7 +1760,7 @@ FOR u IN users
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-5-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -1763,16 +1771,17 @@ FOR u IN users
                 <button id="code-editor-5-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result-pane">Output</button>
                 <button id="code-editor-5-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-5-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-5-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-5-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-5-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
+        <div id="code-editor-5-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-5-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
 
 FOR u IN users
   COLLECT country = u.country, city = u.city INTO groups = { 
@@ -1784,23 +1793,18 @@ FOR u IN users
     &#34;city&#34; : city, 
     &#34;usersInCity&#34; : groups 
   }</div>
-                </div>
-
-                <div id="code-editor-5-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-5-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result">Expand</button>
-                            <button id="code-editor-5-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-5-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-5-result" class="code-editor-result" style="height: 250px;"></div>
-                </div>
             </div>
-            <div id="code-editor-5-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-5-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-5-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result">Expand</button>
+                        <button id="code-editor-5-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-5-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-5-result" class="code-editor-result" style="height: 250px;"></div>
             </div>
         </div>
     </div>
@@ -1825,8 +1829,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-5-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-5-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-5-header');
             const editorGrid = document.querySelector('#code-editor-5-grid');
-            const runLoader = document.querySelector('#code-editor-5-loader');
+            const runProgress = document.querySelector('#code-editor-5-progress');
+            const runStatus = document.querySelector('#code-editor-5-run-status');
             const resultPane = document.querySelector('#code-editor-5-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-5-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-5-result-close-button');
@@ -1946,7 +1952,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -1955,7 +1963,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -2041,7 +2051,7 @@ The following example limits the variables that are copied into the ``groupsVari
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-6-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -2052,16 +2062,17 @@ The following example limits the variables that are copied into the ``groupsVari
                 <button id="code-editor-6-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-6-result-pane">Output</button>
                 <button id="code-editor-6-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-6-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-6-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-6-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-6-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-6-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
+        <div id="code-editor-6-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-6-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-6-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
 
 FOR u IN users
   LET name = u.name
@@ -2072,23 +2083,18 @@ FOR u IN users
     &#34;city&#34; : city, 
     &#34;userNames&#34; : groups[*].name 
   }</div>
-                </div>
-
-                <div id="code-editor-6-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-6-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-6-result">Expand</button>
-                            <button id="code-editor-6-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-6-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-6-result" class="code-editor-result" style="height: 250px;"></div>
-                </div>
             </div>
-            <div id="code-editor-6-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-6-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-6-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-6-result">Expand</button>
+                        <button id="code-editor-6-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-6-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-6-result" class="code-editor-result" style="height: 250px;"></div>
             </div>
         </div>
     </div>
@@ -2113,8 +2119,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-6-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-6-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-6-header');
             const editorGrid = document.querySelector('#code-editor-6-grid');
-            const runLoader = document.querySelector('#code-editor-6-loader');
+            const runProgress = document.querySelector('#code-editor-6-progress');
+            const runStatus = document.querySelector('#code-editor-6-run-status');
             const resultPane = document.querySelector('#code-editor-6-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-6-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-6-result-close-button');
@@ -2234,7 +2242,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -2243,7 +2253,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -2335,7 +2347,7 @@ Group length calculation
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-7-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -2346,38 +2358,34 @@ Group length calculation
                 <button id="code-editor-7-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-7-result-pane">Output</button>
                 <button id="code-editor-7-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-7-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-7-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-7-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-7-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-7-text" class="code-editor-text" style="height: 180px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
+        <div id="code-editor-7-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-7-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-7-text" class="code-editor-text" style="height: 180px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
 
 FOR u IN users
   COLLECT WITH COUNT INTO length
   
   RETURN length</div>
-                </div>
-
-                <div id="code-editor-7-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-7-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-7-result">Expand</button>
-                            <button id="code-editor-7-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-7-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-7-result" class="code-editor-result" style="height: 180px;"></div>
-                </div>
             </div>
-            <div id="code-editor-7-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-7-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-7-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-7-result">Expand</button>
+                        <button id="code-editor-7-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-7-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-7-result" class="code-editor-result" style="height: 180px;"></div>
             </div>
         </div>
     </div>
@@ -2402,8 +2410,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-7-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-7-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-7-header');
             const editorGrid = document.querySelector('#code-editor-7-grid');
-            const runLoader = document.querySelector('#code-editor-7-loader');
+            const runProgress = document.querySelector('#code-editor-7-progress');
+            const runStatus = document.querySelector('#code-editor-7-run-status');
             const resultPane = document.querySelector('#code-editor-7-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-7-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-7-result-close-button');
@@ -2523,7 +2533,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -2532,7 +2544,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -2615,7 +2629,7 @@ FOR u IN users
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-8-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -2626,35 +2640,31 @@ FOR u IN users
                 <button id="code-editor-8-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-8-result-pane">Output</button>
                 <button id="code-editor-8-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-8-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-8-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-8-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-8-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-8-text" class="code-editor-text" style="height: 130px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
+        <div id="code-editor-8-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-8-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-8-text" class="code-editor-text" style="height: 130px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
 
 RETURN LENGTH(users)</div>
-                </div>
-
-                <div id="code-editor-8-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-8-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-8-result">Expand</button>
-                            <button id="code-editor-8-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-8-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-8-result" class="code-editor-result" style="height: 130px;"></div>
-                </div>
             </div>
-            <div id="code-editor-8-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-8-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-8-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-8-result">Expand</button>
+                        <button id="code-editor-8-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-8-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-8-result" class="code-editor-result" style="height: 130px;"></div>
             </div>
         </div>
     </div>
@@ -2679,8 +2689,10 @@ RETURN LENGTH(users)</div>
             const resultEditor = createEditor('code-editor-8-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-8-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-8-header');
             const editorGrid = document.querySelector('#code-editor-8-grid');
-            const runLoader = document.querySelector('#code-editor-8-loader');
+            const runProgress = document.querySelector('#code-editor-8-progress');
+            const runStatus = document.querySelector('#code-editor-8-run-status');
             const resultPane = document.querySelector('#code-editor-8-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-8-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-8-result-close-button');
@@ -2800,7 +2812,9 @@ RETURN LENGTH(users)</div>
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -2809,7 +2823,9 @@ RETURN LENGTH(users)</div>
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -2892,7 +2908,7 @@ RETURN LENGTH(users)</div>
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-9-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -2903,16 +2919,17 @@ RETURN LENGTH(users)</div>
                 <button id="code-editor-9-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-9-result-pane">Output</button>
                 <button id="code-editor-9-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-9-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-9-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-9-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-9-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-9-text" class="code-editor-text" style="height: 220px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
+        <div id="code-editor-9-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-9-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-9-text" class="code-editor-text" style="height: 220px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
 
 FOR u IN users
   COLLECT age = u.age WITH COUNT INTO length
@@ -2921,23 +2938,18 @@ FOR u IN users
     &#34;age&#34; : age, 
     &#34;count&#34; : length 
   }</div>
-                </div>
-
-                <div id="code-editor-9-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-9-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-9-result">Expand</button>
-                            <button id="code-editor-9-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-9-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-9-result" class="code-editor-result" style="height: 220px;"></div>
-                </div>
             </div>
-            <div id="code-editor-9-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-9-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-9-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-9-result">Expand</button>
+                        <button id="code-editor-9-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-9-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-9-result" class="code-editor-result" style="height: 220px;"></div>
             </div>
         </div>
     </div>
@@ -2962,8 +2974,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-9-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-9-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-9-header');
             const editorGrid = document.querySelector('#code-editor-9-grid');
-            const runLoader = document.querySelector('#code-editor-9-loader');
+            const runProgress = document.querySelector('#code-editor-9-progress');
+            const runStatus = document.querySelector('#code-editor-9-run-status');
             const resultPane = document.querySelector('#code-editor-9-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-9-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-9-result-close-button');
@@ -3083,7 +3097,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -3092,7 +3108,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -3187,7 +3205,7 @@ Aggregation
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-10-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -3198,16 +3216,17 @@ Aggregation
                 <button id="code-editor-10-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-10-result-pane">Output</button>
                 <button id="code-editor-10-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-10-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-10-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-10-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-10-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-10-text" class="code-editor-text" style="height: 310px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
+        <div id="code-editor-10-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-10-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-10-text" class="code-editor-text" style="height: 310px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
 
 FOR u IN users
   COLLECT ageGroup = FLOOR(u.age / 5) * 5 INTO g
@@ -3222,23 +3241,18 @@ FOR u IN users
     &#34;minAge&#34; : MIN(ages),
     &#34;maxAge&#34; : MAX(ages)
   }</div>
-                </div>
-
-                <div id="code-editor-10-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-10-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-10-result">Expand</button>
-                            <button id="code-editor-10-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-10-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-10-result" class="code-editor-result" style="height: 310px;"></div>
-                </div>
             </div>
-            <div id="code-editor-10-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-10-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-10-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-10-result">Expand</button>
+                        <button id="code-editor-10-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-10-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-10-result" class="code-editor-result" style="height: 310px;"></div>
             </div>
         </div>
     </div>
@@ -3263,8 +3277,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-10-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-10-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-10-header');
             const editorGrid = document.querySelector('#code-editor-10-grid');
-            const runLoader = document.querySelector('#code-editor-10-loader');
+            const runProgress = document.querySelector('#code-editor-10-progress');
+            const runStatus = document.querySelector('#code-editor-10-run-status');
             const resultPane = document.querySelector('#code-editor-10-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-10-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-10-result-close-button');
@@ -3384,7 +3400,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -3393,7 +3411,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -3478,7 +3498,7 @@ FOR u IN users
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-11-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -3489,16 +3509,17 @@ FOR u IN users
                 <button id="code-editor-11-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-11-result-pane">Output</button>
                 <button id="code-editor-11-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-11-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-11-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-11-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-11-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-11-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
+        <div id="code-editor-11-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-11-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-11-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
 
 FOR u IN users
   COLLECT ageGroup = FLOOR(u.age / 5) * 5 
@@ -3509,23 +3530,18 @@ FOR u IN users
     minAge, 
     maxAge 
   }</div>
-                </div>
-
-                <div id="code-editor-11-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-11-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-11-result">Expand</button>
-                            <button id="code-editor-11-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-11-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-11-result" class="code-editor-result" style="height: 250px;"></div>
-                </div>
             </div>
-            <div id="code-editor-11-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-11-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-11-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-11-result">Expand</button>
+                        <button id="code-editor-11-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-11-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-11-result" class="code-editor-result" style="height: 250px;"></div>
             </div>
         </div>
     </div>
@@ -3550,8 +3566,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-11-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-11-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-11-header');
             const editorGrid = document.querySelector('#code-editor-11-grid');
-            const runLoader = document.querySelector('#code-editor-11-loader');
+            const runProgress = document.querySelector('#code-editor-11-progress');
+            const runStatus = document.querySelector('#code-editor-11-run-status');
             const resultPane = document.querySelector('#code-editor-11-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-11-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-11-result-close-button');
@@ -3671,7 +3689,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -3680,7 +3700,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
@@ -3763,7 +3785,7 @@ FOR u IN users
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
-        <div class="code-editor-header">
+        <div id="code-editor-12-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
@@ -3774,16 +3796,17 @@ FOR u IN users
                 <button id="code-editor-12-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-12-result-pane">Output</button>
                 <button id="code-editor-12-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
+            <div id="code-editor-12-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-12-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div class="code-editor-stage">
-            <div id="code-editor-12-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-12-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <span>FQL</span>
-                    </div>
-                    <div id="code-editor-12-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
+        <div id="code-editor-12-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-12-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-12-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
 
 FOR u IN users
   COLLECT AGGREGATE minAge = MIN(u.age), maxAge = MAX(u.age)
@@ -3792,23 +3815,18 @@ FOR u IN users
     minAge, 
     maxAge 
   }</div>
-                </div>
-
-                <div id="code-editor-12-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-12-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-12-result">Expand</button>
-                            <button id="code-editor-12-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-12-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-12-result" class="code-editor-result" style="height: 250px;"></div>
-                </div>
             </div>
-            <div id="code-editor-12-loader" class="code-editor-loader" role="status" aria-live="polite" aria-atomic="true" hidden>
-                <span class="code-editor-loader-spinner" aria-hidden="true"></span>
-                <span>Running</span>
+
+            <div id="code-editor-12-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-12-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-12-result">Expand</button>
+                        <button id="code-editor-12-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-12-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-12-result" class="code-editor-result" style="height: 250px;"></div>
             </div>
         </div>
     </div>
@@ -3833,8 +3851,10 @@ FOR u IN users
             const resultEditor = createEditor('code-editor-12-result', 'json', false);
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-12-result-expand-button');
+            const editorHeader = document.querySelector('#code-editor-12-header');
             const editorGrid = document.querySelector('#code-editor-12-grid');
-            const runLoader = document.querySelector('#code-editor-12-loader');
+            const runProgress = document.querySelector('#code-editor-12-progress');
+            const runStatus = document.querySelector('#code-editor-12-run-status');
             const resultPane = document.querySelector('#code-editor-12-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-12-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-12-result-close-button');
@@ -3954,7 +3974,9 @@ FOR u IN users
             function onStart() {
                 isRunning = true;
                 textEditor.setReadOnly(true);
-                runLoader.hidden = false;
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
                 btn.classList.add('is-loading');
                 btn.setAttribute('aria-busy', 'true');
@@ -3963,7 +3985,9 @@ FOR u IN users
             function onEnd(result) {
                 isRunning = false;
                 textEditor.setReadOnly(false);
-                runLoader.hidden = true;
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
                 btn.classList.remove('is-loading');
                 btn.setAttribute('aria-busy', 'false');
