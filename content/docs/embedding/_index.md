@@ -1,7 +1,7 @@
 ---
 title: "Embedding"
 weight: 50
-draft: false
+draft: true
 description: "Reserved documentation for embedding Ferret in applications."
 ---
 

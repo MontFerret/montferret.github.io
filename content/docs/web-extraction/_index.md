@@ -1,7 +1,7 @@
 ---
 title: "Web Extraction"
 weight: 30
-draft: false
+draft: true
 description: "Work with documents, query output, and extraction errors."
 ---
 
