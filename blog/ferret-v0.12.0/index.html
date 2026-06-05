@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.162.1">
 
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
@@ -318,7 +318,7 @@ RETURN NONE</div>
     </script>
 </div>
 
-<p>Read about available functions <a href="https://www.montferret.dev/docs/standard-library/testing">here</a>.</p>
+<p>Read about available functions <a href="https://www.ferretlang.org/docs/standard-library/testing">here</a>.</p>
 <h2 id="new-frames-function">New FRAMES function</h2>
 <p>A new helper function that finds HTML frames by a given property selector.</p>
 
@@ -359,11 +359,11 @@ RETURN NONE</div>
                     <span>query.fql</span>
                     <span>FQL</span>
                 </div>
-                <div id="code-editor-2-text" class="code-editor-text" style="height: 190px;">LET page = DOCUMENT(&#39;https://www.montferret.dev/fixtures/iframe/&#39;, {
+                <div id="code-editor-2-text" class="code-editor-text" style="height: 190px;">LET page = DOCUMENT(&#39;https://mockery.ferretlang.org/scenarios/iframes/&#39;, {
     driver: &#39;cdp&#39;
 })
 
-LET frame = FRAMES(page, &#34;url&#34;, &#34;https://www.montferret.dev/&#34;)
+LET frame = FRAMES(page, &#34;url&#34;, &#34;https://mockery.ferretlang.org/&#34;)
 
 RETURN FIRST(frame).url</div>
             </div>
@@ -515,11 +515,11 @@ RETURN FIRST(frame).url</div>
                     <span>query.fql</span>
                     <span>FQL</span>
                 </div>
-                <div id="code-editor-3-text" class="code-editor-text" style="height: 580px;">LET page = DOCUMENT(&#39;https://www.montferret.dev/fixtures/iframe/&#39;, {
+                <div id="code-editor-3-text" class="code-editor-text" style="height: 580px;">LET page = DOCUMENT(&#39;https://mockery.ferretlang.org/scenarios/iframes/&#39;, {
     driver: &#39;cdp&#39;
 })
 
-LET innerPage = FIRST(FRAMES(page, &#34;url&#34;, &#34;https://www.montferret.dev/&#34;))
+LET innerPage = FIRST(FRAMES(page, &#34;url&#34;, &#34;https://www.mockery.ferretlang.org/&#34;))
 
 T::NOT::NONE(innerPage)
 
@@ -532,7 +532,7 @@ WAIT_NAVIGATION(page, {
 })
 
 // We need to get a new document that we have navigated to
-LET innerPage2 = FIRST(FRAMES(page, &#34;url&#34;, &#34;https://www.montferret.dev/blog/&#34;))
+LET innerPage2 = FIRST(FRAMES(page, &#34;url&#34;, &#34;https://www.ferretlang.org/blog/&#34;))
 
 WAIT_ELEMENT(innerPage2, &#34;.blog&#34;)
 
