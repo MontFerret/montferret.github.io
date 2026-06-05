@@ -90,17 +90,27 @@ $editor-gutter: #10131d;
     }
 
     .button.code-editor-button {
+        align-items: center;
         background: rgba(#fff, .07);
         border-color: rgba(#fff, .2);
         color: #fff;
+        display: inline-flex;
         font-size: .72rem;
         font-weight: 700;
         height: 2rem;
+        justify-content: center;
         line-height: 1;
         min-width: 5rem;
         padding: 0 .8rem;
         position: relative;
         text-transform: uppercase;
+        transition:
+            background-color .16s ease,
+            border-color .16s ease,
+            box-shadow .16s ease,
+            color .16s ease,
+            opacity .16s ease;
+        white-space: nowrap;
         width: auto;
 
         &:hover,
@@ -110,12 +120,68 @@ $editor-gutter: #10131d;
             color: #fff;
         }
 
-        &.is-loading::after {
-            border-width: 2px;
-            height: 1.1rem;
-            left: calc(50% - .55rem);
-            top: calc(50% - .55rem);
-            width: 1.1rem;
+        &.run {
+            overflow: hidden;
+        }
+
+        &.is-running,
+        &.is-running:hover,
+        &.is-running:focus {
+            background: rgba($editor-cyan, .1);
+            border-color: rgba($editor-cyan, .74);
+            box-shadow: 0 0 0 1px rgba($editor-cyan, .18), 0 0 20px rgba($editor-cyan, .14);
+            color: #8eefff;
+        }
+
+        &[disabled] {
+            cursor: not-allowed;
+            opacity: .86;
+            pointer-events: none;
+        }
+    }
+
+    .code-editor-run-label {
+        transition:
+            opacity .16s ease,
+            transform .16s ease;
+    }
+
+    .code-editor-run-spinner {
+        height: .86rem;
+        left: calc(50% - .43rem);
+        opacity: 0;
+        position: absolute;
+        top: calc(50% - .43rem);
+        transform: scale(.78);
+        transition:
+            opacity .16s ease,
+            transform .16s ease;
+        width: .86rem;
+
+        &::after {
+            animation: code-editor-run-spinner .72s linear infinite;
+            animation-play-state: paused;
+            border: 2px solid rgba($editor-cyan, .34);
+            border-radius: 999px;
+            border-top-color: #8eefff;
+            box-sizing: border-box;
+            content: "";
+            inset: 0;
+            position: absolute;
+        }
+    }
+
+    .is-running .code-editor-run-label {
+        opacity: 0;
+        transform: translateY(-.18rem);
+    }
+
+    .is-running .code-editor-run-spinner {
+        opacity: 1;
+        transform: scale(1);
+
+        &::after {
+            animation-play-state: running;
         }
     }
 
@@ -360,6 +426,12 @@ $editor-gutter: #10131d;
 @keyframes code-editor-progress-slide {
     to {
         left: 100%;
+    }
+}
+
+@keyframes code-editor-run-spinner {
+    to {
+        transform: rotate(360deg);
     }
 }
 
