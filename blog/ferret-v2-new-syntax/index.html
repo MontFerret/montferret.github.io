@@ -212,12 +212,13 @@
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-1-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result-pane">Output</button>
                 <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -227,11 +228,12 @@ LET elements = QUERY &#34;article h2&#34; IN doc USING css
 RETURN elements</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-1-result" class="code-editor-result" style="height: 132px;"></div>
@@ -258,6 +260,59 @@ RETURN elements</div>
             const textEditor = createEditor('code-editor-1-text', 'fql', true);
             const resultEditor = createEditor('code-editor-1-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-1-grid');
+            const resultPane = document.querySelector('#code-editor-1-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-1-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-1-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -277,7 +332,7 @@ RETURN elements</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -461,12 +516,13 @@ LET first = QUERY ONE &#34;.product&#34; IN doc USING css</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-2-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result-pane">Output</button>
                 <button id="code-editor-2-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -475,11 +531,12 @@ LET first = QUERY ONE &#34;.product&#34; IN doc USING css</div>
 RETURN QUERY EXISTS &#34;article h2&#34; IN doc USING css</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-2-result" class="code-editor-result" style="height: 84px;"></div>
@@ -506,6 +563,59 @@ RETURN QUERY EXISTS &#34;article h2&#34; IN doc USING css</div>
             const textEditor = createEditor('code-editor-2-text', 'fql', true);
             const resultEditor = createEditor('code-editor-2-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-2-grid');
+            const resultPane = document.querySelector('#code-editor-2-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-2-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-2-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -525,7 +635,7 @@ RETURN QUERY EXISTS &#34;article h2&#34; IN doc USING css</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -610,12 +720,13 @@ RETURN QUERY EXISTS &#34;article h2&#34; IN doc USING css</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-3-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result-pane">Output</button>
                 <button id="code-editor-3-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -624,11 +735,12 @@ RETURN QUERY EXISTS &#34;article h2&#34; IN doc USING css</div>
 RETURN QUERY COUNT &#34;article h2&#34; IN doc USING css</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-3-result" class="code-editor-result" style="height: 84px;"></div>
@@ -655,6 +767,59 @@ RETURN QUERY COUNT &#34;article h2&#34; IN doc USING css</div>
             const textEditor = createEditor('code-editor-3-text', 'fql', true);
             const resultEditor = createEditor('code-editor-3-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-3-grid');
+            const resultPane = document.querySelector('#code-editor-3-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-3-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-3-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -674,7 +839,7 @@ RETURN QUERY COUNT &#34;article h2&#34; IN doc USING css</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -759,12 +924,13 @@ RETURN QUERY COUNT &#34;article h2&#34; IN doc USING css</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-4-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result-pane">Output</button>
                 <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-4-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -773,11 +939,12 @@ RETURN QUERY COUNT &#34;article h2&#34; IN doc USING css</div>
 RETURN QUERY ONE &#34;article h2&#34; IN doc USING css</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-4-result" class="code-editor-result" style="height: 84px;"></div>
@@ -804,6 +971,59 @@ RETURN QUERY ONE &#34;article h2&#34; IN doc USING css</div>
             const textEditor = createEditor('code-editor-4-text', 'fql', true);
             const resultEditor = createEditor('code-editor-4-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-4-grid');
+            const resultPane = document.querySelector('#code-editor-4-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-4-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-4-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -823,7 +1043,7 @@ RETURN QUERY ONE &#34;article h2&#34; IN doc USING css</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -1003,12 +1223,13 @@ LET product = products[0]</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-5-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result-pane">Output</button>
                 <button id="code-editor-5-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-5-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -1017,11 +1238,12 @@ LET product = products[0]</div>
 RETURN doc[~ css`article h2`]</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-5-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-5-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-5-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-5-result" class="code-editor-result" style="height: 112px;"></div>
@@ -1048,6 +1270,59 @@ RETURN doc[~ css`article h2`]</div>
             const textEditor = createEditor('code-editor-5-text', 'fql', true);
             const resultEditor = createEditor('code-editor-5-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-5-grid');
+            const resultPane = document.querySelector('#code-editor-5-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-5-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-5-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -1067,7 +1342,7 @@ RETURN doc[~ css`article h2`]</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -1196,12 +1471,13 @@ RETURN doc[~ css`article h2`]</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-6-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-6-result-pane">Output</button>
                 <button id="code-editor-6-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-6-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-6-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -1210,11 +1486,12 @@ RETURN doc[~ css`article h2`]</div>
 RETURN doc[~? css`article h2`]</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-6-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-6-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-6-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-6-result" class="code-editor-result" style="height: 112px;"></div>
@@ -1241,6 +1518,59 @@ RETURN doc[~? css`article h2`]</div>
             const textEditor = createEditor('code-editor-6-text', 'fql', true);
             const resultEditor = createEditor('code-editor-6-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-6-grid');
+            const resultPane = document.querySelector('#code-editor-6-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-6-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-6-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -1260,7 +1590,7 @@ RETURN doc[~? css`article h2`]</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -1534,12 +1864,13 @@ LET product = QUERY ONE selector IN doc USING css WITH { timeout: 5000 }</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-7-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-7-result-pane">Output</button>
                 <button id="code-editor-7-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-7-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-7-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -1563,11 +1894,12 @@ RETURN {
 }</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-7-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-7-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-7-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-7-result" class="code-editor-result" style="height: 356px;"></div>
@@ -1594,6 +1926,59 @@ RETURN {
             const textEditor = createEditor('code-editor-7-text', 'fql', true);
             const resultEditor = createEditor('code-editor-7-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-7-grid');
+            const resultPane = document.querySelector('#code-editor-7-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-7-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-7-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -1613,7 +1998,7 @@ RETURN {
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -1708,12 +2093,13 @@ RETURN {
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-8-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-8-result-pane">Output</button>
                 <button id="code-editor-8-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-8-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-8-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -1722,11 +2108,12 @@ RETURN {
 RETURN doc[~ css`a`][*].attributes.href</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-8-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-8-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-8-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-8-result" class="code-editor-result" style="height: 128px;"></div>
@@ -1753,6 +2140,59 @@ RETURN doc[~ css`a`][*].attributes.href</div>
             const textEditor = createEditor('code-editor-8-text', 'fql', true);
             const resultEditor = createEditor('code-editor-8-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-8-grid');
+            const resultPane = document.querySelector('#code-editor-8-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-8-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-8-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -1772,7 +2212,7 @@ RETURN doc[~ css`a`][*].attributes.href</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -1857,12 +2297,13 @@ RETURN doc[~ css`a`][*].attributes.href</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-9-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-9-result-pane">Output</button>
                 <button id="code-editor-9-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-9-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-9-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -1884,11 +2325,12 @@ RETURN products[*
 ]</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-9-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-9-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-9-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-9-result" class="code-editor-result" style="height: 328px;"></div>
@@ -1915,6 +2357,59 @@ RETURN products[*
             const textEditor = createEditor('code-editor-9-text', 'fql', true);
             const resultEditor = createEditor('code-editor-9-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-9-grid');
+            const resultPane = document.querySelector('#code-editor-9-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-9-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-9-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -1934,7 +2429,7 @@ RETURN products[*
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -2019,12 +2514,13 @@ RETURN products[*
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-10-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-10-result-pane">Output</button>
                 <button id="code-editor-10-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-10-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-10-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -2050,11 +2546,12 @@ RETURN products[*
 ]</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-10-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-10-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-10-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-10-result" class="code-editor-result" style="height: 376px;"></div>
@@ -2081,6 +2578,59 @@ RETURN products[*
             const textEditor = createEditor('code-editor-10-text', 'fql', true);
             const resultEditor = createEditor('code-editor-10-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-10-grid');
+            const resultPane = document.querySelector('#code-editor-10-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-10-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-10-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -2100,7 +2650,7 @@ RETURN products[*
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -2185,12 +2735,13 @@ RETURN products[*
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-11-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-11-result-pane">Output</button>
                 <button id="code-editor-11-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-11-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-11-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -2209,11 +2760,12 @@ RETURN products[*
 RETURN products[? ANY FILTER .price &gt; 100]</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-11-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-11-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-11-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-11-result" class="code-editor-result" style="height: 274px;"></div>
@@ -2240,6 +2792,59 @@ RETURN products[? ANY FILTER .price &gt; 100]</div>
             const textEditor = createEditor('code-editor-11-text', 'fql', true);
             const resultEditor = createEditor('code-editor-11-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-11-grid');
+            const resultPane = document.querySelector('#code-editor-11-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-11-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-11-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -2259,7 +2864,7 @@ RETURN products[? ANY FILTER .price &gt; 100]</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -2346,12 +2951,13 @@ RETURN products[? ANY FILTER .price &gt; 100]</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-12-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-12-result-pane">Output</button>
                 <button id="code-editor-12-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-12-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-12-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -2363,11 +2969,12 @@ LET linksBySection = sections[* RETURN .[~ css`a`]]
 RETURN linksBySection[**].attributes.href</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-12-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-12-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-12-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-12-result" class="code-editor-result" style="height: 152px;"></div>
@@ -2394,6 +3001,59 @@ RETURN linksBySection[**].attributes.href</div>
             const textEditor = createEditor('code-editor-12-text', 'fql', true);
             const resultEditor = createEditor('code-editor-12-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-12-grid');
+            const resultPane = document.querySelector('#code-editor-12-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-12-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-12-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -2413,7 +3073,7 @@ RETURN linksBySection[**].attributes.href</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -2648,12 +3308,13 @@ RETURN linksBySection[**].attributes.href</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-13-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-13-result-pane">Output</button>
                 <button id="code-editor-13-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-13-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-13-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -2667,11 +3328,12 @@ RETURN MATCH (
 )</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-13-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-13-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-13-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-13-result" class="code-editor-result" style="height: 160px;"></div>
@@ -2698,6 +3360,59 @@ RETURN MATCH (
             const textEditor = createEditor('code-editor-13-text', 'fql', true);
             const resultEditor = createEditor('code-editor-13-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-13-grid');
+            const resultPane = document.querySelector('#code-editor-13-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-13-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-13-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -2717,7 +3432,7 @@ RETURN MATCH (
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -2802,12 +3517,13 @@ RETURN MATCH (
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-14-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-14-result-pane">Output</button>
                 <button id="code-editor-14-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-14-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-14-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -2820,11 +3536,12 @@ RETURN MATCH status (
 )</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-14-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-14-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-14-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-14-result" class="code-editor-result" style="height: 160px;"></div>
@@ -2851,6 +3568,59 @@ RETURN MATCH status (
             const textEditor = createEditor('code-editor-14-text', 'fql', true);
             const resultEditor = createEditor('code-editor-14-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-14-grid');
+            const resultPane = document.querySelector('#code-editor-14-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-14-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-14-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -2870,7 +3640,7 @@ RETURN MATCH status (
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -2955,12 +3725,13 @@ RETURN MATCH status (
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-15-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-15-result-pane">Output</button>
                 <button id="code-editor-15-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-15-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-15-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -2978,11 +3749,12 @@ RETURN MATCH response (
 )</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-15-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-15-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-15-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-15-result" class="code-editor-result" style="height: 256px;"></div>
@@ -3009,6 +3781,59 @@ RETURN MATCH response (
             const textEditor = createEditor('code-editor-15-text', 'fql', true);
             const resultEditor = createEditor('code-editor-15-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-15-grid');
+            const resultPane = document.querySelector('#code-editor-15-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-15-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-15-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -3028,7 +3853,7 @@ RETURN MATCH response (
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -3209,12 +4034,13 @@ RETURN message</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-16-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-16-result-pane">Output</button>
                 <button id="code-editor-16-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-16-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-16-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -3227,11 +4053,12 @@ RETURN message</div>
 RETURN `${product.title}: ${product.price} USD`</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-16-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-16-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-16-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-16-result" class="code-editor-result" style="height: 160px;"></div>
@@ -3258,6 +4085,59 @@ RETURN `${product.title}: ${product.price} USD`</div>
             const textEditor = createEditor('code-editor-16-text', 'fql', true);
             const resultEditor = createEditor('code-editor-16-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-16-grid');
+            const resultPane = document.querySelector('#code-editor-16-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-16-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-16-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -3277,7 +4157,7 @@ RETURN `${product.title}: ${product.price} USD`</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -3362,12 +4242,13 @@ RETURN `${product.title}: ${product.price} USD`</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-17-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-17-result-pane">Output</button>
                 <button id="code-editor-17-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-17-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-17-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -3379,11 +4260,12 @@ LET url = `https://mockery.ferretlang.org/scenarios/ecommerce/categories/${categ
 RETURN WEB::ARTICLE::EXTRACT(DOCUMENT(url))</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-17-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-17-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-17-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-17-result" class="code-editor-result" style="height: 128px;"></div>
@@ -3410,6 +4292,59 @@ RETURN WEB::ARTICLE::EXTRACT(DOCUMENT(url))</div>
             const textEditor = createEditor('code-editor-17-text', 'fql', true);
             const resultEditor = createEditor('code-editor-17-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-17-grid');
+            const resultPane = document.querySelector('#code-editor-17-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-17-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-17-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -3429,7 +4364,7 @@ RETURN WEB::ARTICLE::EXTRACT(DOCUMENT(url))</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -3514,12 +4449,13 @@ RETURN WEB::ARTICLE::EXTRACT(DOCUMENT(url))</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-18-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-18-result-pane">Output</button>
                 <button id="code-editor-18-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-18-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-18-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -3537,11 +4473,12 @@ RETURN {
 }</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-18-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-18-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-18-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-18-result" class="code-editor-result" style="height: 224px;"></div>
@@ -3568,6 +4505,59 @@ RETURN {
             const textEditor = createEditor('code-editor-18-text', 'fql', true);
             const resultEditor = createEditor('code-editor-18-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-18-grid');
+            const resultPane = document.querySelector('#code-editor-18-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-18-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-18-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -3587,7 +4577,7 @@ RETURN {
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -3675,12 +4665,13 @@ RETURN {
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-19-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-19-result-pane">Output</button>
                 <button id="code-editor-19-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-19-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-19-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -3693,11 +4684,12 @@ FOR WHILE attempts &lt; 3
 RETURN attempts</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-19-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-19-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-19-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-19-result" class="code-editor-result" style="height: 192px;"></div>
@@ -3724,6 +4716,59 @@ RETURN attempts</div>
             const textEditor = createEditor('code-editor-19-text', 'fql', true);
             const resultEditor = createEditor('code-editor-19-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-19-grid');
+            const resultPane = document.querySelector('#code-editor-19-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-19-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-19-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -3743,7 +4788,7 @@ RETURN attempts</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -3828,12 +4873,13 @@ RETURN attempts</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-20-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-20-result-pane">Output</button>
                 <button id="code-editor-20-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-20-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-20-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -3846,11 +4892,12 @@ FOR WHILE attempts &lt; 3
 RETURN attempts</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-20-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-20-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-20-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-20-result" class="code-editor-result" style="height: 192px;"></div>
@@ -3877,6 +4924,59 @@ RETURN attempts</div>
             const textEditor = createEditor('code-editor-20-text', 'fql', true);
             const resultEditor = createEditor('code-editor-20-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-20-grid');
+            const resultPane = document.querySelector('#code-editor-20-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-20-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-20-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -3896,7 +4996,7 @@ RETURN attempts</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -3984,12 +5084,13 @@ RETURN attempts</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-21-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-21-result-pane">Output</button>
                 <button id="code-editor-21-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-21-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-21-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -4011,11 +5112,12 @@ user.stats.visits &#43;= 1
 RETURN user</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-21-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-21-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-21-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-21-result" class="code-editor-result" style="height: 312px;"></div>
@@ -4042,6 +5144,59 @@ RETURN user</div>
             const textEditor = createEditor('code-editor-21-text', 'fql', true);
             const resultEditor = createEditor('code-editor-21-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-21-grid');
+            const resultPane = document.querySelector('#code-editor-21-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-21-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-21-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -4061,7 +5216,7 @@ RETURN user</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -4146,12 +5301,13 @@ RETURN user</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-22-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-22-result-pane">Output</button>
                 <button id="code-editor-22-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-22-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-22-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -4161,11 +5317,12 @@ user?.profile?.active = true
 RETURN user</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-22-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-22-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-22-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-22-result" class="code-editor-result" style="height: 128px;"></div>
@@ -4192,6 +5349,59 @@ RETURN user</div>
             const textEditor = createEditor('code-editor-22-text', 'fql', true);
             const resultEditor = createEditor('code-editor-22-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-22-grid');
+            const resultPane = document.querySelector('#code-editor-22-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-22-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-22-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -4211,7 +5421,7 @@ RETURN user</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -4300,12 +5510,13 @@ RETURN user</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-23-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-23-result-pane">Output</button>
                 <button id="code-editor-23-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-23-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-23-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -4323,11 +5534,12 @@ DELETE user.profile.deprecated
 RETURN user</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-23-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-23-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-23-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-23-result" class="code-editor-result" style="height: 240px;"></div>
@@ -4354,6 +5566,59 @@ RETURN user</div>
             const textEditor = createEditor('code-editor-23-text', 'fql', true);
             const resultEditor = createEditor('code-editor-23-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-23-grid');
+            const resultPane = document.querySelector('#code-editor-23-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-23-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-23-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -4373,7 +5638,7 @@ RETURN user</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -4459,12 +5724,13 @@ RETURN user</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-24-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-24-result-pane">Output</button>
                 <button id="code-editor-24-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-24-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-24-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -4482,11 +5748,12 @@ DELETE user.metadata[&#34;temp&#34;]
 RETURN user</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-24-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-24-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-24-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-24-result" class="code-editor-result" style="height: 240px;"></div>
@@ -4513,6 +5780,59 @@ RETURN user</div>
             const textEditor = createEditor('code-editor-24-text', 'fql', true);
             const resultEditor = createEditor('code-editor-24-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-24-grid');
+            const resultPane = document.querySelector('#code-editor-24-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-24-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-24-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -4532,7 +5852,7 @@ RETURN user</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -4617,12 +5937,13 @@ RETURN user</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-25-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-25-result-pane">Output</button>
                 <button id="code-editor-25-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-25-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-25-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -4634,11 +5955,12 @@ DELETE user?.profile?.deprecated
 RETURN user</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-25-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-25-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-25-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-25-result" class="code-editor-result" style="height: 152px;"></div>
@@ -4665,6 +5987,59 @@ RETURN user</div>
             const textEditor = createEditor('code-editor-25-text', 'fql', true);
             const resultEditor = createEditor('code-editor-25-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-25-grid');
+            const resultPane = document.querySelector('#code-editor-25-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-25-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-25-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -4684,7 +6059,7 @@ RETURN user</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -4775,12 +6150,13 @@ RETURN user</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-26-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-26-result-pane">Output</button>
                 <button id="code-editor-26-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-26-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-26-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -4796,11 +6172,12 @@ RETURN WAITFOR VALUE doc[~ css`[data-testid=&#34;delayed-long&#34;]`]
     ON TIMEOUT RETURN NONE</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-26-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-26-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-26-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-26-result" class="code-editor-result" style="height: 224px;"></div>
@@ -4827,6 +6204,59 @@ RETURN WAITFOR VALUE doc[~ css`[data-testid=&#34;delayed-long&#34;]`]
             const textEditor = createEditor('code-editor-26-text', 'fql', true);
             const resultEditor = createEditor('code-editor-26-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-26-grid');
+            const resultPane = document.querySelector('#code-editor-26-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-26-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-26-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -4846,7 +6276,7 @@ RETURN WAITFOR VALUE doc[~ css`[data-testid=&#34;delayed-long&#34;]`]
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -4945,12 +6375,13 @@ RETURN WAITFOR VALUE doc[~ css`[data-testid=&#34;delayed-long&#34;]`]
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-27-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-27-result-pane">Output</button>
                 <button id="code-editor-27-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-27-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-27-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -4964,11 +6395,12 @@ WAITFOR EVENT &#34;network.idle&#34; IN doc TIMEOUT 10s
 RETURN doc[~ css`#network-log li`][*].textContent</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-27-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-27-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-27-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-27-result" class="code-editor-result" style="height: 224px;"></div>
@@ -4995,6 +6427,59 @@ RETURN doc[~ css`#network-log li`][*].textContent</div>
             const textEditor = createEditor('code-editor-27-text', 'fql', true);
             const resultEditor = createEditor('code-editor-27-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-27-grid');
+            const resultPane = document.querySelector('#code-editor-27-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-27-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-27-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -5014,7 +6499,7 @@ RETURN doc[~ css`#network-log li`][*].textContent</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -5099,12 +6584,13 @@ RETURN doc[~ css`#network-log li`][*].textContent</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-28-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-28-result-pane">Output</button>
                 <button id="code-editor-28-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-28-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-28-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -5118,11 +6604,12 @@ RETURN WAITFOR EVENT &#34;network.request_finished&#34; IN doc
     TIMEOUT 10s</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-28-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-28-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-28-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-28-result" class="code-editor-result" style="height: 224px;"></div>
@@ -5149,6 +6636,59 @@ RETURN WAITFOR EVENT &#34;network.request_finished&#34; IN doc
             const textEditor = createEditor('code-editor-28-text', 'fql', true);
             const resultEditor = createEditor('code-editor-28-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-28-grid');
+            const resultPane = document.querySelector('#code-editor-28-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-28-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-28-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -5168,7 +6708,7 @@ RETURN WAITFOR EVENT &#34;network.request_finished&#34; IN doc
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -5253,12 +6793,13 @@ RETURN WAITFOR EVENT &#34;network.request_finished&#34; IN doc
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-29-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-29-result-pane">Output</button>
                 <button id="code-editor-29-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-29-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-29-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -5285,11 +6826,12 @@ RETURN MATCH response (
 )</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-29-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-29-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-29-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-29-result" class="code-editor-result" style="height: 384px;"></div>
@@ -5316,6 +6858,59 @@ RETURN MATCH response (
             const textEditor = createEditor('code-editor-29-text', 'fql', true);
             const resultEditor = createEditor('code-editor-29-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-29-grid');
+            const resultPane = document.querySelector('#code-editor-29-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-29-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-29-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -5335,7 +6930,7 @@ RETURN MATCH response (
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -5424,12 +7019,13 @@ RETURN MATCH response (
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-30-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-30-result-pane">Output</button>
                 <button id="code-editor-30-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-30-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-30-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -5439,11 +7035,12 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
     ON ERROR RETURN NONE</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-30-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-30-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-30-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-30-result" class="code-editor-result" style="height: 128px;"></div>
@@ -5470,6 +7067,59 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
             const textEditor = createEditor('code-editor-30-text', 'fql', true);
             const resultEditor = createEditor('code-editor-30-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-30-grid');
+            const resultPane = document.querySelector('#code-editor-30-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-30-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-30-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -5489,7 +7139,7 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -5574,12 +7224,13 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-31-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-31-result-pane">Output</button>
                 <button id="code-editor-31-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-31-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-31-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -5591,11 +7242,12 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
     ON TIMEOUT RETURN NONE</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-31-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-31-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-31-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-31-result" class="code-editor-result" style="height: 146px;"></div>
@@ -5622,6 +7274,59 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
             const textEditor = createEditor('code-editor-31-text', 'fql', true);
             const resultEditor = createEditor('code-editor-31-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-31-grid');
+            const resultPane = document.querySelector('#code-editor-31-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-31-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-31-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -5641,7 +7346,7 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -5727,12 +7432,13 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-32-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-32-result-pane">Output</button>
                 <button id="code-editor-32-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-32-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-32-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -5741,11 +7447,12 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
 RETURN parsed</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-32-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-32-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-32-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-32-result" class="code-editor-result" style="height: 120px;"></div>
@@ -5772,6 +7479,59 @@ RETURN parsed</div>
             const textEditor = createEditor('code-editor-32-text', 'fql', true);
             const resultEditor = createEditor('code-editor-32-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-32-grid');
+            const resultPane = document.querySelector('#code-editor-32-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-32-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-32-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -5791,7 +7551,7 @@ RETURN parsed</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -5880,12 +7640,13 @@ RETURN parsed</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-33-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-33-result-pane">Output</button>
                 <button id="code-editor-33-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-33-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-33-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -5899,11 +7660,12 @@ RETURN parsed</div>
 RETURN normalizePrice(&#34;$19.99&#34;)</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-33-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-33-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-33-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-33-result" class="code-editor-result" style="height: 192px;"></div>
@@ -5930,6 +7692,59 @@ RETURN normalizePrice(&#34;$19.99&#34;)</div>
             const textEditor = createEditor('code-editor-33-text', 'fql', true);
             const resultEditor = createEditor('code-editor-33-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-33-grid');
+            const resultPane = document.querySelector('#code-editor-33-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-33-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-33-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -5949,7 +7764,7 @@ RETURN normalizePrice(&#34;$19.99&#34;)</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -6034,12 +7849,13 @@ RETURN normalizePrice(&#34;$19.99&#34;)</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-34-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-34-result-pane">Output</button>
                 <button id="code-editor-34-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-34-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-34-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -6048,11 +7864,12 @@ RETURN normalizePrice(&#34;$19.99&#34;)</div>
 RETURN add(2, 3)</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-34-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-34-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-34-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-34-result" class="code-editor-result" style="height: 96px;"></div>
@@ -6079,6 +7896,59 @@ RETURN add(2, 3)</div>
             const textEditor = createEditor('code-editor-34-text', 'fql', true);
             const resultEditor = createEditor('code-editor-34-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-34-grid');
+            const resultPane = document.querySelector('#code-editor-34-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-34-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-34-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -6098,7 +7968,7 @@ RETURN add(2, 3)</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -6186,12 +8056,13 @@ RETURN add(2, 3)</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-35-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-35-result-pane">Output</button>
                 <button id="code-editor-35-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-35-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-35-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -6207,11 +8078,12 @@ RETURN add(2, 3)</div>
 RETURN fib(10)</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-35-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-35-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-35-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-35-result" class="code-editor-result" style="height: 196px;"></div>
@@ -6238,6 +8110,59 @@ RETURN fib(10)</div>
             const textEditor = createEditor('code-editor-35-text', 'fql', true);
             const resultEditor = createEditor('code-editor-35-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-35-grid');
+            const resultPane = document.querySelector('#code-editor-35-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-35-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-35-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -6257,7 +8182,7 @@ RETURN fib(10)</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
@@ -6490,12 +8415,13 @@ DISPATCH &#34;click&#34; IN button</div>
             </div>
 
             <div class="code-editor-actions">
+                <button id="code-editor-36-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-36-result-pane">Output</button>
                 <button id="code-editor-36-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
 
-        <div class="code-editor-grid">
-            <div class="code-editor-pane code-editor-pane-source">
+        <div id="code-editor-36-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-36-source-pane" class="code-editor-pane code-editor-pane-source">
                 <div class="code-editor-pane-header">
                     <span>query.fql</span>
                     <span>FQL</span>
@@ -6507,11 +8433,12 @@ LET out = GET(&#34;https://mockery.ferretlang.org/api/products/index.json&#34;)
 RETURN JSON_PARSE(out)</div>
             </div>
 
-            <div class="code-editor-pane code-editor-pane-result">
+            <div id="code-editor-36-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
                 <div class="code-editor-pane-header">
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-36-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-36-result-pane">Close</button>
                     </div>
                 </div>
                 <div id="code-editor-36-result" class="code-editor-result" style="height: 160px;"></div>
@@ -6538,6 +8465,59 @@ RETURN JSON_PARSE(out)</div>
             const textEditor = createEditor('code-editor-36-text', 'fql', true);
             const resultEditor = createEditor('code-editor-36-result', 'json', false);
             resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorGrid = document.querySelector('#code-editor-36-grid');
+            const resultPane = document.querySelector('#code-editor-36-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-36-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-36-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -6557,7 +8537,7 @@ RETURN JSON_PARSE(out)</div>
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
-                resultEditor.resize();
+                setResultVisible(true);
             }
 
             btn.addEventListener('click', () => {
