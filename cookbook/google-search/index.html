@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.162.1">
 
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.fd342da08727b6c5ad772e57dfc86855590afed38a3fbe17c22a8b9bb949b98d.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.4f5ba9a56d193d26c5d64373a2f6b156943cc13f001b90e85bcd3d4a5d90aaf2.css" />
     
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -200,7 +200,10 @@
 
             <div class="code-editor-actions">
                 <button id="code-editor-1-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result-pane">Output</button>
-                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-1-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-1-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-1-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -341,8 +344,10 @@ FOR result IN ELEMENTS(google, &#39;.g&#39;)
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -352,8 +357,10 @@ FOR result IN ELEMENTS(google, &#39;.g&#39;)
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);

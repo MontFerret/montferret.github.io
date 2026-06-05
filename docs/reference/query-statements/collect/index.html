@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.162.1">
 
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.fd342da08727b6c5ad772e57dfc86855590afed38a3fbe17c22a8b9bb949b98d.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.4f5ba9a56d193d26c5d64373a2f6b156943cc13f001b90e85bcd3d4a5d90aaf2.css" />
     
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -617,7 +617,10 @@ Grouping syntaxes
 
             <div class="code-editor-actions">
                 <button id="code-editor-1-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result-pane">Output</button>
-                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-1-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-1-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-1-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -800,8 +803,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -811,8 +816,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -901,7 +908,10 @@ FOR u IN users
 
             <div class="code-editor-actions">
                 <button id="code-editor-2-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result-pane">Output</button>
-                <button id="code-editor-2-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-2-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-2-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-2-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-2-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -1085,8 +1095,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -1096,8 +1108,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -1187,7 +1201,10 @@ FOR u IN users
 
             <div class="code-editor-actions">
                 <button id="code-editor-3-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result-pane">Output</button>
-                <button id="code-editor-3-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-3-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-3-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-3-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-3-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -1372,8 +1389,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -1383,8 +1402,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -1482,7 +1503,10 @@ Discarding obsolete variables
 
             <div class="code-editor-actions">
                 <button id="code-editor-4-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result-pane">Output</button>
-                <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-4-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-4-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-4-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -1667,8 +1691,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -1678,8 +1704,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -1769,7 +1797,10 @@ FOR u IN users
 
             <div class="code-editor-actions">
                 <button id="code-editor-5-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result-pane">Output</button>
-                <button id="code-editor-5-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-5-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-5-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-5-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-5-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -1956,8 +1987,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -1967,8 +2000,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -2060,7 +2095,10 @@ The following example limits the variables that are copied into the ``groupsVari
 
             <div class="code-editor-actions">
                 <button id="code-editor-6-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-6-result-pane">Output</button>
-                <button id="code-editor-6-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-6-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-6-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-6-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-6-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -2246,8 +2284,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -2257,8 +2297,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -2356,7 +2398,10 @@ Group length calculation
 
             <div class="code-editor-actions">
                 <button id="code-editor-7-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-7-result-pane">Output</button>
-                <button id="code-editor-7-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-7-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-7-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-7-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-7-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -2537,8 +2582,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -2548,8 +2595,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -2638,7 +2687,10 @@ FOR u IN users
 
             <div class="code-editor-actions">
                 <button id="code-editor-8-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-8-result-pane">Output</button>
-                <button id="code-editor-8-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-8-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-8-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-8-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-8-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -2816,8 +2868,10 @@ RETURN LENGTH(users)</div>
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -2827,8 +2881,10 @@ RETURN LENGTH(users)</div>
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -2917,7 +2973,10 @@ RETURN LENGTH(users)</div>
 
             <div class="code-editor-actions">
                 <button id="code-editor-9-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-9-result-pane">Output</button>
-                <button id="code-editor-9-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-9-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-9-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-9-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-9-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -3101,8 +3160,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -3112,8 +3173,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -3214,7 +3277,10 @@ Aggregation
 
             <div class="code-editor-actions">
                 <button id="code-editor-10-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-10-result-pane">Output</button>
-                <button id="code-editor-10-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-10-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-10-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-10-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-10-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -3404,8 +3470,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -3415,8 +3483,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -3507,7 +3577,10 @@ FOR u IN users
 
             <div class="code-editor-actions">
                 <button id="code-editor-11-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-11-result-pane">Output</button>
-                <button id="code-editor-11-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-11-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-11-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-11-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-11-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -3693,8 +3766,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -3704,8 +3779,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -3794,7 +3871,10 @@ FOR u IN users
 
             <div class="code-editor-actions">
                 <button id="code-editor-12-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-12-result-pane">Output</button>
-                <button id="code-editor-12-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+                <button id="code-editor-12-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-12-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
             </div>
             <div id="code-editor-12-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
             <span id="code-editor-12-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
@@ -3978,8 +4058,10 @@ FOR u IN users
                 runStatus.textContent = 'Running query';
                 editorHeader.setAttribute('aria-busy', 'true');
                 editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-loading');
+                btn.classList.add('is-running');
                 btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
             }
 
             function onEnd(result) {
@@ -3989,8 +4071,10 @@ FOR u IN users
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
                 editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-loading');
+                btn.classList.remove('is-running');
                 btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
