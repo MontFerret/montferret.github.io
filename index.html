@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.162.1">
 
     <link
-        href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet"
     />
 
     
-    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.17ed29bf1daeec53da854869c780218bf0eb5b49eeffcf3d0a114e9fac4a35df.css" />
+    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -60,76 +60,84 @@
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-135792752-1');
+        if (window.location.hostname === 'localhost') {
+            console.log('Google Analytics is disabled on localhost');
+        } else {
+            console.log('Google Analytics is enabled');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135792752-1');
+        }
     </script>
 </head>
-<body><nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="container">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-                <img src="/img/logo.png" width="30" height="30" /> <small class="logo">ferret</small>
+<body><nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
             </a>
 
-            <a
+            <button
                 id="navbar-burger"
-                role="button"
-                class="navbar-burger burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
                 aria-label="menu"
                 aria-expanded="false"
+                aria-controls="primary-nav"
                 data-target="primary-nav"
             >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
-            </a>
+            </button>
         </div>
-        
-        <div id="primary-nav" class="navbar-menu">
-            <div class="navbar-start">
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
                 
                 
                 
-                        
-                        <a href="/try/" class="navbar-item "
-                        title=Try&#32;it id=repl>
-                            Try it
-                        </a>
+                    
+                    
+                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
                 
-                        
-                        <a href="/docs/introduction" class="navbar-item "
-                        title=Project&#32;documentation id=docs>
-                            Docs
-                        </a>
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
                 
-                        
-                        <a href="/blog/" class="navbar-item "
-                        title=Blog id=blog>
-                            Blog
-                        </a>
-                
-                        
-                        <a href="/cookbook/google-search" class="navbar-item "
-                        title=Cookbook id=cookbook>
-                            Cookbook
-                        </a>
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
                 
             </div>
 
-            <div class="navbar-end">
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
                 
                 
-                        <a href="https://opencollective.com/ferret" class="navbar-item "
-                        title=Open&#32;collective id=donate>
-                            Donate
-                        </a>
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
                 
-                        <a href="https://github.com/MontFerret/ferret" class="navbar-item "
-                        title=GitHub&#32;repository id=github>
-                            GitHub
-                        </a>
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
                 
             </div>
         </div>
@@ -137,259 +145,520 @@
 </nav>
 
 <script>
-    
-    
     (function(){
         let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
         navburger.addEventListener("click", function() {
             let target = this.getAttribute("data-target");
             let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
 
             el.classList.toggle("is-active");
-        })
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
     })();
-</script><div id="content">
+</script>
+<div id="content">
 
-<section class="hero is-primary landing-page">
-    <div class="hero-body homepage-hero has-text-centered">
+
+<div class="landing-page">
+    <section class="landing-hero" aria-labelledby="landing-title">
         <div class="container">
-            <div class="logo-wrap">
-                <img src="/img/logo.png" width="120" height="120" />
-                <h1 class="title logo">
-                    Ferret
-                </h1>
-            </div>
-            <h2 class="subtitle is-centered">
-                a web scraping system <br />aiming to simplify data extraction
-                from the web
-            </h2>
-            <div class="hero-buttons">
-                <a href="/docs/getting-started/" class="button is-primary is-radiusless">Get started</a>
-                <a href="https://github.com/MontFerret/cli/releases" class="button is-radiusless">Download</a>
-            </div>
-        </div>
-    </div>
-</section>
+            <div class="landing-hero-shell">
+                <div class="landing-hero-copy">
+                    <div class="landing-brand">
+                        <span class="hero-wordmark">Ferret</span>
+                    </div>
 
-<main class="content container section landing-page">
-    <div class="columns">
-        <div class="column">
-            <h3>Declarative</h3>
-            <span style="display: block;">
-                ferret uses a declarative query language
-            </span>
-            <span style="display: block;">
-                so you focus on the data you need,
-            </span>
-            <span style="display: block;">
-                not the code to get it.
-            </span>
-        </div>
-        <div class="column">
-            <h3>Dynamic pages support</h3>
-            <span style="display: block;">
-                ferret handles javascript-rendered pages,
-            </span>
-            <span style="display: block;">
-                page events, and user interactions
-            </span>
-            <span style="display: block;">
-                out of the box.
-            </span>
-        </div>
-        <div class="column">
-            <h3>Embeddable</h3>
-            <span style="display: block;">
-                ferret is designed as a library first
-            </span>
-            <span style="display: block;">
-                and embeds cleanly into
-            </span>
-            <span style="display: block;">
-                any go application.
-            </span>
-        </div>
-    </div>
-</main>
+                    <p class="landing-eyebrow">Declarative data extraction</p>
+                    <h1 id="landing-title">Extract with intent</h1>
+                    <p class="landing-hero-lead">
+                        Reusable FQL programs for structured extraction from websites,
+                        documents, APIs, and custom data sources.      
+                    </p>
 
-<section class="content container section landing-page">
-    <hr />
-    <div class="columns">
-        <div class="column">
-            <h3>Declarative web data extraction</h3>
-            <p>
-                ferret is a declarative language for extracting structured data from the web.
-            </p>
-            <p>
-                you focus on what data you want - lists, fields, transformations - while Ferret takes care of browsers, async loading, retries, and HTML quirks.
-            </p>
-            <p>
-                the result is concise, readable queries that scale from small experiments to production pipelines.
-            </p>
-        </div>
-        <div class="column">
-            <div id="demo-1-query" data-type="query" data-lang="fql" class="code-editor-text" style="height:520px;">
-// Open the GitHub Topics page and load it as a document
-LET doc = DOCUMENT('https://github.com/topics')
+                    <div class="landing-actions" aria-label="Primary actions">
+                        <a href="/try/next/" class="button is-primary">Open playground</a>
+                        <a href="/docs/getting-started/" class="button is-light">Read the docs</a>
+                    </div>
 
-// Iterate over topic blocks on the page
-// Each ".py-4.border-bottom" element represents a single topic card
-FOR el IN ELEMENTS(doc, '.py-4.border-bottom')
-    // Limit the output to the first 10 topics
-    LIMIT 10
-    
-    // Extract the main link element for the topic
-    LET url = ELEMENT(el, 'a')
-    
-    // Extract the topic name element
-    LET name = ELEMENT(el, '.f3')
-    
-    // Extract the topic description element
-    LET description = ELEMENT(el, '.f5')
-    
-    // Build and return a structured object for each topic
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+                <aside class="landing-product-visual" aria-label="Ferret workflow example">
+                    <div class="code-editor landing-hero-editor is-readonly">
+                        <div class="code-editor-shell">
+                            <div class="code-editor-header">
+                                <div class="code-editor-title">
+                                    <span class="code-editor-dot" aria-hidden="true"></span>
+                                    <span>product-feed.fql</span>
+                                </div>
+                                <span class="code-editor-meta">read-only script</span>
+                            </div>
+
+                            <div class="code-editor-pane">
+                                <div id="hero-query" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
+LET doc = DOCUMENT(@page, { driver: "cdp" })
+
+LET products = WAITFOR VALUE doc[~ css`.product-card`]
+    WHEN LENGTH(.) > 0
+    TIMEOUT 5000
+
+FOR product IN products
     RETURN {
-        // Topic name text
-        name: TRIM(name.innerText),
-        
-        // Short topic description
-        description: TRIM(description.innerText),
-        
-        // Absolute URL to the topic page
-        // The link on the page is relative, so we prepend the GitHub domain
-        url: 'https://github.com' + url.attributes.href
+        brand: product[~? css`.product-brand`].textContent,
+        title: product[~? css`.product-title`].textContent,
+        price: product[~? css`.product-price`].textContent,
     }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="landing-visual-strip" aria-label="Example output">
+                        <span>Output shape</span>
+                        <code>[{ brand, title, price }]</code>
+                    </div>
+                </aside>
             </div>
         </div>
-    </div>
+    </section>
 
-    <hr />
-    <div class="columns">
-        <div class="column">
-            <div id="demo-2-query" data-type="query" data-lang="fql" class="code-editor-text" style="height: 400px;">
-// Open the SoundCloud Top Charts page using a browser-based driver (CDP)
-// This allows Ferret to execute JavaScript and work with dynamic content
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', {
-    driver: 'cdp'
-})
+    <main class="landing-main">
+        <section class="landing-workflow-section" aria-labelledby="workflow-title">
+            <div class="container">
+                <div class="landing-workflow-header">
+                    <p class="landing-eyebrow">FQL</p>
+                    <h2 id="workflow-title">One language from source to result</h2>
+                    <p>
+                        Ferret keeps the logic explicit: describe the data, run it against the right runtime, and return structured results your tools can use.
+                    </p>
+                </div>
 
-// Wait until at least one chart tile is present on the page
-// This is important because SoundCloud loads content asynchronously
-WAIT_ELEMENT(doc, '.audibleTile', 5000)
-
-// Select all track tiles from the page
-LET tracks = ELEMENTS(doc, '.audibleTile')
-
-// Iterate over each track tile and extract useful data
-FOR track IN tracks
-    RETURN {
-        // Chart position / description text shown on the tile
-        chart: TRIM(INNER_TEXT(track, '.playableTile__descriptionContainer')),
-    
-        // Build an absolute URL to the track page
-        // The link on the page is relative, so we prepend the SoundCloud domain
-        link: "https://soundcloud.com" + TRIM(ELEMENT(track, '.playableTile__artworkLink')?.attributes.href)
-    }
+                <div class="landing-workflow-rail">
+                    
+                    <article class="landing-workflow-step">
+                        <span class="landing-icon-token" aria-hidden="true">FQL</span>
+                        <h3>Describe in FQL</h3>
+                        <p>Define the data you need, the conditions to wait for, and the final shape to return.</p>
+                    </article>
+                    
+                    <article class="landing-workflow-step">
+                        <span class="landing-icon-token" aria-hidden="true">RUN</span>
+                        <h3>Execute against data sources</h3>
+                        <p>Run the same program against static documents, browser-rendered pages, APIs, or host-provided values.</p>
+                    </article>
+                    
+                    <article class="landing-workflow-step">
+                        <span class="landing-icon-token" aria-hidden="true">JSON</span>
+                        <h3>Return structured data</h3>
+                        <p>Produce predictable objects and arrays that are ready for scripts, tests, services, or jobs.</p>
+                    </article>
+                    
+                    <article class="landing-workflow-step">
+                        <span class="landing-icon-token" aria-hidden="true">RUN</span>
+                        <h3>Reuse across tools</h3>
+                        <p>Move from Playground to CLI, Go embedding, Worker, or Lab without changing the language.</p>
+                    </article>
+                    
+                </div>
             </div>
-        </div>
-        <div class="column">
-            <h3>Dynamic pages, no extra work</h3>
-            <p>
-                modern websites rely heavily on JavaScript. Ferret handles that for you.
-            </p>
-            <p>
-                by running pages in a real browser via Chrome DevTools Protocol, Ferret lets you extract data from dynamic sites without custom scripts or brittle workarounds.
-            </p>
-        </div>
-    </div>
+        </section>
 
-    <hr />
-    <div class="columns">
-        <div class="column">
-            <h3>No plugins. No macros. Just Go.</h3>
-            <p>ferret exposes a minimal, explicit extension API that lets you bind Go functions and types into the query runtime.</p>
-            <p>this makes it easy to keep domain-specific logic in Go while using Ferret for data selection and transformation.</p>
-        </div>
-        <div class="column">
-            <div id="demo-3-query" data-type="query" data-lang="golang" class="code-editor-text" style="height: 500px;">
-// Define a Go function that can be called from a Ferret query
-// The function receives a context and a variadic list of Ferret values
-transform := func(ctx context.Context, args ...core.Value) (core.Value, error) {
-    // Extract the first argument and assert it to a string value
-    str := args[0].(values.String)
-    
-    // Convert the string to upper case, append a suffix,
-    // and return it as a new Ferret string value
-    return values.NewString(strings.ToUpper(str.String() + "_ferret")), nil
-}
+        <section class="landing-section landing-start-section" id="get-started" aria-labelledby="get-started-title">
+            <div class="container">
+                <div class="landing-start-band">
+                    <div class="landing-section-heading landing-section-heading-left">
+                        <p class="landing-eyebrow">Get started</p>
+                        <h2 id="get-started-title">From playground to production</h2>
+                        <p>
+                            Try Ferret in the browser, then run the same FQL programs from the CLI, Go runtime, or Worker service.
+                        </p>
+                    </div>
 
-// A simple Ferret query that applies the custom TRANSFORM function
-// to each element in a list
-query := `
-FOR el IN ["foo", "bar", "qaz"]
-    RETURN TRANSFORM(el)
-`
-
-// Create a new Ferret compiler instance
-comp := compiler.New()
-
-// Register the Go function so it becomes available inside queries
-// It will be exposed as TRANSFORM(...)
-if err := comp.RegisterFunction("transform", transform); err != nil {
-    return nil, err
-}
-
-// Compile the query into an executable program
-program, err := comp.Compile(query)
+                    <div class="landing-start-grid">
+                        
+                        
+                        <a class="landing-start-path is-featured" href="/try/next/">
+                            <span class="landing-icon-token" aria-hidden="true">TRY</span>
+                            <span class="landing-card-eyebrow">Primary path</span>
+                            <h3>Try in browser</h3>
+                            <p>Open the Ferret v2 playground and run examples without installing anything.</p>
+                            <span class="landing-card-link">Open playground</span>
+                        </a>
+                        
+                        
+                        <a class="landing-start-path" href="/docs/tools/cli/install">
+                            <span class="landing-icon-token" aria-hidden="true">CLI</span>
+                            <span class="landing-card-eyebrow">Local path</span>
+                            <h3>Install CLI</h3>
+                            <p>Run FQL from your terminal, automate repeatable tasks, and work with local files.</p>
+                            <span class="landing-card-link">Install locally</span>
+                        </a>
+                        
+                        
+                        <a class="landing-start-path" href="docs/tools/worker">
+                            <span class="landing-icon-token" aria-hidden="true">HTTP</span>
+                            <span class="landing-card-eyebrow">Production path</span>
+                            <h3>Embed or run remotely</h3>
+                            <p>Use the Go runtime or Worker HTTP service when Ferret belongs inside applications, jobs, or internal tools.</p>
+                            <span class="landing-card-link">Review Worker</span>
+                        </a>
+                        
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <section class="landing-section landing-suite-section" id="ecosystem" aria-labelledby="ecosystem-title">
+            <div class="container">
+                <div class="landing-section-heading landing-section-heading-wide">
+                    <p class="landing-eyebrow">Ecosystem</p>
+                    <h2 id="ecosystem-title">A focused product suite around FQL</h2>
+                    <p>
+                        The runtime stays compact while official extensions, tools, services, images, and editors cover development, execution, testing, embedding, and integration.
+                    </p>
+                </div>
+
+                <div class="landing-suite-board">
+                    
+                    
+                    
+                    
+                    
+                    <section class="landing-suite-group is-core" aria-labelledby="suite-core">
+                        <div class="landing-suite-group-heading">
+                            <h3 id="suite-core">Core</h3>
+                        </div>
+
+                        <div class="landing-suite-group-grid">
+                            
+                            
+                            
+                            
+                            <a class="landing-suite-card is-foundation is-featured" href="https://github.com/MontFerret/ferret">
+                                <span class="landing-icon-token" aria-hidden="true">FQL</span>
+                                <span class="landing-card-group">Core</span>
+                                <span class="landing-badge">Core runtime</span>
+                                <h4>Ferret Runtime</h4>
+                                <p>The declarative language, compiler, standard library, and execution engine for FQL programs.</p>
+                                <span class="landing-card-link">Runtime repo</span>
+                            </a>
+                            
+                            
+                        </div>
+                    </section>
+                    
+                    
+                    
+                    
+                    
+                    <section class="landing-suite-group is-execution" aria-labelledby="suite-execution">
+                        <div class="landing-suite-group-heading">
+                            <h3 id="suite-execution">Execution</h3>
+                        </div>
+
+                        <div class="landing-suite-group-grid">
+                            
+                            
+                            
+                            
+                            <a class="landing-suite-card" href="https://hub.docker.com/r/montferret/chromium/tags">
+                                <span class="landing-icon-token" aria-hidden="true">CDP</span>
+                                <span class="landing-card-group">Execution</span>
+                                <span class="landing-badge">Execution image</span>
+                                <h4>Chromium</h4>
+                                <p>A Dockerized Chromium environment for browser-backed FQL programs and automation through CDP.</p>
+                                <span class="landing-card-link">Docker image</span>
+                            </a>
+                            
+                            
+                            
+                            
+                            
+                            <a class="landing-suite-card" href="https://github.com/MontFerret/worker">
+                                <span class="landing-icon-token" aria-hidden="true">HTTP</span>
+                                <span class="landing-card-group">Execution</span>
+                                <span class="landing-badge">Remote execution</span>
+                                <h4>Worker</h4>
+                                <p>An HTTP service for executing Ferret scripts remotely from applications, jobs, or distributed environments.</p>
+                                <span class="landing-card-link">Worker repo</span>
+                            </a>
+                            
+                            
+                        </div>
+                    </section>
+                    
+                    
+                    
+                    
+                    
+                    <section class="landing-suite-group is-developer-tools" aria-labelledby="suite-developer-tools">
+                        <div class="landing-suite-group-heading">
+                            <h3 id="suite-developer-tools">Developer tools</h3>
+                        </div>
+
+                        <div class="landing-suite-group-grid">
+                            
+                            
+                            
+                            
+                            <a class="landing-suite-card" href="https://github.com/MontFerret/cli">
+                                <span class="landing-icon-token" aria-hidden="true">CLI</span>
+                                <span class="landing-card-group">Developer tools</span>
+                                <span class="landing-badge">Local tooling</span>
+                                <h4>CLI</h4>
+                                <p>Command-line tooling for running scripts locally, testing ideas, and wiring Ferret into shell workflows.</p>
+                                <span class="landing-card-link">CLI repo</span>
+                            </a>
+                            
+                            
+                            
+                            
+                            
+                            <a class="landing-suite-card" href="/try/next/">
+                                <span class="landing-icon-token" aria-hidden="true">TRY</span>
+                                <span class="landing-card-group">Developer tools</span>
+                                <span class="landing-badge">Browser IDE</span>
+                                <h4>Playground</h4>
+                                <p>A browser-based environment for trying FQL examples and sharing focused experiments.</p>
+                                <span class="landing-card-link">Try Ferret</span>
+                            </a>
+                            
+                            
+                            
+                            
+                            
+                            <a class="landing-suite-card" href="https://github.com/MontFerret/lab">
+                                <span class="landing-icon-token" aria-hidden="true">LAB</span>
+                                <span class="landing-card-group">Developer tools</span>
+                                <span class="landing-badge">Testing</span>
+                                <h4>Lab</h4>
+                                <p>A test runner for Ferret-powered UI and data checks, built for repeatable scenarios.</p>
+                                <span class="landing-card-link">Lab repo</span>
+                            </a>
+                            
+                            
+                            
+                            
+                            
+                            <article class="landing-suite-card">
+                                <span class="landing-icon-token" aria-hidden="true">VS</span>
+                                <span class="landing-card-group">Developer tools</span>
+                                <span class="landing-badge">Editor support</span>
+                                <h4>VS Code syntax highlighting</h4>
+                                <p>Syntax highlighting for FQL scripts while editing extraction workflows in VS Code.</p>
+                            </article>
+                            
+                            
+                        </div>
+                    </section>
+                    
+                    
+                    
+                    
+                    
+                    <section class="landing-suite-group is-extensions" aria-labelledby="suite-extensions">
+                        <div class="landing-suite-group-heading">
+                            <h3 id="suite-extensions">Extensions</h3>
+                        </div>
+
+                        <div class="landing-suite-group-grid">
+                            
+                            
+                            
+                            
+                            <a class="landing-suite-card is-featured" href="https://github.com/MontFerret/contrib">
+                                <span class="landing-icon-token" aria-hidden="true">EXT</span>
+                                <span class="landing-card-group">Extensions</span>
+                                <span class="landing-badge">Official extensions</span>
+                                <h4>Contrib</h4>
+                                <p>Extension modules and integrations, including browser and HTML capabilities that stay outside the core runtime.</p>
+                                <span class="landing-card-link">Explore Contrib</span>
+                            </a>
+                            
+                            
+                        </div>
+                    </section>
+                    
+                    
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section landing-positioning-section" id="why-ferret" aria-labelledby="why-ferret-title">
+            <div class="container">
+                <div class="landing-positioning-panel">
+                    <div class="landing-section-heading landing-section-heading-left">
+                        <p class="landing-eyebrow">Why Ferret</p>
+                        <h2 id="why-ferret-title">Data automation without custom glue</h2>
+                        <p>
+                            Ferret is for developers who need repeatable data programs that move from local experiments to production without rewriting the logic for each runtime.
+                        </p>
+                    </div>
+
+                    <div class="landing-position-grid">
+                        
+                        <article class="landing-position-item">
+                            <span class="landing-icon-token" aria-hidden="true">FQL</span>
+                            <h3>Declarative data logic</h3>
+                            <p>Describe what data you need, when it is ready, how to transform it, and which shape to return.</p>
+                        </article>
+                        
+                        <article class="landing-position-item">
+                            <span class="landing-icon-token" aria-hidden="true">CAP</span>
+                            <h3>Capability-based execution</h3>
+                            <p>FQL adapts to values that support querying, dispatching, waiting, mutation, or custom host behavior.</p>
+                        </article>
+                        
+                        <article class="landing-position-item">
+                            <span class="landing-icon-token" aria-hidden="true">Go</span>
+                            <h3>Embeddable Go runtime</h3>
+                            <p>Run FQL inside your application with host-provided modules, functions, parameters, and controlled execution boundaries.</p>
+                        </article>
+                        
+                        <article class="landing-position-item">
+                            <span class="landing-icon-token" aria-hidden="true">MOD</span>
+                            <h3>Core plus optional modules</h3>
+                            <p>Keep the runtime focused while modules add support for documents, protocols, browsers, storage systems, APIs, or domain-specific integrations.</p>
+                        </article>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="landing-section landing-resource-section" id="learn-more" aria-labelledby="learn-more-title">
+            <div class="container">
+                <div class="landing-resource-strip">
+                    <div class="landing-resource-copy">
+                        <p class="landing-eyebrow">Learn more</p>
+                        <h2 id="learn-more-title">Docs, release notes, and source</h2>
+                    </div>
+
+                    <div class="landing-resource-links">
+                        
+                        <a class="landing-resource-link" href="/docs/introduction/">
+                            <span class="landing-icon-token" aria-hidden="true">DOC</span>
+                            <span>
+                                <strong>Documentation</strong>
+                                <small>Language, installation, standard library, and workflow guides.</small>
+                            </span>
+                        </a>
+                        
+                        <a class="landing-resource-link" href="/blog/">
+                            <span class="landing-icon-token" aria-hidden="true">LOG</span>
+                            <span>
+                                <strong>Blog</strong>
+                                <small>Release notes and design notes for Ferret v2 and the surrounding tools.</small>
+                            </span>
+                        </a>
+                        
+                        <a class="landing-resource-link" href="https://github.com/MontFerret/ferret">
+                            <span class="landing-icon-token" aria-hidden="true">SRC</span>
+                            <span>
+                                <strong>Ferret repository</strong>
+                                <small>Core runtime source, issues, and releases.</small>
+                            </span>
+                        </a>
+                        
+                        <a class="landing-resource-link" href="https://github.com/MontFerret">
+                            <span class="landing-icon-token" aria-hidden="true">ORG</span>
+                            <span>
+                                <strong>Project on GitHub</strong>
+                                <small>The wider ecosystem of official repositories.</small>
+                            </span>
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             function createEditor(id, mode) {
                 const editor = ace.edit(id);
+                const source = editor.getValue();
+                const normalizedSource = source.replace(/^\n+|\n+$/g, "");
+
+                if (source !== normalizedSource) {
+                    editor.setValue(normalizedSource, -1);
+                }
+
                 editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(false);
                 editor.session.setMode("ace/mode/" + mode);
-                editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
-                editor.renderer.$cursorLayer.element.style.display = "none"
+                editor.session.setUseWrapMode(true);
+                editor.setOptions({
+                    readOnly: true,
+                    highlightActiveLine: false,
+                    highlightGutterLine: false,
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+                editor.renderer.$cursorLayer.element.style.display = "none";
 
                 return editor;
             }
 
-            const elements = document.querySelectorAll('[data-type="query"]');
+            const elements = document.querySelectorAll('[data-type="landing-code"]');
 
             elements.forEach((el) => {
-                createEditor(el.id, el.attributes['data-lang'].value);
+                createEditor(el.id, el.getAttribute('data-lang'));
             });
         }, false);
     </script>
-</section>
+</div>
 
-        </div><footer class="footer">
-    <div class="columns">
-        <div class="column is-4 is-hidden-mobile">
-            <p>
-                <a href="https://github.com/MontFerret">
-                    © 2018-2026 MontFerret Team
-                </a>
-            </p>
-            <p>
-                <a href="https://www.montferret.dev/blog/index.xml">RSS</a>
-            </p>
+        </div><footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
         </div>
-        <div class="column is-4 has-text-centered">
-            <img src="/img/logo.png" width="30" height="30" />
-        </div>
-        <div class="column is-4 has-text-right is-hidden-mobile">
-            <a href="#">BACK TO TOP Δ</a>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+            <a class="site-footer-top" href="#top">Back to top △</a>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
     
-    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
+    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -398,6 +667,8 @@ program, err := comp.Compile(query)
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
 </footer>
 </body>
 </html>

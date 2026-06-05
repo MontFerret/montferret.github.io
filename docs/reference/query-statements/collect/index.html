@@ -1,0 +1,3396 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Ferret</title>
+
+    <meta name="generator" content="Hugo 0.162.1">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png" />
+    <link
+        rel="apple-touch-icon"
+        sizes="114x114"
+        href="/favicon/apple-icon-114x114.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="120x120"
+        href="/favicon/apple-icon-120x120.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="144x144"
+        href="/favicon/apple-icon-144x144.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="152x152"
+        href="/favicon/apple-icon-152x152.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/favicon/apple-icon-180x180.png"
+    />
+    <link
+        rel="icon"
+        type="image/png"
+        sizes="192x192"
+        href="/favicon/android-icon-192x192.png"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/manifest.json" />
+    
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        if (window.location.hostname === 'localhost') {
+            console.log('Google Analytics is disabled on localhost');
+        } else {
+            console.log('Google Analytics is enabled');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135792752-1');
+        }
+    </script>
+</head>
+<body><nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
+            </a>
+
+            <button
+                id="navbar-burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
+                aria-label="menu"
+                aria-expanded="false"
+                aria-controls="primary-nav"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
+                
+                
+                
+                    
+                    
+                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
+                
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link active is-active"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
+                
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
+                
+            </div>
+
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
+                
+                
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
+                
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
+
+            el.classList.toggle("is-active");
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
+    })();
+</script>
+<div id="content">
+    <div class="docs">
+    <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Docs navigation">
+            <nav class="menu" aria-label="Section navigation">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="docs-nav-root">
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/" class="docs-nav-link docs-nav-link-top">
+                Getting Started
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top">
+                Language
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/standard-library/" class="docs-nav-link docs-nav-link-top">
+                Standard Library
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
+        
+            <a href="https://www.ferretlang.org/docs/reference/" class="docs-nav-link docs-nav-link-top is-ancestor">
+                Reference
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
+        
+            <a href="https://www.ferretlang.org/docs/reference/query-statements/" class="docs-nav-link is-ancestor">
+                Query Statements
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://www.ferretlang.org/docs/reference/query-statements/for/" class="docs-nav-link">
+                FOR
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://www.ferretlang.org/docs/reference/query-statements/filter/" class="docs-nav-link">
+                FILTER
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://www.ferretlang.org/docs/reference/query-statements/return/" class="docs-nav-link">
+                RETURN
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://www.ferretlang.org/docs/reference/query-statements/sort/" class="docs-nav-link">
+                SORT
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://www.ferretlang.org/docs/reference/query-statements/limit/" class="docs-nav-link">
+                LIMIT
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://www.ferretlang.org/docs/reference/query-statements/collect/" class="docs-nav-link is-active" aria-current="page">
+                COLLECT
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+        
+    </ul>
+
+
+</nav>
+
+        </aside>
+
+        <main id="main" class="docs-main">
+            <article class="docs-content">
+    
+
+
+<h1 id="collect">
+<a href="#collect">
+COLLECT
+</a>
+</h1>
+<p>The <code>COLLECT</code> keyword can be used to group an array by one or multiple group criteria.</p>
+<p>The <code>COLLECT</code> statement will eliminate all local variables in the current scope. After <code>COLLECT</code> only the variables introduced by <code>COLLECT</code> itself are available.</p>
+<p>There are several syntax variants for <code>COLLECT</code> operations:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" style="height: 230px;">COLLECT variableName = expression
+COLLECT variableName = expression INTO groupsVariable
+COLLECT variableName = expression INTO groupsVariable = projectionExpression
+COLLECT variableName = expression INTO groupsVariable KEEP keepVariable
+COLLECT variableName = expression WITH COUNT INTO countVariable
+COLLECT variableName = expression AGGREGATE variableName = aggregateExpression
+COLLECT variableName = expression AGGREGATE variableName = aggregateExpression INTO groupsVariable
+COLLECT AGGREGATE variableName = aggregateExpression
+COLLECT AGGREGATE variableName = aggregateExpression INTO groupsVariable
+COLLECT WITH COUNT INTO countVariable</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+
+
+
+<h3 id="collect-grouping">
+<a href="#collect-grouping">
+Grouping syntaxes
+</a>
+</h3>
+<p>The first syntax form of <code>COLLECT</code> only groups the result by the defined group criteria specified in expression. In order to further process the results produced by <code>COLLECT</code>, a new variable (specified by <code>variableName</code>) is introduced. This variable contains the group value.</p>
+<p>Here’s an example query that find the distinct values in u.city and makes them available in variable city:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-1-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;}]
+
+FOR u IN users
+  COLLECT city = u.city
+  
+  RETURN { 
+    &#34;city&#34; : city 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-1-result" class="code-editor-result" style="height: 200px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-1-run-button');
+            const textEditor = createEditor('code-editor-1-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-1-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-1-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The second form does the same as the first form, but additionally introduces a variable (specified by <code>groupsVariable</code>) that contains all elements that fell into the group. This works as follows: The <code>groupsVariable</code> variable is an array containing as many elements as there are in the group. Each member of that array is a JSON object in which the value of every variable that is defined in the FQL query is bound to the corresponding property. Note that this considers all variables that are defined before the <code>COLLECT</code> statement, but not those on the top level (outside of any FOR), unless the <code>COLLECT</code> statement is itself on the top level, in which case all variables are taken.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-2-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-2-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;}]
+
+FOR u IN users
+  COLLECT city = u.city INTO groups
+  
+  RETURN { 
+    &#34;city&#34; : city, 
+    &#34;usersInCity&#34; : groups 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-2-result" class="code-editor-result" style="height: 200px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-2-run-button');
+            const textEditor = createEditor('code-editor-2-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-2-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-2-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>In the above example, the array users will be grouped by the property city. The result is a new array of objects, with one object per distinct <code>u.city</code> value. The elements from the original array (here: <code>users</code>) per city are made available in the variable groups. This is due to the <code>INTO</code> clause.</p>
+<p><code>COLLECT</code> also allows specifying multiple group criteria. Individual group criteria can be separated by commas:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-3-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-3-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;}]
+
+FOR u IN users
+  COLLECT country = u.country, city = u.city INTO groups
+  
+  RETURN { 
+    &#34;country&#34; : country, 
+    &#34;city&#34; : city, 
+    &#34;usersInCity&#34; : groups 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-3-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-3-result" class="code-editor-result" style="height: 200px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-3-run-button');
+            const textEditor = createEditor('code-editor-3-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-3-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-3-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>In the above example, the array users is grouped by country first and then by city, and for each distinct combination of country and city, the users will be returned.</p>
+
+
+
+<h3 id="collect-obsolete-variables">
+<a href="#collect-obsolete-variables">
+Discarding obsolete variables
+</a>
+</h3>
+<p>The third form of <code>COLLECT</code> allows rewriting the contents of the <code>groupsVariable</code> using an arbitrary <code>projectionExpression</code>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-4-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;}]
+
+FOR u IN users
+  COLLECT country = u.country, city = u.city INTO groups = u.name
+  
+  RETURN { 
+    &#34;country&#34; : country, 
+    &#34;city&#34; : city, 
+    &#34;userNames&#34; : groups 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-4-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-4-result" class="code-editor-result" style="height: 200px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-4-run-button');
+            const textEditor = createEditor('code-editor-4-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-4-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-4-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>In the above example, only the <code>projectionExpression</code> is <code>u.name</code>. Therefore, only this property is copied into the <code>groupsVariable</code> for each object. This is probably much more efficient than copying all variables from the scope into the <code>groupsVariable</code> as it would happen without a <code>projectionExpression</code>.</p>
+<p>The expression following <code>INTO</code> can also be used for arbitrary computations:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-5-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-5-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
+
+FOR u IN users
+  COLLECT country = u.country, city = u.city INTO groups = { 
+    &#34;name&#34; : u.name, 
+    &#34;isActive&#34; : u.status == &#34;active&#34;
+  }
+  RETURN { 
+    &#34;country&#34; : country, 
+    &#34;city&#34; : city, 
+    &#34;usersInCity&#34; : groups 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-5-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-5-result" class="code-editor-result" style="height: 250px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-5-run-button');
+            const textEditor = createEditor('code-editor-5-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-5-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-5-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<!-- ``COLLECT`` also provides an optional ``KEEP`` clause that can be used to control which variables will be copied into the variable created by ``INTO``. If no ``KEEP`` clause is specified, all variables from the scope will be copied as sub-attributes into the ``groupsVariable``. This is safe but can have a negative impact on performance if there are many variables in scope or the variables contain massive amounts of data.
+
+The following example limits the variables that are copied into the ``groupsVariable`` to just name. The variables ``u`` and ``someCalculation`` also present in the scope will not be copied into ``groupsVariable`` because they are not listed in the ``KEEP`` clause:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-6-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-6-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
+
+FOR u IN users
+  LET name = u.name
+  LET someCalculation = u.value1 &#43; u.value2
+  COLLECT city = u.city INTO groups KEEP name 
+  
+  RETURN { 
+    &#34;city&#34; : city, 
+    &#34;userNames&#34; : groups[*].name 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-6-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-6-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-6-result" class="code-editor-result" style="height: 250px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-6-run-button');
+            const textEditor = createEditor('code-editor-6-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-6-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-6-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+ -->
+
+
+
+<h3 id="collect-group-length">
+<a href="#collect-group-length">
+Group length calculation
+</a>
+</h3>
+<p><code>COLLECT</code> also provides a special <code>WITH COUNT</code> clause that can be used to determine the number of group members efficiently.</p>
+<p>The simplest form just returns the number of items that made it into the <code>COLLECT</code>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-7-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-7-text" class="code-editor-text" style="height: 180px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
+
+FOR u IN users
+  COLLECT WITH COUNT INTO length
+  
+  RETURN length</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-7-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-7-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-7-result" class="code-editor-result" style="height: 180px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-7-run-button');
+            const textEditor = createEditor('code-editor-7-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-7-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-7-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The above is equivalent to, but less efficient than:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-8-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-8-text" class="code-editor-text" style="height: 130px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
+
+RETURN LENGTH(users)</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-8-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-8-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-8-result" class="code-editor-result" style="height: 130px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-8-run-button');
+            const textEditor = createEditor('code-editor-8-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-8-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-8-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The <code>WITH COUNT</code> clause can also be used to efficiently count the number of items in each group:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-9-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-9-text" class="code-editor-text" style="height: 220px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
+
+FOR u IN users
+  COLLECT age = u.age WITH COUNT INTO length
+  
+  RETURN { 
+    &#34;age&#34; : age, 
+    &#34;count&#34; : length 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-9-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-9-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-9-result" class="code-editor-result" style="height: 220px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-9-run-button');
+            const textEditor = createEditor('code-editor-9-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-9-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-9-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<div class="notification is-info">
+    The WITH COUNT clause can only be used together with an INTO clause.
+</div>
+
+
+
+<h3 id="collect-aggregation">
+<a href="#collect-aggregation">
+Aggregation
+</a>
+</h3>
+<p>A <code>COLLECT</code> statement can be used to perform aggregation of data per group. To only determine group lengths, the <code>WITH COUNT INTO</code> variant of <code>COLLECT</code> can be used as described before.</p>
+<p>For other aggregations, it is possible to run aggregate functions on the <code>COLLECT</code> results:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-10-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-10-text" class="code-editor-text" style="height: 310px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
+
+FOR u IN users
+  COLLECT ageGroup = FLOOR(u.age / 5) * 5 INTO g
+
+  LET ages = (
+      FOR i IN g
+        RETURN i.u.age
+  )
+  
+  RETURN { 
+    &#34;ageGroup&#34; : ageGroup,
+    &#34;minAge&#34; : MIN(ages),
+    &#34;maxAge&#34; : MAX(ages)
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-10-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-10-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-10-result" class="code-editor-result" style="height: 310px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-10-run-button');
+            const textEditor = createEditor('code-editor-10-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-10-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-10-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The above however requires storing all group values during the collect operation for all groups, which can be inefficient.</p>
+<p>The special <code>AGGREGATE</code> variant of <code>COLLECT</code> allows building the aggregate values incrementally during the collect operation, and is therefore often more efficient.</p>
+<p>With the <code>AGGREGATE</code> variant the above query becomes:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-11-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-11-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
+
+FOR u IN users
+  COLLECT ageGroup = FLOOR(u.age / 5) * 5 
+  AGGREGATE minAge = MIN(u.age), maxAge = MAX(u.age)
+  
+  RETURN {
+    ageGroup, 
+    minAge, 
+    maxAge 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-11-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-11-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-11-result" class="code-editor-result" style="height: 250px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-11-run-button');
+            const textEditor = createEditor('code-editor-11-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-11-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-11-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The <code>AGGREGATE</code> keyword can only be used after the <code>COLLECT</code> keyword. If used, it must directly follow the declaration of the grouping keys. If no grouping keys are used, it must follow the <code>COLLECT</code> keyword directly:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-12-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-12-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
+
+FOR u IN users
+  COLLECT AGGREGATE minAge = MIN(u.age), maxAge = MAX(u.age)
+  
+  RETURN {
+    minAge, 
+    maxAge 
+  }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-12-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-12-result">Expand</button>
+                    </div>
+                </div>
+                <div id="code-editor-12-result" class="code-editor-result" style="height: 250px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-12-run-button');
+            const textEditor = createEditor('code-editor-12-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-12-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = document.querySelector('#code-editor-12-result-expand-button');
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                applyResultHeight(getCollapsedResultHeight());
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Only specific expressions are allowed on the right-hand side of each AGGREGATE assignment:</p>
+<ul>
+<li>an aggregate expression must not refer to variables introduced by the COLLECT itself</li>
+</ul>
+
+</article>
+
+        </main>
+
+        
+    </div>
+</div>
+
+
+        </div><footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
+        </div>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+            <a class="site-footer-top" href="#top">Back to top △</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
+</footer>
+</body>
+</html>

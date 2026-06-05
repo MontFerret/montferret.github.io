@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Ferret</title>
+
+    <meta name="generator" content="Hugo 0.162.1">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png" />
+    <link
+        rel="apple-touch-icon"
+        sizes="114x114"
+        href="/favicon/apple-icon-114x114.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="120x120"
+        href="/favicon/apple-icon-120x120.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="144x144"
+        href="/favicon/apple-icon-144x144.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="152x152"
+        href="/favicon/apple-icon-152x152.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/favicon/apple-icon-180x180.png"
+    />
+    <link
+        rel="icon"
+        type="image/png"
+        sizes="192x192"
+        href="/favicon/android-icon-192x192.png"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/manifest.json" />
+    
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        if (window.location.hostname === 'localhost') {
+            console.log('Google Analytics is disabled on localhost');
+        } else {
+            console.log('Google Analytics is enabled');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135792752-1');
+        }
+    </script>
+</head>
+<body><nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
+            </a>
+
+            <button
+                id="navbar-burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
+                aria-label="menu"
+                aria-expanded="false"
+                aria-controls="primary-nav"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
+                
+                
+                
+                    
+                    
+                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
+                
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link active is-active"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
+                
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
+                
+            </div>
+
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
+                
+                
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
+                
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
+
+            el.classList.toggle("is-active");
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
+    })();
+</script>
+<div id="content">
+    <div class="docs">
+    <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Docs navigation">
+            <nav class="menu" aria-label="Section navigation">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="docs-nav-root">
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/" class="docs-nav-link docs-nav-link-top is-ancestor">
+                Getting Started
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/overview/" class="docs-nav-link">
+                Overview
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/installation/" class="docs-nav-link">
+                Installation
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/quick-start/" class="docs-nav-link is-active" aria-current="page">
+                Quick Start
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top">
+                Language
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/standard-library/" class="docs-nav-link docs-nav-link-top">
+                Standard Library
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/reference/" class="docs-nav-link docs-nav-link-top">
+                Reference
+            </a>
+        
+
+        
+    </li>
+
+
+        
+    </ul>
+
+
+</nav>
+
+        </aside>
+
+        <main id="main" class="docs-main">
+            <article class="docs-content">
+    <h1 id="quick-start">Quick Start</h1>
+<p>In this guide, you will run your first Ferret queries and learn the basic shape of an FQL script.</p>
+<p>Ferret scripts are written in FQL (Ferret Query Language). A script can define values, work with structured data, query documents, interact with web pages, and return a result. The examples below start with the smallest possible script and gradually introduce the pieces you will use in real-world extraction workflows.</p>
+<h2 id="hello-world-a-simple-expression">Hello world: a simple expression</h2>
+<p>Start with a simple expression:</p>
+
+
+
+
+
+
+<div id="docs-tabs-0" class="docs-tabs" data-tabs>
+    <div class="docs-tabs-list" role="tablist">
+        <button id="docs-tabs-0-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-0-panel-0" tabindex="0">Terminal</button>
+        <button id="docs-tabs-0-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-0-panel-1" tabindex="-1">Browser</button>
+    </div>
+    <div id="docs-tabs-0-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-0-tab-0">
+        
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run -e &#39;RETURN 1 &#43; 1&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;RETURN 1 &#43; 1&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-1-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-1-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+    </div>
+    <div id="docs-tabs-0-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-0-tab-1" hidden>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal is-auto-height">
+    <textarea id="code-editor-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret v2</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">RETURN 1 &#43; 1</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-1-result" class="code-editor-result" data-auto-height="true"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-1-run-button');
+            const textEditor = createEditor('code-editor-1-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-1-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                return getEditorContentHeight(resultEditor);
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                const resultHeight = getEditorContentHeight(resultEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+                applyResultHeight(resultHeight);
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            textEditor.session.on('change', syncEditorLayout);
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+                const copyClipboardEl = document.querySelector('#code-editor-1-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-1-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+    </div>
+</div>
+<p>This script does not open a page or use a browser. It evaluates an expression and returns the result.</p>
+<p>Every Ferret script produces its final value with <code>RETURN</code>. In this case, the returned value is the result of <code>1 + 1</code>.</p>
+<h2 id="work-with-structured-data">Work with structured data</h2>
+<p>Ferret can also work with objects, arrays, and function calls:</p>
+
+
+
+
+<div id="docs-tabs-1" class="docs-tabs" data-tabs>
+    <div class="docs-tabs-list" role="tablist">
+        <button id="docs-tabs-1-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-1-panel-0" tabindex="0">Terminal</button>
+        <button id="docs-tabs-1-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-1-panel-1" tabindex="-1">Browser</button>
+    </div>
+    <div id="docs-tabs-1-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-1-tab-0">
+        
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run -e &#39;
+LET user = {
+    name: &#34;Ada&#34;,
+    roles: [&#34;admin&#34;, &#34;editor&#34;]
+}
+
+RETURN {
+    name: user.name,
+    isAdmin: CONTAINS(user.roles, &#34;admin&#34;)
+}
+&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-2-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET user = {</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">    name: &#34;Ada&#34;,</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">    roles: [&#34;admin&#34;, &#34;editor&#34;]</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">}</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command"></span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">RETURN {</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">    name: user.name,</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">    isAdmin: CONTAINS(user.roles, &#34;admin&#34;)</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">}</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-2-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-2-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+    </div>
+    <div id="docs-tabs-1-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-1-tab-1" hidden>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal is-auto-height">
+    <textarea id="code-editor-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret v2</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="code-editor-2-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET user = {
+    name: &#34;Ada&#34;,
+    roles: [&#34;admin&#34;, &#34;editor&#34;]
+}
+
+RETURN {
+    name: user.name,
+    isAdmin: CONTAINS(user.roles, &#34;admin&#34;)
+}</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-2-result" class="code-editor-result" data-auto-height="true"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-2-run-button');
+            const textEditor = createEditor('code-editor-2-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-2-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                return getEditorContentHeight(resultEditor);
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                const resultHeight = getEditorContentHeight(resultEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+                applyResultHeight(resultHeight);
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            textEditor.session.on('change', syncEditorLayout);
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+                const copyClipboardEl = document.querySelector('#code-editor-2-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-2-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+    </div>
+</div>
+<p>This example defines a variable with <code>LET</code>, creates an object, reads fields with dot notation, and returns a new object.</p>
+<p><code>LET</code> creates a local binding. Here, user is an object with a name field and a roles array. The <code>RETURN</code> expression builds a new object from that data and uses <code>CONTAINS</code> to check whether the user has the admin role.</p>
+<h2 id="query-html">Query HTML</h2>
+<p>Now let’s load a page and query HTML elements from it:</p>
+
+
+
+
+<div id="docs-tabs-2" class="docs-tabs" data-tabs>
+    <div class="docs-tabs-list" role="tablist">
+        <button id="docs-tabs-2-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-2-panel-0" tabindex="0">Terminal</button>
+        <button id="docs-tabs-2-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-2-panel-1" tabindex="-1">Browser</button>
+    </div>
+    <div id="docs-tabs-2-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-2-tab-0">
+        
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run -e &#39;
+LET doc = DOCUMENT(&#34;https://mockery.montferret.dev&#34;)
+RETURN doc[~ css`article`]
+&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET doc = DOCUMENT(&#34;https://mockery.montferret.dev&#34;)</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">RETURN doc[~ css`article`]</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-3-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-3-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+    </div>
+    <div id="docs-tabs-2-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-2-tab-1" hidden>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal is-auto-height">
+    <textarea id="code-editor-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret v2</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="code-editor-3-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.montferret.dev&#34;)
+RETURN doc[~ css`article`]</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-3-result" class="code-editor-result" data-auto-height="true"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-3-run-button');
+            const textEditor = createEditor('code-editor-3-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-3-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                return getEditorContentHeight(resultEditor);
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                const resultHeight = getEditorContentHeight(resultEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+                applyResultHeight(resultHeight);
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            textEditor.session.on('change', syncEditorLayout);
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+                const copyClipboardEl = document.querySelector('#code-editor-3-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-3-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+    </div>
+</div>
+<p><code>DOCUMENT</code> loads the URL and returns a document value. The expression <code>doc[~ css'article']</code> queries that document using the CSS dialect and returns matchingarticleelements.</p>
+<p>The <code>~</code> shorthand is Ferret’s compact query form. It is useful when you want to query a value directly without writing the longer <code>QUERY ... IN ... USING ...</code> form.</p>
+<p>HTML support is available in the CLI. When embedding Ferret in a Go application, HTML querying is provided through a module.</p>
+<h2 id="drive-a-browser">Drive a browser</h2>
+<p>Some pages need JavaScript to render their content. For those cases, Ferret can use a browser-backed driver:</p>
+ 
+
+
+<div id="docs-tabs-3" class="docs-tabs" data-tabs>
+    <div class="docs-tabs-list" role="tablist">
+        <button id="docs-tabs-3-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-3-panel-0" tabindex="0">Terminal</button>
+        <button id="docs-tabs-3-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-3-panel-1" tabindex="-1">Browser</button>
+    </div>
+    <div id="docs-tabs-3-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-3-tab-0">
+         
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run -e &#39;
+LET page = DOCUMENT(&#34;https://mockery.montferret.dev&#34;, { driver: &#34;cdp&#34; })
+RETURN page.title
+&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-4-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET page = DOCUMENT(&#34;https://mockery.montferret.dev&#34;, { driver: &#34;cdp&#34; })</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">RETURN page.title</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-4-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-4-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+    </div>
+    <div id="docs-tabs-3-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-3-tab-1" hidden>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal is-auto-height">
+    <textarea id="code-editor-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret v2</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET page = DOCUMENT(&#34;https://mockery.montferret.dev&#34;, { driver: &#34;cdp&#34; }) 
+RETURN page.title </div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-4-result" class="code-editor-result" data-auto-height="true"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-4-run-button');
+            const textEditor = createEditor('code-editor-4-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-4-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                return getEditorContentHeight(resultEditor);
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                }
+
+                resultEditor.resize();
+            }
+
+            function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                const resultHeight = getEditorContentHeight(resultEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+                applyResultHeight(resultHeight);
+
+                textEditor.resize();
+                resultEditor.resize();
+            }
+            textEditor.session.on('change', syncEditorLayout);
+            window.addEventListener('resize', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+                const copyClipboardEl = document.querySelector('#code-editor-4-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-4-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                btn.classList.add('is-loading');
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                btn.classList.remove('is-loading');
+
+                setContent(resultEditor, result);
+                syncEditorLayout();
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+    </div>
+</div>
+<p>This example uses the <code>cdp</code> driver, which talks to a browser through the Chrome DevTools Protocol.<br>
+Use browser mode when the page depends on JavaScript, client-side rendering, delayed content, user interaction, or browser APIs.</p>
+<p>For static HTML pages, the non-browser mode is usually simpler and faster.</p>
+<h2 id="save-a-script">Save a script</h2>
+<p>For anything longer than a small example, save the script to a <code>.fql</code> file:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">echo &#39;LET name = @name ?: &#34;Ferret&#34; RETURN &#34;Hello, &#34; &#43; name&#39; &gt; hello.fql </textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-5-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">echo &#39;LET name = @name ?: &#34;Ferret&#34; RETURN &#34;Hello, &#34; &#43; name&#39; &gt; hello.fql </span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-5-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-5-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Then run it with a parameter:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run hello.fql --param name=Steve</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-6-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-6-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run hello.fql --param name=Steve</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-6-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-6-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Parameters are available through the <code>@</code> prefix. In this example, <code>@name</code> reads the name parameter passed from the CLI.</p>
+<p>The <code>?:</code> operator provides a fallback value. If name is not passed, the script returns <code>Hello, Ferret</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<div class="docs-card-grid"><a class="docs-card" href="/docs/language/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Learn the language basics</strong>
+        <span>Understand variables, expressions, collections, control flow, and functions.</span>
+    </a><a class="docs-card" href="">
+        <span class="docs-card-kicker">Extract</span>
+        <strong>Query document data</strong>
+        <span>Work with HTML, XML, JSON, and other document-like data.</span>
+    </a><a class="docs-card" href="/docs/dynamic-pages/">
+        <span class="docs-card-kicker">Browse</span>
+        <strong>Work with dynamic pages</strong>
+        <span>Wait for content, react to page state, and automate browser interactions.</span>
+    </a><a class="docs-card" href="/docs/tools/cli/">
+        <span class="docs-card-kicker">Command line</span>
+        <strong>Use the CLI</strong>
+        <span>Run Ferret from your terminal, scripts, and automation jobs.</span>
+    </a>
+</div>
+
+
+</article>
+
+        </main>
+
+        <aside class="docs-toc" aria-label="On this page">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#hello-world-a-simple-expression">Hello world: a simple expression</a></li>
+    <li><a href="#work-with-structured-data">Work with structured data</a></li>
+    <li><a href="#query-html">Query HTML</a></li>
+    <li><a href="#drive-a-browser">Drive a browser</a></li>
+    <li><a href="#save-a-script">Save a script</a></li>
+    <li><a href="#where-to-go-next">Where to go next</a></li>
+  </ul>
+</nav>
+</aside>
+    </div>
+</div>
+
+
+        </div><footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
+        </div>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+            <a class="site-footer-top" href="#top">Back to top △</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
+</footer>
+</body>
+</html>

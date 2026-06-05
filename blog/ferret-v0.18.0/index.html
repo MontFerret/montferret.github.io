@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.162.1">
 
     <link
-        href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet"
     />
 
     
-    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.17ed29bf1daeec53da854869c780218bf0eb5b49eeffcf3d0a114e9fac4a35df.css" />
+    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -60,76 +60,84 @@
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-135792752-1');
+        if (window.location.hostname === 'localhost') {
+            console.log('Google Analytics is disabled on localhost');
+        } else {
+            console.log('Google Analytics is enabled');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135792752-1');
+        }
     </script>
 </head>
-<body><nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="container">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-                <img src="/img/logo.png" width="30" height="30" /> <small class="logo">ferret</small>
+<body><nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
             </a>
 
-            <a
+            <button
                 id="navbar-burger"
-                role="button"
-                class="navbar-burger burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
                 aria-label="menu"
                 aria-expanded="false"
+                aria-controls="primary-nav"
                 data-target="primary-nav"
             >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
-            </a>
+            </button>
         </div>
-        
-        <div id="primary-nav" class="navbar-menu">
-            <div class="navbar-start">
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
                 
                 
                 
-                        
-                        <a href="/try/" class="navbar-item "
-                        title=Try&#32;it id=repl>
-                            Try it
-                        </a>
+                    
+                    
+                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
                 
-                        
-                        <a href="/docs/introduction" class="navbar-item "
-                        title=Project&#32;documentation id=docs>
-                            Docs
-                        </a>
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
                 
-                        
-                        <a href="/blog/" class="navbar-item  active"
-                        title=Blog id=blog>
-                            Blog
-                        </a>
-                
-                        
-                        <a href="/cookbook/google-search" class="navbar-item "
-                        title=Cookbook id=cookbook>
-                            Cookbook
-                        </a>
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link active is-active"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
                 
             </div>
 
-            <div class="navbar-end">
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
                 
                 
-                        <a href="https://opencollective.com/ferret" class="navbar-item "
-                        title=Open&#32;collective id=donate>
-                            Donate
-                        </a>
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
                 
-                        <a href="https://github.com/MontFerret/ferret" class="navbar-item "
-                        title=GitHub&#32;repository id=github>
-                            GitHub
-                        </a>
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
                 
             </div>
         </div>
@@ -137,36 +145,51 @@
 </nav>
 
 <script>
-    
-    
     (function(){
         let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
         navburger.addEventListener("click", function() {
             let target = this.getAttribute("data-target");
             let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
 
             el.classList.toggle("is-active");
-        })
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
     })();
-</script><div id="content">
-    <div class="content section blog blog-post">
-        <div class="columns is-centered blog-post-header has-text-centered">
-            <div class="column is-10">
-                <p class="title is-2">
-                    Ferret v0.18.0
-                </p>
-                <p class="subtitle is-4">
-                        v0.18.0
-                    </p>
-                <p class="subtitle is-6 has-text-grey">
-                    <span>March 28, 2023</span> by <a href="https://github.com/ziflex">Tim Voronov</a>
-                </p>
-                <hr class="is-block-centered" />
-            </div>
+</script>
+<div id="content">
+<article class="blog-post">
+    <header class="blog-post-header">
+        <div class="blog-post-header-inner">
+            <p class="blog-post-kicker">Ferret Blog</p>
+
+            <h1 class="title is-2">
+                Ferret v0.18.0
+            </h1>
+
+            
+            <p class="subtitle is-4">
+                v0.18.0
+            </p>
+            
+
+            <p class="blog-post-meta">
+                <span>March 28, 2023</span>
+                <span aria-hidden="true">/</span>
+                <span>by <a href="https://github.com/ziflex">Tim Voronov</a></span>
+            </p>
         </div>
-        <div class="columns is-centered blog-post-content has-text-justified">
-            <div class="column is-8">
-                <p>Hello Ferret users!</p>
+    </header>
+
+    <div class="blog-post-content">
+        <p>Hello Ferret users!</p>
 <p>We are happy to announce the release of Ferret v0.18.0.</p>
 <p>A small but useful update with a mix of maintenance and a new utility function.</p>
 <h1 id="whats-new">What’s new</h1>
@@ -177,34 +200,41 @@
 <p>This release keeps things fresh under the hood while introducing a handy new helper for working with binary data.</p>
 <p>As always, thanks to everyone contributing and reporting issues.</p>
 
-            </div>
-        </div>
     </div>
 
-        </div><footer class="footer">
-    <div class="columns">
-        <div class="column is-4 is-hidden-mobile">
-            <p>
-                <a href="https://github.com/MontFerret">
-                    © 2018-2026 MontFerret Team
-                </a>
-            </p>
-            <p>
-                <a href="https://www.montferret.dev/blog/index.xml">RSS</a>
-            </p>
+    <nav class="blog-post-nav" aria-label="Blog navigation">
+        <a href="/blog/">← Back to blog</a>
+    </nav>
+</article>
+
+        </div><footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
         </div>
-        <div class="column is-4 has-text-centered">
-            <img src="/img/logo.png" width="30" height="30" />
-        </div>
-        <div class="column is-4 has-text-right is-hidden-mobile">
-            <a href="#">BACK TO TOP Δ</a>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+            <a class="site-footer-top" href="#top">Back to top △</a>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
     
-    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
+    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -213,6 +243,8 @@
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
 </footer>
 </body>
 </html>

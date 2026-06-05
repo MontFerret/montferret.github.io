@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.162.1">
 
     <link
-        href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet"
     />
 
     
-    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.17ed29bf1daeec53da854869c780218bf0eb5b49eeffcf3d0a114e9fac4a35df.css" />
+    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -60,76 +60,84 @@
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-135792752-1');
+        if (window.location.hostname === 'localhost') {
+            console.log('Google Analytics is disabled on localhost');
+        } else {
+            console.log('Google Analytics is enabled');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135792752-1');
+        }
     </script>
 </head>
-<body><nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="container">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-                <img src="/img/logo.png" width="30" height="30" /> <small class="logo">ferret</small>
+<body><nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
             </a>
 
-            <a
+            <button
                 id="navbar-burger"
-                role="button"
-                class="navbar-burger burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
                 aria-label="menu"
                 aria-expanded="false"
+                aria-controls="primary-nav"
                 data-target="primary-nav"
             >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
-            </a>
+            </button>
         </div>
-        
-        <div id="primary-nav" class="navbar-menu">
-            <div class="navbar-start">
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
                 
                 
                 
-                        
-                        <a href="/try/" class="navbar-item "
-                        title=Try&#32;it id=repl>
-                            Try it
-                        </a>
+                    
+                    
+                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
                 
-                        
-                        <a href="/docs/introduction" class="navbar-item "
-                        title=Project&#32;documentation id=docs>
-                            Docs
-                        </a>
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
                 
-                        
-                        <a href="/blog/" class="navbar-item  active"
-                        title=Blog id=blog>
-                            Blog
-                        </a>
-                
-                        
-                        <a href="/cookbook/google-search" class="navbar-item "
-                        title=Cookbook id=cookbook>
-                            Cookbook
-                        </a>
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link active is-active"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
                 
             </div>
 
-            <div class="navbar-end">
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
                 
                 
-                        <a href="https://opencollective.com/ferret" class="navbar-item "
-                        title=Open&#32;collective id=donate>
-                            Donate
-                        </a>
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
                 
-                        <a href="https://github.com/MontFerret/ferret" class="navbar-item "
-                        title=GitHub&#32;repository id=github>
-                            GitHub
-                        </a>
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
                 
             </div>
         </div>
@@ -137,36 +145,51 @@
 </nav>
 
 <script>
-    
-    
     (function(){
         let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
         navburger.addEventListener("click", function() {
             let target = this.getAttribute("data-target");
             let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
 
             el.classList.toggle("is-active");
-        })
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
     })();
-</script><div id="content">
-    <div class="content section blog blog-post">
-        <div class="columns is-centered blog-post-header has-text-centered">
-            <div class="column is-10">
-                <p class="title is-2">
-                    Ferret v0.8
-                </p>
-                <p class="subtitle is-4">
-                        More features, better API
-                    </p>
-                <p class="subtitle is-6 has-text-grey">
-                    <span>July 23, 2019</span> by <a href="https://www.twitter.com/ziflex">Tim Voronov</a>
-                </p>
-                <hr class="is-block-centered" />
-            </div>
+</script>
+<div id="content">
+<article class="blog-post">
+    <header class="blog-post-header">
+        <div class="blog-post-header-inner">
+            <p class="blog-post-kicker">Ferret Blog</p>
+
+            <h1 class="title is-2">
+                Ferret v0.8
+            </h1>
+
+            
+            <p class="subtitle is-4">
+                More features, better API
+            </p>
+            
+
+            <p class="blog-post-meta">
+                <span>July 23, 2019</span>
+                <span aria-hidden="true">/</span>
+                <span>by <a href="https://www.twitter.com/ziflex">Tim Voronov</a></span>
+            </p>
         </div>
-        <div class="columns is-centered blog-post-content has-text-justified">
-            <div class="column is-8">
-                <p>Hooray, <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.8.0">Ferret v0.8</a></strong> has been released!</p>
+    </header>
+
+    <div class="blog-post-content">
+        <p>Hooray, <strong><a href="https://github.com/MontFerret/ferret/releases/tag/v0.8.0">Ferret v0.8</a></strong> has been released!</p>
 <p>It&rsquo;s been a while since the last release, but we worked hard to bring new and better Ferret. This release has many new exciting features, but unfortunately, there are also some breaking changes.</p>
 <p>You can find the full changelog <strong><a href="https://github.com/MontFerret/ferret/blob/master/CHANGELOG.md#080">here</a></strong>.</p>
 <p>Let&rsquo;s go!</p>
@@ -184,41 +207,66 @@ When a page gets loaded, Ferret finds all available elements and provieds an acc
 
 
 
-<div class="code-editor">
 
-    
 
-    <button id="code-editor-79-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
-    <div class="columns">
-        <div class="column is-6">
-            <div id="code-editor-79-text" class="code-editor-text" style="height: 250px;">
-                
-LET page = DOCUMENT("https://www.w3schools.com/html/html_iframe.asp", {
-	driver: "cdp"
+
+
+
+
+
+<div class="code-editor is-vertical is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-1-text" class="code-editor-text" style="height: 250px;">LET page = DOCUMENT(&#34;https://www.w3schools.com/html/html_iframe.asp&#34;, {
+	driver: &#34;cdp&#34;
 })
 
 LET content = (
     FOR f IN page.frames
-        FILTER f.URL == "https://www.w3schools.com/html/default.asp"
+        FILTER f.URL == &#34;https://www.w3schools.com/html/default.asp&#34;
             RETURN f.head.innerHTML
 )
 
-RETURN FIRST(content)
+RETURN FIRST(content)</div>
+            </div>
 
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-1-result" class="code-editor-result" style="height: 250px;"></div>
             </div>
         </div>
-        <div class="column is-6">
-            <div id="code-editor-79-result" class="code-editor-result" style="height: 250px;"></div>
-        </div>
     </div>
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode) {
+            function createEditor(id, mode, useWorker) {
                 const editor = ace.edit(id);
                 editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
                 editor.session.setMode("ace/mode/" + mode);
                 editor.setOptions({
                     displayIndentGuides: false,
@@ -228,9 +276,9 @@ RETURN FIRST(content)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-79-run-button');
-            const textEditor = createEditor('code-editor-79-text', 'fql');
-            const resultEditor = createEditor('code-editor-79-result', 'json');
+            const btn = document.querySelector('#code-editor-1-run-button');
+            const textEditor = createEditor('code-editor-1-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-1-result', 'json', false);
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -252,6 +300,7 @@ RETURN FIRST(content)
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
+                resultEditor.resize();
             }
 
             btn.addEventListener('click', () => {
@@ -319,23 +368,34 @@ RETURN FIRST(content)
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-681-text" class="code-editor-text" style="height: 120px;">
-                
-LET blob = DOWNLOAD("https://raw.githubusercontent.com/MontFerret/ferret/master/assets/logo.png")
 
-RETURN IO::FS::WRITE("logo.png", blob)
 
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
             </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" style="height: 120px;">LET blob = DOWNLOAD(&#34;https://raw.githubusercontent.com/MontFerret/ferret/master/assets/logo.png&#34;)
+
+RETURN IO::FS::WRITE(&#34;logo.png&#34;, blob)</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-681-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
@@ -354,39 +414,50 @@ RETURN IO::FS::WRITE("logo.png", blob)
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-599-text" class="code-editor-text" style="height: 380px;">
-                
-package main
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.golang</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-2-text" class="code-editor-text" style="height: 380px;">package main
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"os"
-	"strings"
+	&#34;context&#34;
+	&#34;encoding/json&#34;
+	&#34;fmt&#34;
+	&#34;os&#34;
+	&#34;strings&#34;
 
-	"github.com/MontFerret/ferret/pkg/compiler"
-	"github.com/MontFerret/ferret/pkg/runtime/core"
-	"github.com/MontFerret/ferret/pkg/runtime/values"
-	"github.com/MontFerret/ferret/pkg/runtime/values/types"
+	&#34;github.com/MontFerret/ferret/pkg/compiler&#34;
+	&#34;github.com/MontFerret/ferret/pkg/runtime/core&#34;
+	&#34;github.com/MontFerret/ferret/pkg/runtime/values&#34;
+	&#34;github.com/MontFerret/ferret/pkg/runtime/values/types&#34;
 )
 
 func main() {
     c := compiler.New()
-    c.Namespace("IO").Namespace("FS").RegisterFunction("Read", fs.Read)
-}
-
-            </div>
+    c.Namespace(&#34;IO&#34;).Namespace(&#34;FS&#34;).RegisterFunction(&#34;Read&#34;, fs.Read)
+}</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-599-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-2-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
@@ -411,21 +482,32 @@ It automatically detects the output value type and deserializes them accordingly
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-353-text" class="code-editor-text" style="height: 90px;">
-                
-RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
             </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" style="height: 90px;">RETURN XPATH(page, &#34;//div[contains(@class, &#39;form-group&#39;)]&#34;)</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-353-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
@@ -443,21 +525,32 @@ RETURN XPATH(page, "//div[contains(@class, 'form-group')]")
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-493-text" class="code-editor-text" style="height: 90px;">
-                
-RETURN XPATH(page, "count(//div)")
 
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
             </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" style="height: 90px;">RETURN XPATH(page, &#34;count(//div)&#34;)</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-493-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
@@ -482,21 +575,32 @@ RETURN XPATH(page, "count(//div)")
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-271-text" class="code-editor-text" style="height: 90px;">
-                
-LET result = "foo" =~ "^f[o].$" // returns "true"
 
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
             </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" style="height: 90px;">LET result = &#34;foo&#34; =~ &#34;^f[o].$&#34; // returns &#34;true&#34;</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-271-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
@@ -514,21 +618,32 @@ LET result = "foo" =~ "^f[o].$" // returns "true"
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-958-text" class="code-editor-text" style="height: 90px;">
-                
-LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
             </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" style="height: 90px;">LET result = &#34;foo&#34; !~ &#34;[a-z]&#43;bar$&#34;  // returns &#34;true&#34;</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-958-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
@@ -548,27 +663,38 @@ LET result = "foo" !~ "[a-z]+bar$"  // returns "true"
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-975-text" class="code-editor-text" style="height: 185px;">
-                
-// Using document and selector
-INNER_HTML_SET(doc, "body", "<span>Hello</span>")
-INNER_TEXT_SET(doc, "body", "Hello")
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-7-text" class="code-editor-text" style="height: 185px;">// Using document and selector
+INNER_HTML_SET(doc, &#34;body&#34;, &#34;&lt;span&gt;Hello&lt;/span&gt;&#34;)
+INNER_TEXT_SET(doc, &#34;body&#34;, &#34;Hello&#34;)
 
 // Or an element directly
-INNER_HTML_SET(doc.body, "<span>Hello</span>")
-INNER_TEXT_SET(doc.body, "Hello")
-
-            </div>
+INNER_HTML_SET(doc.body, &#34;&lt;span&gt;Hello&lt;/span&gt;&#34;)
+INNER_TEXT_SET(doc.body, &#34;Hello&#34;)</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-975-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-7-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
@@ -588,27 +714,38 @@ INNER_TEXT_SET(doc.body, "Hello")
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-381-text" class="code-editor-text" style="height: 185px;">
-                
-LET doc = DOCUMENT(@url, {
-    driver: 'cdp',
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-8-text" class="code-editor-text" style="height: 185px;">LET doc = DOCUMENT(@url, {
+    driver: &#39;cdp&#39;,
     viewport: {
         width: 1920,
         height: 1080
     }
-})
-
-            </div>
+})</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-381-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-8-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
             editor.setOptions({
                 readOnly: true,
@@ -638,12 +775,24 @@ LET doc = DOCUMENT(@url, {
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-212-text" class="code-editor-text" style="height: 440px;">
-                
-type HTMLPage interface {
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.golang</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-9-text" class="code-editor-text" style="height: 440px;">type HTMLPage interface {
 	core.Value
 	core.Iterable
 	core.Getter
@@ -665,16 +814,15 @@ type HTMLPage interface {
 	Navigate(ctx context.Context, url values.String) error
 	NavigateBack(ctx context.Context, skip values.Int) (values.Boolean, error)
 	NavigateForward(ctx context.Context, skip values.Int) (values.Boolean, error)
-}
-
-            </div>
+}</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-212-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-9-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
@@ -696,25 +844,36 @@ type HTMLPage interface {
 
 
 
-<div class="code-editor">
-    <div class="columns">
-        <div class="column is-full">
-            <div id="code-203-text" class="code-editor-text" style="height: 150px;">
-                
-type Driver interface {
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.golang</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-10-text" class="code-editor-text" style="height: 150px;">type Driver interface {
 	io.Closer
 	Name() string
 	Open(ctx context.Context, params Params) (HTMLPage, error)
-}
-
-            </div>
+}</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-203-text');
-            editor.setTheme("ace/theme/tomorrow_night");
+            const editor = ace.edit('code-10-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
@@ -731,34 +890,41 @@ type Driver interface {
 <h2 id="other-1">Other</h2>
 <p>In the context of API stabilization and consistency, there are some other minor changes in vDOM elements like extra returned value (usually an error) or <code>Get</code> prefix in some methods.</p>
 
-            </div>
-        </div>
     </div>
 
-        </div><footer class="footer">
-    <div class="columns">
-        <div class="column is-4 is-hidden-mobile">
-            <p>
-                <a href="https://github.com/MontFerret">
-                    © 2018-2026 MontFerret Team
-                </a>
-            </p>
-            <p>
-                <a href="https://www.montferret.dev/blog/index.xml">RSS</a>
-            </p>
+    <nav class="blog-post-nav" aria-label="Blog navigation">
+        <a href="/blog/">← Back to blog</a>
+    </nav>
+</article>
+
+        </div><footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
         </div>
-        <div class="column is-4 has-text-centered">
-            <img src="/img/logo.png" width="30" height="30" />
-        </div>
-        <div class="column is-4 has-text-right is-hidden-mobile">
-            <a href="#">BACK TO TOP Δ</a>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+            <a class="site-footer-top" href="#top">Back to top △</a>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
     
-    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
+    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -767,6 +933,8 @@ type Driver interface {
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
 </footer>
 </body>
 </html>

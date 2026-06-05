@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Ferret</title>
+
+    <meta name="generator" content="Hugo 0.162.1">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png" />
+    <link
+        rel="apple-touch-icon"
+        sizes="114x114"
+        href="/favicon/apple-icon-114x114.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="120x120"
+        href="/favicon/apple-icon-120x120.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="144x144"
+        href="/favicon/apple-icon-144x144.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="152x152"
+        href="/favicon/apple-icon-152x152.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/favicon/apple-icon-180x180.png"
+    />
+    <link
+        rel="icon"
+        type="image/png"
+        sizes="192x192"
+        href="/favicon/android-icon-192x192.png"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/manifest.json" />
+    
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        if (window.location.hostname === 'localhost') {
+            console.log('Google Analytics is disabled on localhost');
+        } else {
+            console.log('Google Analytics is enabled');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135792752-1');
+        }
+    </script>
+</head>
+<body><nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
+            </a>
+
+            <button
+                id="navbar-burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
+                aria-label="menu"
+                aria-expanded="false"
+                aria-controls="primary-nav"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
+                
+                
+                
+                    
+                    
+                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
+                
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link active is-active"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
+                
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
+                
+            </div>
+
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
+                
+                
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
+                
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
+
+            el.classList.toggle("is-active");
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
+    })();
+</script>
+<div id="content">
+    <div class="docs">
+    <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Docs navigation">
+            <nav class="menu" aria-label="Section navigation">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="docs-nav-root">
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/" class="docs-nav-link docs-nav-link-top">
+                Getting Started
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
+        
+            <a href="https://www.ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top is-ancestor">
+                Language
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/language/overview/" class="docs-nav-link">
+                Overview
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/language/syntax/" class="docs-nav-link">
+                Syntax
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/language/types/" class="docs-nav-link">
+                Values and Types
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/language/parameters/" class="docs-nav-link">
+                Parameters
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/language/type-ordering/" class="docs-nav-link">
+                Type Ordering
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open is-current">
+        
+            <a href="https://www.ferretlang.org/docs/language/operators/" class="docs-nav-link is-active" aria-current="page">
+                Operators
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/language/variables/" class="docs-nav-link">
+                Variables
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/standard-library/" class="docs-nav-link docs-nav-link-top">
+                Standard Library
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/reference/" class="docs-nav-link docs-nav-link-top">
+                Reference
+            </a>
+        
+
+        
+    </li>
+
+
+        
+    </ul>
+
+
+</nav>
+
+        </aside>
+
+        <main id="main" class="docs-main">
+            <article class="docs-content">
+    
+
+
+<h1 id="operators">
+<a href="#operators">
+Operators
+</a>
+</h1>
+<p>FQL supports a number of operators that can be used in expressions. There are comparison, logical, arithmetic, and the ternary operator.</p>
+<div class="docs-section-card-grid">
+  <a class="docs-section-card" href="#comparison-operators">
+    <strong>Comparison Operators</strong>
+    <span>Compare values with equality, ordering, containment, pattern, and regex operators.</span>
+  </a>
+  <a class="docs-section-card" href="#array-comparison-operators">
+    <strong>Array Comparison Operators</strong>
+    <span>Apply ALL, ANY, and NONE across array values.</span>
+  </a>
+  <a class="docs-section-card" href="#logical-operators">
+    <strong>Logical Operators</strong>
+    <span>Use boolean and short-circuit forms with symbolic or word operators.</span>
+  </a>
+  <a class="docs-section-card" href="#arithmetic-operators">
+    <strong>Arithmetic Operators</strong>
+    <span>Work with numeric operations and implicit numeric conversion.</span>
+  </a>
+  <a class="docs-section-card" href="#ternary-operator">
+    <strong>Ternary Operator</strong>
+    <span>Choose values conditionally with full or shortcut ternary forms.</span>
+  </a>
+  <a class="docs-section-card" href="#range-operator">
+    <strong>Range Operator</strong>
+    <span>Create simple inclusive numeric ranges.</span>
+  </a>
+  <a class="docs-section-card" href="#operator-precedence">
+    <strong>Operator Precedence</strong>
+    <span>Check how Ferret groups operators in expressions.</span>
+  </a>
+</div>
+<p>
+
+
+<h2 id="comparison-operators">
+<a href="#comparison-operators">
+Comparison operators
+</a>
+</h2>
+Comparison (or relational) operators compare two operands. They can be used with any input data types, and will return a boolean result value.</p>
+<p>The following comparison operators are supported:</p>
+<ul>
+<li><code>==</code> equality</li>
+<li><code>!=</code> inequality</li>
+<li><code>&lt;</code> less than</li>
+<li><code>&lt;=</code> less or equal</li>
+<li><code>&gt;</code> greater than</li>
+<li><code>&gt;=</code> greater or equal</li>
+<li><code>IN</code> test if a value is contained in an array</li>
+<li><code>NOT IN</code> test if a value is not contained in an array</li>
+<li><code>LIKE</code> tests if a string value matches a pattern</li>
+<li><code>NOT LIKE</code> tests if a string value does not match a pattern</li>
+<li><code>=~</code> tests if a string value matches a regular expression</li>
+<li><code>!~</code> tests if a string value does not match a regular expression</li>
+</ul>
+<p>Each of the comparison operators returns a boolean value if the comparison can be evaluated and returns true if the comparison evaluates to true, and false otherwise.</p>
+<p>The comparison operators accept any data types for the first and second operands. However, <code>IN</code> and <code>NOT IN</code> will only return a meaningful result if their right-hand operand is an array, and <code>LIKE</code> will only execute if both operands are string values. The comparison operators will not perform any implicit type casts if the compared operands have different or non-sensible types.</p>
+<p>Some examples for comparison operations in FQL:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" style="height: 310px;">0 == NONE                 // false
+1 &gt; 0                     // true
+true != NONE              // true
+45 &lt;= &#34;yikes!&#34;            // true
+65 != &#34;65&#34;                // true
+65 == 65                  // true
+1.23 &gt; 1.32               // false
+1.5 IN [ 2, 3, 1.5 ]      // true
+&#34;foo&#34; IN NONE             // false
+42 NOT IN [ 17, 40, 50 ]  // true
+&#34;abc&#34; == &#34;abc&#34;            // true
+&#34;abc&#34; == &#34;ABC&#34;            // false
+&#34;foo&#34; LIKE &#34;f*&#34;           // true
+&#34;foo&#34;  NOT LIKE  &#34;f*&#34;      // false
+&#34;foo&#34; =~ &#34;^f[o].$&#34;        // true
+&#34;foo&#34; !~ &#34;[a-z]&#43;bar$&#34;     // true</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>The <code>LIKE</code> operator checks whether its left operand matches the pattern specified in its right operand. The pattern can consist of wildcards. The list of supported wildcards can be found <a href="http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm">here</a>.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-2-text" class="code-editor-text" style="height: 120px;">&#34;abc&#34; LIKE &#34;a*&#34;              // true
+&#34;abc&#34; LIKE &#34;?bc&#34;             // true</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-2-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>The pattern matching performed by the <code>LIKE</code> operator is case-sensitive.</p>
+<p>The <code>NOT LIKE</code> operator has the same characteristics as the <code>LIKE</code> operator but with the result negated.</p>
+<p>
+
+
+<h3 id="array-comparison-operators">
+<a href="#array-comparison-operators">
+Array comparison operators
+</a>
+</h3>
+The comparison operators also exist as array variant. In the array variant, the operator is prefixed with one of the keywords <code>ALL</code>, <code>ANY</code> or <code>NONE</code>. Using one of these keywords changes the operator behavior to execute the comparison operation for all, any, or none of its left hand argument values. It is therefore expected that the left hand argument of an array operator is an array.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" style="height: 360px;">[ 1, 2, 3 ] ALL IN [ 2, 3, 4 ]   // false
+[ 1, 2, 3 ] ALL IN [ 1, 2, 3 ]   // true
+[ 1, 2, 3 ] NONE IN [ 3 ]        // false
+[ 1, 2, 3 ] NONE IN [ 23, 42 ]   // true
+[ 1, 2, 3 ] ANY IN [ 4, 5, 6 ]   // false
+[ 1, 2, 3 ] ANY IN [ 1, 42 ]     // true
+[ 1, 2, 3 ] ANY == 2             // true
+[ 1, 2, 3 ] ANY == 4             // false
+[ 1, 2, 3 ] ANY &gt; 0              // true
+[ 1, 2, 3 ] ANY &lt;= 1             // true
+[ 1, 2, 3 ] NONE &lt; 99            // false
+[ 1, 2, 3 ] NONE &gt; 10            // true
+[ 1, 2, 3 ] ALL &gt; 2              // false
+[ 1, 2, 3 ] ALL &gt; 0              // true
+[ 1, 2, 3 ] ALL &gt;= 3             // false
+[&#34;foo&#34;, &#34;bar&#34;] ALL != &#34;moo&#34;      // true
+[&#34;foo&#34;, &#34;bar&#34;] NONE == &#34;bar&#34;     // false
+[&#34;foo&#34;, &#34;bar&#34;] ANY == &#34;foo&#34;      // true</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>
+
+
+<h2 id="logical-operators">
+<a href="#logical-operators">
+Logical operators
+</a>
+</h2>
+The following logical operators are supported in FQL:</p>
+<ul>
+<li><code>&amp;&amp;</code> logical and operator</li>
+<li><code>||</code> logical or operator</li>
+<li><code>!</code> logical not/negation operator</li>
+</ul>
+<p>FQL also supports the following alternative forms for the logical operators:</p>
+<ul>
+<li><code>AND</code> logical and operator</li>
+<li><code>OR</code> logical or operator</li>
+<li><code>NOT</code> logical not/negation operator</li>
+</ul>
+<p>The alternative forms are aliases and functionally equivalent to the regular operators.</p>
+<p>The two-operand logical operators in FQL will be executed with short-circuit evaluation (except if one of the operands is or includes a subquery. In this case the subquery will be pulled out an evaluated before the logical operator).</p>
+<p>The result of the logical operators in FQL is defined as follows:</p>
+<ul>
+<li><code>lhs &amp;&amp; rhs</code> will return <code>lhs</code> if it is <code>false</code> or would be <code>false</code> when converted into a boolean. If <code>lhs</code> is <code>true</code> or would be <code>true</code> when converted to a boolean, <code>rhs</code> will be returned.</li>
+<li><code>lhs || rhs</code> will return <code>lhs</code> if it is <code>true</code> or would be <code>true</code> when converted into a boolean. If <code>lhs</code> is <code>false</code> or would be <code>false</code> when converted to a boolean, <code>rhs</code> will be returned.</li>
+<li><code>! value</code> will return the negated value of value converted into a boolean</li>
+</ul>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" style="height: 130px;">u.age &gt; 15 &amp;&amp; u.address.city != &#34;&#34;
+true || false
+NOT u.isInvalid
+1 || ! 0</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>Passing non-boolean values to a logical operator is allowed. Any non-boolean operands will be casted to boolean implicitly by the operator, without making the query abort.</p>
+<p>The conversion to a boolean value works as follows:</p>
+<ul>
+<li><code>NONE</code> will be converted to <code>false</code></li>
+<li>boolean values remain unchanged</li>
+<li>all numbers unequal to zero are <code>true</code>, zero is <code>false</code></li>
+<li>an empty string is <code>false</code>, all other strings are <code>true</code></li>
+<li>arrays, objects, binary and custom types are <code>true</code>, regardless of their contents</li>
+</ul>
+<p>The result of <em>logical and</em> and <em>logical or</em> operations can now have any data type and is not necessarily a boolean value.</p>
+<p>For example, the following logical operations will return boolean values:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" style="height: 120px;">25 &gt; 1 &amp;&amp; 42 != 7                          // true
+22 IN [ 23, 42 ] || 23 NOT IN [ 22, 7 ]    // true
+25 != 25                                   // false</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>whereas the following logical operations will not return boolean values:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" style="height: 135px;">1 || 7                                     // 1
+NONE || &#34;foo&#34;                              // &#34;foo&#34;
+NONE &amp;&amp; true                               // NONE
+true &amp;&amp; 23                                 // 23</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>
+
+
+<h2 id="arithmetic-operators">
+<a href="#arithmetic-operators">
+Arithmetic operators
+</a>
+</h2>
+Arithmetic operators perform an arithmetic operation on two numeric operands. The result of an arithmetic operation is again a numeric value.</p>
+<p>FQL supports the following arithmetic operators:</p>
+<ul>
+<li><code>+</code> addition</li>
+<li><code>-</code> subtraction</li>
+<li><code>*</code> multiplication</li>
+<li><code>/</code> division</li>
+<li><code>%</code> modulus</li>
+</ul>
+<p>Unary plus and unary minus are supported as well:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-7-text" class="code-editor-text" style="height: 135px;">LET x = -5
+LET y = 1
+RETURN [-x, &#43;y]
+// [5, 1]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-7-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>For exponentiation, there is a numeric function POW(). The syntax base ** exp is not supported.</p>
+<p>Some example arithmetic operations:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-8-text" class="code-editor-text" style="height: 180px;">1 &#43; 1
+33 - 99
+12.4 * 4.5
+13.0 / 0.1
+23 % 7
+-15
+&#43;9.99</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-8-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>The arithmetic operators accept operands of any type. Passing non-numeric values to an arithmetic operator will cast the operands to numbers:</p>
+<ul>
+<li><code>NONE</code> will be converted to <code>0</code></li>
+<li><code>false</code> will be converted to <code>0</code>, <code>true</code> will be converted to <code>1</code></li>
+<li>a valid numeric value remains unchanged, but <code>NaN</code> and Infinity will be converted to <code>0</code></li>
+<li>string values are converted to a number if they contain a valid string representation of a number. Any whitespace at the start or the end of the string is ignored. Strings with any other contents are converted to the number <code>0</code></li>
+<li>an empty array is converted to <code>0</code>, an array with one member is converted to the numeric representation of its sole member. Arrays with more members are converted to the number <code>0</code>.</li>
+<li>objects, binary and custom types are converted to the number <code>0</code>.</li>
+</ul>
+<p>Here are a few examples:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-9-text" class="code-editor-text" style="height: 280px;">1 &#43; &#34;a&#34;                 // 1
+1 &#43; &#34;99&#34;                // 100
+1 &#43; NONE                // 1
+NONE &#43; 1                // 1
+3 &#43; [ ]                 // 3
+24 &#43; [ 2 ]              // 26
+24 &#43; [ 2, 4 ]           // 0
+25 - NONE               // 25
+17 - true               // 16
+23 * { }                // 0
+5 * [ 7 ]               // 35
+24 / &#34;12&#34;               // 2
+1 / 0                   // 0</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-9-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>
+
+
+<h2 id="ternary-operator">
+<a href="#ternary-operator">
+Ternary operator
+</a>
+</h2>
+FQL also supports a ternary operator that can be used for conditional evaluation. The ternary operator expects a boolean condition as its first operand, and it returns the result of the second operand if the condition evaluates to true, and the third operand otherwise.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-10-text" class="code-editor-text" style="height: 80px;">u.age &gt; 15 || u.active == true ? u.userId : null</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-10-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>There is also a shortcut variant of the ternary operator with just two operands. This variant can be used when the expression for the boolean condition and the return value should be the same:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-11-text" class="code-editor-text" style="height: 80px;">u.value ? : &#39;value is null, 0 or not present&#39;</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-11-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>
+
+
+<h2 id="range-operator">
+<a href="#range-operator">
+Range operator
+</a>
+</h2>
+FQL supports expressing simple numeric ranges with the <code>..</code> operator. This operator can be used to easily iterate over a sequence of numeric values.</p>
+<p>The <code>..</code> operator will produce an array of the integer values in the defined range, with both bounding values included.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-12-text" class="code-editor-text" style="height: 80px;">2010..2013</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-12-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>will produce the following result:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-13-text" class="code-editor-text" style="height: 80px;">[ 2010, 2011, 2012, 2013 ]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-13-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>
+
+
+<h2 id="operator-precedence">
+<a href="#operator-precedence">
+Operator precedence
+</a>
+</h2>
+The operator precedence in FQL is similar as in other familiar languages (lowest precedence first):</p>
+<ul>
+<li><code>? :</code> ternary operator</li>
+<li><code>||</code> logical or</li>
+<li><code>&amp;&amp;</code> logical and</li>
+<li><code>==</code>, <code>!=</code> equality and inequality</li>
+<li><code>IN</code> in operator</li>
+<li><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&gt;</code> less than, less equal, greater equal, greater than</li>
+<li><code>+</code>, <code>-</code> addition, subtraction</li>
+<li><code>*</code>, <code>/</code>, <code>%</code> multiplication, division, modulus</li>
+<li><code>!</code>, <code>+</code>, <code>-</code> logical negation, unary plus, unary minus</li>
+<li><code>()</code> function call</li>
+<li><code>.</code> member access</li>
+<li><code>[]</code> indexed value access</li>
+</ul>
+<p>The parentheses <code>(</code> and <code>)</code> can be used to enforce a different operator evaluation order.</p>
+
+</article>
+
+        </main>
+
+        <aside class="docs-toc" aria-label="On this page">
+    <div class="docs-toc-title">On this page</div>
+    <nav class="docs-toc-menu">
+        <ul><li>
+                    <a href="#comparison">COMPARISON</a>
+                </li><li>
+                    <a href="#array-comparison">ARRAY COMPARISON</a>
+                </li><li>
+                    <a href="#logical">LOGICAL</a>
+                </li><li>
+                    <a href="#arithmetic">ARITHMETIC</a>
+                </li><li>
+                    <a href="#ternary">TERNARY</a>
+                </li><li>
+                    <a href="#range">RANGE</a>
+                </li><li>
+                    <a href="#precedence">PRECEDENCE</a>
+                </li>
+        </ul>
+    </nav>
+</aside>
+    </div>
+</div>
+
+
+        </div><footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
+        </div>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+            <a class="site-footer-top" href="#top">Back to top △</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
+</footer>
+</body>
+</html>

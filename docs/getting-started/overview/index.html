@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Ferret</title>
+
+    <meta name="generator" content="Hugo 0.162.1">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png" />
+    <link
+        rel="apple-touch-icon"
+        sizes="114x114"
+        href="/favicon/apple-icon-114x114.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="120x120"
+        href="/favicon/apple-icon-120x120.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="144x144"
+        href="/favicon/apple-icon-144x144.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="152x152"
+        href="/favicon/apple-icon-152x152.png"
+    />
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/favicon/apple-icon-180x180.png"
+    />
+    <link
+        rel="icon"
+        type="image/png"
+        sizes="192x192"
+        href="/favicon/android-icon-192x192.png"
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/manifest.json" />
+    
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        if (window.location.hostname === 'localhost') {
+            console.log('Google Analytics is disabled on localhost');
+        } else {
+            console.log('Google Analytics is enabled');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135792752-1');
+        }
+    </script>
+</head>
+<body><nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
+            </a>
+
+            <button
+                id="navbar-burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
+                aria-label="menu"
+                aria-expanded="false"
+                aria-controls="primary-nav"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
+                
+                
+                
+                    
+                    
+                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
+                
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link active is-active"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
+                
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
+                
+            </div>
+
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
+                
+                
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
+                
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
+
+            el.classList.toggle("is-active");
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
+    })();
+</script>
+<div id="content">
+    <div class="docs">
+    <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Docs navigation">
+            <nav class="menu" aria-label="Section navigation">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="docs-nav-root">
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/" class="docs-nav-link docs-nav-link-top is-ancestor">
+                Getting Started
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/overview/" class="docs-nav-link is-active" aria-current="page">
+                Overview
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/installation/" class="docs-nav-link">
+                Installation
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://www.ferretlang.org/docs/getting-started/quick-start/" class="docs-nav-link">
+                Quick Start
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top">
+                Language
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/standard-library/" class="docs-nav-link docs-nav-link-top">
+                Standard Library
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://www.ferretlang.org/docs/reference/" class="docs-nav-link docs-nav-link-top">
+                Reference
+            </a>
+        
+
+        
+    </li>
+
+
+        
+    </ul>
+
+
+</nav>
+
+        </aside>
+
+        <main id="main" class="docs-main">
+            <article class="docs-content">
+    <h1 id="overview">Overview</h1>
+<p>Ferret is a programmable data extraction and automation engine for developers.
+It provides a small declarative language, an embeddable runtime, and an extensible execution model for querying, transforming, and automating data from websites, documents, APIs, and application-defined sources.
+Ferret is especially useful when data lives behind messy HTML, browser interactions, inconsistent external systems, or configuration-driven workflows that need more structure than ad-hoc scripts.
+At a high level, Ferret helps you describe:</p>
+<ul>
+<li>where data comes from</li>
+<li>how to query it</li>
+<li>how to wait for it</li>
+<li>how to transform it</li>
+<li>how to return clean structured output
+Ferret can be used as a command-line tool, embedded into Go applications, extended with modules, or used as a small domain-specific language for configuration-driven systems.</li>
+</ul>
+<h2 id="what-ferret-is">What Ferret is</h2>
+<p>Ferret is built around FQL, a declarative language designed for data extraction, transformation, and automation workflows.
+Instead of writing large amounts of imperative glue code, Ferret lets you describe the shape of the data you want and the operations needed to get it.
+A Ferret program can query a document, interact with a browser-backed value, transform arrays and objects, call host-provided functions, and return structured data that can be consumed by another system.
+Ferret is not limited to HTML scraping.</p>
+<p>The web is one important use case, but the language is designed around a broader idea: values expose capabilities, and the runtime uses those capabilities to decide what operations are available.
+That means the same language can work with different kinds of inputs, as long as those inputs provide the capabilities the script needs.</p>
+<h2 id="what-you-can-build-with-ferret">What you can build with Ferret</h2>
+<p>Ferret can be used for many kinds of targeted data workflows:</p>
+<ul>
+<li>extracting structured data from websites</li>
+<li>querying HTML, JSON, XML, CSV, and other document-like data</li>
+<li>automating browser-driven workflows</li>
+<li>waiting for dynamic content, events, or changing values</li>
+<li>normalizing external data into predictable structures</li>
+<li>embedding user-defined extraction rules into Go applications</li>
+<li>evaluating filters, mappings, and expressions in configuration-driven systems</li>
+<li>testing API responses, HTML pages, and browser-driven user interfaces</li>
+<li>validating that external systems return expected structured data</li>
+<li>writing repeatable workflow checks for dynamic pages or application states</li>
+<li>and more!</li>
+</ul>
+<p>Ferret can power scraping and data collection workflows, including workflows that collect unstructured data. Its main focus, however, is not raw scale for its own sake. Ferret is designed to make extraction logic explicit, repeatable, testable, and easy to embed into developer workflows.</p>
+<h2 id="a-first-look-at-fql">A first look at FQL</h2>
+<p>A Ferret script usually follows a simple pattern:</p>
+<ol>
+<li>load or receive some input</li>
+<li>query the input</li>
+<li>transform the result</li>
+<li>return structured data
+For example, a script might query product cards from a document and return a normalized list of objects:</li>
+</ol>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" style="height: 160px;">LET products = doc[~ css`.product-card`]
+FOR product IN products
+    RETURN {
+        name: product[~ css`.product-title`],
+        price: product[~ css`.price`],
+        url: product[~ css`a`]
+    }</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>The exact source of doc depends on how Ferret is being used. It may come from a browser driver, a document loader, an embedded Go application, a test runner, or another runtime integration.</p>
+<p>The important idea is that the script focuses on the extraction logic, while the host environment provides the values, functions, modules, and capabilities available at runtime.</p>
+<h2 id="the-core-mental-model">The core mental model</h2>
+<p>Ferret has a few core concepts that appear throughout the documentation.</p>
+<h3 id="scripts">Scripts</h3>
+<p>Ferret programs are written in FQL.</p>
+<p>A script describes how to query, transform, automate, and return data. Scripts can be run from the CLI, executed by a test runner, or embedded inside another application.</p>
+<h3 id="values">Values</h3>
+<p>Ferret works with runtime values such as strings, numbers, booleans, arrays, objects, documents, elements, and module-defined values.</p>
+<p>Some values are simple data. Others may expose behavior through capabilities.</p>
+<p>For example, a plain object can be transformed. A document can be queried. A browser-backed element may support both querying and dispatching events.</p>
+<h3 id="capabilities">Capabilities</h3>
+<p>Capabilities are one of the central ideas in Ferret.</p>
+<p>Instead of hard-coding every possible operation into the language, Ferret lets runtime values expose specific capabilities.</p>
+<p>For example:</p>
+<ul>
+<li>a queryable value can be queried</li>
+<li>a dispatchable value can receive events or actions</li>
+<li>a readable value can provide data</li>
+<li>a module-defined value can expose domain-specific behavior</li>
+</ul>
+<p>This keeps the core language small while allowing Ferret to support different data sources, document types, protocols, and runtime integrations.</p>
+<h3 id="modules-and-drivers">Modules and drivers</h3>
+<p>Ferret can be extended through modules and drivers.</p>
+<p>Modules can add functions, data formats, protocols, integrations, or new runtime behavior. Drivers can provide capabilities for specific environments, such as HTML documents or browser-controlled pages.</p>
+<p>This means Ferret’s language does not need special syntax for every external system. Instead, external systems can be exposed through values, functions, and capabilities.</p>
+<h2 id="ways-to-use-ferret">Ways to use Ferret</h2>
+<p>Ferret can be used in several different modes.</p>
+<h3 id="as-a-cli-tool">As a CLI tool</h3>
+<p>Ferret can be used from the command line to run scripts, format code, inspect programs, and work with local extraction workflows.</p>
+<p>This is the simplest way to start using Ferret.</p>
+<h3 id="as-an-embedded-runtime">As an embedded runtime</h3>
+<p>Ferret can be embedded into Go applications.</p>
+<p>In this mode, the host application provides input values, parameters, functions, modules, and runtime capabilities. Ferret provides the execution engine and the language used to describe the logic.</p>
+<p>This is useful when extraction or transformation logic needs to be configurable, versioned, or provided outside the main application code.</p>
+<h3 id="as-an-expression-engine">As an expression engine</h3>
+<p>Ferret can also be used as a small DSL for configuration-driven applications.</p>
+<p>Instead of hard-coding every filter, rule, mapping, or transformation in Go, an application can evaluate Ferret expressions or scripts at runtime.</p>
+<p>This is useful for systems that need user-defined or configuration-defined behavior, such as:</p>
+<ul>
+<li>filtering records</li>
+<li>mapping external data into internal structures</li>
+<li>defining extraction rules</li>
+<li>evaluating lightweight business rules</li>
+<li>transforming API responses</li>
+<li>configuring pipeline steps</li>
+<li>describing application-specific automation logic</li>
+</ul>
+<p>In this mode, the host application remains in control. It decides which functions are available, which values are passed into the script, which modules are loaded, and which capabilities the script can use.</p>
+<h3 id="as-part-of-a-larger-workflow">As part of a larger workflow</h3>
+<p>Ferret can also be used as one piece of a larger system.</p>
+<p>For example, Ferret can extract and shape data, while another system handles storage, analytics, machine learning, reporting, or orchestration.</p>
+<p>Ferret is designed to complement general-purpose languages and data tools, not replace them.</p>
+<h2 id="what-ferret-is-not">What Ferret is not</h2>
+<p>Ferret is not a general-purpose programming language replacement.</p>
+<p>It is not intended to replace Go, Python, JavaScript, or other languages used to build full applications.</p>
+<p>Ferret is also not a massive web crawler for downloading the internet. Its focus is targeted, precise, repeatable extraction and automation.</p>
+<p>Ferret is not limited to web scraping either. HTML and browser automation are important parts of the ecosystem, but Ferret’s core model is broader: querying, transforming, and automating capable values through a small declarative language.</p>
+<h2 id="the-ferret-ecosystem">The Ferret ecosystem</h2>
+<p>Ferret is more than a single executable.</p>
+<p>The ecosystem includes:</p>
+<ul>
+<li>the Ferret language and runtime</li>
+<li>the Ferret CLI</li>
+<li>standard library functions</li>
+<li>optional modules and drivers</li>
+<li>embedding APIs for Go applications</li>
+<li>Lab, a test runner for Ferret scripts</li>
+<li>Mockery, a safe fake website for demos, examples, and driver testing</li>
+</ul>
+<p>These pieces are designed to work together while keeping the core language and runtime small.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.</p>
+<div class="docs-card-grid"><a class="docs-card" href="/docs/getting-started/installation/">
+        <span class="docs-card-kicker">Setup</span>
+        <strong>Install Ferret</strong>
+        <span>Install the CLI or add Ferret to a Go application.</span>
+    </a><a class="docs-card" href="/docs/getting-started/quick-start/">
+        <span class="docs-card-kicker">Try</span>
+        <strong>Run your first script</strong>
+        <span>Execute a Ferret script against static or dynamic content.</span>
+    </a><a class="docs-card" href="/docs/language/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Learn the language basics</strong>
+        <span>Understand variables, expressions, collections, control flow, and functions.</span>
+    </a><a class="docs-card" href="">
+        <span class="docs-card-kicker">Extract</span>
+        <strong>Query document data</strong>
+        <span>Work with HTML, XML, JSON, and other document-like data.</span>
+    </a><a class="docs-card" href="/docs/dynamic-pages/">
+        <span class="docs-card-kicker">Browse</span>
+        <strong>Work with dynamic pages</strong>
+        <span>Wait for content, react to page state, and automate browser interactions.</span>
+    </a><a class="docs-card" href="">
+        <span class="docs-card-kicker">Go library</span>
+        <strong>Embed Ferret in Go</strong>
+        <span>Add Ferret to your application and register the capabilities you need.</span>
+    </a><a class="docs-card" href="/docs/tools/lab/">
+        <span class="docs-card-kicker">Test</span>
+        <strong>Use Lab</strong>
+        <span>Run Ferret test suites against local, HTTP, and browser-backed runtimes.</span>
+    </a><a class="docs-card" href="/docs/tools/worker/">
+        <span class="docs-card-kicker">Deploy</span>
+        <strong>Run Ferret Worker</strong>
+        <span>Deploy Ferret as a long-running service for remote execution and automation workflows.</span>
+    </a>
+</div>
+
+
+</article>
+
+        </main>
+
+        <aside class="docs-toc" aria-label="On this page">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-ferret-is">What Ferret is</a></li>
+    <li><a href="#what-you-can-build-with-ferret">What you can build with Ferret</a></li>
+    <li><a href="#a-first-look-at-fql">A first look at FQL</a></li>
+    <li><a href="#the-core-mental-model">The core mental model</a>
+      <ul>
+        <li><a href="#scripts">Scripts</a></li>
+        <li><a href="#values">Values</a></li>
+        <li><a href="#capabilities">Capabilities</a></li>
+        <li><a href="#modules-and-drivers">Modules and drivers</a></li>
+      </ul>
+    </li>
+    <li><a href="#ways-to-use-ferret">Ways to use Ferret</a>
+      <ul>
+        <li><a href="#as-a-cli-tool">As a CLI tool</a></li>
+        <li><a href="#as-an-embedded-runtime">As an embedded runtime</a></li>
+        <li><a href="#as-an-expression-engine">As an expression engine</a></li>
+        <li><a href="#as-part-of-a-larger-workflow">As part of a larger workflow</a></li>
+      </ul>
+    </li>
+    <li><a href="#what-ferret-is-not">What Ferret is not</a></li>
+    <li><a href="#the-ferret-ecosystem">The Ferret ecosystem</a></li>
+    <li><a href="#where-to-go-next">Where to go next</a></li>
+  </ul>
+</nav>
+</aside>
+    </div>
+</div>
+
+
+        </div><footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
+        </div>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+            <a class="site-footer-top" href="#top">Back to top △</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
+</footer>
+</body>
+</html>

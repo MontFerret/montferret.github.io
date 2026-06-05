@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.162.1">
 
     <link
-        href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet"
     />
 
     
-    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.17ed29bf1daeec53da854869c780218bf0eb5b49eeffcf3d0a114e9fac4a35df.css" />
+    <link rel="stylesheet" href="https://www.ferretlang.org/sass/main.min.b6274c8e064afdffeb87759f850eed1ac07728186d952c9a8ab65442c58f8e9e.css" />
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png" />
@@ -60,76 +60,84 @@
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-135792752-1');
+        if (window.location.hostname === 'localhost') {
+            console.log('Google Analytics is disabled on localhost');
+        } else {
+            console.log('Google Analytics is enabled');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135792752-1');
+        }
     </script>
 </head>
-<body><nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="container">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-                <img src="/img/logo.png" width="30" height="30" /> <small class="logo">ferret</small>
+<body><nav class="navbar site-navbar" role="navigation" aria-label="main navigation">
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
             </a>
 
-            <a
+            <button
                 id="navbar-burger"
-                role="button"
-                class="navbar-burger burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
                 aria-label="menu"
                 aria-expanded="false"
+                aria-controls="primary-nav"
                 data-target="primary-nav"
             >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
-            </a>
+            </button>
         </div>
-        
-        <div id="primary-nav" class="navbar-menu">
-            <div class="navbar-start">
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
                 
                 
                 
-                        
-                        <a href="/try/" class="navbar-item "
-                        title=Try&#32;it id=repl>
-                            Try it
-                        </a>
+                    
+                    
+                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
                 
-                        
-                        <a href="/docs/introduction" class="navbar-item "
-                        title=Project&#32;documentation id=docs>
-                            Docs
-                        </a>
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
                 
-                        
-                        <a href="/blog/" class="navbar-item  active"
-                        title=Blog id=blog>
-                            Blog
-                        </a>
-                
-                        
-                        <a href="/cookbook/google-search" class="navbar-item "
-                        title=Cookbook id=cookbook>
-                            Cookbook
-                        </a>
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link active is-active"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
                 
             </div>
 
-            <div class="navbar-end">
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
                 
                 
-                        <a href="https://opencollective.com/ferret" class="navbar-item "
-                        title=Open&#32;collective id=donate>
-                            Donate
-                        </a>
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
                 
-                        <a href="https://github.com/MontFerret/ferret" class="navbar-item "
-                        title=GitHub&#32;repository id=github>
-                            GitHub
-                        </a>
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
                 
             </div>
         </div>
@@ -137,36 +145,51 @@
 </nav>
 
 <script>
-    
-    
     (function(){
         let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
         navburger.addEventListener("click", function() {
             let target = this.getAttribute("data-target");
             let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
 
             el.classList.toggle("is-active");
-        })
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
     })();
-</script><div id="content">
-    <div class="content section blog blog-post">
-        <div class="columns is-centered blog-post-header has-text-centered">
-            <div class="column is-10">
-                <p class="title is-2">
-                    Say &#39;Hello&#39; to Ferret
-                </p>
-                <p class="subtitle is-4">
-                        A modern web scraping tool
-                    </p>
-                <p class="subtitle is-6 has-text-grey">
-                    <span>February 8, 2019</span> by <a href="https://www.twitter.com/ziflex">Tim Voronov</a>
-                </p>
-                <hr class="is-block-centered" />
-            </div>
+</script>
+<div id="content">
+<article class="blog-post">
+    <header class="blog-post-header">
+        <div class="blog-post-header-inner">
+            <p class="blog-post-kicker">Ferret Blog</p>
+
+            <h1 class="title is-2">
+                Say &#39;Hello&#39; to Ferret
+            </h1>
+
+            
+            <p class="subtitle is-4">
+                A modern web scraping tool
+            </p>
+            
+
+            <p class="blog-post-meta">
+                <span>February 8, 2019</span>
+                <span aria-hidden="true">/</span>
+                <span>by <a href="https://www.twitter.com/ziflex">Tim Voronov</a></span>
+            </p>
         </div>
-        <div class="columns is-centered blog-post-content has-text-justified">
-            <div class="column is-8">
-                <p>As a developer, you&rsquo;ve probably created a couple of web scrapers to get some data from the Internet during your career. That data could be images for an AI project or hotel prices from booking websites for a new travel mobile app or something else. But something that needs data.</p>
+    </header>
+
+    <div class="blog-post-content">
+        <p>As a developer, you&rsquo;ve probably created a couple of web scrapers to get some data from the Internet during your career. That data could be images for an AI project or hotel prices from booking websites for a new travel mobile app or something else. But something that needs data.</p>
 <p>It&rsquo;s a relatively easy task to write one or two web scrapers if the amount of required data is small. But it&rsquo;s a completely different level of complexity when you need to scrape big amount of data and, moreover, do it frequently.</p>
 <p>This is what happened to me. A while ago, I started a side project which was heavily data driven. The project required to gather data about cosmetological brands and its products, the ingredients of these products and their effect on human&rsquo;s skin. Not huge, but pretty large data set.
 The first impulse was to write bunch of scrapers using some scraping framework. And this is what was done. After a while, I started facing with issues I&rsquo;m going to talk about next and came up with a solution you will see after.</p>
@@ -207,39 +230,64 @@ So, I started looking a for a tool that would solve the issues for me, but unfor
 
 
 
-<div class="code-editor">
 
-    
 
-    <button id="code-editor-92-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
-    <div class="columns">
-        <div class="column is-6">
-            <div id="code-editor-92-text" class="code-editor-text" style="height: 220px;">
-                
-LET page = DOCUMENT("https://github.com/trending")
 
-FOR row IN ELEMENTS(page, ".Box-row")
-    LET nameEl = ELEMENT(row, "h1 a")
-    LET descEl = ELEMENT(row, "p")
-    LET name = TRIM(nameEl.innerText)
-    LET description = TRIM(descEl ? descEl.innerText : "")
 
-    RETURN { name, description }
 
+
+
+<div class="code-editor is-vertical is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
             </div>
         </div>
-        <div class="column is-6">
-            <div id="code-editor-92-result" class="code-editor-result" style="height: 220px;"></div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-1-text" class="code-editor-text" style="height: 220px;">LET page = DOCUMENT(&#34;https://github.com/trending&#34;)
+
+FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
+    LET nameEl = ELEMENT(row, &#34;h1 a&#34;)
+    LET descEl = ELEMENT(row, &#34;p&#34;)
+    LET name = TRIM(nameEl.innerText)
+    LET description = TRIM(descEl ? descEl.innerText : &#34;&#34;)
+
+    RETURN { name, description }</div>
+            </div>
+
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-1-result" class="code-editor-result" style="height: 220px;"></div>
+            </div>
         </div>
     </div>
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode) {
+            function createEditor(id, mode, useWorker) {
                 const editor = ace.edit(id);
                 editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
                 editor.session.setMode("ace/mode/" + mode);
                 editor.setOptions({
                     displayIndentGuides: false,
@@ -249,9 +297,9 @@ FOR row IN ELEMENTS(page, ".Box-row")
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-92-run-button');
-            const textEditor = createEditor('code-editor-92-text', 'fql');
-            const resultEditor = createEditor('code-editor-92-result', 'json');
+            const btn = document.querySelector('#code-editor-1-run-button');
+            const textEditor = createEditor('code-editor-1-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-1-result', 'json', false);
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -273,6 +321,7 @@ FOR row IN ELEMENTS(page, ".Box-row")
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
+                resultEditor.resize();
             }
 
             btn.addEventListener('click', () => {
@@ -349,38 +398,63 @@ FOR row IN ELEMENTS(page, ".Box-row")
 
 
 
-<div class="code-editor">
 
-    
 
-    <button id="code-editor-837-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
-    <div class="columns">
-        <div class="column is-6">
-            <div id="code-editor-837-text" class="code-editor-text" style="height: 200px;">
-                
-LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
-LET tracks = ELEMENTS(doc, ".chartTrack__details")
+
+
+
+
+
+<div class="code-editor is-vertical is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-2-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-2-text" class="code-editor-text" style="height: 200px;">LET doc = DOCUMENT(&#34;https://soundcloud.com/charts/top&#34;) 
+LET tracks = ELEMENTS(doc, &#34;.chartTrack__details&#34;)
 
 FOR track IN tracks
     RETURN {
-        artist: TRIM(INNER_TEXT(track, ".chartTrack__username")),
-        track: TRIM(INNER_TEXT(track, ".chartTrack__title"))
-    }
+        artist: TRIM(INNER_TEXT(track, &#34;.chartTrack__username&#34;)),
+        track: TRIM(INNER_TEXT(track, &#34;.chartTrack__title&#34;))
+    }</div>
+            </div>
 
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-2-result" class="code-editor-result" style="height: 200px;"></div>
             </div>
         </div>
-        <div class="column is-6">
-            <div id="code-editor-837-result" class="code-editor-result" style="height: 200px;"></div>
-        </div>
     </div>
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode) {
+            function createEditor(id, mode, useWorker) {
                 const editor = ace.edit(id);
                 editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
                 editor.session.setMode("ace/mode/" + mode);
                 editor.setOptions({
                     displayIndentGuides: false,
@@ -390,9 +464,9 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-837-run-button');
-            const textEditor = createEditor('code-editor-837-text', 'fql');
-            const resultEditor = createEditor('code-editor-837-result', 'json');
+            const btn = document.querySelector('#code-editor-2-run-button');
+            const textEditor = createEditor('code-editor-2-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-2-result', 'json', false);
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -414,6 +488,7 @@ FOR track IN tracks
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
+                resultEditor.resize();
             }
 
             btn.addEventListener('click', () => {
@@ -484,41 +559,66 @@ FOR track IN tracks
 
 
 
-<div class="code-editor">
 
-    
 
-    <button id="code-editor-388-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
-    <div class="columns">
-        <div class="column is-6">
-            <div id="code-editor-388-text" class="code-editor-text" style="height: 240px;">
-                
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: 'cdp' })
 
-WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
 
-LET tracks = ELEMENTS(doc, '.chartTrack__details')
+
+
+
+<div class="code-editor is-vertical is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-3-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-3-text" class="code-editor-text" style="height: 240px;">LET doc = DOCUMENT(&#39;https://soundcloud.com/charts/top&#39;, { driver: &#39;cdp&#39; })
+
+WAIT_ELEMENT(doc, &#39;.chartTrack__details&#39;, 5000)
+
+LET tracks = ELEMENTS(doc, &#39;.chartTrack__details&#39;)
 
 FOR track IN tracks
     RETURN {
-        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
-        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
-    }
+        artist: TRIM(INNER_TEXT(track, &#39;.chartTrack__username&#39;)),
+        track: TRIM(INNER_TEXT(track, &#39;.chartTrack__title&#39;))
+    }</div>
+            </div>
 
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-3-result" class="code-editor-result" style="height: 240px;"></div>
             </div>
         </div>
-        <div class="column is-6">
-            <div id="code-editor-388-result" class="code-editor-result" style="height: 240px;"></div>
-        </div>
     </div>
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode) {
+            function createEditor(id, mode, useWorker) {
                 const editor = ace.edit(id);
                 editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
                 editor.session.setMode("ace/mode/" + mode);
                 editor.setOptions({
                     displayIndentGuides: false,
@@ -528,9 +628,9 @@ FOR track IN tracks
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-388-run-button');
-            const textEditor = createEditor('code-editor-388-text', 'fql');
-            const resultEditor = createEditor('code-editor-388-result', 'json');
+            const btn = document.querySelector('#code-editor-3-run-button');
+            const textEditor = createEditor('code-editor-3-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-3-result', 'json', false);
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -552,6 +652,7 @@ FOR track IN tracks
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
+                resultEditor.resize();
             }
 
             btn.addEventListener('click', () => {
@@ -633,30 +734,49 @@ FOR track IN tracks
 
 
 
-<div class="code-editor">
 
-    
 
-    <button id="code-editor-491-run-button" class="run button is-pulled-right is-outlined is-light is-radiusless code-editor-button">Run</button>
 
-    <div class="columns">
-        <div class="column is-6">
-            <div id="code-editor-491-text" class="code-editor-text" style="height: 680px;">
-                
-LET baseURL = 'https://www.amazon.com/'
-LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
 
-INPUT(amazon, '#twotabsearchtextbox', @criteria)
-CLICK(amazon, '.nav-search-submit input[type="submit"]')
+
+
+
+
+<div class="code-editor is-vertical is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button">Run</button>
+            </div>
+        </div>
+
+        <div class="code-editor-grid">
+            <div class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-4-text" class="code-editor-text" style="height: 680px;">LET baseURL = &#39;https://www.amazon.com/&#39;
+LET amazon = DOCUMENT(baseURL, { driver: &#34;cdp&#34; })
+
+INPUT(amazon, &#39;#twotabsearchtextbox&#39;, @criteria)
+CLICK(amazon, &#39;.nav-search-submit input[type=&#34;submit&#34;]&#39;)
 WAIT_NAVIGATION(amazon)
 
-LET resultListSelector = 'div.s-result-list'
-LET resultItemSelector = '[data-component-type="s-search-result"]'
-LET nextBtnSelector = 'ul.a-pagination .a-last a'
-LET priceWholeSelector = '.a-price-whole'
-LET priceFracSelector = '.a-price-fraction'
-LET pagers = ELEMENTS(amazon, 'ul.a-pagination li.a-disabled')
-LET pages = LENGTH(pagers) > 0 ? TO_INT(INNER_TEXT(LAST(pagers))) : 0
+LET resultListSelector = &#39;div.s-result-list&#39;
+LET resultItemSelector = &#39;[data-component-type=&#34;s-search-result&#34;]&#39;
+LET nextBtnSelector = &#39;ul.a-pagination .a-last a&#39;
+LET priceWholeSelector = &#39;.a-price-whole&#39;
+LET priceFracSelector = &#39;.a-price-fraction&#39;
+LET pagers = ELEMENTS(amazon, &#39;ul.a-pagination li.a-disabled&#39;)
+LET pages = LENGTH(pagers) &gt; 0 ? TO_INT(INNER_TEXT(LAST(pagers))) : 0
 
 LET result = (
     FOR pageNum IN 1..pages
@@ -666,19 +786,19 @@ LET result = (
         LET wait = clicked ? WAIT_NAVIGATION(amazon, 10000) : false
         LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
 
-        PRINT("page:", pageNum, "clicked", clicked)
+        PRINT(&#34;page:&#34;, pageNum, &#34;clicked&#34;, clicked)
 
         LET items = (
             FOR el IN ELEMENTS(amazon, resultItemSelector)
                 LET hasPrice = ELEMENT_EXISTS(el, priceWholeSelector)
-                LET priceWholeTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceWholeSelector), "[0-9]+")) : "0"
-                LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), "[0-9]+")) : "00"
-		        LET price = TO_FLOAT(priceWholeTxt + "." + priceFracTxt)
-		        LET anchor = ELEMENT(el, "a")
+                LET priceWholeTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceWholeSelector), &#34;[0-9]&#43;&#34;)) : &#34;0&#34;
+                LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), &#34;[0-9]&#43;&#34;)) : &#34;00&#34;
+		        LET price = TO_FLOAT(priceWholeTxt &#43; &#34;.&#34; &#43; priceFracTxt)
+		        LET anchor = ELEMENT(el, &#34;a&#34;)
 
                 RETURN {
-                    url: baseURL + anchor.attributes.href,
-                    title: INNER_TEXT(el, 'h2'),
+                    url: baseURL &#43; anchor.attributes.href,
+                    title: INNER_TEXT(el, &#39;h2&#39;),
                     price
                 }
         )
@@ -686,21 +806,27 @@ LET result = (
         RETURN items
 )
 
-RETURN FLATTEN(result)
+RETURN FLATTEN(result)</div>
+            </div>
 
+            <div class="code-editor-pane code-editor-pane-result">
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                    </div>
+                </div>
+                <div id="code-editor-4-result" class="code-editor-result" style="height: 680px;"></div>
             </div>
         </div>
-        <div class="column is-6">
-            <div id="code-editor-491-result" class="code-editor-result" style="height: 680px;"></div>
-        </div>
     </div>
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode) {
+            function createEditor(id, mode, useWorker) {
                 const editor = ace.edit(id);
                 editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
                 editor.session.setMode("ace/mode/" + mode);
                 editor.setOptions({
                     displayIndentGuides: false,
@@ -710,9 +836,9 @@ RETURN FLATTEN(result)
                 return editor;
             }
 
-            const btn = document.querySelector('#code-editor-491-run-button');
-            const textEditor = createEditor('code-editor-491-text', 'fql');
-            const resultEditor = createEditor('code-editor-491-result', 'json');
+            const btn = document.querySelector('#code-editor-4-run-button');
+            const textEditor = createEditor('code-editor-4-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-4-result', 'json', false);
             resultEditor.setReadOnly(true);
                 textEditor.setReadOnly(true);
 
@@ -734,6 +860,7 @@ RETURN FLATTEN(result)
                 btn.classList.remove('is-loading');
 
                 setContent(resultEditor, result);
+                resultEditor.resize();
             }
 
             btn.addEventListener('click', () => {
@@ -825,34 +952,41 @@ See it as NPM registry for FQL scripts where people can share and explore script
 I’m not really well familiar with Jupyter, but I know that many data scientists use it, so I figured that it could be useful to integrate Ferret with it.
 <p>So, if you have some spare time and want to contribute to an open source project — you are very welcome!</p>
 
-            </div>
-        </div>
     </div>
 
-        </div><footer class="footer">
-    <div class="columns">
-        <div class="column is-4 is-hidden-mobile">
-            <p>
-                <a href="https://github.com/MontFerret">
-                    © 2018-2026 MontFerret Team
-                </a>
-            </p>
-            <p>
-                <a href="https://www.montferret.dev/blog/index.xml">RSS</a>
-            </p>
+    <nav class="blog-post-nav" aria-label="Blog navigation">
+        <a href="/blog/">← Back to blog</a>
+    </nav>
+</article>
+
+        </div><footer class="site-footer">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
         </div>
-        <div class="column is-4 has-text-centered">
-            <img src="/img/logo.png" width="30" height="30" />
-        </div>
-        <div class="column is-4 has-text-right is-hidden-mobile">
-            <a href="#">BACK TO TOP Δ</a>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+            <a class="site-footer-top" href="#top">Back to top △</a>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
     
-    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.c673b35f45d16e62f609481fa9e09dac8157e234013a031d8b020e4589949472.js"></script>
+    <script src="https://www.ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
@@ -861,6 +995,8 @@ I’m not really well familiar with Jupyter, but I know that many data scientist
         integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
         integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://www.ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
 </footer>
 </body>
 </html>
