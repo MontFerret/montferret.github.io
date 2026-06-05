@@ -69,7 +69,7 @@
                 
                     
                     
-                    <a href="/try/next/" class="navbar-item site-navbar-link site-navbar-cta"
+                    <a href="/try/" class="navbar-item site-navbar-link site-navbar-cta active is-active"
                         title="Try it" id="repl">
                         Try it
                     </a>
@@ -135,9 +135,7 @@
     <div class="hero is-primary">
     <div class="hero-body">
         <div class="container repl-content">
-            <p style="margin-bottom: 2em;">
-    <a class="button is-dark" href="/try/next/">Try Ferret v2</a>
-</p>
+            
 
 
 
@@ -154,8 +152,7 @@
 
 
 
-
-<div class="code-editor is-vertical is-auto-height">
+<div class="code-editor is-horizontal is-auto-height">
     <input id="code-editor-1-share-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></input>
 
     <div class="code-editor-shell">
@@ -163,7 +160,7 @@
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
-                <small>Ferret</small>
+                <small>Ferret v2</small>
             </div>
 
             <div class="code-editor-actions">
@@ -186,17 +183,17 @@ LET doc = DOCUMENT(&#39;https://mockery.ferretlang.org/scenarios/dynamic-product
 
 // Wait until at least one product card is present on the page
 // This is important because the page loads content asynchronously
-WAIT_ELEMENT(doc, &#39;.product-card&#39;, 5000)
-
-// Select all product cards from the page
-LET products = ELEMENTS(doc, &#39;.product-card&#39;)
+// WAITFOR VALUE returns the value of the expression once it evaluates to a non-empty value or until the timeout is reached
+LET products = WAITFOR VALUE doc[~ css`.product-card`]
+    WHEN LENGTH(.) &gt; 0
+    TIMEOUT 5000
 
 // Iterate over each product card and extract useful data
 FOR product IN products
     RETURN {
-        brand: TRIM(INNER_TEXT(product, &#39;.product-brand&#39;)),
-        title: TRIM(INNER_TEXT(product, &#39;.product-title&#39;)),
-        price: TO_FLOAT(SUBSTITUTE(INNER_TEXT(product, &#39;.product-price&#39;), &#39;$&#39;, &#39;&#39;))
+        brand: product[~? css`.product-brand`].textContent,
+        title: product[~? css`.product-title`].textContent,
+        price: TO_FLOAT(SUBSTITUTE(product[~? css`.product-price`], &#39;$&#39;, &#39;&#39;)) ON ERROR RETURN 0
     }</div>
             </div>
 
@@ -362,7 +359,7 @@ FOR product IN products
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
-                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
                 onStart();
                 fetch(url, {
