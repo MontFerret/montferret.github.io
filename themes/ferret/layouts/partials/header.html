@@ -42,10 +42,9 @@
                     </a>
                 {{ end }}
             </div>
-
-            {{ partial "search/trigger.html" (dict "class" "site-navbar-search-desktop" "shortcut" "/") }}
-
+            
             <div class="navbar-end site-navbar-links site-navbar-links-secondary">
+                {{ partial "search/trigger.html" (dict "class" "site-navbar-search-desktop" "shortcut" "/") }}
                 {{ $currentPage := . }}
                 {{ range .Site.Menus.right.ByWeight }}
                     {{ $isActive := or ($currentPage.IsMenuCurrent "right" .) ($currentPage.HasMenuCurrent "right" .) }}
