@@ -27,17 +27,15 @@
     <link rel="manifest" href="/favicon/site.webmanifest" />
     
     <meta name="theme-color" content="#ffffff" />
+    {{- if hugo.IsProduction }}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
     <script>
-        if (window.location.hostname === 'localhost') {
-            console.log('Google Analytics is disabled on localhost');
-        } else {
-            console.log('Google Analytics is enabled');
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'UA-135792752-1');
-        }
+        console.log('Google Analytics is enabled');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-135792752-1');
     </script>
+    {{- end }}
 </head>
