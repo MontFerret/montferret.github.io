@@ -1,17 +1,18 @@
-//+build mage
+//go:build mage
+// +build mage
 
 package main
 
 import (
-    "fmt"
-    "os"
-    "path/filepath"
-    "strings"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 
-    "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
-    "github.com/magefile/mage/mg"
-    "github.com/magefile/mage/sh"
+	"github.com/magefile/mage/mg"
+	"github.com/magefile/mage/sh"
 )
 
 const OUTPUT_DIR = "public"
@@ -64,11 +65,26 @@ func Serve() error {
 	return sh.RunV("hugo", "server")
 }
 
-// Runs Hugo build to generate the website
+// Runs the production Hugo build and generates the search index
 func Build() error {
 	mg.Deps(Clean)
 
-	return sh.RunV("hugo")
+	if err := sh.RunV("hugo"); err != nil {
+		return err
+	}
+
+	return sh.RunV("npm", "--prefix", THEME_DIR, "run", "build:search")
+}
+
+// Builds the website search index and serves the generated static site
+func ServeSearch() error {
+	mg.Deps(Clean)
+
+	if err := sh.RunV("hugo", "--baseURL", "http://localhost:1414/"); err != nil {
+		return err
+	}
+
+	return sh.RunV("npm", "--prefix", THEME_DIR, "run", "serve:search")
 }
 
 // Installs theme
@@ -107,8 +123,8 @@ func Generate() error {
 	}
 
 	for _, module := range ast.Modules {
-	    name := strings.ReplaceAll(module.Name, "/", "-")
-	    
+		name := strings.ReplaceAll(module.Name, "/", "-")
+
 		sh.RunWith(map[string]string{
 			"USING_KEY": module.Name,
 		}, "frep", "--load", STDLIB_AST, "--overwrite", fmt.Sprintf("%s:%s/%s.md", STDLIB_TEMPLATE, STDLIB_DOCS_DIR, name))
@@ -119,5 +135,5 @@ func Generate() error {
 
 // Publishes website to GitHub Pages
 func Publish() error {
-	return sh.RunV("sh", "publish.sh");
+	return sh.RunV("sh", "publish.sh")
 }

@@ -1,8 +1,6 @@
 <div class="docs">
     <div class="docs-layout">
-        <aside class="docs-sidebar" aria-label="Docs navigation">
-            {{ partial "toc.html" (dict "Dir" "/docs" "Page" .) }}
-        </aside>
+        {{ partial "docs/sidebar.html" . }}
 
         <main id="main" class="docs-main">
             {{ partial "docs/content.html" . }}
@@ -11,3 +9,10 @@
         {{ partial "docs/page-toc.html" . }}
     </div>
 </div>
+
+{{- if hugo.IsProduction }}
+<script type="module">
+    await import("/pagefind/pagefind-highlight.js");
+    new PagefindHighlight({ highlightParam: "highlight" });
+</script>
+{{- end }}

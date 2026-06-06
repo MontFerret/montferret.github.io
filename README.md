@@ -20,6 +20,24 @@ go mod tidy && mage install
 mage serve
 ```
 
+The standard development server does not generate the Pagefind search bundle.
+
+### Production build
+Build the static site and its client-side search index:
+
+```bash
+mage build
+```
+
+The generated site, including Pagefind assets under `public/pagefind/`, is written to `public/`.
+
+### Search preview
+Build the site and search index, then serve the generated static output with Pagefind's preview server:
+
+```bash
+mage serveSearch
+```
+
 ### Generating API docs
 Generating `stdlib` documentation requires doc rep YAML.
 

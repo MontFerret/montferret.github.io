@@ -1,0 +1,32 @@
+{{ define "main" }}
+<div class="docs docs-search-page">
+    <div class="docs-layout docs-search-layout">
+        {{ partial "docs/sidebar.html" . }}
+
+        <main id="main" class="docs-main">
+            <article class="docs-content docs-search-content">
+                <h1>{{ .Title }}</h1>
+                {{ with .Description }}
+                <p class="docs-search-description">{{ . }}</p>
+                {{ end }}
+
+                <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+                <script src="/pagefind/pagefind-ui.js"></script>
+
+                <div id="search" class="docs-search-ui"></div>
+
+                <script>
+                    window.addEventListener("DOMContentLoaded", () => {
+                        new PagefindUI({
+                            element: "#search",
+                            showImages: false,
+                            showSubResults: true,
+                            highlightParam: "highlight"
+                        });
+                    });
+                </script>
+            </article>
+        </main>
+    </div>
+</div>
+{{ end }}
