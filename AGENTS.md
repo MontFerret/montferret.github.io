@@ -134,6 +134,7 @@ Common commands:
 ```bash
 mage
 mage serve
+mage serveSearch
 mage build
 mage clean
 mage install
@@ -144,6 +145,7 @@ mage publish
 Available Mage targets include:
 
 * mage serve — cleans the output directory and starts the local Hugo server.
+* mage serveSearch — starts the local Hugo server with search enabled.
 * mage build — cleans the output directory and runs the Hugo build.
 * mage clean — removes the generated public directory.
 * mage install — installs dependencies for the Ferret theme.
@@ -205,6 +207,21 @@ Prefer language that explains the actual value:
 - explicit error and timeout behavior
 - embeddability
 - testability
+
+## Documentation writing rules
+
+When writing Ferret documentation:
+
+- Treat the repository as the source of truth.
+- For language behavior, inspect grammar, compiler, VM/runtime code, tests, and examples before writing.
+- Do not invent syntax, runtime behavior, module APIs, error behavior, or CLI flags.
+- If behavior is unclear or not implemented, write `TODO: confirm ...` instead of guessing.
+- Preserve Hugo front matter, shortcodes, tabs, editor blocks, and existing docs style.
+- Prefer small examples that demonstrate one concept at a time.
+- Do not put intentionally invalid examples inside live editor blocks unless the surrounding shortcode is meant for non-runnable code.
+- Keep prose direct, calm, and practical.
+- Avoid marketing language inside reference docs.
+- After editing docs, run the configured docs build/check command.
 
 ## When unsure
 
