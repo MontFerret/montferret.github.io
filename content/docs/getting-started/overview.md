@@ -1,7 +1,7 @@
 ---
 title: "Overview"
 sidebarTitle: "Overview"
-weight: 10
+weight: 30
 draft: false
 description: "What Ferret is and how its main pieces fit together."
 aliases:
