@@ -91,9 +91,11 @@ html { margin-top: $navbarMargin; }
 
 .site-navbar-container {
     min-height: 4.25rem;
+    position: relative;
 }
 
 .site-navbar-brand {
+    align-items: center;
     min-height: 4.25rem;
 }
 
@@ -152,6 +154,131 @@ a.site-navbar-logo:focus .site-navbar-logo-text {
     color: #fff;
 }
 
+.site-navbar-search {
+    --pf-background: #{rgba(#fff, .1)};
+    --pf-border: #{rgba(#fff, .2)};
+    --pf-border-focus: #{rgba(#fff, .42)};
+    --pf-hover: #{rgba(#fff, .16)};
+    --pf-outline-focus: #{rgba($accent, .8)};
+    --pf-text-muted: #{rgba(#fff, .88)};
+    --pf-text-secondary: #{rgba(#fff, .92)};
+    --pf-input-height: 2.55rem;
+    --pf-border-radius: #{$button-radius};
+    flex: 0 0 auto;
+}
+
+.site-navbar-search-desktop {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16rem;
+    z-index: 1;
+}
+
+.site-navbar-search-mobile {
+    display: none;
+}
+
+.site-navbar-search-fallback {
+    align-items: center;
+    background: rgba(#fff, .1);
+    border: 1px solid rgba(#fff, .2);
+    border-radius: $button-radius;
+    color: rgba(#fff, .88);
+    display: inline-flex;
+    font-size: .875rem;
+    gap: .5rem;
+    height: 2.55rem;
+    padding: 0 .85rem;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        background: rgba(#fff, .16);
+        border-color: rgba(#fff, .42);
+        color: #fff;
+        text-decoration: none;
+    }
+
+    &:focus-visible {
+        outline: 3px solid rgba($accent, .5);
+        outline-offset: 3px;
+    }
+
+    kbd {
+        align-items: center;
+        background: rgba(#fff, .12);
+        border: 1px solid rgba(#fff, .22);
+        border-radius: 4px;
+        color: rgba(#fff, .88);
+        display: inline-flex;
+        font-size: .7rem;
+        height: 1.25rem;
+        justify-content: center;
+        margin-left: auto;
+        min-width: 1.25rem;
+    }
+}
+
+.site-navbar-search-mobile.site-navbar-search-fallback {
+    display: none;
+}
+
+.site-navbar-search-icon {
+    --site-search-icon: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.7549 11.255H11.9649L11.6849 10.985C12.6649 9.845 13.2549 8.365 13.2549 6.755C13.2549 3.165 10.3449 0.255005 6.75488 0.255005C3.16488 0.255005 0.254883 3.165 0.254883 6.755C0.254883 10.345 3.16488 13.255 6.75488 13.255C8.36488 13.255 9.84488 12.665 10.9849 11.685L11.2549 11.965V12.755L16.2549 17.745L17.7449 16.255L12.7549 11.255ZM6.75488 11.255C4.26488 11.255 2.25488 9.245 2.25488 6.755C2.25488 4.26501 4.26488 2.255 6.75488 2.255C9.24488 2.255 11.2549 4.26501 11.2549 6.755C11.2549 9.245 9.24488 11.255 6.75488 11.255Z' fill='%23000000'/%3E%3C/svg%3E");
+    background: currentColor;
+    display: inline-block;
+    flex: 0 0 auto;
+    height: .95rem;
+    -webkit-mask-image: var(--site-search-icon);
+    -webkit-mask-size: 100%;
+    mask-image: var(--site-search-icon);
+    mask-size: 100%;
+    width: .95rem;
+}
+
+.site-search-modal {
+    --pf-background: #{$site-surface};
+    --pf-border: #{rgba($site-heading, .14)};
+    --pf-border-focus: #{rgba($site-accent, .5)};
+    --pf-hover: #{rgba($site-accent, .075)};
+    --pf-mark: #{$site-accent};
+    --pf-outline-focus: #{$site-accent};
+    --pf-skeleton: #{rgba($site-heading, .07)};
+    --pf-skeleton-shine: #{rgba($site-heading, .025)};
+    --pf-text: #{$site-heading};
+    --pf-text-muted: #{$site-muted};
+    --pf-text-secondary: #{$site-text};
+    --pf-font: #{$family-sans-serif};
+    --pf-modal-backdrop: #{rgba($site-heading, .62)};
+    --pf-modal-max-height: min(78dvh, 48rem);
+    --pf-modal-max-width: 46rem;
+    --pf-modal-top: 8dvh;
+    --pf-result-title-font-size: .95rem;
+    --pf-result-excerpt-font-size: .84rem;
+}
+
+.site-search-view-all {
+    color: $site-accent;
+    font-family: $family-sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    margin-right: auto;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: $site-heading;
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid rgba($site-accent, .5);
+        outline-offset: 3px;
+    }
+}
+
 .site-navbar-menu {
     background-color: transparent;
 }
@@ -163,6 +290,7 @@ a.site-navbar-logo:focus .site-navbar-logo-text {
 
 .site-navbar-links-secondary {
     gap: .15rem;
+    margin-left: auto;
 }
 
 a.site-navbar-link {
@@ -321,7 +449,6 @@ a.navbar-item:not(.site-navbar-link) {
 
     .site-navbar-brand {
         align-items: center;
-        justify-content: space-between;
         width: 100%;
     }
 
@@ -332,6 +459,62 @@ a.navbar-item:not(.site-navbar-link) {
 
     a.site-navbar-logo {
         padding-right: .75rem;
+    }
+
+    .site-navbar-search-desktop {
+        display: none;
+    }
+
+    .site-navbar-search-mobile {
+        --pf-input-height: 2.75rem;
+        display: block;
+        margin-left: auto;
+        width: 2.75rem;
+    }
+
+    .site-navbar-search-mobile.site-navbar-search-fallback {
+        display: inline-flex;
+    }
+
+    .site-navbar-search .pf-trigger-btn {
+        justify-content: center !important;
+        padding: 0 !important;
+    }
+
+    .site-navbar-search .pf-trigger-text,
+    .site-navbar-search .pf-trigger-shortcut,
+    .site-navbar-search-fallback .site-navbar-search-text,
+    .site-navbar-search-fallback kbd {
+        display: none !important;
+    }
+
+    .site-navbar-search-fallback {
+        justify-content: center;
+        padding: 0;
+    }
+
+    .site-navbar-burger {
+        margin-left: .5rem;
+        margin-top: 0;
+    }
+
+    .site-search-modal {
+        --pf-modal-max-height: none;
+        --pf-modal-max-width: none;
+        --pf-modal-top: 0;
+    }
+
+    .site-search-modal dialog.pf-modal[open] {
+        border-radius: 0 !important;
+        height: 100dvh !important;
+        margin: 0 !important;
+        max-height: none !important;
+        max-width: none !important;
+        width: 100vw !important;
+    }
+
+    .site-search-modal .pf-modal-close {
+        display: flex !important;
     }
 
     .site-navbar-menu {
@@ -375,6 +558,21 @@ a.navbar-item:not(.site-navbar-link) {
 
     .site-navbar-menu {
         align-items: center;
+    }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1215px) {
+    .site-navbar-brand {
+        margin-right: .5rem;
+    }
+
+    a.site-navbar-logo {
+        gap: .5rem;
+        padding-right: .5rem;
+    }
+
+    .site-navbar-search-desktop {
+        width: 15rem;
     }
 }
 

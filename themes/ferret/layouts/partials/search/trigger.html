@@ -1,0 +1,20 @@
+{{- $class := printf "site-navbar-search %s" (.class | default "") -}}
+{{- $shortcut := .shortcut | default "" -}}
+{{- if hugo.IsProduction }}
+<pagefind-modal-trigger
+    class="{{ $class }}"
+    instance="site-search"
+    placeholder="Search docs"
+    {{- with $shortcut }}
+    shortcut="{{ . }}"
+    {{- end }}
+></pagefind-modal-trigger>
+{{- else }}
+<a class="{{ $class }} site-navbar-search-fallback" href="/search/" aria-label="Search docs">
+    <span class="site-navbar-search-icon" aria-hidden="true"></span>
+    <span class="site-navbar-search-text">Search docs</span>
+    {{- with $shortcut }}
+    <kbd aria-hidden="true">{{ . }}</kbd>
+    {{- end }}
+</a>
+{{- end }}

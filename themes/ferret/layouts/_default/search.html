@@ -17,12 +17,17 @@
 
                 <script>
                     window.addEventListener("DOMContentLoaded", () => {
-                        new PagefindUI({
+                        const search = new PagefindUI({
                             element: "#search",
                             showImages: false,
                             showSubResults: true,
                             highlightParam: "highlight"
                         });
+                        const query = new URLSearchParams(window.location.search).get("q")?.trim();
+
+                        if (query) {
+                            search.triggerSearch(query);
+                        }
                     });
                 </script>
             </article>
