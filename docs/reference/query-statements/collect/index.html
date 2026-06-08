@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.162.1">
 
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
@@ -728,6 +728,7 @@ Grouping syntaxes
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-1-header" class="code-editor-header">
@@ -754,7 +755,10 @@ Grouping syntaxes
                 <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-1-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-1-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;}]
 
@@ -1056,6 +1060,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-1-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-1-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -1159,6 +1201,7 @@ FOR u IN users
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-2-header" class="code-editor-header">
@@ -1185,7 +1228,10 @@ FOR u IN users
                 <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-2-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-2-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;}]
 
@@ -1488,6 +1534,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-2-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-2-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -1592,6 +1676,7 @@ FOR u IN users
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-3-header" class="code-editor-header">
@@ -1618,7 +1703,10 @@ FOR u IN users
                 <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-3-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-3-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;}]
 
@@ -1922,6 +2010,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-3-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-3-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -2034,6 +2160,7 @@ Discarding obsolete variables
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-4-header" class="code-editor-header">
@@ -2060,7 +2187,10 @@ Discarding obsolete variables
                 <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-4-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-4-text" class="code-editor-text" style="height: 200px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;}]
 
@@ -2364,6 +2494,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-4-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-4-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -2468,6 +2636,7 @@ FOR u IN users
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-5-header" class="code-editor-header">
@@ -2494,7 +2663,10 @@ FOR u IN users
                 <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-5-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-5-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
 
@@ -2800,6 +2972,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-5-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-5-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -2906,6 +3116,7 @@ The following example limits the variables that are copied into the ``groupsVari
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-6-header" class="code-editor-header">
@@ -2932,7 +3143,10 @@ The following example limits the variables that are copied into the ``groupsVari
                 <div id="code-editor-6-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-6-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-6-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
 
@@ -3237,6 +3451,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-6-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-6-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -3349,6 +3601,7 @@ Group length calculation
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-7-header" class="code-editor-header">
@@ -3375,7 +3628,10 @@ Group length calculation
                 <div id="code-editor-7-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-7-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-7-text" class="code-editor-text" style="height: 180px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
 
@@ -3675,6 +3931,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-7-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-7-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -3778,6 +4072,7 @@ FOR u IN users
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-8-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-8-header" class="code-editor-header">
@@ -3804,7 +4099,10 @@ FOR u IN users
                 <div id="code-editor-8-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-8-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-8-text" class="code-editor-text" style="height: 130px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;}]
 
@@ -4101,6 +4399,44 @@ RETURN LENGTH(users)</div>
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-8-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-8-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -4204,6 +4540,7 @@ RETURN LENGTH(users)</div>
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-9-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-9-header" class="code-editor-header">
@@ -4230,7 +4567,10 @@ RETURN LENGTH(users)</div>
                 <div id="code-editor-9-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-9-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-9-text" class="code-editor-text" style="height: 220px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
 
@@ -4533,6 +4873,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-9-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-9-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -4648,6 +5026,7 @@ Aggregation
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-10-header" class="code-editor-header">
@@ -4674,7 +5053,10 @@ Aggregation
                 <div id="code-editor-10-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-10-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-10-text" class="code-editor-text" style="height: 310px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
 
@@ -4983,6 +5365,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-10-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-10-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -5088,6 +5508,7 @@ FOR u IN users
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-11-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-11-header" class="code-editor-header">
@@ -5114,7 +5535,10 @@ FOR u IN users
                 <div id="code-editor-11-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-11-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-11-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
 
@@ -5419,6 +5843,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-11-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-11-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
@@ -5522,6 +5984,7 @@ FOR u IN users
 
 
 <div class="code-editor is-horizontal">
+    <textarea id="code-editor-12-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
         <div id="code-editor-12-header" class="code-editor-header">
@@ -5548,7 +6011,10 @@ FOR u IN users
                 <div id="code-editor-12-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-12-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
                     </div>
                     <div id="code-editor-12-text" class="code-editor-text" style="height: 250px;">LET users = [{&#34;id&#34;:1,&#34;name&#34;:&#34;Thorn De Banke&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:2,&#34;name&#34;:&#34;Adolph MacAindreis&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:3,&#34;name&#34;:&#34;Flory Maxworthy&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:40},{&#34;id&#34;:4,&#34;name&#34;:&#34;Merola Blundell&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:25},{&#34;id&#34;:5,&#34;name&#34;:&#34;Benson Manoelli&#34;,&#34;city&#34;:&#34;Moscow&#34;,&#34;country&#34;:&#34;Russia&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:6,&#34;name&#34;:&#34;Cordy McVie&#34;,&#34;city&#34;:&#34;London&#34;,&#34;country&#34;:&#34;UK&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:25},{&#34;id&#34;:7,&#34;name&#34;:&#34;Reggy Tuck&#34;,&#34;city&#34;:&#34;New York City&#34;,&#34;country&#34;:&#34;USA&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:18},{&#34;id&#34;:8,&#34;name&#34;:&#34;Courtney Toogood&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;active&#34;,&#34;age&#34;:30},{&#34;id&#34;:9,&#34;name&#34;:&#34;Berkley Fields&#34;,&#34;city&#34;:&#34;Berlin&#34;,&#34;country&#34;:&#34;Germany&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30},{&#34;id&#34;:10,&#34;name&#34;:&#34;Findley Gauvain&#34;,&#34;city&#34;:&#34;Stockholm&#34;,&#34;country&#34;:&#34;Sweden&#34;,&#34;status&#34;:&#34;inactive&#34;,&#34;age&#34;:30}]
 
@@ -5851,6 +6317,44 @@ FOR u IN users
             function setContent(editor, content) {
                 editor.setValue(content, -1);
             }
+                const copyClipboardEl = document.querySelector('#code-editor-12-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-12-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
 
             let isRunning = false;
 
