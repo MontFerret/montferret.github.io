@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.cf3550a5af51a6dd7409238228de72a38d32c75124757b3a655b66a984de31fe.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.cf954234cabb6971a0807e83d42c7c592584054b6161c06c127137683dc60a9a.css" />
     <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
     
@@ -302,9 +302,6 @@
 
 
 
-
-
-
 <div class="code-editor is-horizontal is-readonly">
 
     <div class="code-editor-shell">
@@ -317,6 +314,7 @@
 
             <div class="code-editor-actions">
                 <button id="code-editor-1-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result-pane">Output</button>
+                <button id="code-editor-1-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-params-drawer">Params</button>
                 <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
                     <span class="code-editor-run-label">Run</span>
                     <span id="code-editor-1-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
@@ -326,13 +324,14 @@
             <span id="code-editor-1-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-1-text" class="code-editor-text" style="height: 300px;">LET page = DOCUMENT(&#34;https://soundcloud.com&#34;, { driver: &#34;cdp&#34;})
+        <div class="code-editor-workspace">
+            <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-1-text" class="code-editor-text" style="height: 300px;">LET page = DOCUMENT(&#34;https://soundcloud.com&#34;, { driver: &#34;cdp&#34;})
 LET doc = page.mainFrame
 
 WAIT_ELEMENT(doc, &#34;.trendingTracks&#34;)
@@ -348,19 +347,37 @@ RETURN {
     page: page.url,
     doc: doc.url
 }</div>
+                </div>
+
+                <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
+                            <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-1-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
             </div>
 
-            <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
-                        <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
+            <aside id="code-editor-1-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-1-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="code-editor-1-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
                     </div>
+                    <button id="code-editor-1-params-close-button" class="code-editor-pane-button" type="button">Close</button>
                 </div>
-                <div id="code-editor-1-result" class="code-editor-result" style="height: 300px;"></div>
-            </div>
+                <div class="code-editor-params-body">
+                    <div id="code-editor-1-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="code-editor-1-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="code-editor-1-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
         </div>
     </div>
 
@@ -385,13 +402,21 @@ RETURN {
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-1-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-1-header');
+            const editorWorkspace = document.querySelector('#code-editor-1-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-1-grid');
             const runProgress = document.querySelector('#code-editor-1-progress');
             const runStatus = document.querySelector('#code-editor-1-run-status');
             const resultPane = document.querySelector('#code-editor-1-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-1-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-1-result-close-button');
+            const paramsToggleBtn = document.querySelector('#code-editor-1-params-toggle-button');
+            const paramsDrawer = document.querySelector('#code-editor-1-params-drawer');
+            const paramsCloseBtn = document.querySelector('#code-editor-1-params-close-button');
+            const paramsAddBtn = document.querySelector('#code-editor-1-params-add-button');
+            const paramsRows = document.querySelector('#code-editor-1-params-rows');
+            const paramsEmpty = document.querySelector('#code-editor-1-params-empty');
             let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
 
             function resetResultExpansion() {
                 if (!resultExpandBtn) {
@@ -440,6 +465,7 @@ RETURN {
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+
             const collapsedResultHeightStyle = resultEditor.container.style.height;
             let isResultExpanded = false;
 
@@ -495,6 +521,118 @@ RETURN {
                     syncEditorLayout();
                 });
             }
+
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse("{}");
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
                 textEditor.setReadOnly(true);
@@ -516,6 +654,7 @@ RETURN {
                 btn.setAttribute('aria-busy', 'true');
                 btn.setAttribute('aria-label', 'Running query');
                 btn.disabled = true;
+                setParamsControlsDisabled(true);
             }
 
             function onEnd(result) {
@@ -529,6 +668,7 @@ RETURN {
                 btn.setAttribute('aria-busy', 'false');
                 btn.setAttribute('aria-label', 'Run query');
                 btn.disabled = false;
+                setParamsControlsDisabled(false);
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -541,7 +681,7 @@ RETURN {
 
                 const body = {
                         text: textEditor.getValue(),
-                        params: JSON.parse("{}")
+                        params: getParams()
                 };
                 const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
@@ -658,9 +798,6 @@ And now, <code>LIKE</code> operator has finally landed!</p>
 
 
 
-
-
-
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
@@ -673,6 +810,7 @@ And now, <code>LIKE</code> operator has finally landed!</p>
 
             <div class="code-editor-actions">
                 <button id="code-editor-2-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result-pane">Output</button>
+                <button id="code-editor-2-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-2-params-drawer">Params</button>
                 <button id="code-editor-2-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
                     <span class="code-editor-run-label">Run</span>
                     <span id="code-editor-2-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
@@ -682,32 +820,51 @@ And now, <code>LIKE</code> operator has finally landed!</p>
             <span id="code-editor-2-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-2-text" class="code-editor-text" style="height: 300px;">LET values = (
+        <div class="code-editor-workspace">
+            <div id="code-editor-2-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-2-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-2-text" class="code-editor-text" style="height: 300px;">LET values = (
     FOR str IN [&#34;foo&#34;, &#34;bar&#34;, &#34;qaz&#34;]
 				FILTER str LIKE &#34;*a*&#34;
 				RETURN str 
 )
 
 RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#39; </div>
+                </div>
+
+                <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
+                            <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-2-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
             </div>
 
-            <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
-                        <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
+            <aside id="code-editor-2-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-2-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="code-editor-2-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
                     </div>
+                    <button id="code-editor-2-params-close-button" class="code-editor-pane-button" type="button">Close</button>
                 </div>
-                <div id="code-editor-2-result" class="code-editor-result" style="height: 300px;"></div>
-            </div>
+                <div class="code-editor-params-body">
+                    <div id="code-editor-2-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="code-editor-2-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="code-editor-2-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
         </div>
     </div>
 
@@ -732,13 +889,21 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-2-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-2-header');
+            const editorWorkspace = document.querySelector('#code-editor-2-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-2-grid');
             const runProgress = document.querySelector('#code-editor-2-progress');
             const runStatus = document.querySelector('#code-editor-2-run-status');
             const resultPane = document.querySelector('#code-editor-2-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-2-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-2-result-close-button');
+            const paramsToggleBtn = document.querySelector('#code-editor-2-params-toggle-button');
+            const paramsDrawer = document.querySelector('#code-editor-2-params-drawer');
+            const paramsCloseBtn = document.querySelector('#code-editor-2-params-close-button');
+            const paramsAddBtn = document.querySelector('#code-editor-2-params-add-button');
+            const paramsRows = document.querySelector('#code-editor-2-params-rows');
+            const paramsEmpty = document.querySelector('#code-editor-2-params-empty');
             let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
 
             function resetResultExpansion() {
                 if (!resultExpandBtn) {
@@ -787,6 +952,7 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+
             const collapsedResultHeightStyle = resultEditor.container.style.height;
             let isResultExpanded = false;
 
@@ -842,6 +1008,118 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
                     syncEditorLayout();
                 });
             }
+
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse("{}");
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
 
@@ -862,6 +1140,7 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
                 btn.setAttribute('aria-busy', 'true');
                 btn.setAttribute('aria-label', 'Running query');
                 btn.disabled = true;
+                setParamsControlsDisabled(true);
             }
 
             function onEnd(result) {
@@ -875,6 +1154,7 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
                 btn.setAttribute('aria-busy', 'false');
                 btn.setAttribute('aria-label', 'Run query');
                 btn.disabled = false;
+                setParamsControlsDisabled(false);
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -887,7 +1167,7 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
 
                 const body = {
                         text: textEditor.getValue(),
-                        params: JSON.parse("{}")
+                        params: getParams()
                 };
                 const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
@@ -950,9 +1230,6 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
 
 
 
-
-
-
 <div class="code-editor is-horizontal is-readonly">
 
     <div class="code-editor-shell">
@@ -965,6 +1242,7 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
 
             <div class="code-editor-actions">
                 <button id="code-editor-3-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result-pane">Output</button>
+                <button id="code-editor-3-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-3-params-drawer">Params</button>
                 <button id="code-editor-3-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
                     <span class="code-editor-run-label">Run</span>
                     <span id="code-editor-3-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
@@ -974,13 +1252,14 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
             <span id="code-editor-3-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-3-text" class="code-editor-text" style="height: 300px;">LET p = DOCUMENT(&#34;https://www.gettyimages.com/&#34;, {
+        <div class="code-editor-workspace">
+            <div id="code-editor-3-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-3-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-3-text" class="code-editor-text" style="height: 300px;">LET p = DOCUMENT(&#34;https://www.gettyimages.com/&#34;, {
     driver: &#34;cdp&#34;,
     ignore: {
         resources: [
@@ -993,19 +1272,37 @@ RETURN FIRST(values) NOT LIKE &#34;b**&#34; ? &#39;failure&#39; : &#39;success&#
 })
 
 RETURN NONE</div>
+                </div>
+
+                <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-3-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result">Expand</button>
+                            <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-3-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
             </div>
 
-            <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-3-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result">Expand</button>
-                        <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
+            <aside id="code-editor-3-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-3-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="code-editor-3-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
                     </div>
+                    <button id="code-editor-3-params-close-button" class="code-editor-pane-button" type="button">Close</button>
                 </div>
-                <div id="code-editor-3-result" class="code-editor-result" style="height: 300px;"></div>
-            </div>
+                <div class="code-editor-params-body">
+                    <div id="code-editor-3-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="code-editor-3-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="code-editor-3-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
         </div>
     </div>
 
@@ -1030,13 +1327,21 @@ RETURN NONE</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-3-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-3-header');
+            const editorWorkspace = document.querySelector('#code-editor-3-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-3-grid');
             const runProgress = document.querySelector('#code-editor-3-progress');
             const runStatus = document.querySelector('#code-editor-3-run-status');
             const resultPane = document.querySelector('#code-editor-3-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-3-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-3-result-close-button');
+            const paramsToggleBtn = document.querySelector('#code-editor-3-params-toggle-button');
+            const paramsDrawer = document.querySelector('#code-editor-3-params-drawer');
+            const paramsCloseBtn = document.querySelector('#code-editor-3-params-close-button');
+            const paramsAddBtn = document.querySelector('#code-editor-3-params-add-button');
+            const paramsRows = document.querySelector('#code-editor-3-params-rows');
+            const paramsEmpty = document.querySelector('#code-editor-3-params-empty');
             let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
 
             function resetResultExpansion() {
                 if (!resultExpandBtn) {
@@ -1085,6 +1390,7 @@ RETURN NONE</div>
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+
             const collapsedResultHeightStyle = resultEditor.container.style.height;
             let isResultExpanded = false;
 
@@ -1140,6 +1446,118 @@ RETURN NONE</div>
                     syncEditorLayout();
                 });
             }
+
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse("{}");
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
                 textEditor.setReadOnly(true);
@@ -1161,6 +1579,7 @@ RETURN NONE</div>
                 btn.setAttribute('aria-busy', 'true');
                 btn.setAttribute('aria-label', 'Running query');
                 btn.disabled = true;
+                setParamsControlsDisabled(true);
             }
 
             function onEnd(result) {
@@ -1174,6 +1593,7 @@ RETURN NONE</div>
                 btn.setAttribute('aria-busy', 'false');
                 btn.setAttribute('aria-label', 'Run query');
                 btn.disabled = false;
+                setParamsControlsDisabled(false);
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -1186,7 +1606,7 @@ RETURN NONE</div>
 
                 const body = {
                         text: textEditor.getValue(),
-                        params: JSON.parse("{}")
+                        params: getParams()
                 };
                 const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
@@ -1249,9 +1669,6 @@ RETURN NONE</div>
 
 
 
-
-
-
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
@@ -1264,6 +1681,7 @@ RETURN NONE</div>
 
             <div class="code-editor-actions">
                 <button id="code-editor-4-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result-pane">Output</button>
+                <button id="code-editor-4-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-4-params-drawer">Params</button>
                 <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
                     <span class="code-editor-run-label">Run</span>
                     <span id="code-editor-4-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
@@ -1273,13 +1691,14 @@ RETURN NONE</div>
             <span id="code-editor-4-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div id="code-editor-4-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
-                </div>
-                <div id="code-editor-4-text" class="code-editor-text" style="height: 300px;">LET p = DOCUMENT(&#34;https://www.gettyimages.com/&#34;, {
+        <div class="code-editor-workspace">
+            <div id="code-editor-4-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-4-text" class="code-editor-text" style="height: 300px;">LET p = DOCUMENT(&#34;https://www.gettyimages.com/&#34;, {
     ignore: {
         statusCodes: [
             {
@@ -1291,19 +1710,37 @@ RETURN NONE</div>
 })
 
 RETURN NONE</div>
+                </div>
+
+                <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-4-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result">Expand</button>
+                            <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-4-result" class="code-editor-result" style="height: 300px;"></div>
+                </div>
             </div>
 
-            <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-4-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result">Expand</button>
-                        <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
+            <aside id="code-editor-4-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-4-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="code-editor-4-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
                     </div>
+                    <button id="code-editor-4-params-close-button" class="code-editor-pane-button" type="button">Close</button>
                 </div>
-                <div id="code-editor-4-result" class="code-editor-result" style="height: 300px;"></div>
-            </div>
+                <div class="code-editor-params-body">
+                    <div id="code-editor-4-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="code-editor-4-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="code-editor-4-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
         </div>
     </div>
 
@@ -1328,13 +1765,21 @@ RETURN NONE</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-4-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-4-header');
+            const editorWorkspace = document.querySelector('#code-editor-4-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-4-grid');
             const runProgress = document.querySelector('#code-editor-4-progress');
             const runStatus = document.querySelector('#code-editor-4-run-status');
             const resultPane = document.querySelector('#code-editor-4-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-4-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-4-result-close-button');
+            const paramsToggleBtn = document.querySelector('#code-editor-4-params-toggle-button');
+            const paramsDrawer = document.querySelector('#code-editor-4-params-drawer');
+            const paramsCloseBtn = document.querySelector('#code-editor-4-params-close-button');
+            const paramsAddBtn = document.querySelector('#code-editor-4-params-add-button');
+            const paramsRows = document.querySelector('#code-editor-4-params-rows');
+            const paramsEmpty = document.querySelector('#code-editor-4-params-empty');
             let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
 
             function resetResultExpansion() {
                 if (!resultExpandBtn) {
@@ -1383,6 +1828,7 @@ RETURN NONE</div>
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+
             const collapsedResultHeightStyle = resultEditor.container.style.height;
             let isResultExpanded = false;
 
@@ -1438,6 +1884,118 @@ RETURN NONE</div>
                     syncEditorLayout();
                 });
             }
+
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse("{}");
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
 
@@ -1458,6 +2016,7 @@ RETURN NONE</div>
                 btn.setAttribute('aria-busy', 'true');
                 btn.setAttribute('aria-label', 'Running query');
                 btn.disabled = true;
+                setParamsControlsDisabled(true);
             }
 
             function onEnd(result) {
@@ -1471,6 +2030,7 @@ RETURN NONE</div>
                 btn.setAttribute('aria-busy', 'false');
                 btn.setAttribute('aria-label', 'Run query');
                 btn.disabled = false;
+                setParamsControlsDisabled(false);
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -1483,7 +2043,7 @@ RETURN NONE</div>
 
                 const body = {
                         text: textEditor.getValue(),
-                        params: JSON.parse("{}")
+                        params: getParams()
                 };
                 const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
@@ -1546,9 +2106,6 @@ RETURN NONE</div>
 
 
 
-
-
-
 <div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
@@ -1561,6 +2118,7 @@ RETURN NONE</div>
 
             <div class="code-editor-actions">
                 <button id="code-editor-5-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result-pane">Output</button>
+                <button id="code-editor-5-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-5-params-drawer">Params</button>
                 <button id="code-editor-5-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
                     <span class="code-editor-run-label">Run</span>
                     <span id="code-editor-5-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
@@ -1570,26 +2128,45 @@ RETURN NONE</div>
             <span id="code-editor-5-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div id="code-editor-5-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
+        <div class="code-editor-workspace">
+            <div id="code-editor-5-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="code-editor-5-text" class="code-editor-text" style="height: 80px;">RETURN DOCUMENT_EXISTS(&#34;www.asdadasda.sds&#34;)</div>
                 </div>
-                <div id="code-editor-5-text" class="code-editor-text" style="height: 80px;">RETURN DOCUMENT_EXISTS(&#34;www.asdadasda.sds&#34;)</div>
+
+                <div id="code-editor-5-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-5-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result">Expand</button>
+                            <button id="code-editor-5-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-5-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-5-result" class="code-editor-result" style="height: 80px;"></div>
+                </div>
             </div>
 
-            <div id="code-editor-5-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        <button id="code-editor-5-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result">Expand</button>
-                        <button id="code-editor-5-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-5-result-pane">Close</button>
+            <aside id="code-editor-5-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-5-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="code-editor-5-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
                     </div>
+                    <button id="code-editor-5-params-close-button" class="code-editor-pane-button" type="button">Close</button>
                 </div>
-                <div id="code-editor-5-result" class="code-editor-result" style="height: 80px;"></div>
-            </div>
+                <div class="code-editor-params-body">
+                    <div id="code-editor-5-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="code-editor-5-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="code-editor-5-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
         </div>
     </div>
 
@@ -1614,13 +2191,21 @@ RETURN NONE</div>
             resultEditor.setReadOnly(true);
             const resultExpandBtn = document.querySelector('#code-editor-5-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-5-header');
+            const editorWorkspace = document.querySelector('#code-editor-5-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-5-grid');
             const runProgress = document.querySelector('#code-editor-5-progress');
             const runStatus = document.querySelector('#code-editor-5-run-status');
             const resultPane = document.querySelector('#code-editor-5-result-pane');
             const resultToggleBtn = document.querySelector('#code-editor-5-result-toggle-button');
             const resultCloseBtn = document.querySelector('#code-editor-5-result-close-button');
+            const paramsToggleBtn = document.querySelector('#code-editor-5-params-toggle-button');
+            const paramsDrawer = document.querySelector('#code-editor-5-params-drawer');
+            const paramsCloseBtn = document.querySelector('#code-editor-5-params-close-button');
+            const paramsAddBtn = document.querySelector('#code-editor-5-params-add-button');
+            const paramsRows = document.querySelector('#code-editor-5-params-rows');
+            const paramsEmpty = document.querySelector('#code-editor-5-params-empty');
             let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
 
             function resetResultExpansion() {
                 if (!resultExpandBtn) {
@@ -1669,6 +2254,7 @@ RETURN NONE</div>
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+
             const collapsedResultHeightStyle = resultEditor.container.style.height;
             let isResultExpanded = false;
 
@@ -1724,6 +2310,118 @@ RETURN NONE</div>
                     syncEditorLayout();
                 });
             }
+
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse("{}");
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
 
@@ -1744,6 +2442,7 @@ RETURN NONE</div>
                 btn.setAttribute('aria-busy', 'true');
                 btn.setAttribute('aria-label', 'Running query');
                 btn.disabled = true;
+                setParamsControlsDisabled(true);
             }
 
             function onEnd(result) {
@@ -1757,6 +2456,7 @@ RETURN NONE</div>
                 btn.setAttribute('aria-busy', 'false');
                 btn.setAttribute('aria-label', 'Run query');
                 btn.disabled = false;
+                setParamsControlsDisabled(false);
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -1769,7 +2469,7 @@ RETURN NONE</div>
 
                 const body = {
                         text: textEditor.getValue(),
-                        params: JSON.parse("{}")
+                        params: getParams()
                 };
                 const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
