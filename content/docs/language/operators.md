@@ -7,46 +7,9 @@ aliases:
   - /docs/fql/operators/
 ---
 
-{{< header >}}
-Operators
-{{</ header >}}
+# Operators
 
-FQL supports a number of operators that can be used in expressions. There are comparison, logical, arithmetic, and the ternary operator.
-
-<div class="docs-section-card-grid">
-  <a class="docs-section-card" href="#comparison-operators">
-    <strong>Comparison Operators</strong>
-    <span>Compare values with equality, ordering, containment, pattern, and regex operators.</span>
-  </a>
-  <a class="docs-section-card" href="#array-comparison-operators">
-    <strong>Array Comparison Operators</strong>
-    <span>Apply ALL, ANY, and NONE across array values.</span>
-  </a>
-  <a class="docs-section-card" href="#logical-operators">
-    <strong>Logical Operators</strong>
-    <span>Use boolean and short-circuit forms with symbolic or word operators.</span>
-  </a>
-  <a class="docs-section-card" href="#arithmetic-operators">
-    <strong>Arithmetic Operators</strong>
-    <span>Work with numeric operations and implicit numeric conversion.</span>
-  </a>
-  <a class="docs-section-card" href="#ternary-operator">
-    <strong>Ternary Operator</strong>
-    <span>Choose values conditionally with full or shortcut ternary forms.</span>
-  </a>
-  <a class="docs-section-card" href="#range-operator">
-    <strong>Range Operator</strong>
-    <span>Create simple inclusive numeric ranges.</span>
-  </a>
-  <a class="docs-section-card" href="#operator-precedence">
-    <strong>Operator Precedence</strong>
-    <span>Check how Ferret groups operators in expressions.</span>
-  </a>
-</div>
-
-{{< header size="2" >}}
-Comparison operators
-{{</ header >}}
+## Comparison operators
 Comparison (or relational) operators compare two operands. They can be used with any input data types, and will return a boolean result value.
 
 The following comparison operators are supported:

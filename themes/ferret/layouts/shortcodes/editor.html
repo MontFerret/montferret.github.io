@@ -9,7 +9,7 @@
 {{ $isReadOnly := default "false" ( .Get "readonly" ) }}
 {{ $params := default "{}" ( .Get "params" ) }}
 {{ $sharable := default "false" ( .Get "sharable" ) }}
-{{ $copyable := default "false" ( .Get "copy" ) }}
+{{ $copyable := default "true" ( .Get "copy" ) }}
 {{ $isCopyable := eq (lower $copyable) "true" }}
 {{ $apiVersion := default "2" ( .Get "apiVersion" )}}
 {{ $readonlyClass := cond (eq $isReadOnly "true") " is-readonly" "" }}
@@ -36,9 +36,6 @@
                 {{- if eq $sharable "true" }}
                 <button id="{{ $id }}-share-button" class="share button is-outlined is-light code-editor-button">Share</button>
                 {{- end }}
-                {{- if $isCopyable }}
-                <button id="{{ $id }}-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-                {{- end }}
                 <button id="{{ $id }}-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-result-pane">Output</button>
                 <button id="{{ $id }}-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-params-drawer">Params</button>
                 <button id="{{ $id }}-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
@@ -55,7 +52,12 @@
                 <div id="{{ $id }}-source-pane" class="code-editor-pane code-editor-pane-source">
                     <div class="code-editor-pane-header">
                         <span>query.fql</span>
-                        <span>FQL</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            {{- if $isCopyable }}
+                            <button id="{{ $id }}-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                            {{- end }}
+                        </div>
                     </div>
                     <div id="{{ $id }}-text" class="code-editor-text"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}>{{ $source }}</div>
                 </div>
