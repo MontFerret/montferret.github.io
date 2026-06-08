@@ -8,18 +8,15 @@
 {{ $width := default "100%" ( .Get "height" ) }}
 {{ $isReadOnly := default "false" ( .Get "readonly" ) }}
 {{ $params := default "{}" ( .Get "params" ) }}
-{{ $orientation := default "horizontal" ( .Get "orientation") }}
 {{ $sharable := default "false" ( .Get "sharable" ) }}
 {{ $copyable := default "false" ( .Get "copy" ) }}
 {{ $isCopyable := eq (lower $copyable) "true" }}
 {{ $apiVersion := default "2" ( .Get "apiVersion" )}}
-{{ $isHorizontal := eq $orientation "horizontal" }}
-{{ $orientationClass := cond $isHorizontal "is-horizontal" "is-vertical" }}
 {{ $readonlyClass := cond (eq $isReadOnly "true") " is-readonly" "" }}
 {{ $source := trim .Inner "\n" }}
 {{ $name := default "example" ( .Get "name" )}}
 
-<div class="code-editor {{ $orientationClass }}{{ $readonlyClass }}{{ $autoHeightClass }}">
+<div class="code-editor is-horizontal{{ $readonlyClass }}{{ $autoHeightClass }}">
     {{- if eq $sharable "true" }}
     <input id="{{ $id }}-share-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></input>
     {{- end }}
@@ -43,6 +40,7 @@
                 <button id="{{ $id }}-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
                 {{- end }}
                 <button id="{{ $id }}-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-result-pane">Output</button>
+                <button id="{{ $id }}-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-params-drawer">Params</button>
                 <button id="{{ $id }}-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
                     <span class="code-editor-run-label">Run</span>
                     <span id="{{ $id }}-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
@@ -52,28 +50,47 @@
             <span id="{{ $id }}-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
         </div>
 
-        <div id="{{ $id }}-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-            <div id="{{ $id }}-source-pane" class="code-editor-pane code-editor-pane-source">
-                <div class="code-editor-pane-header">
-                    <span>query.fql</span>
-                    <span>FQL</span>
+        <div class="code-editor-workspace">
+            <div id="{{ $id }}-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="{{ $id }}-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <span>FQL</span>
+                    </div>
+                    <div id="{{ $id }}-text" class="code-editor-text"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}>{{ $source }}</div>
                 </div>
-                <div id="{{ $id }}-text" class="code-editor-text"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}>{{ $source }}</div>
+
+                <div id="{{ $id }}-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            {{- if not $isAutoHeight }}
+                            <button id="{{ $id }}-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-result">Expand</button>
+                            {{- end }}
+                            <button id="{{ $id }}-result-close-button" class="code-editor-pane-button" type="button" aria-controls="{{ $id }}-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="{{ $id }}-result" class="code-editor-result"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}></div>
+                </div>
             </div>
 
-            <div id="{{ $id }}-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                <div class="code-editor-pane-header">
-                    <span>result.json</span>
-                    <div class="code-editor-pane-header-actions">
-                        <span>output</span>
-                        {{- if and $isHorizontal (not $isAutoHeight) }}
-                        <button id="{{ $id }}-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="{{ $id }}-result">Expand</button>
-                        {{- end }}
-                        <button id="{{ $id }}-result-close-button" class="code-editor-pane-button" type="button" aria-controls="{{ $id }}-result-pane">Close</button>
+            <aside id="{{ $id }}-params-drawer" class="code-editor-params-drawer" aria-labelledby="{{ $id }}-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="{{ $id }}-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
                     </div>
+                    <button id="{{ $id }}-params-close-button" class="code-editor-pane-button" type="button">Close</button>
                 </div>
-                <div id="{{ $id }}-result" class="code-editor-result"{{ if $isAutoHeight }} data-auto-height="true"{{ else }} style="height: {{ $height }};"{{ end }}></div>
-            </div>
+                <div class="code-editor-params-body">
+                    <div id="{{ $id }}-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="{{ $id }}-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="{{ $id }}-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
         </div>
     </div>
 
@@ -97,19 +114,27 @@
             const resultEditor = createEditor('{{ $id }}-result', 'json', false);
             resultEditor.setReadOnly(true);
 
-            {{- if and $isHorizontal (not $isAutoHeight) }}
+            {{- if not $isAutoHeight }}
             const resultExpandBtn = document.querySelector('#{{ $id }}-result-expand-button');
             {{- else }}
             const resultExpandBtn = null;
             {{- end }}
             const editorHeader = document.querySelector('#{{ $id }}-header');
+            const editorWorkspace = document.querySelector('#{{ $id }}-grid').parentElement;
             const editorGrid = document.querySelector('#{{ $id }}-grid');
             const runProgress = document.querySelector('#{{ $id }}-progress');
             const runStatus = document.querySelector('#{{ $id }}-run-status');
             const resultPane = document.querySelector('#{{ $id }}-result-pane');
             const resultToggleBtn = document.querySelector('#{{ $id }}-result-toggle-button');
             const resultCloseBtn = document.querySelector('#{{ $id }}-result-close-button');
+            const paramsToggleBtn = document.querySelector('#{{ $id }}-params-toggle-button');
+            const paramsDrawer = document.querySelector('#{{ $id }}-params-drawer');
+            const paramsCloseBtn = document.querySelector('#{{ $id }}-params-close-button');
+            const paramsAddBtn = document.querySelector('#{{ $id }}-params-add-button');
+            const paramsRows = document.querySelector('#{{ $id }}-params-rows');
+            const paramsEmpty = document.querySelector('#{{ $id }}-params-empty');
             let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
 
             function resetResultExpansion() {
                 if (!resultExpandBtn) {
@@ -130,7 +155,7 @@
                     const resultHeight = getEditorContentHeight(resultEditor);
                     applyResultHeight(resultHeight);
                 }
-                {{- else if $isHorizontal }}
+                {{- else }}
                 if (isResultVisible) {
                     applyResultHeight(getCollapsedResultHeight());
                 }
@@ -169,7 +194,6 @@
                 setResultVisible(false);
             });
 
-            {{- if or $isAutoHeight $isHorizontal }}
             const collapsedResultHeightStyle = resultEditor.container.style.height;
             let isResultExpanded = false;
 
@@ -238,7 +262,117 @@
                 });
             }
 
-            {{- end }}
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse({{ $params }});
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
 
@@ -343,6 +477,7 @@
                 btn.setAttribute('aria-busy', 'true');
                 btn.setAttribute('aria-label', 'Running query');
                 btn.disabled = true;
+                setParamsControlsDisabled(true);
             }
 
             function onEnd(result) {
@@ -356,6 +491,7 @@
                 btn.setAttribute('aria-busy', 'false');
                 btn.setAttribute('aria-label', 'Run query');
                 btn.disabled = false;
+                setParamsControlsDisabled(false);
 
                 setContent(resultEditor, result);
                 setResultVisible(true);
@@ -368,7 +504,7 @@
 
                 const body = {
                         text: textEditor.getValue(),
-                        params: JSON.parse({{ $params }})
+                        params: getParams()
                 };
                 
                 {{- if eq $apiVersion "2" }}
