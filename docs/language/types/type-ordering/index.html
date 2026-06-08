@@ -422,10 +422,107 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
         
-            <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link is-ancestor">
                 Values and Types
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/basic/" class="docs-nav-link">
+                Basic Types
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/language/types/type-ordering/" class="docs-nav-link is-active" aria-current="page">
+                Type Ordering
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
+                Variables
             </a>
         
 
@@ -484,72 +581,10 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
-        
-            <a href="https://ferretlang.org/docs/language/type-ordering/" class="docs-nav-link is-active" aria-current="page">
-                Type Ordering
-            </a>
-        
-
-        
-    </li>
-
-
-                
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
         
             <a href="https://ferretlang.org/docs/language/operators/" class="docs-nav-link">
                 Operators
-            </a>
-        
-
-        
-    </li>
-
-
-                
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <li class="docs-nav-item docs-nav-depth-1">
-        
-            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
-                Variables
             </a>
         
 
@@ -636,17 +671,10 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    
-
-
-<h1 id="type-and-value-order">
-<a href="#type-and-value-order">
-Type and value order
-</a>
-</h1>
-<p>When checking for equality or inequality or when determining the sort order of values, FQL uses a deterministic algorithm that takes both the data types and the actual values into account.</p>
-<p>The compared operands are first compared by their data types, and only by their data values if the operands have the same data types.</p>
-<p>The following type order is used when comparing data types:</p>
+    <h1 id="type-ordering">Type ordering</h1>
+<p>FQL comparisons are deterministic. Any two values can be compared, even when they do not have the same type.</p>
+<p>When two values are compared, FQL first looks at their types. If the types are different, the result is decided by the global type order. The actual values are only compared when both operands have the same type.</p>
+<p>FQL uses the following type order:</p>
 
 
 
@@ -656,7 +684,7 @@ Type and value order
 
 
 
-<div class="code-editor is-readonly">
+<div class="code-editor is-readonly is-auto-height">
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -668,7 +696,7 @@ Type and value order
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" style="height: 90px;">none &lt; bool &lt; number &lt; string &lt; array/list &lt; object</div>
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">none &lt; bool &lt; number &lt; string &lt; array &lt; object</div>
         </div>
     </div>
 
@@ -686,12 +714,24 @@ Type and value order
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
         }, false);
     </script>
 </div>
 
-<p>This means none is the smallest type in FQL and object is the type with the highest order. If the compared operands have a different type, then the comparison result is determined and the comparison is finished.</p>
-<p>For example, the boolean true value will always be less than any numeric or string value, any array (even an empty array) or any object. Additionally, any string value (even an empty string) will always be greater than any numeric value, a boolean value, true or false</p>
+<p>This means that none sorts before every other value, while objects sort after every other built-in value type.</p>
+<p>For example, a boolean value always sorts before a number, a string, an array, or an object. A string always sorts after a number, even if the string is empty or contains numeric-looking text.</p>
 
 
 
@@ -701,7 +741,7 @@ Type and value order
 
 
 
-<div class="code-editor is-readonly">
+<div class="code-editor is-readonly is-auto-height">
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -713,47 +753,24 @@ Type and value order
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" style="height: 730px;">none &lt; false
-none &lt; true
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">none &lt; false
 none &lt; 0
-none &lt; &#39;&#39;
-none &lt; &#39; &#39;
-none &lt; &#39;0&#39;
-none &lt; &#39;abc&#39;
-none &lt; [ ]
-none &lt; { }
+none &lt; &#34;&#34;
+none &lt; []
+none &lt; {}
 
 false &lt; true
-false &lt; 0
-false &lt; &#39;&#39;
-false &lt; &#39; &#39;
-false &lt; &#39;0&#39;
-false &lt; &#39;abc&#39;
-false &lt; [ ]
-false &lt; { }
-
 true &lt; 0
-true &lt; &#39;&#39;
-true &lt; &#39; &#39;
-true &lt; &#39;0&#39;
-true &lt; &#39;abc&#39;
-true &lt; [ ]
-true &lt; { }
 
-0 &lt; &#39;&#39;
-0 &lt; &#39; &#39;
-0 &lt; &#39;0&#39;
-0 &lt; &#39;abc&#39;
-0 &lt; [ ]
-0 &lt; { }
+0 &lt; &#34;&#34;
+0 &lt; &#34;0&#34;
+0 &lt; &#34;abc&#34;
+0 &lt; []
 
-&#39;&#39; &lt; &#39; &#39;
-&#39;&#39; &lt; &#39;0&#39;
-&#39;&#39; &lt; &#39;abc&#39;
-&#39;&#39; &lt; [ ]
-&#39;&#39; &lt; { }
+&#34;&#34; &lt; &#34;abc&#34;
+&#34;abc&#34; &lt; []
 
-[ ] &lt; { }</div>
+[] &lt; {}</div>
         </div>
     </div>
 
@@ -771,23 +788,31 @@ true &lt; { }
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
         }, false);
     </script>
 </div>
 
-<p>If the two compared operands have the same data types, then the operands values are compared. For the primitive types (none, boolean, number, and string), the result is defined as follows:</p>
+<p>Once the types are the same, FQL compares the values according to the rules for that type.</p>
+<h2 id="primitive-values">Primitive values</h2>
+<p>Primitive values are ordered as follows:</p>
 <ul>
-<li>none: none is equal to none</li>
-<li>boolean: false is less than true</li>
-<li>number: numeric values are ordered by their cardinal value</li>
-<li>string: string values are ordered using a localized comparison, using the configured server language for sorting according to the alphabetical order rules of that language</li>
+<li>none is only equal to none.</li>
+<li>Booleans are ordered as false &lt; true.</li>
+<li>Numbers are ordered by numeric value.</li>
+<li>Strings are ordered using FQL&rsquo;s string comparison rules.</li>
 </ul>
-<div class="notification is-info">
-  Unlike in SQL, none can be compared to any value, including none itself, without the result being converted into none automatically.
-</div>
-<p>For compound, types the following special rules are applied:</p>
-<p>Two array values are compared by comparing their individual elements position by position, starting at the first element. For each position, the element types are compared first. If the types are not equal, the comparison result is determined, and the comparison is finished. If the types are equal, then the values of the two elements are compared.</p>
-<p>If an array element is itself a compound value (an array or an object), then the comparison algorithm will check the element&rsquo;s sub values recursively. The element&rsquo;s sub-elements are compared recursively.</p>
 
 
 
@@ -797,7 +822,7 @@ true &lt; { }
 
 
 
-<div class="code-editor is-readonly">
+<div class="code-editor is-readonly is-auto-height">
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -809,9 +834,14 @@ true &lt; { }
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" style="height: 120px;">[ ] &lt; [ 0 ]
-[ 1 ] &lt; [ 2 ]
-[ false ] &lt; [ true ]</div>
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">none == none
+
+false &lt; true
+
+1 &lt; 2
+10 &gt; 2
+
+&#34;a&#34; &lt; &#34;b&#34;</div>
         </div>
     </div>
 
@@ -829,12 +859,218 @@ true &lt; { }
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
         }, false);
     </script>
 </div>
 
-<p>Two object operands are compared by checking attribute names and value. The attribute names are compared first. Before attribute names are compared, a combined array of all attribute names from both operands is created and sorted lexicographically. This means that the order in which attributes are declared in an object is not relevant when comparing two objects.</p>
-<p>The combined and sorted array of attribute names is then traversed, and the respective attributes from the two compared operands are then looked up. If one of the objects does not have an attribute with the sought name, its attribute value is considered to be none. Finally, the attribute value of both objects is compared using the before mentioned data type and value comparison. The comparisons are performed for all object / document attributes until there is an unambiguous comparison result. If an unambiguous comparison result is found, the comparison is finished. If there is no unambiguous comparison result, the two compared objects are considered equal.</p>
+<div class="notification is-info">
+  none is a regular comparable value in FQL. Comparing a value with none does not produce an unknown result.
+</div>
+<h2 id="arrays">Arrays</h2>
+<p>Arrays are compared element by element from left to right.</p>
+<p>At each position, FQL compares the two elements using the same comparison rules described on this page. If the elements are different, that result decides the array comparison. If the elements are equal, FQL moves to the next position.</p>
+<p>If all compared elements are equal, the shorter array sorts first.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">[] &lt; [0]
+
+[1] &lt; [2]
+
+[false] &lt; [true]
+
+[1, 2] &lt; [1, 3]
+
+[1] &lt; [1, 0]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Array comparison is recursive. If an element is another array or an object, that nested value is compared using the same rules.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">[[1]] &lt; [[2]]
+
+[{ &#34;score&#34;: 1 }] &lt; [{ &#34;score&#34;: 2 }]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h2 id="objects">Objects</h2>
+<p>Objects are compared by their attributes, not by the order in which those attributes were written.</p>
+<p>Before two objects are compared, FQL considers their attribute names in sorted order. For each attribute name, FQL compares the corresponding values from both objects.</p>
+<p>If one object has an attribute that the other object does not have, the missing value is treated as none for comparison purposes.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">{} &lt; { &#34;a&#34;: 1 }
+
+{} == { &#34;a&#34;: none }
+
+{ &#34;a&#34;: 1 } &lt; { &#34;a&#34;: 2 }
+
+{ &#34;a&#34;: true } &lt; { &#34;a&#34;: 0 }
+
+{ &#34;a&#34;: { &#34;score&#34;: 1 } } &lt; { &#34;a&#34;: { &#34;score&#34;: 2 } }</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Attribute declaration order does not affect equality:</p>
 
 
 
@@ -856,20 +1092,13 @@ true &lt; { }
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" style="height: 200px;">{ } &lt; { &#34;a&#34; : 1 }
-{ } &lt; { &#34;a&#34; : none }
-{ &#34;a&#34; : 1 } &lt; { &#34;a&#34; : 2 }
-{ &#34;b&#34; : 1 } &lt; { &#34;a&#34; : 0 }
-{ &#34;a&#34; : { &#34;c&#34; : true } } &lt; { &#34;a&#34; : { &#34;c&#34; : 0 } }
-{ &#34;a&#34; : { &#34;c&#34; : true, &#34;a&#34; : 0 } } &lt; { &#34;a&#34; : { &#34;c&#34; : false, &#34;a&#34; : 1 } }
-
-{ &#34;a&#34; : 1, &#34;b&#34; : 2 } == { &#34;b&#34; : 2, &#34;a&#34; : 1 }</div>
+            <div id="code-7-text" class="code-editor-text" style="height: 110px;">{ &#34;a&#34;: 1, &#34;b&#34;: 2 } == { &#34;b&#34;: 2, &#34;a&#34;: 1 }</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-4-text');
+            const editor = ace.edit('code-7-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
@@ -885,12 +1114,22 @@ true &lt; { }
     </script>
 </div>
 
+<p>If all attributes compare as equal, the objects are considered equal.</p>
 
 </article>
 
         </main>
 
-        
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#primitive-values">Primitive values</a></li>
+    <li><a href="#arrays">Arrays</a></li>
+    <li><a href="#objects">Objects</a></li>
+  </ul>
+</nav>
+</aside>
     </div>
 </div>
 <script type="module">

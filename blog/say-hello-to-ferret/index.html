@@ -328,14 +328,14 @@ So, I started looking a for a tool that would solve the issues for me, but unfor
 
 
 
-<div class="code-editor is-vertical is-readonly">
+<div class="code-editor is-horizontal is-readonly">
 
     <div class="code-editor-shell">
         <div id="code-editor-1-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
-                <small>Ferret</small>
+                <small>Ferret v2</small>
             </div>
 
             <div class="code-editor-actions">
@@ -371,6 +371,7 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
                         <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
                     </div>
                 </div>
@@ -398,7 +399,7 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
             const textEditor = createEditor('code-editor-1-text', 'fql', true);
             const resultEditor = createEditor('code-editor-1-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-1-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-1-header');
             const editorGrid = document.querySelector('#code-editor-1-grid');
             const runProgress = document.querySelector('#code-editor-1-progress');
@@ -419,6 +420,9 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
             }
 
             function syncEditorLayout() {
+                if (isResultVisible) {
+                    applyResultHeight(getCollapsedResultHeight());
+                }
 
                 textEditor.resize();
 
@@ -452,6 +456,61 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
                 textEditor.setReadOnly(true);
@@ -500,7 +559,7 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
-                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
                 onStart();
                 fetch(url, {
@@ -573,14 +632,14 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
 
 
 
-<div class="code-editor is-vertical is-readonly">
+<div class="code-editor is-horizontal is-readonly">
 
     <div class="code-editor-shell">
         <div id="code-editor-2-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
-                <small>Ferret</small>
+                <small>Ferret v2</small>
             </div>
 
             <div class="code-editor-actions">
@@ -615,6 +674,7 @@ FOR track IN tracks
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
                         <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
                     </div>
                 </div>
@@ -642,7 +702,7 @@ FOR track IN tracks
             const textEditor = createEditor('code-editor-2-text', 'fql', true);
             const resultEditor = createEditor('code-editor-2-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-2-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-2-header');
             const editorGrid = document.querySelector('#code-editor-2-grid');
             const runProgress = document.querySelector('#code-editor-2-progress');
@@ -663,6 +723,9 @@ FOR track IN tracks
             }
 
             function syncEditorLayout() {
+                if (isResultVisible) {
+                    applyResultHeight(getCollapsedResultHeight());
+                }
 
                 textEditor.resize();
 
@@ -696,6 +759,61 @@ FOR track IN tracks
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
                 textEditor.setReadOnly(true);
@@ -744,7 +862,7 @@ FOR track IN tracks
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
-                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
                 onStart();
                 fetch(url, {
@@ -811,14 +929,14 @@ FOR track IN tracks
 
 
 
-<div class="code-editor is-vertical is-readonly">
+<div class="code-editor is-horizontal is-readonly">
 
     <div class="code-editor-shell">
         <div id="code-editor-3-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
-                <small>Ferret</small>
+                <small>Ferret v2</small>
             </div>
 
             <div class="code-editor-actions">
@@ -856,6 +974,7 @@ FOR track IN tracks
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-3-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result">Expand</button>
                         <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
                     </div>
                 </div>
@@ -883,7 +1002,7 @@ FOR track IN tracks
             const textEditor = createEditor('code-editor-3-text', 'fql', true);
             const resultEditor = createEditor('code-editor-3-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-3-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-3-header');
             const editorGrid = document.querySelector('#code-editor-3-grid');
             const runProgress = document.querySelector('#code-editor-3-progress');
@@ -904,6 +1023,9 @@ FOR track IN tracks
             }
 
             function syncEditorLayout() {
+                if (isResultVisible) {
+                    applyResultHeight(getCollapsedResultHeight());
+                }
 
                 textEditor.resize();
 
@@ -937,6 +1059,61 @@ FOR track IN tracks
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
                 textEditor.setReadOnly(true);
@@ -985,7 +1162,7 @@ FOR track IN tracks
                         text: textEditor.getValue(),
                         params: JSON.parse("{}")
                 };
-                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
                 onStart();
                 fetch(url, {
@@ -1063,14 +1240,14 @@ FOR track IN tracks
 
 
 
-<div class="code-editor is-vertical is-readonly">
+<div class="code-editor is-horizontal is-readonly">
 
     <div class="code-editor-shell">
         <div id="code-editor-4-header" class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
-                <small>Ferret</small>
+                <small>Ferret v2</small>
             </div>
 
             <div class="code-editor-actions">
@@ -1141,6 +1318,7 @@ RETURN FLATTEN(result)</div>
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-4-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result">Expand</button>
                         <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
                     </div>
                 </div>
@@ -1168,7 +1346,7 @@ RETURN FLATTEN(result)</div>
             const textEditor = createEditor('code-editor-4-text', 'fql', true);
             const resultEditor = createEditor('code-editor-4-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-4-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-4-header');
             const editorGrid = document.querySelector('#code-editor-4-grid');
             const runProgress = document.querySelector('#code-editor-4-progress');
@@ -1189,6 +1367,9 @@ RETURN FLATTEN(result)</div>
             }
 
             function syncEditorLayout() {
+                if (isResultVisible) {
+                    applyResultHeight(getCollapsedResultHeight());
+                }
 
                 textEditor.resize();
 
@@ -1222,6 +1403,61 @@ RETURN FLATTEN(result)</div>
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
                 textEditor.setReadOnly(true);
@@ -1270,7 +1506,7 @@ RETURN FLATTEN(result)</div>
                         text: textEditor.getValue(),
                         params: JSON.parse("{ \"criteria\": \"ferret\" }")
                 };
-                const url = "https:\/\/worker-pucbyp2omq-ue.a.run.app";
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
 
                 onStart();
                 fetch(url, {

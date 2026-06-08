@@ -454,7 +454,38 @@
     <li class="docs-nav-item docs-nav-depth-2">
         
             <a href="https://ferretlang.org/docs/language/types/basic/" class="docs-nav-link">
-                Basic
+                Basic Types
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/type-ordering/" class="docs-nav-link">
+                Type Ordering
             </a>
         
 
@@ -464,6 +495,37 @@
 
                 
             </ul>
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
+                Variables
+            </a>
+        
+
         
     </li>
 
@@ -519,72 +581,10 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1">
-        
-            <a href="https://ferretlang.org/docs/language/type-ordering/" class="docs-nav-link">
-                Type Ordering
-            </a>
-        
-
-        
-    </li>
-
-
-                
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
         
             <a href="https://ferretlang.org/docs/language/operators/" class="docs-nav-link">
                 Operators
-            </a>
-        
-
-        
-    </li>
-
-
-                
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <li class="docs-nav-item docs-nav-depth-1">
-        
-            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
-                Variables
             </a>
         
 
@@ -672,10 +672,8 @@
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
     <h1 id="values-and-types">Values and Types</h1>
-<p>FQL works with values.</p>
-<p>A value can be something simple, such as a number, string, boolean, or NONE. It can be structured data, such as an array or object. It can also be a runtime-backed value provided by a Ferret runtime, module, or embedding application.</p>
-<p>This is an important part of Ferret&rsquo;s design: FQL is not limited to JSON-like data.</p>
-<p>A script can work with ordinary values:</p>
+<p>FQL is built around values. Every expression produces one, every variable holds one, and every script returns one. A value can be as simple as a number or a string, as structured as an array or object, or as rich as a host value provided by a Ferret runtime, module, or embedding application.</p>
+<p>This last category is an important part of Ferret&rsquo;s design. FQL is not limited to JSON-like data. A script can work with plain data - constructing objects, iterating arrays, computing expressions - but it can also work with values that represent live resources outside the script itself:</p>
 
 
 
@@ -701,13 +699,9 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET user = {
-    name: &#34;Ada&#34;,
-    active: true,
-    roles: [&#34;admin&#34;, &#34;editor&#34;]
-}  
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)
 
-RETURN user.name</div>
+RETURN doc.title</div>
         </div>
     </div>
 
@@ -779,7 +773,34 @@ RETURN user.name</div>
     </script>
 </div>
 
-<p>But it can also work with values that represent external resources:</p>
+<p>Here, <code>doc</code> is not a plain object constructed by the script. It is a host value returned by <code>DOCUMENT(...)</code>, and it may represent an HTML document, a remote resource, or something else entirely depending on the runtime. From the script author&rsquo;s perspective, it is still a value: it can be assigned to a variable, passed to functions, and accessed through the operations it supports.</p>
+<h2 id="value-categories">Value categories</h2>
+<p>FQL values fall into three broad categories.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Category</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Basic values</td>
+          <td>Values built into FQL itself: <code>NONE</code>, booleans, numbers, strings, arrays, objects, and binary values.</td>
+      </tr>
+      <tr>
+          <td>Host values</td>
+          <td>Values provided by a runtime, module, or embedding application, representing external resources such as documents, elements, responses, files, cursors, or application-specific objects.</td>
+      </tr>
+      <tr>
+          <td>Capabilities</td>
+          <td>Behaviors a value supports, such as property access, iteration, dispatch, mutation, serialization, or cleanup.</td>
+      </tr>
+  </tbody>
+</table>
+<p>The distinction between the first two categories and the third is worth noting. Basic values and host values describe what a value <em>is</em>. Capabilities describe what a value can <em>do</em>. An array is a basic value that supports iteration; an object is a basic value that supports property access; a document returned by <code>DOCUMENT(...)</code> is a host value that may expose properties like <code>title</code>, <code>url</code>, or <code>body</code>. The category a value belongs to does not determine its capabilities — that is defined by the value itself.</p>
+<h2 id="basic-values">Basic values</h2>
+<p>Basic values are the ordinary, built-in values of the language. They include the absence marker <code>NONE</code>, the booleans <code>true</code> and <code>false</code>, numeric values like <code>42</code> or <code>3.14</code>, text strings, ordered arrays, named-field objects, and raw binary data. Most scripts work primarily with basic values, either constructing them directly or extracting them from host values:</p>
 
 
 
@@ -805,9 +826,13 @@ RETURN user.name</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;) 
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET user = {
+name: &#34;Ada&#34;,
+active: true,
+roles: [&#34;admin&#34;, &#34;editor&#34;]
+}
 
-RETURN doc.title</div>
+RETURN user.name</div>
         </div>
     </div>
 
@@ -879,41 +904,6 @@ RETURN doc.title</div>
     </script>
 </div>
 
-<p>In this example, <code>doc</code> is not a plain object created by the script. It is a runtime-backed value returned by the <code>DOCUMENT</code> function.
-From the script author’s perspective, it can still be accessed like a normal FQL value.
-The <code>title</code> value may be backed by an HTML or browser runtime. It may expose properties such as <code>text</code>, <code>html</code>, or <code>attributes</code>, depending on the module that created it.</p>
-<h2 id="value-categories">Value categories</h2>
-<p>FQL values can be grouped by where they come from and by what they can do.</p>
-<p>Some values are built into the language. Other values are provided by modules, runtimes, or host applications. On top of that, values may support different capabilities, such as property access, iteration, dispatch, mutation, serialization, or cleanup.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Concept</th>
-          <th>Description</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Basic values</td>
-          <td>Built-in values such as <code>NONE</code>, booleans, numbers, strings, arrays, objects, and binary data.</td>
-      </tr>
-      <tr>
-          <td>Host values</td>
-          <td>Values provided by modules, runtimes, or applications that embed Ferret.</td>
-      </tr>
-      <tr>
-          <td>Capabilities</td>
-          <td>Behaviors a value may support, such as property access, iteration, dispatch, mutation, serialization, or cleanup.</td>
-      </tr>
-  </tbody>
-</table>
-<p>These concepts can overlap.</p>
-<p>For example, an array is a basic value, and it also supports iteration. An object is a basic value, and it supports property access. A document returned by <code>DOCUMENT(...)</code> is a host value, and it may support property access through fields such as <code>title</code> or <code>url</code>.</p>
-<p>A cursor returned by a database module could be a host value that supports iteration. A browser element could be a host value that supports property access and event dispatch.</p>
-<p>In other words, <strong>basic values</strong> and <strong>host values</strong> describe what a value is, while <strong>capabilities</strong> describe what a value can do.</p>
-<h2 id="basic-values">Basic values</h2>
-<p>Basic values are the values built into FQL itself.</p>
-<p>They include:</p>
 <table>
   <thead>
       <tr>
@@ -924,48 +914,51 @@ The <code>title</code> value may be backed by an HTML or browser runtime. It may
   </thead>
   <tbody>
       <tr>
-          <td>none</td>
-          <td>NONE</td>
-          <td>Represents an absent value.</td>
+          <td><code>NONE</code></td>
+          <td><code>NONE</code></td>
+          <td>Represents an absent or undefined value.</td>
       </tr>
       <tr>
-          <td>boolean</td>
-          <td>true, false</td>
+          <td><code>bool</code></td>
+          <td><code>true</code>, <code>false</code></td>
           <td>Represents a truth value.</td>
       </tr>
       <tr>
-          <td>integer</td>
-          <td>42</td>
-          <td>Represents a whole number.</td>
+          <td><code>number</code></td>
+          <td><code>42</code>, <code>3.14</code></td>
+          <td>Represents numeric values, both integer and floating-point.</td>
       </tr>
       <tr>
-          <td>float</td>
-          <td>3.14</td>
-          <td>Represents a floating-point number.</td>
-      </tr>
-      <tr>
-          <td>string</td>
-          <td>&ldquo;hello&rdquo;</td>
+          <td><code>string</code></td>
+          <td><code>&quot;hello&quot;</code></td>
           <td>Represents text.</td>
       </tr>
       <tr>
-          <td>array</td>
-          <td>[1, 2, 3]</td>
+          <td><code>array</code></td>
+          <td><code>[1, 2, 3]</code></td>
           <td>Represents an ordered sequence of values.</td>
       </tr>
       <tr>
-          <td>object</td>
-          <td>{ name: &ldquo;Ada&rdquo; }</td>
-          <td>Represents named fields.</td>
+          <td><code>object</code></td>
+          <td><code>{ name: &quot;Ada&quot; }</code></td>
+          <td>Represents a set of named fields.</td>
       </tr>
       <tr>
-          <td>binary</td>
+          <td><code>binary</code></td>
           <td>module-specific</td>
-          <td>Represents raw bytes, such as files or response bodies.</td>
+          <td>Represents raw bytes.</td>
       </tr>
   </tbody>
 </table>
-<p>Basic values are the values you use most often when writing ordinary FQL scripts.</p>
+<p>Basic values are covered in detail in <a href="#">Basic Types</a>.</p>
+<h2 id="host-values">Host values</h2>
+<p>Host values are values defined outside the core language. They are provided by Ferret runtimes, modules, or applications that embed Ferret, and they may represent anything managed by the host environment — an HTML document, a browser element, an HTTP response, a file, a database cursor, or an application-specific object.</p>
+<p>The script excerpt above, using <code>DOCUMENT(...)</code>, illustrates this. The <code>doc</code> value may expose fields like <code>title</code> or <code>url</code> to FQL, but it is not a plain object: its structure and behavior are defined by the module or runtime that created it, not by the language itself.</p>
+<p>This extensibility is central to Ferret&rsquo;s design. Rather than adding a separate built-in type for every external system — browsers, APIs, databases, files, test harnesses — Ferret allows host environments to introduce their own value types that integrate naturally with the rest of the language. A host value participates in the same expressions, assignments, and function calls as any basic value.</p>
+<p>Host values are covered in detail in <a href="#">Host Values</a>.</p>
+<h2 id="capabilities">Capabilities</h2>
+<p>Not every value supports every operation, and capabilities are how FQL describes this. A capability is a behavior that a value exposes: property access, iteration, dispatch, mutation, serialization, or cleanup. Whether a given value supports a given capability depends on the value itself, not on its category.</p>
+<p>Arrays, for instance, support iteration. The <code>FOR</code> statement relies on this:</p>
 
 
 
@@ -991,14 +984,8 @@ The <code>title</code> value may be backed by an HTML or browser runtime. It may
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">LET product = {
-    name: &#34;Keyboard&#34;,
-    price: 149.99,
-    tags: [&#34;hardware&#34;, &#34;input&#34;],
-    available: true
-}
-
-RETURN product</div>
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">FOR item IN [1, 2, 3]
+RETURN item * 2</div>
         </div>
     </div>
 
@@ -1070,10 +1057,7 @@ RETURN product</div>
     </script>
 </div>
 
-<p>See Basic Values for details.</p>
-<h2 id="none-and-absence">NONE and absence</h2>
-<p><code>NONE</code> is Ferret&rsquo;s equivalent of <code>null</code>, <code>nil</code>, or <code>None</code> in other languages.</p>
-<p>It represents the absence of a value.</p>
+<p>Objects support property access, which is what makes dot notation meaningful:</p>
 
 
 
@@ -1099,7 +1083,9 @@ RETURN product</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" data-auto-height="true">RETURN NONE</div>
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">LET user = { name: &#34;Ada&#34;, active: true }
+
+RETURN user.name</div>
         </div>
     </div>
 
@@ -1171,9 +1157,7 @@ RETURN product</div>
     </script>
 </div>
 
-<p>Like <code>null</code> or <code>nil</code>, <code>NONE</code> is not the same as <code>false</code>, <code>0</code>, an empty string, an empty array, or an empty object.</p>
-<p>That distinction is useful in extraction and automation workflows, where a missing value can mean something different from an empty value.</p>
-<p>For example, a product may have no discount value:</p>
+<p>A browser element provided by a host runtime may support dispatch, allowing commands to be sent to it:</p>
 
 
 
@@ -1199,10 +1183,7 @@ RETURN product</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-5-text" class="code-editor-text" data-auto-height="true">RETURN {
-    name: &#34;Keyboard&#34;,
-    discount: NONE
-}</div>
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">DISPATCH &#34;click&#34; IN button</div>
         </div>
     </div>
 
@@ -1274,10 +1255,10 @@ RETURN product</div>
     </script>
 </div>
 
-<p>That is different from a discount value of <code>0</code>, which means the discount exists but its amount is zero.</p>
-<h2 id="structured-values">Structured values</h2>
-<p>Arrays and objects are the main structured values in FQL.</p>
-<p>Arrays hold ordered values:</p>
+<p>Capabilities are particularly important for host values because different host values may support different operations. A document may expose properties; a cursor may be iterable; a browser element may accept dispatched commands. Understanding which capabilities a value supports tells you what you can do with it in a script.</p>
+<p>Capabilities are covered in detail in <a href="#">Value Capabilities</a>.</p>
+<h2 id="returning-values">Returning values</h2>
+<p>Every FQL script returns a value. That value may be a primitive, a structured object, or a collection built from a query:</p>
 
 
 
@@ -1303,9 +1284,12 @@ RETURN product</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-6-text" class="code-editor-text" data-auto-height="true">LET names = [&#34;Ada&#34;, &#34;Grace&#34;, &#34;Edsger&#34;]  
-
-RETURN names[0]</div>
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">FOR product IN products
+    RETURN {
+        name: product.name,
+        price: product.price,
+        available: product.stock &gt; 0
+    }</div>
         </div>
     </div>
 
@@ -1377,1227 +1361,9 @@ RETURN names[0]</div>
     </script>
 </div>
 
-<p>Objects hold named values:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-7-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-7-text" class="code-editor-text" data-auto-height="true">LET user = {
-    name: &#34;Ada&#34;,     
-    address: {
-        city: &#34;London&#34;
-    } 
-}  
-
-RETURN user.address.city</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-7-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-7-copy-button');
-            const copyClipboardEl = document.querySelector('#code-7-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>Structured values are used heavily in FQL because scripts often extract, reshape, and return structured data.</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-8-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-8-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-8-text" class="code-editor-text" data-auto-height="true">LET products = [
-    { name: &#34;Keyboard&#34;, price: 149.99, stock: 10 },
-    { name: &#34;Mouse&#34;, price: 49.99, stock: 0 },
-    { name: &#34;Monitor&#34;, price: 299.99, stock: 5 }
-]
-
-FOR product IN products
-    RETURN {
-        name: product.name,
-        price: product.price,
-        available: product.stock &gt; 0
-    }</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-8-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-8-copy-button');
-            const copyClipboardEl = document.querySelector('#code-8-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>See <code>Arrays</code> and <code>Objects</code> for details.</p>
-<h2 id="host-values">Host values</h2>
-<p>Host values are values provided by modules, runtimes, or applications that embed Ferret.</p>
-<p>They behave like FQL values, but they may represent things that live outside the script itself: an HTML document, a browser page, an element, a network response, a file, a cursor, a message, or an application-specific object.</p>
-<p>For example:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-9-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-9-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-9-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)
-
-RETURN doc.title</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-9-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-9-copy-button');
-            const copyClipboardEl = document.querySelector('#code-9-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>In this example, <code>doc</code> is a host value returned by the <code>DOCUMENT</code> function. The script can access <code>doc.title</code>, but <code>doc</code> does not have to be a plain object created in the script.</p>
-<p>The module or host application decides what the value represents and what behavior it exposes.</p>
-<p>This allows Ferret to work with external systems without forcing every external resource to become a plain object first.</p>
-<h2 id="capabilities">Capabilities</h2>
-<p>Different values can do different things.</p>
-<p>Some values only carry data. For example, a number can be compared, copied, returned, or used in arithmetic, but it does not have fields and cannot be iterated.</p>
-<p>Other values expose additional behavior to FQL. These behaviors are called <strong>capabilities</strong>.</p>
-<p>A capability describes what operations a value supports. Conceptually, it is like an interface between a value and the Ferret runtime. When FQL code performs an operation, the runtime checks whether the value supports the capability required by that operation.</p>
-<p>For example, <code>FOR ... IN</code> requires the value to be iterable. Dot access requires the value to expose properties. Dispatch requires the value to accept events or commands.</p>
-<p>This is useful because FQL does not need a separate built-in type for every possible external resource. Instead, modules and host applications can provide values that support the behaviors that make sense for that resource.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Capability</th>
-          <th>Enables</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Property access</td>
-          <td>Reading fields with <code>.name</code> or <code>[name]</code>.</td>
-      </tr>
-      <tr>
-          <td>Iteration</td>
-          <td>Using the value in <code>FOR ... IN</code>.</td>
-      </tr>
-      <tr>
-          <td>Mutation</td>
-          <td>Updating the value or its fields, if supported.</td>
-      </tr>
-      <tr>
-          <td>Dispatch</td>
-          <td>Sending an event or command to the value.</td>
-      </tr>
-      <tr>
-          <td>Serialization</td>
-          <td>Returning the value as output.</td>
-      </tr>
-      <tr>
-          <td>Cleanup</td>
-          <td>Releasing host-side resources after execution.</td>
-      </tr>
-  </tbody>
-</table>
-<p>Basic values can have capabilities too.</p>
-<p>For example, arrays support iteration:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-10-text" class="code-editor-text" data-auto-height="true">FOR item IN [1, 2, 3]
-
-RETURN item * 2</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-10-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-10-copy-button');
-            const copyClipboardEl = document.querySelector('#code-10-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>Objects support property access:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-11-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-11-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-11-text" class="code-editor-text" data-auto-height="true">LET user = {
-    name: &#34;Ada&#34;,
-    active: true
-}
-
-RETURN user.name</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-11-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-11-copy-button');
-            const copyClipboardEl = document.querySelector('#code-11-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>Host values can expose capabilities as well.</p>
-<p>For example, a document value may expose fields such as <code>title</code> or <code>url</code>:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-12-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-12-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-12-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)
-
-RETURN doc.title</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-12-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-12-copy-button');
-            const copyClipboardEl = document.querySelector('#code-12-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>A cursor returned by a database module may support iteration:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-13-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-13-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-13-text" class="code-editor-text" data-auto-height="true">LET rows = QUERY &#34;SELECT id, name FROM users&#34; IN db USING sql
-
-FOR row IN rows
-    RETURN row.name</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-13-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-13-copy-button');
-            const copyClipboardEl = document.querySelector('#code-13-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>A browser element may support dispatch, allowing the script to send an event or command to it:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-14-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-14-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-14-text" class="code-editor-text" data-auto-height="true">DISPATCH &#34;click&#34; IN button</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-14-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-14-copy-button');
-            const copyClipboardEl = document.querySelector('#code-14-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>The exact capabilities depend on the value and on the module, runtime, or host application that provides it.</p>
-<p>This means two values may both be host values but support different operations. A document may support property access. A cursor may support iteration. A browser element may support property access and dispatch. A binary response body may be serializable but not iterable.</p>
-<p>When an operation is used on a value that does not support it, Ferret reports an error unless the script handles that error explicitly.</p>
-<p>See <a href="../value-capabilities/">Value Capabilities</a> for details.</p>
-<h2 id="host-values-1">Host values</h2>
-<p>Host values are values provided by modules, runtimes, or applications that embed Ferret.</p>
-<p>They are useful when a script needs to work with something that is not just plain FQL data. A host value may represent an external resource, a handle to something managed outside the script, or a domain-specific object provided by the application.</p>
-<p>Examples include:</p>
-<ul>
-<li>an HTML document</li>
-<li>a browser page</li>
-<li>a DOM element</li>
-<li>an HTTP response</li>
-<li>a file or blob</li>
-<li>a database record</li>
-<li>a database cursor</li>
-<li>a queue message</li>
-<li>an application-specific domain object</li>
-</ul>
-<p>From the script author&rsquo;s perspective, a host value is still a value. It can be assigned to a variable, passed to a function, returned from a function, or used in expressions.</p>
-<p>For example, DOCUMENT(&hellip;) may return a document value:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-15-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-15-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-15-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)
-
-RETURN doc.title</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-15-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-15-copy-button');
-            const copyClipboardEl = document.querySelector('#code-15-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>In this example, doc is not a plain object created by the script. It is a value provided by a module or runtime. The script can still access doc.title because the document value exposes that property to FQL.</p>
-<p>Host values can support different capabilities depending on what they represent.</p>
-<p>A database cursor may support iteration:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-16-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-16-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-16-text" class="code-editor-text" data-auto-height="true">FOR row IN DB::QUERY(&#34;SELECT id, name FROM users&#34;)
-RETURN row.name</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-16-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-16-copy-button');
-            const copyClipboardEl = document.querySelector('#code-16-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>An HTTP response may support property access:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-17-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-17-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-17-text" class="code-editor-text" data-auto-height="true">LET response = HTTP::GET(&#34;https://example.com/api/products&#34;)
-
-RETURN response.status</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-17-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-17-copy-button');
-            const copyClipboardEl = document.querySelector('#code-17-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>A browser element may support dispatch, allowing the script to send an event or command to it.</p>
-<p>The exact behavior depends on the module, runtime, or host application that provides the value.</p>
-<p>Host values are one of Ferret&rsquo;s main extension points. They allow the same language to work across static documents, browser automation, APIs, tests, embedded applications, and custom runtimes without adding a separate built-in type for every external system.</p>
-<p>See Host Values for details.</p>
-<h2 id="type-checks">Type checks</h2>
-<p>FQL values have runtime types.</p>
-<p>In most scripts, you do not need to declare types explicitly. Values are created by literals, expressions, functions, modules, or the host application.</p>
-<p>fql LET name = &ldquo;Ada&rdquo; LET count = 10 LET active = true</p>
-<p>Functions and operators may expect certain kinds of values. If a value has the wrong type for an operation, Ferret reports an error unless the script handles it.</p>
-<p>fql RETURN &ldquo;price: &quot; + 10</p>
-<p>Depending on the operator and runtime rules, this may either be supported through conversion or rejected as a type error.</p>
-<p>When writing reusable scripts, it is often better to make assumptions visible:</p>
-<p>fql LET price = product.price  RETURN price == NONE ? NONE : price * 1.2</p>
-<h2 id="values-as-output">Values as output</h2>
-<p>A script returns a value.</p>
-<p>That value may be a primitive value:</p>
-<p>fql RETURN 42</p>
-<p>An object:</p>
-<p>fql RETURN {     name: &ldquo;Ada&rdquo;,     active: true }</p>
-<p>An array:</p>
-<p>fql RETURN [     { name: &ldquo;Ada&rdquo; },     { name: &ldquo;Grace&rdquo; } ]</p>
-<p>Or a value provided by a module or runtime.</p>
-<p>When a value is returned from a script, Ferret needs to serialize it into a result format. Basic values can usually be serialized directly. Runtime-defined values decide how they should appear in output, or whether they can be returned directly at all.</p>
-<p>For extraction workflows, scripts usually return plain arrays and objects because they are easy to consume by other tools.</p>
-<p>fql FOR product IN products     RETURN {         name: product.name,         price: product.price,         url: product.url     }</p>
-<p>Runtime-backed values are often most useful inside the script, while plain values are usually preferred at the boundary.</p>
+<p>For extraction workflows, scripts typically return plain arrays and objects, since these are straightforward for other tools to consume. Host values are most useful inside the script itself — when a host value is returned, it is up to the host to determine whether it can be serialized and what its output representation should be.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
-<p>Use the following pages depending on what you want to learn:</p>
-<ul>
-<li>Basic Values explains NONE, booleans, numbers, strings, arrays, objects, and binary values.</li>
-<li>Arrays and Objects explains structured data, nested access, dynamic property access, and object shorthand.</li>
-<li>Value Capabilities explains property access, iteration, dispatch, mutation, serialization, and cleanup.</li>
-<li>Runtime-defined Values explains values provided by runtimes, modules, and embedded applications.</li>
-</ul>
+<p>TBD</p>
 
 </article>
 
@@ -2609,13 +1375,9 @@ RETURN response.status</div>
   <ul>
     <li><a href="#value-categories">Value categories</a></li>
     <li><a href="#basic-values">Basic values</a></li>
-    <li><a href="#none-and-absence">NONE and absence</a></li>
-    <li><a href="#structured-values">Structured values</a></li>
     <li><a href="#host-values">Host values</a></li>
     <li><a href="#capabilities">Capabilities</a></li>
-    <li><a href="#host-values-1">Host values</a></li>
-    <li><a href="#type-checks">Type checks</a></li>
-    <li><a href="#values-as-output">Values as output</a></li>
+    <li><a href="#returning-values">Returning values</a></li>
     <li><a href="#where-to-go-next">Where to go next</a></li>
   </ul>
 </nav>

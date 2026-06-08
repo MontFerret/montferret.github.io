@@ -453,6 +453,37 @@
 
 
 
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
+                Variables
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
         
             <a href="https://ferretlang.org/docs/language/parameters/" class="docs-nav-link is-active" aria-current="page">
@@ -484,72 +515,10 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1">
-        
-            <a href="https://ferretlang.org/docs/language/type-ordering/" class="docs-nav-link">
-                Type Ordering
-            </a>
-        
-
-        
-    </li>
-
-
-                
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
         
             <a href="https://ferretlang.org/docs/language/operators/" class="docs-nav-link">
                 Operators
-            </a>
-        
-
-        
-    </li>
-
-
-                
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <li class="docs-nav-item docs-nav-depth-1">
-        
-            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
-                Variables
             </a>
         
 
@@ -636,17 +605,9 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    
-
-
-<h1 id="bind-parameters">
-<a href="#bind-parameters">
-Bind parameters
-</a>
-</h1>
-<p>FQL supports the usage of bind parameters, thus allowing to separate the query text from literal values used in the query. It is good practice to separate the query text from the literal values because it allows to reuse same query in different scenarios.</p>
-<p>Using bind parameters, the meaning of an existing query cannot be changed. Bind parameters can be used everywhere in a query where literals can be used.</p>
-<p>The syntax for bind parameters is <code>@name</code> where <code>@</code> signifies that this is a bind parameter and name is the actual parameter name. Parameter names must start with any of the letters a to z (upper or lower case) or a digit (0 to 9), and can be followed by any letter, digit or the underscore symbol.</p>
+    <h1 id="bind-parameters">Bind Parameters</h1>
+<p>Bind parameters allow a query to receive values from the execution context instead of embedding those values directly in the query text.</p>
+<p>A bind parameter is written as <code>@name</code>, where name is the parameter identifier.</p>
 
 
 
@@ -656,7 +617,7 @@ Bind parameters
 
 
 
-<div class="code-editor is-readonly">
+<div class="code-editor is-readonly is-auto-height">
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -668,13 +629,15 @@ Bind parameters
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" style="height: 190px;">LET google = DOCUMENT(&#34;https://www.google.com/&#34;, true)
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET users = [
+    { name: “Ada”, active: true },
+    { name: “Grace”, active: false },
+    { name: “Linus”, active: true }
+]
 
-INPUT(google, &#39;input[name=&#34;q&#34;]&#39;, @criteria)
-
-WAIT_NAVIGATION(google)
-
-RETURN ELEMENTS(google, &#39;.g&#39;)</div>
+FOR user IN users
+    FILTER user.active == @active
+    RETURN user.name</div>
         </div>
     </div>
 
@@ -692,13 +655,25 @@ RETURN ELEMENTS(google, &#39;.g&#39;)</div>
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
         }, false);
     </script>
 </div>
 
-<p>The bind parameter values need to be passed along with the query when it is executed, but not as part of the query text itself.</p>
-<p>Bind parameters that are declared in the query must also be passed a parameter value, or the query will fail. Specifying parameters that are not declared in the query will result in an error too.</p>
-<p>Bind variables represent a value like a string, and must not be put in quotes in the FQL code:</p>
+<p>In this example, <code>@active</code> is not a boolean literal written in the query. It is a parameter whose value is provided when the query is executed.</p>
+<h2 id="parameter-names">Parameter names</h2>
+<p>Parameter names must start with a letter or underscore. They may contain letters, digits, and underscores.</p>
 
 
 
@@ -708,7 +683,7 @@ RETURN ELEMENTS(google, &#39;.g&#39;)</div>
 
 
 
-<div class="code-editor is-readonly">
+<div class="code-editor is-readonly is-auto-height">
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -720,8 +695,10 @@ RETURN ELEMENTS(google, &#39;.g&#39;)</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" style="height: 100px;">FILTER u.name == &#34;@name&#34; // wrong
-FILTER u.name == @name   // correct</div>
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">RETURN @name
+RETURN @user_id
+RETURN @value1
+RETURN @_value</div>
         </div>
     </div>
 
@@ -739,11 +716,312 @@ FILTER u.name == @name   // correct</div>
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
         }, false);
     </script>
 </div>
 
-<p>If you need to do string processing in the query, you need to use string functions to do so:</p>
+<p>The leading <code>@</code> is part of the parameter syntax, but not part of the parameter name itself.</p>
+<h2 id="passing-parameter-values">Passing parameter values</h2>
+<p>Parameter values are passed together with the query by the host application, runtime, or tool that executes the query.</p>
+<p>They are not written as part of the query text.</p>
+<p>A query fails if it references a bind parameter that was not provided.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal is-auto-height">
+
+    <div class="code-editor-shell">
+        <div id="code-editor-1-header" class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret v2</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-1-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result-pane">Output</button>
+                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-1-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="code-editor-1-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-1-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
+        </div>
+
+        <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+            <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
+                <div class="code-editor-pane-header">
+                    <span>query.fql</span>
+                    <span>FQL</span>
+                </div>
+                <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">RETURN @name</div>
+            </div>
+
+            <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                <div class="code-editor-pane-header">
+                    <span>result.json</span>
+                    <div class="code-editor-pane-header-actions">
+                        <span>output</span>
+                        <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
+                    </div>
+                </div>
+                <div id="code-editor-1-result" class="code-editor-result" data-auto-height="true"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-1-run-button');
+            const textEditor = createEditor('code-editor-1-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-1-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorHeader = document.querySelector('#code-editor-1-header');
+            const editorGrid = document.querySelector('#code-editor-1-grid');
+            const runProgress = document.querySelector('#code-editor-1-progress');
+            const runStatus = document.querySelector('#code-editor-1-run-status');
+            const resultPane = document.querySelector('#code-editor-1-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-1-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-1-result-close-button');
+            let isResultVisible = !resultPane.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+
+                if (isResultVisible) {
+                    const resultHeight = getEditorContentHeight(resultEditor);
+                    applyResultHeight(resultHeight);
+                }
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                return getEditorContentHeight(resultEditor);
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                }
+
+                resultEditor.resize();
+            }
+            textEditor.session.on('change', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
+                editorGrid.setAttribute('aria-busy', 'true');
+                btn.classList.add('is-running');
+                btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
+                editorGrid.setAttribute('aria-busy', 'false');
+                btn.classList.remove('is-running');
+                btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
+
+                setContent(resultEditor, result);
+                setResultVisible(true);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: JSON.parse("{}")
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>In this example, the query expects a parameter named name.</p>
+<p>Depending on the execution environment, passing extra parameters that are not referenced by the query may also be rejected.</p>
+<h2 id="parameters-are-values">Parameters are values</h2>
+<p>Bind parameters represent values directly. They should not be wrapped in quotes.</p>
 
 
 
@@ -765,7 +1043,8 @@ FILTER u.name == @name   // correct</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" style="height: 90px;">RETURN CONCAT(&#39;prefix&#39;, @id, &#39;suffix&#39;)</div>
+            <div id="code-3-text" class="code-editor-text" style="height: 100px;">FILTER user.name == &#34;@name&#34; // Compares with the literal string &#34;@name&#34;
+FILTER user.name == @name   // Compares with the parameter value</div>
         </div>
     </div>
 
@@ -787,7 +1066,9 @@ FILTER u.name == @name   // correct</div>
     </script>
 </div>
 
-<p>Bind parameters can be used for square bracket notation for sub-attribute access. They can also be chained:</p>
+<p>Quoted text is always treated as a string literal. An unquoted @name expression refers to the parameter value.</p>
+<h2 id="using-parameters-in-expressions">Using parameters in expressions</h2>
+<p>Bind parameters can be used anywhere a value expression is expected.</p>
 
 
 
@@ -809,9 +1090,7 @@ FILTER u.name == @name   // correct</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" style="height: 120px;">LET doc = { foo: { bar: &#34;baz&#34; } }
-
-RETURN doc[@attr][@subattr]</div>
+            <div id="code-4-text" class="code-editor-text" style="height: 90px;">RETURN CONCAT(&#34;prefix&#34;, @id, &#34;suffix&#34;)</div>
         </div>
     </div>
 
@@ -833,12 +1112,76 @@ RETURN doc[@attr][@subattr]</div>
     </script>
 </div>
 
+<p>The parameter value participates in the expression the same way as any other value.</p>
+<h2 id="dynamic-property-access">Dynamic property access</h2>
+<p>Bind parameters can also be used with bracket notation to access object properties dynamically.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" style="height: 120px;">LET doc = {
+foo: {
+bar: &#34;baz&#34;
+}
+}
+
+RETURN doc[@attr][@subattr]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+        }, false);
+    </script>
+</div>
+
+<p>In this example, @attr and @subattr provide the property names used during evaluation.</p>
 
 </article>
 
         </main>
 
-        
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#parameter-names">Parameter names</a></li>
+    <li><a href="#passing-parameter-values">Passing parameter values</a></li>
+    <li><a href="#parameters-are-values">Parameters are values</a></li>
+    <li><a href="#using-parameters-in-expressions">Using parameters in expressions</a></li>
+    <li><a href="#dynamic-property-access">Dynamic property access</a></li>
+  </ul>
+</nav>
+</aside>
     </div>
 </div>
 <script type="module">

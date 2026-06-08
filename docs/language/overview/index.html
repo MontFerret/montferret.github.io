@@ -455,8 +455,8 @@
 
     <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/language/parameters/" class="docs-nav-link">
-                Parameters
+            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
+                Variables
             </a>
         
 
@@ -486,8 +486,8 @@
 
     <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/language/type-ordering/" class="docs-nav-link">
-                Type Ordering
+            <a href="https://ferretlang.org/docs/language/parameters/" class="docs-nav-link">
+                Parameters
             </a>
         
 
@@ -519,37 +519,6 @@
         
             <a href="https://ferretlang.org/docs/language/operators/" class="docs-nav-link">
                 Operators
-            </a>
-        
-
-        
-    </li>
-
-
-                
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <li class="docs-nav-item docs-nav-depth-1">
-        
-            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
-                Variables
             </a>
         
 
@@ -11080,7 +11049,7 @@ FQL is designed to keep the handling of those cases close to the operation itsel
 
 
 
-<div class="code-editor is-vertical">
+<div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
         <div id="code-editor-32-header" class="code-editor-header">
@@ -11117,6 +11086,7 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-32-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-32-result">Expand</button>
                         <button id="code-editor-32-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-32-result-pane">Close</button>
                     </div>
                 </div>
@@ -11144,7 +11114,7 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
             const textEditor = createEditor('code-editor-32-text', 'fql', true);
             const resultEditor = createEditor('code-editor-32-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-32-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-32-header');
             const editorGrid = document.querySelector('#code-editor-32-grid');
             const runProgress = document.querySelector('#code-editor-32-progress');
@@ -11165,6 +11135,9 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
             }
 
             function syncEditorLayout() {
+                if (isResultVisible) {
+                    applyResultHeight(getCollapsedResultHeight());
+                }
 
                 textEditor.resize();
 
@@ -11198,6 +11171,61 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
 
@@ -11306,7 +11334,7 @@ RETURN QUERY ONE &#34;#price&#34; IN doc USING css
 
 
 
-<div class="code-editor is-vertical">
+<div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
         <div id="code-editor-33-header" class="code-editor-header">
@@ -11342,6 +11370,7 @@ RETURN parsed</div>
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-33-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-33-result">Expand</button>
                         <button id="code-editor-33-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-33-result-pane">Close</button>
                     </div>
                 </div>
@@ -11369,7 +11398,7 @@ RETURN parsed</div>
             const textEditor = createEditor('code-editor-33-text', 'fql', true);
             const resultEditor = createEditor('code-editor-33-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-33-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-33-header');
             const editorGrid = document.querySelector('#code-editor-33-grid');
             const runProgress = document.querySelector('#code-editor-33-progress');
@@ -11390,6 +11419,9 @@ RETURN parsed</div>
             }
 
             function syncEditorLayout() {
+                if (isResultVisible) {
+                    applyResultHeight(getCollapsedResultHeight());
+                }
 
                 textEditor.resize();
 
@@ -11423,6 +11455,61 @@ RETURN parsed</div>
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
 
@@ -11532,7 +11619,7 @@ RETURN parsed</div>
 
 
 
-<div class="code-editor is-vertical">
+<div class="code-editor is-horizontal">
 
     <div class="code-editor-shell">
         <div id="code-editor-34-header" class="code-editor-header">
@@ -11571,6 +11658,7 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
                     <span>result.json</span>
                     <div class="code-editor-pane-header-actions">
                         <span>output</span>
+                        <button id="code-editor-34-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-34-result">Expand</button>
                         <button id="code-editor-34-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-34-result-pane">Close</button>
                     </div>
                 </div>
@@ -11598,7 +11686,7 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
             const textEditor = createEditor('code-editor-34-text', 'fql', true);
             const resultEditor = createEditor('code-editor-34-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-34-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-34-header');
             const editorGrid = document.querySelector('#code-editor-34-grid');
             const runProgress = document.querySelector('#code-editor-34-progress');
@@ -11619,6 +11707,9 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
             }
 
             function syncEditorLayout() {
+                if (isResultVisible) {
+                    applyResultHeight(getCollapsedResultHeight());
+                }
 
                 textEditor.resize();
 
@@ -11652,6 +11743,61 @@ RETURN WAITFOR VALUE doc[~ css`.loaded`]
             resultCloseBtn.addEventListener('click', () => {
                 setResultVisible(false);
             });
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                }
+
+                resultEditor.resize();
+            }
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
 
