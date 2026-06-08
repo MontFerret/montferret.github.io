@@ -5,7 +5,6 @@ draft: false
 description: "Comparison, logical, arithmetic, ternary, range, and precedence operators."
 aliases:
   - /docs/fql/operators/
-menu: [comparison,array comparison,logical,arithmetic,ternary,range,precedence]
 ---
 
 {{< header >}}

@@ -1,68 +1,153 @@
 ---
 title: "Variables"
 sidebarTitle: "Variables"
-weight: 70
+weight: 30
 draft: false
-description: "Declare immutable variables with LET."
+description: "Declare immutable variables with LET and mutable variables with VAR."
 aliases:
-  - /docs/fql/operators/high-level/let/
+    - /docs/fql/operators/high-level/let/
 ---
 
-{{< header href="let" >}}
-LET
-{{</ header >}}
+# Variables
 
-The ``LET`` statement can be used to assign an arbitrary value to a variable. The variable is then introduced in the scope the ``LET`` statement is placed in.
+FQL supports two kinds of variable declarations:
 
-The general syntax is:
+- `LET` declares an immutable variable.
+- `VAR` declares a mutable variable that can be reassigned later.
 
-{{< code lang="fql" height="80px" >}}
+## LET
+
+The `LET` statement assigns the result of an expression to a variable.
+
+The variable is introduced into the scope where the `LET` statement appears.
+
+{{< code lang="fql" >}}
 LET variableName = expression
-{{</ code >}}
+{{< /code >}}
 
-Variables are immutable in FQL, which means they can not be re-assigned:
+After a variable is declared with `LET`, it cannot be reassigned.
 
-{{< code lang="fql" height="150px" >}}
+{{< code lang="fql" >}}
 LET a = [1, 2, 3]  // initial assignment
 
 a = PUSH(a, 4)     // syntax error, unexpected identifier
 LET a = PUSH(a, 4) // parsing error, variable 'a' is assigned multiple times
 LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]
-{{</ code >}}
+{{< /code >}}
 
-``LET`` statements are mostly used to declare complex computations and to avoid repeated computations of the same value at multiple parts of a query.
+`LET` bindings often appear where a query needs to refer to an intermediate value, a subquery result, or another computed expression by name.
 
-{{< editor height="240px" orientation="horizontal" >}}
-LET users = [{"id":1,"firstName":"Kikelia","lastName":"Coper","cart":[{"Name":"Garlic","Price":"$7.46"},{"Name":"Flower - Commercial Spider","Price":"$6.59"}]},{"id":2,"firstName":"Toni","lastName":"MacTeggart","cart":[{"Name":"Spice - Paprika","Price":"$6.31"},{"Name":"Extract - Vanilla,artificial","Price":"$4.74"},{"Name":"Wine - White, Cooking","Price":"$1.50"},{"Name":"Nutmeg - Ground","Price":"$1.30"}]},{"id":3,"firstName":"Neile","lastName":"Saice","cart":[{"Name":"Mustard Prepared","Price":"$2.28"},{"Name":"Flower - Commercial Bronze","Price":"$4.80"}]}]
+{{< editor lang="fql" >}}
+LET users = [
+    {
+        "id": 1,
+        "firstName": "Kikelia",
+        "lastName": "Coper",
+        "cart": [
+            { "Name": "Garlic", "Price": "$7.46" },
+            { "Name": "Flower - Commercial Spider", "Price": "$6.59" }
+        ]
+    },
+    {
+        "id": 2,
+        "firstName": "Toni",
+        "lastName": "MacTeggart",
+        "cart": [
+            { "Name": "Spice - Paprika", "Price": "$6.31" },
+            { "Name": "Extract - Vanilla,artificial", "Price": "$4.74" },
+            { "Name": "Wine - White, Cooking", "Price": "$1.50" },
+            { "Name": "Nutmeg - Ground", "Price": "$1.30" }
+        ]
+    },
+    {
+        "id": 3,
+        "firstName": "Neile",
+        "lastName": "Saice",
+        "cart": [
+            { "Name": "Mustard Prepared", "Price": "$2.28" },
+            { "Name": "Flower - Commercial Bronze", "Price": "$4.80" }
+        ]
+    }
+]
 
 FOR u IN users
-  LET numProducts = LENGTH(u.cart)
-  
-  RETURN { 
-    "user" : u, 
-    "numProducts" : numProducts, 
-    "discount" : numProducts >= 3
-  } 
-{{</ editor >}}
+    LET numProducts = LENGTH(u.cart)
 
-In the above example, the computation of the number of cart items is factored out using a ``LET`` statement, thus avoiding computing the value twice in the ``RETURN`` statement.
+    RETURN {
+        "user": u,
+        "numProducts": numProducts,
+        "discount": numProducts >= 3
+    }
+{{< /editor >}}
 
-Another use case for ``LET`` is to declare a complex computation in a subquery, making the whole query more readable.
+In this example, `numProducts` stores the number of items in the user's cart. The value can then be reused in the returned object without calling `LENGTH(u.cart)` more than once.
 
-{{< editor height="300px" orientation="horizontal" >}}
-LET users = [{"id":1,"name":"Moises Grisewood"},{"id":2,"name":"Dell Marnes"},{"id":3,"name":"Tobin Bilbery"},{"id":4,"name":"Lorianne Posten"},{"id":5,"name":"Drucill Cryer"}]
-LET friends = [{"id":1,"name":"Maximo Massard","userId":1},{"id":2,"name":"Delainey Sancho","userId":1},{"id":3,"name":"Lindon Beale","userId":1},{"id":4,"name":"Gus Sprey","userId":3},{"id":5,"name":"Virgil Dallander","userId":3},{"id":6,"name":"Agretha Mackerel","userId":4},{"id":7,"name":"Christalle Aldins","userId":4},{"id":8,"name":"Karalynn Margery","userId":5},{"id":9,"name":"Rodolph Ladd","userId":5},{"id":10,"name":"Babette Brassill","userId":1}]
+`LET` is also useful for assigning the result of a subquery to a variable.
+
+{{< editor lang="fql" >}}
+LET users = [
+    { "id": 1, "name": "Moises Grisewood" },
+    { "id": 2, "name": "Dell Marnes" },
+    { "id": 3, "name": "Tobin Bilbery" },
+    { "id": 4, "name": "Lorianne Posten" },
+    { "id": 5, "name": "Drucill Cryer" }
+]
+LET friends = [
+    { "id": 1, "name": "Maximo Massard", "userId": 1 },
+    { "id": 2, "name": "Delainey Sancho", "userId": 1 },
+    { "id": 3, "name": "Lindon Beale", "userId": 1 },
+    { "id": 4, "name": "Gus Sprey", "userId": 3 },
+    { "id": 5, "name": "Virgil Dallander", "userId": 3 },
+    { "id": 6, "name": "Agretha Mackerel", "userId": 4 },
+    { "id": 7, "name": "Christalle Aldins", "userId": 4 },
+    { "id": 8, "name": "Karalynn Margery", "userId": 5 },
+    { "id": 9, "name": "Rodolph Ladd", "userId": 5 },
+    { "id": 10, "name": "Babette Brassill", "userId": 1 }
+]
 
 FOR u IN users
-  LET friends = (
-    FOR f IN friends 
-        FILTER u.id == f.userId
-        RETURN f
-  )
+    LET friends = (
+        FOR f IN friends
+            FILTER u.id == f.userId
+            RETURN f
+    )
 
-  RETURN { 
-    "user" : u, 
-    "friends" : friends, 
-    "numFriends" : LENGTH(friends)
-  }
-{{</ editor >}}
+    RETURN { "user": u, "friends": friends, "numFriends": LENGTH(friends) }
+{{< /editor >}}
+
+Here, the inner `FOR` query finds the friends that belong to the current user. Assigning the result to friends makes the `RETURN` statement easier to read and allows the same value to be used more than once.
+
+## VAR
+
+The `VAR` statement declares a mutable variable. Unlike variables declared with `LET`, variables declared with `VAR` can be reassigned.
+
+The general syntax is:
+
+{{< code lang="fql" >}}
+VAR variableName = expression
+{{< /code >}}
+
+A `VAR` variable can be updated later using assignment syntax:
+
+{{< editor lang="fql" >}}
+VAR count = 0
+
+count = count + 1
+count = count + 1
+
+RETURN count
+{{< /editor >}}
+
+`VAR` is suitable for values that change across multiple statements, such as counters, accumulators, or flags.
+
+{{< editor lang="fql" >}}
+LET numbers = [1, 2, 3, 4, 5]
+VAR total = 0
+
+FOR n IN numbers
+    total = total + n
+    
+    RETURN total
+{{< /editor >}}
+
+In this example, `total` starts at 0 and is updated for each value in numbers.

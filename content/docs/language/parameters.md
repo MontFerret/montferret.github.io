@@ -5,50 +5,91 @@ weight: 40
 draft: false
 description: "Pass external values into Ferret queries with bind parameters."
 aliases:
-  - /docs/fql/bind-parameters/
+    - /docs/fql/bind-parameters/
 ---
 
-{{< header >}}
-Bind parameters
-{{</ header >}}
+# Bind Parameters
 
-FQL supports the usage of bind parameters, thus allowing to separate the query text from literal values used in the query. It is good practice to separate the query text from the literal values because it allows to reuse same query in different scenarios.
+Bind parameters allow a query to receive values from the execution context instead of embedding those values directly in the query text.
 
-Using bind parameters, the meaning of an existing query cannot be changed. Bind parameters can be used everywhere in a query where literals can be used.
+A bind parameter is written as `@name`, where name is the parameter identifier.
 
-The syntax for bind parameters is ``@name`` where ``@`` signifies that this is a bind parameter and name is the actual parameter name. Parameter names must start with any of the letters a to z (upper or lower case) or a digit (0 to 9), and can be followed by any letter, digit or the underscore symbol.
+{{< code lang="fql" >}}
+LET users = [
+    { name: “Ada”, active: true },
+    { name: “Grace”, active: false },
+    { name: “Linus”, active: true }
+]
 
-{{< code lang="fql" height="190px" >}}
-LET google = DOCUMENT("https://www.google.com/", true)
-
-INPUT(google, 'input[name="q"]', @criteria)
-
-WAIT_NAVIGATION(google)
-
-RETURN ELEMENTS(google, '.g')
+FOR user IN users
+    FILTER user.active == @active
+    RETURN user.name
 {{</ code >}}
 
-The bind parameter values need to be passed along with the query when it is executed, but not as part of the query text itself.
+In this example, `@active` is not a boolean literal written in the query. It is a parameter whose value is provided when the query is executed.
 
-Bind parameters that are declared in the query must also be passed a parameter value, or the query will fail. Specifying parameters that are not declared in the query will result in an error too.
+## Parameter names
 
-Bind variables represent a value like a string, and must not be put in quotes in the FQL code:
+Parameter names must start with a letter or underscore. They may contain letters, digits, and underscores.
+
+{{< code lang="fql" >}}
+RETURN @name
+RETURN @user_id
+RETURN @value1
+RETURN @_value
+{{</ code >}}
+
+The leading `@` is part of the parameter syntax, but not part of the parameter name itself.
+
+## Passing parameter values
+
+Parameter values are passed together with the query by the host application, runtime, or tool that executes the query.
+
+They are not written as part of the query text.
+
+A query fails if it references a bind parameter that was not provided.
+
+{{< editor lang="fql" >}}
+RETURN @name
+{{</ editor >}}
+
+In this example, the query expects a parameter named name.
+
+Depending on the execution environment, passing extra parameters that are not referenced by the query may also be rejected.
+
+## Parameters are values
+
+Bind parameters represent values directly. They should not be wrapped in quotes.
 
 {{< code lang="fql" height="100px" >}}
-FILTER u.name == "@name" // wrong
-FILTER u.name == @name   // correct
+FILTER user.name == "@name" // Compares with the literal string "@name"
+FILTER user.name == @name   // Compares with the parameter value
 {{</ code >}}
 
-If you need to do string processing in the query, you need to use string functions to do so:
+Quoted text is always treated as a string literal. An unquoted @name expression refers to the parameter value.
+
+## Using parameters in expressions
+
+Bind parameters can be used anywhere a value expression is expected.
 
 {{< code lang="fql" height="90px" >}}
-RETURN CONCAT('prefix', @id, 'suffix')
+RETURN CONCAT("prefix", @id, "suffix")
 {{</ code >}}
 
-Bind parameters can be used for square bracket notation for sub-attribute access. They can also be chained:
+The parameter value participates in the expression the same way as any other value.
+
+## Dynamic property access
+
+Bind parameters can also be used with bracket notation to access object properties dynamically.
 
 {{< code lang="fql" height="120px" >}}
-LET doc = { foo: { bar: "baz" } }
+LET doc = {
+foo: {
+bar: "baz"
+}
+}
 
 RETURN doc[@attr][@subattr]
 {{</ code >}}
+
+In this example, @attr and @subattr provide the property names used during evaluation.
