@@ -569,7 +569,3 @@ ferret run -e 'RETURN 1 + 1'
 FQL is not limited to the command line. Ferret can be embedded into Go applications, where scripts run as part of application code and return values directly to the host. Tools such as Lab can use FQL scripts as tests against static pages, browser runtimes, APIs, or other controlled scenarios. Specialized runtimes and workers can execute the same language in environments designed for automation, scheduling, or distributed execution.
 
 The key idea is that FQL is portable across interfaces. The same language can be used interactively, in automation, in CI, in tests, or inside another application.
-
-## What to learn next
-
-TODO

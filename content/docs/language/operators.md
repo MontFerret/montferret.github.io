@@ -576,6 +576,310 @@ The query returns:
 
 Use `DISTINCT` operator when duplicate values need to be removed.
 
+### Inline expressions
+
+Array expansion and array flattening operators can include inline expressions.
+
+Inline expressions make it possible to filter array elements, limit the number of elements included in the result, and project each element into a different value.
+
+The following operations are supported inside an array operator:
+
+- `FILTER` selects which elements are included.
+- `LIMIT` restricts how many elements are included.
+- `RETURN` defines the value produced for each included element.
+
+Inline expressions can be used with array expansion and flattening operators:
+
+{{< code lang="fql" >}}
+array[* FILTER condition LIMIT count RETURN expression]
+array[** FILTER condition LIMIT count RETURN expression]
+array[*** FILTER condition LIMIT count RETURN expression]
+{{</ code >}}
+
+When multiple inline operations are used together, they must appear in this order:
+
+{{< code lang="fql" >}}
+FILTER
+LIMIT
+RETURN
+{{</ code >}}
+
+Inside each expression, `.` refers to the element currently being processed. The condition can refer to `.` as well as variables from the surrounding scope.
+
+Each operation can appear at most once. Sorting is not supported by this shorthand form yet.
+
+#### Inline filter
+
+`FILTER` includes only the elements that satisfy a condition.
+
+{{< editor lang="fql" >}}
+LET users = [
+    {
+        name: "Ada",
+        age: 37,
+        friends: [
+            { name: "Grace", age: 41 },
+            { name: "Linus", age: 31 },
+            { name: "Barbara", age: 45 }
+        ]
+    },
+    {
+        name: "Alan",
+        age: 48,
+        friends: [
+            { name: "Edsger", age: 50 },
+            { name: "Donald", age: 39 }
+        ]
+    }
+]
+
+RETURN users[* RETURN {
+    name: .name,
+    olderFriends: .friends[* FILTER .age > 40].name
+}]
+{{</ editor >}}
+
+The `FILTER` condition can refer to `.`, functions, operators, and variables from the outer scope.
+
+{{< editor lang="fql" >}}
+LET minAge = 40
+
+LET users = [
+    {
+        name: "Ada",
+        friends: [
+            { name: "Grace", age: 41 },
+            { name: "Linus", age: 31 },
+            { name: "Barbara", age: 45 }
+        ]
+    }
+]
+
+RETURN users[* RETURN {
+    name: .name,
+    friends: .friends[* FILTER .age >= minAge].name
+}]
+{{</ editor >}}
+
+Inside nested inline expressions, `.` always refers to the current element of the innermost array operator.
+
+Inline expressions are a shorthand form and do not support local variable declarations. For transformations that require named intermediate values, multiple scopes, or more complex control over the current element, use a regular `FOR` loop.
+
+### Inline limit
+
+`LIMIT` restricts the number of elements included in the array result.
+
+{{< editor lang="fql" >}}
+LET users = [
+    {
+        name: "Ada",
+        friends: [
+            { name: "Grace" },
+            { name: "Linus" },
+            { name: "Barbara" }
+        ]
+    },
+    {
+        name: "Alan",
+        friends: [
+            { name: "Edsger" },
+            { name: "Donald" }
+        ]
+    }
+]
+
+RETURN users[* RETURN {
+    name: .name,
+    friends: .friends[* LIMIT 1].name
+}]
+{{</ editor >}}
+
+When `FILTER` and `LIMIT` are used together, `FILTER` must appear first. The limit is then applied to the filtered elements.
+
+{{< editor lang="fql" >}}
+LET values = [1, 2, 3, 4, 5, 6]
+
+RETURN values[* FILTER . > 2 LIMIT 2]
+{{</ editor >}}
+
+`LIMIT` also supports an offset form:
+
+{{< code lang="fql" >}}
+LIMIT offset, count
+{{</ code >}}
+
+The first number specifies how many matching elements to skip. The second number specifies the maximum number of elements to include.
+
+{{< editor lang="fql" >}}
+LET users = [
+    {
+        name: "Ada",
+        friends: [
+            { name: "Grace" },
+            { name: "Linus" },
+            { name: "Barbara" }
+        ]
+    },
+    {
+        name: "Alan",
+        friends: [
+            { name: "Edsger" },
+            { name: "Donald" },
+            { name: "Frances" }
+        ]
+    }
+]
+
+RETURN users[* RETURN {
+    name: .name,
+    friends: .friends[* LIMIT 1, 2].name
+}]
+{{</ editor >}}
+
+This form skips the first element and includes at most two elements after it.
+
+### Inline projection
+
+`RETURN` defines the value produced for each element.
+
+Without an inline `RETURN`, the array operator returns the selected elements themselves. With an inline `RETURN`, each selected element is replaced by the value produced by the return expression.
+
+{{< editor lang="fql" >}}
+LET friends = [
+    { name: "Grace", age: 41 },
+    { name: "Linus", age: 31 },
+    { name: "Barbara", age: 45 }
+]
+
+RETURN friends[* RETURN .name]
+{{</ editor >}}
+
+The projection can produce any FQL value, including an object, array, string, number, or computed expression.
+
+{{< editor lang="fql" >}}
+LET friends = [
+{ name: "Grace", age: 41 },
+{ name: "Linus", age: 31 },
+{ name: "Barbara", age: 45 }
+]
+
+RETURN friends[* RETURN {
+    label: CONCAT(.name, " is ", .age),
+    adult: .age >= 18
+}]
+{{</ editor >}}
+
+RETURN can be combined with FILTER and LIMIT.
+
+{{< editor lang="fql" >}}
+LET friends = [
+    { name: "Grace", age: 41 },
+    { name: "Linus", age: 31 },
+    { name: "Barbara", age: 45 },
+    { name: "Donald", age: 39 }
+]
+
+RETURN friends[*
+    FILTER .age >= 40
+    LIMIT 2
+    RETURN CONCAT(.name, " is ", .age)
+]
+{{</ editor >}}
+
+When all three operations are used together, the array is processed in the same order as the syntax: elements are filtered first, the limit is applied next, and the projection is evaluated last.
+
+### Question mark operator
+
+The question mark operator checks whether an array contains elements that satisfy a condition.
+
+Unlike inline `FILTER`, which returns matching elements, the question mark operator returns a boolean value. It is used when a query needs to test an array rather than return a transformed array.
+
+{{< editor lang="fql" >}}
+LET values = [1, 2, 3, 4]
+
+RETURN values[? 2 FILTER . % 2 == 0]
+{{</ editor >}}
+
+The value after `?` is a quantifier. It defines how many elements must satisfy the condition.
+
+The quantifier is optional. When it is omitted, `ANY` is used.
+
+The following quantifiers are supported:
+
+- An integer number, such as `2`, requires exactly that many matching elements.
+- A range, such as `2..4`, requires the number of matching elements to be within the range.
+- `NONE` requires no matching elements.
+- `ANY` requires at least one matching element.
+- `ALL` requires every element to match.
+- `AT LEAST n` requires at least `n` matching elements.
+
+The quantifier is followed by `FILTER` when a condition is specified.
+
+{{< editor lang="fql" >}}
+LET values = [1, 2, 3, 4, 5, 6]
+
+RETURN {
+    exactlyThree: values[? 3 FILTER . % 2 == 0],
+    betweenTwoAndFour: values[? 2..4 FILTER . > 2],
+    noneNegative: values[? NONE FILTER . < 0],
+    anyEven: values[? ANY FILTER . % 2 == 0],
+    allPositive: values[? ALL FILTER . > 0],
+    atLeastTwoLarge: values[? AT LEAST 2 FILTER . > 4]
+}
+{{</ editor >}}
+
+Inside the question mark operator, `.` refers to the array element being tested by the `FILTER` condition.
+
+{{< editor lang="fql" >}}
+LET minAge = 40
+
+LET users = [
+{
+    name: "Ada",
+    friends: [
+            { name: "Grace", age: 41 },
+            { name: "Linus", age: 31 }
+        ]
+    },
+    {
+    name: "Alan",
+    friends: [
+            { name: "Edsger", age: 50 },
+            { name: "Donald", age: 39 }
+        ]
+    }
+]
+
+RETURN users[* RETURN {
+    name: .name,
+    hasOlderFriend: .friends[? ANY FILTER .age >= minAge]
+}]
+{{</ editor >}}
+
+When the operator is used without a quantifier and without FILTER, it checks whether the value is a non-empty array.
+
+{{< editor lang="fql" >}}
+RETURN {
+    empty: [][?],
+    nonEmpty: [1, 2, 3][?],
+    notArray: NONE[?]
+}
+{{</ editor >}}
+
+Conceptually, the question mark operator is equivalent to filtering an array and then checking the number of matching elements.
+
+| Question mark expression | Equivalent length check |
+| --- | -- |
+| `array[? n FILTER condition]` | `LENGTH(array[* FILTER condition]) == n` |
+| `array[? min..max FILTER condition]` | the number of matching elements is between min and max |
+| `array[? NONE FILTER condition]` | `LENGTH(array[* FILTER condition]) == 0` |
+| `array[? ANY FILTER condition]` | `LENGTH(array[* FILTER condition]) > 0` |
+| `array[? ALL FILTER condition]` | `LENGTH(array[* FILTER condition]) == LENGTH(array)` |
+| `array[? AT LEAST n FILTER condition]` | `LENGTH(array[* FILTER condition]) >= n` |
+| `array[?]` | the value is an array with at least one element |
+
+The question mark operator is especially useful for nested search, where a document, object, or result value contains arrays that need to be tested without expanding them into the final output.
+
 ### Array comparison operators
 Array comparison operators evaluate a comparison against the elements of an array.
 
