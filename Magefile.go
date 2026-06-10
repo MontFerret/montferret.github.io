@@ -51,6 +51,63 @@ func removeFiles() error {
 	return nil
 }
 
+func ensureCleanWorkingTree() error {
+	out, err := sh.Output("git", "status", "--porcelain")
+	
+	if err != nil {
+		return err
+	}
+
+	if strings.TrimSpace(out) != "" {
+		return fmt.Errorf("working directory is dirty; please commit or stash pending changes before publishing")
+	}
+
+	return nil
+}
+
+func cleanWorktreeContents(dir string) error {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		name := entry.Name()
+		
+		if name == ".git" {
+			continue
+		}
+		
+		if err := os.RemoveAll(filepath.Join(dir, name)); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func generateSite() error {
+	if err := sh.RunV("hugo"); err != nil {
+		return err
+	}
+	
+	if err := sh.RunV("npm", "--prefix", THEME_DIR, "run", "build:search"); err != nil {
+		return err
+	}
+	
+	return verifySearchIndex()
+}
+
+func verifySearchIndex() error {
+	pagefindDir := filepath.Join(OUTPUT_DIR, "pagefind")
+	
+	if _, err := os.Stat(pagefindDir); err != nil {
+		return fmt.Errorf("missing Pagefind output: %s", pagefindDir)
+	}
+
+	return nil
+}
+
 var Default = Serve
 
 // Cleans up build directory
@@ -69,11 +126,7 @@ func Serve() error {
 func Build() error {
 	mg.Deps(Clean)
 
-	if err := sh.RunV("hugo"); err != nil {
-		return err
-	}
-
-	return sh.RunV("npm", "--prefix", THEME_DIR, "run", "build:search")
+	return generateSite()
 }
 
 // Builds the website search index and serves the generated static site
@@ -135,5 +188,56 @@ func Generate() error {
 
 // Publishes website to GitHub Pages
 func Publish() error {
-	return sh.RunV("sh", "publish.sh")
+	if err := ensureCleanWorkingTree(); err != nil {
+		return err
+	}
+
+	fmt.Println("Deleting old publication")
+	if err := Clean(); err != nil {
+		return err
+	}
+
+	if err := sh.RunV("git", "worktree", "prune"); err != nil {
+		return err
+	}
+
+	if err := os.RemoveAll(WORKTREE_DIR); err != nil {
+		return err
+	}
+
+	fmt.Println("Checking out master branch into public")
+	if err := sh.RunV("git", "worktree", "add", "-B", "master", OUTPUT_DIR, "origin/master"); err != nil {
+		return err
+	}
+
+	fmt.Println("Removing existing files")
+	if err := cleanWorktreeContents(OUTPUT_DIR); err != nil {
+		return err
+	}
+
+	fmt.Println("Generating site")
+	if err := generateSite(); err != nil {
+		return err
+	}
+
+	fmt.Println("Updating master branch")
+	if err := sh.RunV("git", "-C", OUTPUT_DIR, "add", "--all"); err != nil {
+		return err
+	}
+
+	status, err := sh.Output("git", "-C", OUTPUT_DIR, "status", "--porcelain")
+	if err != nil {
+		return err
+	}
+
+	if strings.TrimSpace(status) == "" {
+		fmt.Println("No changes to publish")
+		return nil
+	}
+
+	if err := sh.RunV("git", "-C", OUTPUT_DIR, "commit", "-m", "Publishing to master"); err != nil {
+		return err
+	}
+
+	return sh.RunV("git", "-C", OUTPUT_DIR, "push", "origin", "master")
 }
