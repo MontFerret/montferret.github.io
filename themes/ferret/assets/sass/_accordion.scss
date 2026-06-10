@@ -1,0 +1,110 @@
+.accordion {
+    display: grid;
+    gap: .75rem;
+}
+
+.accordion-item {
+    background: $site-surface;
+    border: 1px solid $site-border;
+    border-radius: $button-radius;
+    overflow: hidden;
+    transition:
+        border-color .16s ease,
+        box-shadow .16s ease;
+
+    &[open] {
+        border-color: $accent-border;
+        box-shadow: 0 12px 28px rgba($site-heading, .08);
+    }
+}
+
+.accordion-summary {
+    align-items: center;
+    color: $site-heading;
+    cursor: pointer;
+    display: grid;
+    font-family: $family-code;
+    font-size: 1rem;
+    font-weight: 700;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    line-height: 1.35;
+    list-style: none;
+    padding: 1.1rem 1.2rem;
+    transition:
+        background-color .16s ease,
+        color .16s ease;
+
+    &::-webkit-details-marker {
+        display: none;
+    }
+
+    &::after {
+        border-bottom: 2px solid currentColor;
+        border-right: 2px solid currentColor;
+        content: "";
+        height: .55rem;
+        margin-right: .2rem;
+        transform: rotate(45deg) translateY(-.15rem);
+        transition: transform .16s ease;
+        width: .55rem;
+    }
+
+    &:hover {
+        background: $accent-bg-soft;
+    }
+
+    &:focus-visible {
+        outline: 3px solid rgba($site-accent, .42);
+        outline-offset: -3px;
+    }
+
+    .accordion-item[open] & {
+        background: $accent-bg-soft;
+
+        &::after {
+            transform: rotate(225deg) translate(-.1rem, -.1rem);
+        }
+    }
+}
+
+.accordion-content {
+    color: $docs-text;
+    font-family: $family-sans-serif;
+    font-size: 1.02rem;
+    font-weight: 500;
+    line-height: 1.7;
+    padding: 1.2rem;
+
+    > :first-child {
+        margin-top: 0;
+    }
+
+    > p + p {
+        margin-top: 1.25rem;
+    }
+
+    > :last-child {
+        margin-bottom: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .accordion-summary {
+        font-size: .94rem;
+        padding: 1rem;
+    }
+
+    .accordion-content {
+        font-size: 1rem;
+        padding: 0 1rem 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .accordion-item,
+    .accordion-summary,
+    .accordion-summary::after {
+        transition: none;
+    }
+}
