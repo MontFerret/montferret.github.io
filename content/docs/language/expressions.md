@@ -156,7 +156,7 @@ The expression price `*` quantity produces a number.
 The expression `total >= 250` produces a boolean.
 
 Operators are available for common operations such as arithmetic, comparison, logical checks, and value composition. 
-See the [Operators section]({{% ref "operators.md" %}}) for the full list of supported operators and precedence rules.
+See the [Operators section]({{% ref "operators" %}}) for the full list of supported operators and precedence rules.
 
 ## Function calls
 
