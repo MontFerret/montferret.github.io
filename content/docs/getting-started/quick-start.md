@@ -1,7 +1,7 @@
 ---
 title: "Quick Start"
 sidebarTitle: "Quick Start"
-weight: 10
+weight: 40
 draft: false
 description: "Run your first Ferret query against static and dynamic pages."
 aliases:

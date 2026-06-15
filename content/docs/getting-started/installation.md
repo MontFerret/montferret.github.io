@@ -1,6 +1,6 @@
 ---
 title: "Installation"
-weight: 20
+weight: 30
 draft: false
 description: "Install Ferret as a command-line tool, embed it as a Go library, and configure browser support for dynamic pages."
 aliases:
