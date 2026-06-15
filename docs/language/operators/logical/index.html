@@ -454,9 +454,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
                 Variables
             </a>
         
@@ -516,13 +516,234 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
         
-            <a href="https://ferretlang.org/docs/language/operators/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/language/operators/" class="docs-nav-link is-ancestor">
                 Operators
             </a>
         
 
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/comparison/" class="docs-nav-link">
+                Comparison
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/language/operators/logical/" class="docs-nav-link is-active" aria-current="page">
+                Logical
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/arithmetic/" class="docs-nav-link">
+                Arithmetic
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/range/" class="docs-nav-link">
+                Range
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/ternary/" class="docs-nav-link">
+                Ternary
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/precedence/" class="docs-nav-link">
+                Precedence
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/array/" class="docs-nav-link">
+                Array
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
         
     </li>
 
@@ -668,15 +889,21 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="variables">Variables</h1>
-<p>FQL supports two kinds of variable declarations:</p>
+    <h1 id="logical-operators">Logical operators</h1>
+<p>Logical operators evaluate expressions according to their truth value. They are commonly used in filter conditions, conditional expressions, and any other context where a query needs to combine or negate conditions.</p>
+<p>FQL supports the following symbolic logical operators:</p>
 <ul>
-<li><code>LET</code> declares an immutable variable.</li>
-<li><code>VAR</code> declares a mutable variable that can be reassigned later.</li>
+<li><code>&amp;&amp;</code> logical AND</li>
+<li><code>||</code> logical OR</li>
+<li><code>!</code> logical NOT</li>
 </ul>
-<h2 id="let">LET</h2>
-<p>The <code>LET</code> statement assigns the result of an expression to a variable.</p>
-<p>The variable is introduced into the scope where the <code>LET</code> statement appears.</p>
+<p>FQL also supports keyword-based forms of the same operators:</p>
+<ul>
+<li><code>AND</code> logical AND</li>
+<li><code>OR</code> logical OR</li>
+<li><code>NOT</code> logical NOT</li>
+</ul>
+<p>The keyword forms are aliases for the symbolic forms. They have the same behavior and may be used interchangeably. For example, <code>a &amp;&amp; b</code> and <code>a AND b</code> are equivalent, as are <code>!value</code> and <code>NOT value</code>.</p>
 
 
 
@@ -698,7 +925,9 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET variableName = expression</div>
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">RETURN true &amp;&amp; false
+RETURN true OR false
+RETURN NOT false</div>
         </div>
     </div>
 
@@ -732,7 +961,19 @@
     </script>
 </div>
 
-<p>After a variable is declared with <code>LET</code>, it cannot be reassigned.</p>
+<h2 id="boolean-conversion">Boolean conversion</h2>
+<p>Logical operators may be applied to values that are not booleans. When a value is used in a logical operation, FQL evaluates the value according to its boolean representation.</p>
+<p>The conversion rules are:</p>
+<ul>
+<li><code>NONE</code> evaluates as <code>false</code>.</li>
+<li>Boolean values keep their original value.</li>
+<li>Numeric values evaluate as false when they are <code>0</code>; all other numeric values evaluate as <code>true</code>.</li>
+<li>Strings evaluate as <code>false</code> when they are empty; all non-empty strings evaluate as <code>true</code>.</li>
+<li>Arrays evaluate as <code>true</code>, regardless of whether they contain any elements.</li>
+<li>Objects evaluate as <code>true</code>, regardless of whether they contain any properties.</li>
+<li>Binary values and custom runtime-backed values evaluate as <code>true</code>.</li>
+</ul>
+<p>These conversions are applied implicitly by logical operators. Passing a non-boolean value to a logical operator does not cause the query to fail.</p>
 
 
 
@@ -754,11 +995,12 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET a = [1, 2, 3]  // initial assignment
-
-a = PUSH(a, 4)     // syntax error, unexpected identifier
-LET a = PUSH(a, 4) // parsing error, variable &#39;a&#39; is assigned multiple times
-LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">RETURN !!0
+RETURN !!1
+RETURN !!&#34;&#34;
+RETURN !!&#34;ferret&#34;
+RETURN !![]
+RETURN !!{}</div>
         </div>
     </div>
 
@@ -792,7 +1034,72 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
     </script>
 </div>
 
-<p><code>LET</code> bindings often appear where a query needs to refer to an intermediate value, a subquery result, or another computed expression by name.</p>
+<h2 id="logical-and">Logical AND</h2>
+<p>The logical <code>AND</code> operator evaluates the left-hand operand first.</p>
+<p>If the left-hand operand evaluates as false, the operation returns the original left-hand value. In this case, the right-hand operand is not evaluated unless the query plan requires it to be evaluated earlier.</p>
+<p>If the left-hand operand evaluates as true, the operation returns the original right-hand value.</p>
+<p>This means that <code>&amp;&amp;</code> and <code>AND</code> do not always return a boolean value. They return one of their operands.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">RETURN false &amp;&amp; &#34;value&#34;
+RETURN NONE &amp;&amp; true
+RETURN 0 &amp;&amp; &#34;fallback&#34;
+RETURN true &amp;&amp; 23
+RETURN &#34;user&#34; &amp;&amp; &#34;active&#34;</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>In the examples above, the result is the first operand that prevents the <code>AND</code> expression from continuing, or the right-hand operand when the left-hand operand is truthy.</p>
+<p>This behavior is useful when logical expressions are used to guard access to values or to return a value only when a preceding condition is satisfied.</p>
 
 
 
@@ -807,7 +1114,7 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
 
 
 
-<div class="code-editor is-horizontal is-auto-height">
+<div class="code-editor is-horizontal">
     <textarea id="code-editor-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
@@ -840,46 +1147,12 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
                             <button id="code-editor-1-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">LET users = [
-    {
-        &#34;id&#34;: 1,
-        &#34;firstName&#34;: &#34;Kikelia&#34;,
-        &#34;lastName&#34;: &#34;Coper&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Garlic&#34;, &#34;Price&#34;: &#34;$7.46&#34; },
-            { &#34;Name&#34;: &#34;Flower - Commercial Spider&#34;, &#34;Price&#34;: &#34;$6.59&#34; }
-        ]
-    },
-    {
-        &#34;id&#34;: 2,
-        &#34;firstName&#34;: &#34;Toni&#34;,
-        &#34;lastName&#34;: &#34;MacTeggart&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Spice - Paprika&#34;, &#34;Price&#34;: &#34;$6.31&#34; },
-            { &#34;Name&#34;: &#34;Extract - Vanilla,artificial&#34;, &#34;Price&#34;: &#34;$4.74&#34; },
-            { &#34;Name&#34;: &#34;Wine - White, Cooking&#34;, &#34;Price&#34;: &#34;$1.50&#34; },
-            { &#34;Name&#34;: &#34;Nutmeg - Ground&#34;, &#34;Price&#34;: &#34;$1.30&#34; }
-        ]
-    },
-    {
-        &#34;id&#34;: 3,
-        &#34;firstName&#34;: &#34;Neile&#34;,
-        &#34;lastName&#34;: &#34;Saice&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Mustard Prepared&#34;, &#34;Price&#34;: &#34;$2.28&#34; },
-            { &#34;Name&#34;: &#34;Flower - Commercial Bronze&#34;, &#34;Price&#34;: &#34;$4.80&#34; }
-        ]
-    }
-]
+                    <div id="code-editor-1-text" class="code-editor-text" style="height: 150px;">LET user = {
+    active: true,
+    name: &#34;Ada&#34;
+}
 
-FOR u IN users
-    LET numProducts = LENGTH(u.cart)
-
-    RETURN {
-        &#34;user&#34;: u,
-        &#34;numProducts&#34;: numProducts,
-        &#34;discount&#34;: numProducts &gt;= 3
-    }</div>
+RETURN user.active &amp;&amp; user.name</div>
                 </div>
 
                 <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -887,10 +1160,11 @@ FOR u IN users
                         <span>result.json</span>
                         <div class="code-editor-pane-header-actions">
                             <span>output</span>
+                            <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
                             <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
                         </div>
                     </div>
-                    <div id="code-editor-1-result" class="code-editor-result" data-auto-height="true"></div>
+                    <div id="code-editor-1-result" class="code-editor-result" style="height: 150px;"></div>
                 </div>
             </div>
 
@@ -932,7 +1206,7 @@ FOR u IN users
             const textEditor = createEditor('code-editor-1-text', 'fql', true);
             const resultEditor = createEditor('code-editor-1-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-1-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-1-header');
             const editorWorkspace = document.querySelector('#code-editor-1-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-1-grid');
@@ -961,12 +1235,8 @@ FOR u IN users
             }
 
             function syncEditorLayout() {
-                const sourceHeight = getEditorContentHeight(textEditor);
-                textEditor.container.style.height = `${sourceHeight}px`;
-
                 if (isResultVisible) {
-                    const resultHeight = getEditorContentHeight(resultEditor);
-                    applyResultHeight(resultHeight);
+                    applyResultHeight(getCollapsedResultHeight());
                 }
 
                 textEditor.resize();
@@ -1020,7 +1290,13 @@ FOR u IN users
             }
 
             function getCollapsedResultHeight() {
-                return getEditorContentHeight(resultEditor);
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
             }
 
             function getExpandedResultHeight(collapsedHeight) {
@@ -1037,12 +1313,11 @@ FOR u IN users
                 if (resultExpandBtn && isResultExpanded) {
                     resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
                 } else {
-                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
                 }
 
                 resultEditor.resize();
             }
-            textEditor.session.on('change', syncEditorLayout);
 
             if (resultExpandBtn) {
                 resultExpandBtn.addEventListener('click', () => {
@@ -1295,8 +1570,73 @@ FOR u IN users
     </script>
 </div>
 
-<p>In this example, <code>numProducts</code> stores the number of items in the user&rsquo;s cart. The value can then be reused in the returned object without calling <code>LENGTH(u.cart)</code> more than once.</p>
-<p><code>LET</code> is also useful for assigning the result of a subquery to a variable.</p>
+<p>The query returns &ldquo;Ada&rdquo; because user.active evaluates as true, so the result of the <code>AND</code> expression is the right-hand operand.</p>
+<h2 id="logical-or">Logical OR</h2>
+<p>The logical <code>OR</code> operator also evaluates the left-hand operand first.</p>
+<p>If the left-hand operand evaluates as true, the operation returns the original left-hand value. In this case, the right-hand operand is not evaluated unless the query plan requires it to be evaluated earlier.</p>
+<p>If the left-hand operand evaluates as false, the operation returns the original right-hand value.</p>
+<p>Like logical <code>AND</code>, logical <code>OR</code> does not necessarily return a boolean value. It returns one of its operands.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">RETURN true || &#34;value&#34;
+RETURN 1 || 7
+RETURN &#34;ferret&#34; OR &#34;fallback&#34;
+RETURN NONE || &#34;fallback&#34;
+RETURN &#34;&#34; || &#34;fallback&#34;</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>In the examples above, the <code>OR</code> expression returns the first truthy operand, or the right-hand operand when the left-hand operand is falsy.</p>
+<p>This behavior is commonly used to provide fallback values.</p>
 
 
 
@@ -1311,7 +1651,7 @@ FOR u IN users
 
 
 
-<div class="code-editor is-horizontal is-auto-height">
+<div class="code-editor is-horizontal">
     <textarea id="code-editor-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
@@ -1344,34 +1684,11 @@ FOR u IN users
                             <button id="code-editor-2-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET users = [
-    { &#34;id&#34;: 1, &#34;name&#34;: &#34;Moises Grisewood&#34; },
-    { &#34;id&#34;: 2, &#34;name&#34;: &#34;Dell Marnes&#34; },
-    { &#34;id&#34;: 3, &#34;name&#34;: &#34;Tobin Bilbery&#34; },
-    { &#34;id&#34;: 4, &#34;name&#34;: &#34;Lorianne Posten&#34; },
-    { &#34;id&#34;: 5, &#34;name&#34;: &#34;Drucill Cryer&#34; }
-]
-LET friends = [
-    { &#34;id&#34;: 1, &#34;name&#34;: &#34;Maximo Massard&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 2, &#34;name&#34;: &#34;Delainey Sancho&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 3, &#34;name&#34;: &#34;Lindon Beale&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 4, &#34;name&#34;: &#34;Gus Sprey&#34;, &#34;userId&#34;: 3 },
-    { &#34;id&#34;: 5, &#34;name&#34;: &#34;Virgil Dallander&#34;, &#34;userId&#34;: 3 },
-    { &#34;id&#34;: 6, &#34;name&#34;: &#34;Agretha Mackerel&#34;, &#34;userId&#34;: 4 },
-    { &#34;id&#34;: 7, &#34;name&#34;: &#34;Christalle Aldins&#34;, &#34;userId&#34;: 4 },
-    { &#34;id&#34;: 8, &#34;name&#34;: &#34;Karalynn Margery&#34;, &#34;userId&#34;: 5 },
-    { &#34;id&#34;: 9, &#34;name&#34;: &#34;Rodolph Ladd&#34;, &#34;userId&#34;: 5 },
-    { &#34;id&#34;: 10, &#34;name&#34;: &#34;Babette Brassill&#34;, &#34;userId&#34;: 1 }
-]
+                    <div id="code-editor-2-text" class="code-editor-text" style="height: 150px;">LET user = {
+    displayName: &#34;&#34;
+}
 
-FOR u IN users
-    LET friends = (
-        FOR f IN friends
-            FILTER u.id == f.userId
-            RETURN f
-    )
-
-    RETURN { &#34;user&#34;: u, &#34;friends&#34;: friends, &#34;numFriends&#34;: LENGTH(friends) }</div>
+RETURN user.displayName || &#34;Anonymous&#34;</div>
                 </div>
 
                 <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -1379,10 +1696,11 @@ FOR u IN users
                         <span>result.json</span>
                         <div class="code-editor-pane-header-actions">
                             <span>output</span>
+                            <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
                             <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
                         </div>
                     </div>
-                    <div id="code-editor-2-result" class="code-editor-result" data-auto-height="true"></div>
+                    <div id="code-editor-2-result" class="code-editor-result" style="height: 150px;"></div>
                 </div>
             </div>
 
@@ -1424,7 +1742,7 @@ FOR u IN users
             const textEditor = createEditor('code-editor-2-text', 'fql', true);
             const resultEditor = createEditor('code-editor-2-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-2-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-2-header');
             const editorWorkspace = document.querySelector('#code-editor-2-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-2-grid');
@@ -1453,12 +1771,8 @@ FOR u IN users
             }
 
             function syncEditorLayout() {
-                const sourceHeight = getEditorContentHeight(textEditor);
-                textEditor.container.style.height = `${sourceHeight}px`;
-
                 if (isResultVisible) {
-                    const resultHeight = getEditorContentHeight(resultEditor);
-                    applyResultHeight(resultHeight);
+                    applyResultHeight(getCollapsedResultHeight());
                 }
 
                 textEditor.resize();
@@ -1512,7 +1826,13 @@ FOR u IN users
             }
 
             function getCollapsedResultHeight() {
-                return getEditorContentHeight(resultEditor);
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
             }
 
             function getExpandedResultHeight(collapsedHeight) {
@@ -1529,12 +1849,11 @@ FOR u IN users
                 if (resultExpandBtn && isResultExpanded) {
                     resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
                 } else {
-                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
                 }
 
                 resultEditor.resize();
             }
-            textEditor.session.on('change', syncEditorLayout);
 
             if (resultExpandBtn) {
                 resultExpandBtn.addEventListener('click', () => {
@@ -1787,10 +2106,10 @@ FOR u IN users
     </script>
 </div>
 
-<p>Here, the inner <code>FOR</code> query finds the friends that belong to the current user. Assigning the result to friends makes the <code>RETURN</code> statement easier to read and allows the same value to be used more than once.</p>
-<h2 id="var">VAR</h2>
-<p>The <code>VAR</code> statement declares a mutable variable. Unlike variables declared with <code>LET</code>, variables declared with <code>VAR</code> can be reassigned.</p>
-<p>The general syntax is:</p>
+<p>The query returns &ldquo;Anonymous&rdquo; because user.displayName is an empty string and therefore evaluates as false.</p>
+<h2 id="logical-not">Logical NOT</h2>
+<p>The logical <code>NOT</code> operator converts its operand to a boolean value and returns the negated boolean result.</p>
+<p>Unlike <code>&amp;&amp;</code> and <code>||</code>, the <code>NOT</code> operator always returns a boolean.</p>
 
 
 
@@ -1812,13 +2131,18 @@ FOR u IN users
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">VAR variableName = expression</div>
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">RETURN !true
+RETURN !false
+RETURN !NONE
+RETURN !0
+RETURN !&#34;&#34;
+RETURN !&#34;ferret&#34;</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-3-text');
+            const editor = ace.edit('code-5-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
@@ -1846,7 +2170,69 @@ FOR u IN users
     </script>
 </div>
 
-<p>A <code>VAR</code> variable can be updated later using assignment syntax:</p>
+<p>The keyword form <code>NOT</code> has the same behavior:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">RETURN NOT true
+RETURN NOT NONE
+RETURN NOT &#34;ferret&#34;</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h2 id="short-circuit-evaluation">Short-circuit evaluation</h2>
+<p>The binary logical operators use short-circuit evaluation.</p>
+<p>The left-hand operand is evaluated first. The right-hand operand is evaluated only when it is needed to determine the result of the expression.</p>
+<p>For logical <code>AND</code>, the right-hand operand is evaluated only if the left-hand operand evaluates as true. If the left-hand operand evaluates as false, the expression returns the left-hand value immediately.</p>
+<p>For logical <code>OR</code>, the right-hand operand is evaluated only if the left-hand operand evaluates as false. If the left-hand operand evaluates as true, the expression returns the left-hand value immediately.</p>
 
 
 
@@ -1894,12 +2280,12 @@ FOR u IN users
                             <button id="code-editor-3-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">VAR count = 0
+                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">LET user = {
+    active: false,
+    name: &#34;Ada&#34;
+}
 
-count = count &#43; 1
-count = count &#43; 1
-
-RETURN count</div>
+RETURN user.active &amp;&amp; user.name</div>
                 </div>
 
                 <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2315,7 +2701,8 @@ RETURN count</div>
     </script>
 </div>
 
-<p><code>VAR</code> is suitable for values that change across multiple statements, such as counters, accumulators, or flags.</p>
+<p>In this example, user.name does not need to determine the result of the expression because user.active already evaluates as false.</p>
+<p>Similarly, the right-hand side of an OR expression is skipped when the left-hand side already evaluates as true:</p>
 
 
 
@@ -2363,13 +2750,12 @@ RETURN count</div>
                             <button id="code-editor-4-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET numbers = [1, 2, 3, 4, 5]
-VAR total = 0
+                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET user = {
+    active: false,
+    name: &#34;Ada&#34;
+}
 
-FOR n IN numbers
-    total = total &#43; n
-    
-    RETURN total</div>
+RETURN user.name || &#34;Anonymous&#34;</div>
                 </div>
 
                 <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2785,7 +3171,187 @@ FOR n IN numbers
     </script>
 </div>
 
-<p>In this example, <code>total</code> starts at 0 and is updated for each value in numbers.</p>
+<p>The expression returns &ldquo;Ada&rdquo; without needing the fallback value to determine the result.</p>
+<p>Subqueries are an exception to the normal short-circuit model. When an operand contains a subquery, the subquery may be evaluated before the logical operator itself as part of query execution. For this reason, logical short-circuiting should not be used to assume that a subquery operand is never evaluated.</p>
+<h2 id="result-values">Result values</h2>
+<p>The result type of a logical expression depends on the operator.</p>
+<p>The ! and NOT operators always return a boolean value.</p>
+<p>The <code>&amp;&amp;</code>, <code>AND</code>, <code>||</code>, and <code>OR</code> operators return one of their operands. As a result, the returned value may have any FQL type.</p>
+<p>Expressions that use comparison operators typically produce boolean results:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">RETURN 25 &gt; 1 &amp;&amp; 42 != 7
+RETURN 22 IN [23, 42] || 23 NOT IN [22, 7]
+RETURN 25 != 25</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-7-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>However, logical operators can also return non-boolean values:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-8-text" class="code-editor-text" data-auto-height="true">RETURN 1 || 7
+RETURN NONE || &#34;foo&#34;
+RETURN NONE &amp;&amp; true
+RETURN true &amp;&amp; 23</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-8-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>These expressions return <code>1</code>, <code>&quot;foo&quot;</code>, <code>NONE</code>, and <code>23</code>, respectively.</p>
+<p>When a strict boolean result is required, convert the final value to a boolean by applying logical NOT twice:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-9-text" class="code-editor-text" data-auto-height="true">RETURN !!&#34;ferret&#34;
+RETURN !!NONE</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-9-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
 
 </article>
 
@@ -2795,8 +3361,12 @@ FOR n IN numbers
     <div class="docs-toc-title">On this page</div>
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#let">LET</a></li>
-    <li><a href="#var">VAR</a></li>
+    <li><a href="#boolean-conversion">Boolean conversion</a></li>
+    <li><a href="#logical-and">Logical AND</a></li>
+    <li><a href="#logical-or">Logical OR</a></li>
+    <li><a href="#logical-not">Logical NOT</a></li>
+    <li><a href="#short-circuit-evaluation">Short-circuit evaluation</a></li>
+    <li><a href="#result-values">Result values</a></li>
   </ul>
 </nav>
 </aside>

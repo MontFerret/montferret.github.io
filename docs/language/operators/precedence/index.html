@@ -454,9 +454,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
                 Variables
             </a>
         
@@ -516,13 +516,234 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
         
-            <a href="https://ferretlang.org/docs/language/operators/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/language/operators/" class="docs-nav-link is-ancestor">
                 Operators
             </a>
         
 
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/comparison/" class="docs-nav-link">
+                Comparison
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/logical/" class="docs-nav-link">
+                Logical
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/arithmetic/" class="docs-nav-link">
+                Arithmetic
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/range/" class="docs-nav-link">
+                Range
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/ternary/" class="docs-nav-link">
+                Ternary
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/language/operators/precedence/" class="docs-nav-link is-active" aria-current="page">
+                Precedence
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/operators/array/" class="docs-nav-link">
+                Array
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
         
     </li>
 
@@ -668,131 +889,23 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="variables">Variables</h1>
-<p>FQL supports two kinds of variable declarations:</p>
+    <h1 id="operator-precedence">Operator precedence</h1>
+<p>The operator precedence in FQL is similar as in other familiar languages (lowest precedence first):</p>
 <ul>
-<li><code>LET</code> declares an immutable variable.</li>
-<li><code>VAR</code> declares a mutable variable that can be reassigned later.</li>
+<li><code>? :</code> ternary operator</li>
+<li><code>||</code> logical or</li>
+<li><code>&amp;&amp;</code> logical and</li>
+<li><code>==</code>, <code>!=</code> equality and inequality</li>
+<li><code>IN</code> in operator</li>
+<li><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&gt;</code> less than, less equal, greater equal, greater than</li>
+<li><code>+</code>, <code>-</code> addition, subtraction</li>
+<li><code>*</code>, <code>/</code>, <code>%</code> multiplication, division, modulus</li>
+<li><code>!</code>, <code>+</code>, <code>-</code> logical negation, unary plus, unary minus</li>
+<li><code>()</code> function call</li>
+<li><code>.</code> member access</li>
+<li><code>[]</code> indexed value access</li>
 </ul>
-<h2 id="let">LET</h2>
-<p>The <code>LET</code> statement assigns the result of an expression to a variable.</p>
-<p>The variable is introduced into the scope where the <code>LET</code> statement appears.</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET variableName = expression</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-1-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>After a variable is declared with <code>LET</code>, it cannot be reassigned.</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET a = [1, 2, 3]  // initial assignment
-
-a = PUSH(a, 4)     // syntax error, unexpected identifier
-LET a = PUSH(a, 4) // parsing error, variable &#39;a&#39; is assigned multiple times
-LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-2-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p><code>LET</code> bindings often appear where a query needs to refer to an intermediate value, a subquery result, or another computed expression by name.</p>
+<p>Operators higher in this list bind more tightly. For example, multiplication is evaluated before addition, logical AND before logical OR, and comparisons before logical operators.</p>
 
 
 
@@ -840,46 +953,9 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
                             <button id="code-editor-1-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">LET users = [
-    {
-        &#34;id&#34;: 1,
-        &#34;firstName&#34;: &#34;Kikelia&#34;,
-        &#34;lastName&#34;: &#34;Coper&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Garlic&#34;, &#34;Price&#34;: &#34;$7.46&#34; },
-            { &#34;Name&#34;: &#34;Flower - Commercial Spider&#34;, &#34;Price&#34;: &#34;$6.59&#34; }
-        ]
-    },
-    {
-        &#34;id&#34;: 2,
-        &#34;firstName&#34;: &#34;Toni&#34;,
-        &#34;lastName&#34;: &#34;MacTeggart&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Spice - Paprika&#34;, &#34;Price&#34;: &#34;$6.31&#34; },
-            { &#34;Name&#34;: &#34;Extract - Vanilla,artificial&#34;, &#34;Price&#34;: &#34;$4.74&#34; },
-            { &#34;Name&#34;: &#34;Wine - White, Cooking&#34;, &#34;Price&#34;: &#34;$1.50&#34; },
-            { &#34;Name&#34;: &#34;Nutmeg - Ground&#34;, &#34;Price&#34;: &#34;$1.30&#34; }
-        ]
-    },
-    {
-        &#34;id&#34;: 3,
-        &#34;firstName&#34;: &#34;Neile&#34;,
-        &#34;lastName&#34;: &#34;Saice&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Mustard Prepared&#34;, &#34;Price&#34;: &#34;$2.28&#34; },
-            { &#34;Name&#34;: &#34;Flower - Commercial Bronze&#34;, &#34;Price&#34;: &#34;$4.80&#34; }
-        ]
-    }
-]
-
-FOR u IN users
-    LET numProducts = LENGTH(u.cart)
-
-    RETURN {
-        &#34;user&#34;: u,
-        &#34;numProducts&#34;: numProducts,
-        &#34;discount&#34;: numProducts &gt;= 3
-    }</div>
+                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">// Multiplication binds tighter than addition:
+// interpreted as 2 &#43; (3 * 4), not (2 &#43; 3) * 4
+RETURN 2 &#43; 3 * 4</div>
                 </div>
 
                 <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -1295,8 +1371,6 @@ FOR u IN users
     </script>
 </div>
 
-<p>In this example, <code>numProducts</code> stores the number of items in the user&rsquo;s cart. The value can then be reused in the returned object without calling <code>LENGTH(u.cart)</code> more than once.</p>
-<p><code>LET</code> is also useful for assigning the result of a subquery to a variable.</p>
 
 
 
@@ -1344,34 +1418,9 @@ FOR u IN users
                             <button id="code-editor-2-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET users = [
-    { &#34;id&#34;: 1, &#34;name&#34;: &#34;Moises Grisewood&#34; },
-    { &#34;id&#34;: 2, &#34;name&#34;: &#34;Dell Marnes&#34; },
-    { &#34;id&#34;: 3, &#34;name&#34;: &#34;Tobin Bilbery&#34; },
-    { &#34;id&#34;: 4, &#34;name&#34;: &#34;Lorianne Posten&#34; },
-    { &#34;id&#34;: 5, &#34;name&#34;: &#34;Drucill Cryer&#34; }
-]
-LET friends = [
-    { &#34;id&#34;: 1, &#34;name&#34;: &#34;Maximo Massard&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 2, &#34;name&#34;: &#34;Delainey Sancho&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 3, &#34;name&#34;: &#34;Lindon Beale&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 4, &#34;name&#34;: &#34;Gus Sprey&#34;, &#34;userId&#34;: 3 },
-    { &#34;id&#34;: 5, &#34;name&#34;: &#34;Virgil Dallander&#34;, &#34;userId&#34;: 3 },
-    { &#34;id&#34;: 6, &#34;name&#34;: &#34;Agretha Mackerel&#34;, &#34;userId&#34;: 4 },
-    { &#34;id&#34;: 7, &#34;name&#34;: &#34;Christalle Aldins&#34;, &#34;userId&#34;: 4 },
-    { &#34;id&#34;: 8, &#34;name&#34;: &#34;Karalynn Margery&#34;, &#34;userId&#34;: 5 },
-    { &#34;id&#34;: 9, &#34;name&#34;: &#34;Rodolph Ladd&#34;, &#34;userId&#34;: 5 },
-    { &#34;id&#34;: 10, &#34;name&#34;: &#34;Babette Brassill&#34;, &#34;userId&#34;: 1 }
-]
-
-FOR u IN users
-    LET friends = (
-        FOR f IN friends
-            FILTER u.id == f.userId
-            RETURN f
-    )
-
-    RETURN { &#34;user&#34;: u, &#34;friends&#34;: friends, &#34;numFriends&#34;: LENGTH(friends) }</div>
+                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">// AND binds tighter than OR:
+// interpreted as false || (true &amp;&amp; true)
+RETURN false || true &amp;&amp; true</div>
                 </div>
 
                 <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -1787,66 +1836,8 @@ FOR u IN users
     </script>
 </div>
 
-<p>Here, the inner <code>FOR</code> query finds the friends that belong to the current user. Assigning the result to friends makes the <code>RETURN</code> statement easier to read and allows the same value to be used more than once.</p>
-<h2 id="var">VAR</h2>
-<p>The <code>VAR</code> statement declares a mutable variable. Unlike variables declared with <code>LET</code>, variables declared with <code>VAR</code> can be reassigned.</p>
-<p>The general syntax is:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">VAR variableName = expression</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-3-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>A <code>VAR</code> variable can be updated later using assignment syntax:</p>
+<h2 id="using-parentheses">Using parentheses</h2>
+<p>Parentheses <code>(</code> and <code>)</code> override the default evaluation order. Use them when the intended grouping differs from the precedence rules, or when the expression is complex enough that the precedence is not immediately obvious.</p>
 
 
 
@@ -1894,12 +1885,7 @@ FOR u IN users
                             <button id="code-editor-3-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">VAR count = 0
-
-count = count &#43; 1
-count = count &#43; 1
-
-RETURN count</div>
+                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">RETURN (2 &#43; 3) * 4</div>
                 </div>
 
                 <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2315,7 +2301,6 @@ RETURN count</div>
     </script>
 </div>
 
-<p><code>VAR</code> is suitable for values that change across multiple statements, such as counters, accumulators, or flags.</p>
 
 
 
@@ -2330,7 +2315,7 @@ RETURN count</div>
 
 
 
-<div class="code-editor is-horizontal is-auto-height">
+<div class="code-editor is-horizontal">
     <textarea id="code-editor-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
@@ -2363,13 +2348,13 @@ RETURN count</div>
                             <button id="code-editor-4-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET numbers = [1, 2, 3, 4, 5]
-VAR total = 0
+                    <div id="code-editor-4-text" class="code-editor-text" style="height: 150px;">LET price = 120
+LET discount = 0.1
+LET tax = 0.2
 
-FOR n IN numbers
-    total = total &#43; n
-    
-    RETURN total</div>
+// Without parentheses: discount * tax is evaluated first
+// With parentheses: subtraction happens before multiplication
+RETURN price * (1 - discount) * (1 &#43; tax)</div>
                 </div>
 
                 <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2377,10 +2362,11 @@ FOR n IN numbers
                         <span>result.json</span>
                         <div class="code-editor-pane-header-actions">
                             <span>output</span>
+                            <button id="code-editor-4-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result">Expand</button>
                             <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
                         </div>
                     </div>
-                    <div id="code-editor-4-result" class="code-editor-result" data-auto-height="true"></div>
+                    <div id="code-editor-4-result" class="code-editor-result" style="height: 150px;"></div>
                 </div>
             </div>
 
@@ -2422,7 +2408,7 @@ FOR n IN numbers
             const textEditor = createEditor('code-editor-4-text', 'fql', true);
             const resultEditor = createEditor('code-editor-4-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
+            const resultExpandBtn = document.querySelector('#code-editor-4-result-expand-button');
             const editorHeader = document.querySelector('#code-editor-4-header');
             const editorWorkspace = document.querySelector('#code-editor-4-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-4-grid');
@@ -2451,12 +2437,8 @@ FOR n IN numbers
             }
 
             function syncEditorLayout() {
-                const sourceHeight = getEditorContentHeight(textEditor);
-                textEditor.container.style.height = `${sourceHeight}px`;
-
                 if (isResultVisible) {
-                    const resultHeight = getEditorContentHeight(resultEditor);
-                    applyResultHeight(resultHeight);
+                    applyResultHeight(getCollapsedResultHeight());
                 }
 
                 textEditor.resize();
@@ -2510,7 +2492,13 @@ FOR n IN numbers
             }
 
             function getCollapsedResultHeight() {
-                return getEditorContentHeight(resultEditor);
+                const previousHeight = resultEditor.container.style.height;
+                resultEditor.container.style.height = collapsedResultHeightStyle;
+
+                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
+                resultEditor.container.style.height = previousHeight;
+
+                return nextHeight;
             }
 
             function getExpandedResultHeight(collapsedHeight) {
@@ -2527,12 +2515,11 @@ FOR n IN numbers
                 if (resultExpandBtn && isResultExpanded) {
                     resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
                 } else {
-                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                    resultEditor.container.style.height = collapsedResultHeightStyle;
                 }
 
                 resultEditor.resize();
             }
-            textEditor.session.on('change', syncEditorLayout);
 
             if (resultExpandBtn) {
                 resultExpandBtn.addEventListener('click', () => {
@@ -2785,21 +2772,12 @@ FOR n IN numbers
     </script>
 </div>
 
-<p>In this example, <code>total</code> starts at 0 and is updated for each value in numbers.</p>
 
 </article>
 
         </main>
 
-        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
-    <div class="docs-toc-title">On this page</div>
-    <nav id="TableOfContents">
-  <ul>
-    <li><a href="#let">LET</a></li>
-    <li><a href="#var">VAR</a></li>
-  </ul>
-</nav>
-</aside>
+        
     </div>
 </div>
 <script type="module">
