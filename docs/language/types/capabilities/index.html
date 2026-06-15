@@ -392,13 +392,172 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
         
-            <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link is-ancestor">
                 Values and Types
             </a>
         
 
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/basic/" class="docs-nav-link">
+                Basic Types
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/host/" class="docs-nav-link">
+                Host Values
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/language/types/capabilities/" class="docs-nav-link is-active" aria-current="page">
+                Capability Types
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/ordering/" class="docs-nav-link">
+                Type Ordering
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/serialization/" class="docs-nav-link">
+                Serialization
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
         
     </li>
 
@@ -454,9 +613,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
                 Variables
             </a>
         
@@ -668,15 +827,15 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="variables">Variables</h1>
-<p>FQL supports two kinds of variable declarations:</p>
-<ul>
-<li><code>LET</code> declares an immutable variable.</li>
-<li><code>VAR</code> declares a mutable variable that can be reassigned later.</li>
-</ul>
-<h2 id="let">LET</h2>
-<p>The <code>LET</code> statement assigns the result of an expression to a variable.</p>
-<p>The variable is introduced into the scope where the <code>LET</code> statement appears.</p>
+    <h1 id="capability-types">Capability types</h1>
+<p>Capability types describe behavior that a value supports.</p>
+<p>Unlike basic types, capability types are not about a value&rsquo;s storage shape. They are about the operations that can be performed on the value. A capability type represents an operation-oriented contract: a value has a capability when the runtime can perform a specific class of operation on it.</p>
+<p>This is especially important for host values, because host values may expose behavior that does not correspond to any built-in FQL type. A database connection may be queryable. A file handle may be closable. A cursor may be iterable. A browser element may accept dispatched commands.</p>
+<p>A capability is not another primitive type like <code>string</code> or <code>array</code>. It is a behavioral contract between a value and the operations that use it.</p>
+<h2 id="capabilities-vs-basic-types">Capabilities vs basic types</h2>
+<p>Basic types describe what a value <em>is</em>. Capability types describe what a value can <em>do</em>.</p>
+<p>An array is a basic value type. It is also iterable and sortable. These are separate facts: the type tells you the shape, and the capabilities tell you the operations.</p>
+<p>A host database connection is not an array, an object, or a string. It has none of those storage shapes. However, it may be queryable if the host exposes query execution for it.</p>
 
 
 
@@ -698,7 +857,12 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET variableName = expression</div>
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET db = DB::SQLITE::OPEN(&#34;data.db&#34;)
+
+RETURN QUERY `
+  SELECT name
+  FROM users
+` IN db USING sql</div>
         </div>
     </div>
 
@@ -732,7 +896,10 @@
     </script>
 </div>
 
-<p>After a variable is declared with <code>LET</code>, it cannot be reassigned.</p>
+<p>The <code>QUERY ... IN</code> operation does not check whether <code>db</code> is an array or an object. It checks whether <code>db</code> supports query execution. That check is a capability check.</p>
+<h2 id="capabilities-vs-host-types">Capabilities vs host types</h2>
+<p>Host types often use capabilities to integrate with the language.</p>
+<p>The runtime does not need to know every concrete host type in advance. Instead, it checks whether the value supports the capability required by an operation. This is the key mechanism that allows host values to participate in FQL expressions without being predefined by the language.</p>
 
 
 
@@ -754,11 +921,9 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET a = [1, 2, 3]  // initial assignment
-
-a = PUSH(a, 4)     // syntax error, unexpected identifier
-LET a = PUSH(a, 4) // parsing error, variable &#39;a&#39; is assigned multiple times
-LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">QUERY `
+  SELECT * FROM users
+` IN db USING sql</div>
         </div>
     </div>
 
@@ -792,7 +957,482 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
     </script>
 </div>
 
-<p><code>LET</code> bindings often appear where a query needs to refer to an intermediate value, a subquery result, or another computed expression by name.</p>
+<p>In this example, <code>db</code> is a host value. The query expression does not require <code>db</code> to be a specific concrete database type. It requires <code>db</code> to support the queryable capability. Any host value that supports query execution can be used here, regardless of whether it wraps SQLite, PostgreSQL, an in-memory store, or something else entirely.</p>
+<p>This is the reason capability types exist as a separate concept. They decouple language operations from concrete value implementations.</p>
+<p>See <a href="https://ferretlang.org/docs/language/types/host/">Host Values</a> for more about host values and their lifecycle.</p>
+<h2 id="common-capabilities">Common capabilities</h2>
+<p>The following capabilities describe the most common behavioral contracts that values can support.</p>
+<h3 id="queryable">Queryable</h3>
+<p>A queryable value can execute query literals.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">QUERY `SELECT * FROM users` IN db USING sql</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Query execution supports several forms:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">// All matching values
+QUERY `SELECT * FROM users` IN db USING sql
+
+// First matching value
+QUERY ONE `SELECT * FROM users WHERE id = 1` IN db USING sql
+
+// Count of matching values
+QUERY COUNT `SELECT * FROM users` IN db USING sql
+
+// Whether any match exists
+QUERY EXISTS `SELECT * FROM users WHERE active = true` IN db USING sql</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>The query literal, any parameters supplied with <code>WITH</code>, and any options supplied with <code>OPTIONS</code> are all passed to the value. The value decides how to interpret and execute the query.</p>
+<h3 id="iterable">Iterable</h3>
+<p>An iterable value can produce a sequence of values, which allows it to be used with <code>FOR ... IN</code>.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">FOR item IN collection
+    RETURN item</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Built-in arrays and objects are iterable. Host values such as cursors, result sets, or streams may also be iterable.</p>
+<p>When iterating, each step produces both a value and a key. For arrays, the key is the index. For objects, the key is the property name. For host values, the key depends on the value&rsquo;s implementation.</p>
+<h3 id="comparable">Comparable</h3>
+<p>A comparable value can define equality and ordering behavior.</p>
+<p>Comparison is used by equality operators (<code>==</code>, <code>!=</code>), ordering operators (<code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>), and sorting. When a value supports comparison, it controls how it is ordered relative to other values.</p>
+<p>Built-in types define comparison behavior directly. Host values may define their own comparison rules based on identity, an internal key, a normalized representation, or another rule chosen by the runtime or module.</p>
+<p>See <a href="https://ferretlang.org/docs/language/types/ordering/">Type Ordering</a> for the full ordering model.</p>
+<h3 id="sortable">Sortable</h3>
+<p>A sortable value can be sorted in place.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">SORT values ASC</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Arrays are sortable by default. A host value that represents a collection may also support sorting if the host provides that capability.</p>
+<h3 id="observable">Observable</h3>
+<p>An observable value can produce a stream of events over time.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">WAITFOR EVENT &#34;load&#34; IN page</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-7-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Observability is used for event-driven operations where the script waits for something to happen. The value defines which events it can produce and how subscriptions work.</p>
+<h3 id="dispatchable">Dispatchable</h3>
+<p>A dispatchable value can receive and handle dispatched commands.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-8-text" class="code-editor-text" data-auto-height="true">DISPATCH &#34;click&#34; IN button</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-8-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Dispatch is effectful: it causes a side effect on the target value without producing a return value. Browser elements, UI controls, and other interactive host values commonly support dispatch.</p>
+<h3 id="measurable">Measurable</h3>
+<p>A measurable value has a defined length.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-9-text" class="code-editor-text" data-auto-height="true">LENGTH(elements)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-9-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>This capability is used when the runtime needs to know the size of a value, such as for length checks, emptiness tests, or size-based operations. Arrays, objects, strings, and host collections may all be measurable.</p>
+<h3 id="closable">Closable</h3>
+<p>A closable value owns an external resource that should be released after execution.</p>
+<p>Database connections, file handles, browser sessions, network clients, and other resource-backed values may support close. The runtime tracks closable values and releases their resources during program finalization, before the result is returned to the host.</p>
+<p>Host values that support close do not need to be closed manually in FQL code. The runtime handles cleanup automatically.</p>
+<p>See <a href="https://ferretlang.org/docs/language/types/host/">Host Values</a> for more about host values and their lifecycle.</p>
+<h2 id="how-operations-use-capabilities">How operations use capabilities</h2>
+<p>When an operation requires a capability, the runtime checks whether the value supports it. If it does, the operation proceeds. If it does not, the operation fails with a runtime error.</p>
+<p>This check happens at runtime, not at parse time. FQL does not statically verify that a variable holds a value with a particular capability. The check occurs when the operation is actually executed.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Operation</th>
+          <th>Required capability</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>QUERY ... IN value</code></td>
+          <td>Queryable</td>
+      </tr>
+      <tr>
+          <td><code>FOR item IN value</code></td>
+          <td>Iterable</td>
+      </tr>
+      <tr>
+          <td><code>SORT value</code></td>
+          <td>Sortable</td>
+      </tr>
+      <tr>
+          <td><code>WAITFOR EVENT ... IN value</code></td>
+          <td>Observable</td>
+      </tr>
+      <tr>
+          <td><code>DISPATCH ... IN value</code></td>
+          <td>Dispatchable</td>
+      </tr>
+      <tr>
+          <td><code>value == other</code></td>
+          <td>Comparable (when custom ordering is needed)</td>
+      </tr>
+  </tbody>
+</table>
+<p>A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, and comparable. A host cursor might be iterable and closable but not queryable or sortable.</p>
+<h2 id="runtime-defined-behavior">Runtime-defined behavior</h2>
+<p>Capability behavior is runtime-defined.</p>
+<p>For built-in values, Ferret defines the capability behavior directly. For host values, the embedding runtime defines which capabilities are supported and how they behave. Two different host values may support the same capability but implement it differently.</p>
+<p>A host value may support equality, ordering, querying, iteration, cleanup, or serialization differently from another host value. As long as the behavioral contract is satisfied, the runtime and the language operations work correctly.</p>
+<p>The exact implementation mechanism depends on the host runtime. In the Go runtime, capabilities are represented by interfaces implemented by runtime values.</p>
+<h2 id="error-behavior">Error behavior</h2>
+<p>Using an operation with a value that does not support the required capability results in a runtime error.</p>
 
 
 
@@ -840,46 +1480,7 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
                             <button id="code-editor-1-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">LET users = [
-    {
-        &#34;id&#34;: 1,
-        &#34;firstName&#34;: &#34;Kikelia&#34;,
-        &#34;lastName&#34;: &#34;Coper&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Garlic&#34;, &#34;Price&#34;: &#34;$7.46&#34; },
-            { &#34;Name&#34;: &#34;Flower - Commercial Spider&#34;, &#34;Price&#34;: &#34;$6.59&#34; }
-        ]
-    },
-    {
-        &#34;id&#34;: 2,
-        &#34;firstName&#34;: &#34;Toni&#34;,
-        &#34;lastName&#34;: &#34;MacTeggart&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Spice - Paprika&#34;, &#34;Price&#34;: &#34;$6.31&#34; },
-            { &#34;Name&#34;: &#34;Extract - Vanilla,artificial&#34;, &#34;Price&#34;: &#34;$4.74&#34; },
-            { &#34;Name&#34;: &#34;Wine - White, Cooking&#34;, &#34;Price&#34;: &#34;$1.50&#34; },
-            { &#34;Name&#34;: &#34;Nutmeg - Ground&#34;, &#34;Price&#34;: &#34;$1.30&#34; }
-        ]
-    },
-    {
-        &#34;id&#34;: 3,
-        &#34;firstName&#34;: &#34;Neile&#34;,
-        &#34;lastName&#34;: &#34;Saice&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Mustard Prepared&#34;, &#34;Price&#34;: &#34;$2.28&#34; },
-            { &#34;Name&#34;: &#34;Flower - Commercial Bronze&#34;, &#34;Price&#34;: &#34;$4.80&#34; }
-        ]
-    }
-]
-
-FOR u IN users
-    LET numProducts = LENGTH(u.cart)
-
-    RETURN {
-        &#34;user&#34;: u,
-        &#34;numProducts&#34;: numProducts,
-        &#34;discount&#34;: numProducts &gt;= 3
-    }</div>
+                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">RETURN QUERY `SELECT * FROM users` IN &#34;not a database&#34; USING sql</div>
                 </div>
 
                 <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -1295,8 +1896,7 @@ FOR u IN users
     </script>
 </div>
 
-<p>In this example, <code>numProducts</code> stores the number of items in the user&rsquo;s cart. The value can then be reused in the returned object without calling <code>LENGTH(u.cart)</code> more than once.</p>
-<p><code>LET</code> is also useful for assigning the result of a subquery to a variable.</p>
+<p>This fails because a string does not support query execution.</p>
 
 
 
@@ -1344,34 +1944,8 @@ FOR u IN users
                             <button id="code-editor-2-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET users = [
-    { &#34;id&#34;: 1, &#34;name&#34;: &#34;Moises Grisewood&#34; },
-    { &#34;id&#34;: 2, &#34;name&#34;: &#34;Dell Marnes&#34; },
-    { &#34;id&#34;: 3, &#34;name&#34;: &#34;Tobin Bilbery&#34; },
-    { &#34;id&#34;: 4, &#34;name&#34;: &#34;Lorianne Posten&#34; },
-    { &#34;id&#34;: 5, &#34;name&#34;: &#34;Drucill Cryer&#34; }
-]
-LET friends = [
-    { &#34;id&#34;: 1, &#34;name&#34;: &#34;Maximo Massard&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 2, &#34;name&#34;: &#34;Delainey Sancho&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 3, &#34;name&#34;: &#34;Lindon Beale&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 4, &#34;name&#34;: &#34;Gus Sprey&#34;, &#34;userId&#34;: 3 },
-    { &#34;id&#34;: 5, &#34;name&#34;: &#34;Virgil Dallander&#34;, &#34;userId&#34;: 3 },
-    { &#34;id&#34;: 6, &#34;name&#34;: &#34;Agretha Mackerel&#34;, &#34;userId&#34;: 4 },
-    { &#34;id&#34;: 7, &#34;name&#34;: &#34;Christalle Aldins&#34;, &#34;userId&#34;: 4 },
-    { &#34;id&#34;: 8, &#34;name&#34;: &#34;Karalynn Margery&#34;, &#34;userId&#34;: 5 },
-    { &#34;id&#34;: 9, &#34;name&#34;: &#34;Rodolph Ladd&#34;, &#34;userId&#34;: 5 },
-    { &#34;id&#34;: 10, &#34;name&#34;: &#34;Babette Brassill&#34;, &#34;userId&#34;: 1 }
-]
-
-FOR u IN users
-    LET friends = (
-        FOR f IN friends
-            FILTER u.id == f.userId
-            RETURN f
-    )
-
-    RETURN { &#34;user&#34;: u, &#34;friends&#34;: friends, &#34;numFriends&#34;: LENGTH(friends) }</div>
+                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">FOR item IN 42
+    RETURN item</div>
                 </div>
 
                 <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -1787,66 +2361,7 @@ FOR u IN users
     </script>
 </div>
 
-<p>Here, the inner <code>FOR</code> query finds the friends that belong to the current user. Assigning the result to friends makes the <code>RETURN</code> statement easier to read and allows the same value to be used more than once.</p>
-<h2 id="var">VAR</h2>
-<p>The <code>VAR</code> statement declares a mutable variable. Unlike variables declared with <code>LET</code>, variables declared with <code>VAR</code> can be reassigned.</p>
-<p>The general syntax is:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">VAR variableName = expression</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-3-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>A <code>VAR</code> variable can be updated later using assignment syntax:</p>
+<p>This fails because a number is not iterable.</p>
 
 
 
@@ -1894,12 +2409,7 @@ FOR u IN users
                             <button id="code-editor-3-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">VAR count = 0
-
-count = count &#43; 1
-count = count &#43; 1
-
-RETURN count</div>
+                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">RETURN DISPATCH &#34;click&#34; IN &#34;not an element&#34;</div>
                 </div>
 
                 <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2315,477 +2825,24 @@ RETURN count</div>
     </script>
 </div>
 
-<p><code>VAR</code> is suitable for values that change across multiple statements, such as counters, accumulators, or flags.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-horizontal is-auto-height">
-    <textarea id="code-editor-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div id="code-editor-4-header" class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-                <small>Ferret v2</small>
-            </div>
-
-            <div class="code-editor-actions">
-                <button id="code-editor-4-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result-pane">Output</button>
-                <button id="code-editor-4-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-4-params-drawer">Params</button>
-                <button id="code-editor-4-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
-                    <span class="code-editor-run-label">Run</span>
-                    <span id="code-editor-4-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div id="code-editor-4-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
-            <span id="code-editor-4-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
-        </div>
-
-        <div class="code-editor-workspace">
-            <div id="code-editor-4-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-4-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>FQL</span>
-                            <button id="code-editor-4-copy-button" class="code-editor-pane-button" type="button">Copy</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET numbers = [1, 2, 3, 4, 5]
-VAR total = 0
-
-FOR n IN numbers
-    total = total &#43; n
-    
-    RETURN total</div>
-                </div>
-
-                <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-4-result" class="code-editor-result" data-auto-height="true"></div>
-                </div>
-            </div>
-
-            <aside id="code-editor-4-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-4-params-title" hidden>
-                <div class="code-editor-params-header">
-                    <div>
-                        <span id="code-editor-4-params-title" class="code-editor-params-title">Query parameters</span>
-                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
-                    </div>
-                    <button id="code-editor-4-params-close-button" class="code-editor-pane-button" type="button">Close</button>
-                </div>
-                <div class="code-editor-params-body">
-                    <div id="code-editor-4-params-empty" class="code-editor-params-empty">No parameters added.</div>
-                    <div id="code-editor-4-params-rows" class="code-editor-params-rows"></div>
-                </div>
-                <div class="code-editor-params-footer">
-                    <button id="code-editor-4-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
-                </div>
-            </aside>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode, useWorker) {
-                const editor = ace.edit(id);
-                editor.setTheme("ace\/theme\/tomorrow_night");
-                editor.session.setUseWorker(useWorker);
-                editor.session.setMode("ace/mode/" + mode);
-                editor.setOptions({
-                    displayIndentGuides: false,
-                    printMargin: false
-                });
-
-                return editor;
-            }
-
-            const btn = document.querySelector('#code-editor-4-run-button');
-            const textEditor = createEditor('code-editor-4-text', 'fql', true);
-            const resultEditor = createEditor('code-editor-4-result', 'json', false);
-            resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
-            const editorHeader = document.querySelector('#code-editor-4-header');
-            const editorWorkspace = document.querySelector('#code-editor-4-grid').parentElement;
-            const editorGrid = document.querySelector('#code-editor-4-grid');
-            const runProgress = document.querySelector('#code-editor-4-progress');
-            const runStatus = document.querySelector('#code-editor-4-run-status');
-            const resultPane = document.querySelector('#code-editor-4-result-pane');
-            const resultToggleBtn = document.querySelector('#code-editor-4-result-toggle-button');
-            const resultCloseBtn = document.querySelector('#code-editor-4-result-close-button');
-            const paramsToggleBtn = document.querySelector('#code-editor-4-params-toggle-button');
-            const paramsDrawer = document.querySelector('#code-editor-4-params-drawer');
-            const paramsCloseBtn = document.querySelector('#code-editor-4-params-close-button');
-            const paramsAddBtn = document.querySelector('#code-editor-4-params-add-button');
-            const paramsRows = document.querySelector('#code-editor-4-params-rows');
-            const paramsEmpty = document.querySelector('#code-editor-4-params-empty');
-            let isResultVisible = !resultPane.hidden;
-            let isParamsVisible = !paramsDrawer.hidden;
-
-            function resetResultExpansion() {
-                if (!resultExpandBtn) {
-                    return;
-                }
-
-                isResultExpanded = false;
-                resultExpandBtn.setAttribute('aria-expanded', 'false');
-                resultExpandBtn.textContent = 'Expand';
-            }
-
-            function syncEditorLayout() {
-                const sourceHeight = getEditorContentHeight(textEditor);
-                textEditor.container.style.height = `${sourceHeight}px`;
-
-                if (isResultVisible) {
-                    const resultHeight = getEditorContentHeight(resultEditor);
-                    applyResultHeight(resultHeight);
-                }
-
-                textEditor.resize();
-
-                if (isResultVisible) {
-                    resultEditor.resize();
-                }
-            }
-
-            function setResultVisible(nextVisible) {
-                isResultVisible = nextVisible;
-                resultPane.hidden = !nextVisible;
-                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
-
-                if (!nextVisible) {
-                    resetResultExpansion();
-                    syncEditorLayout();
-                    return;
-                }
-
-                window.requestAnimationFrame(() => {
-                    syncEditorLayout();
-                    resultEditor.resize(true);
-                });
-            }
-
-            resultToggleBtn.addEventListener('click', () => {
-                setResultVisible(!isResultVisible);
-            });
-
-            resultCloseBtn.addEventListener('click', () => {
-                setResultVisible(false);
-            });
-
-            const collapsedResultHeightStyle = resultEditor.container.style.height;
-            let isResultExpanded = false;
-
-            function getEditorContentHeight(editor) {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-
-                return Math.max(screenLines * lineHeight, 48);
-            }
-
-            function getMaxResultHeight(fallbackHeight) {
-                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
-                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-
-                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
-            }
-
-            function getCollapsedResultHeight() {
-                return getEditorContentHeight(resultEditor);
-            }
-
-            function getExpandedResultHeight(collapsedHeight) {
-                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
-                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
-                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
-                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
-                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
-
-                return Math.max(collapsedHeight, Math.round(targetHeight));
-            }
-
-            function applyResultHeight(collapsedHeight) {
-                if (resultExpandBtn && isResultExpanded) {
-                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
-                } else {
-                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
-                }
-
-                resultEditor.resize();
-            }
-            textEditor.session.on('change', syncEditorLayout);
-
-            if (resultExpandBtn) {
-                resultExpandBtn.addEventListener('click', () => {
-                    isResultExpanded = !isResultExpanded;
-                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
-                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
-                    syncEditorLayout();
-                });
-            }
-
-            function syncParamsEmptyState() {
-                paramsEmpty.hidden = paramsRows.children.length > 0;
-            }
-
-            function formatParamValue(value) {
-                return typeof value === 'string' ? value : JSON.stringify(value);
-            }
-
-            function createParamRow(name, value) {
-                const row = document.createElement('div');
-                row.className = 'code-editor-param-row';
-
-                const nameInput = document.createElement('input');
-                nameInput.className = 'code-editor-param-input code-editor-param-name';
-                nameInput.type = 'text';
-                nameInput.placeholder = 'name';
-                nameInput.setAttribute('aria-label', 'Parameter name');
-                nameInput.value = name || '';
-
-                const separator = document.createElement('span');
-                separator.className = 'code-editor-param-separator';
-                separator.setAttribute('aria-hidden', 'true');
-                separator.textContent = ':';
-
-                const valueInput = document.createElement('input');
-                valueInput.className = 'code-editor-param-input code-editor-param-value';
-                valueInput.type = 'text';
-                valueInput.placeholder = 'value';
-                valueInput.setAttribute('aria-label', 'Parameter value');
-                valueInput.value = value === undefined ? '' : formatParamValue(value);
-
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'code-editor-param-remove-button';
-                removeBtn.type = 'button';
-                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
-                removeBtn.textContent = 'Remove';
-                removeBtn.addEventListener('click', () => {
-                    row.remove();
-                    syncParamsEmptyState();
-                });
-
-                row.append(nameInput, separator, valueInput, removeBtn);
-                paramsRows.appendChild(row);
-                syncParamsEmptyState();
-
-                return nameInput;
-            }
-
-            function setParamsVisible(nextVisible) {
-                isParamsVisible = nextVisible;
-                paramsDrawer.hidden = !nextVisible;
-                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorWorkspace.classList.toggle('is-params-open', nextVisible);
-
-                if (nextVisible) {
-                    paramsCloseBtn.focus();
-                } else {
-                    paramsToggleBtn.focus();
-                }
-            }
-
-            function setParamsControlsDisabled(disabled) {
-                paramsToggleBtn.disabled = disabled;
-                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
-                    control.disabled = disabled;
-                });
-            }
-
-            function parseParamValue(value) {
-                try {
-                    return JSON.parse(value);
-                } catch (err) {
-                    return value;
-                }
-            }
-
-            function getParams() {
-                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
-                    const name = row.querySelector('.code-editor-param-name').value.trim();
-
-                    if (name) {
-                        const value = row.querySelector('.code-editor-param-value').value;
-                        params[name] = parseParamValue(value);
-                    }
-
-                    return params;
-                }, {});
-            }
-
-            const initialParams = JSON.parse("{}");
-
-            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
-                Object.entries(initialParams).forEach(([name, value]) => {
-                    createParamRow(name, value);
-                });
-            }
-
-            syncParamsEmptyState();
-
-            paramsToggleBtn.addEventListener('click', () => {
-                setParamsVisible(!isParamsVisible);
-            });
-
-            paramsCloseBtn.addEventListener('click', () => {
-                setParamsVisible(false);
-            });
-
-            paramsAddBtn.addEventListener('click', () => {
-                createParamRow('', '').focus();
-            });
-
-            window.addEventListener('resize', syncEditorLayout);
-            syncEditorLayout();
-
-            function setContent(editor, content) {
-                editor.setValue(content, -1);
-            }
-                const copyClipboardEl = document.querySelector('#code-editor-4-copy-clipboard');
-                const copyBtn = document.querySelector('#code-editor-4-copy-button');
-
-                function copyTextWithFallback(content) {
-                    copyClipboardEl.value = content;
-                    copyClipboardEl.focus();
-                    copyClipboardEl.select();
-
-                    if (!document.execCommand('copy')) {
-                        throw new Error('Could not copy source to the clipboard');
-                    }
-                }
-
-                function copyTextToClipboard(content) {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        return navigator.clipboard.writeText(content).catch(() => {
-                            copyTextWithFallback(content);
-                        });
-                    }
-
-                    copyTextWithFallback(content);
-
-                    return Promise.resolve();
-                }
-
-                copyBtn.addEventListener('click', () => {
-                    copyTextToClipboard(textEditor.getValue())
-                        .then(() => {
-                            copyBtn.textContent = 'Copied';
-                            window.setTimeout(() => {
-                                copyBtn.textContent = 'Copy';
-                            }, 1200);
-                        })
-                        .catch((err) => {
-                            console.error('Failed to copy source');
-                            console.error(err);
-                        });
-                });
-
-            let isRunning = false;
-
-            function onStart() {
-                isRunning = true;
-                textEditor.setReadOnly(true);
-                runProgress.hidden = false;
-                runStatus.textContent = 'Running query';
-                editorHeader.setAttribute('aria-busy', 'true');
-                editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-running');
-                btn.setAttribute('aria-busy', 'true');
-                btn.setAttribute('aria-label', 'Running query');
-                btn.disabled = true;
-                setParamsControlsDisabled(true);
-            }
-
-            function onEnd(result) {
-                isRunning = false;
-                textEditor.setReadOnly(false);
-                runProgress.hidden = true;
-                runStatus.textContent = '';
-                editorHeader.setAttribute('aria-busy', 'false');
-                editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-running');
-                btn.setAttribute('aria-busy', 'false');
-                btn.setAttribute('aria-label', 'Run query');
-                btn.disabled = false;
-                setParamsControlsDisabled(false);
-
-                setContent(resultEditor, result);
-                setResultVisible(true);
-            }
-
-            btn.addEventListener('click', () => {
-                if (isRunning) {
-                    return;
-                }
-
-                const body = {
-                        text: textEditor.getValue(),
-                        params: getParams()
-                };
-                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
-
-                onStart();
-                fetch(url, {
-                    method: 'post',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
-                    signal: AbortSignal.timeout(1000 * 60), 
-                    body: JSON.stringify(body)
-                })
-                    .then(r => {
-                        if (r.status === 200) {
-                            return r.json()
-                        }
-                        
-                        if (r.status === 426) {
-                            throw new Error(`Too many requests. Try again later.`);
-                        }
-                        
-                        if (r.status === 400) {
-                            return r.json().then((data) => {
-                                if (data.details) {
-                                    throw new Error(data.details);
-                                }
-                                
-                                throw new Error(data.error);
-                            });
-                        }
-                        
-                        throw new Error(`Unexpected error. Try again later.`);
-                    })
-                    .then((data) => {
-                        onEnd(JSON.stringify(data, null, 4));
-                    })
-                    .catch((err) => {
-                        onEnd(err.message);
-                    });
-            });
-        }, false);
-    </script>
+<p>This fails because a string does not support dispatch.</p>
+<p>Capability errors are reported at the point where the operation is attempted. The error identifies the value, its type, and the capability that was expected.</p>
+<h2 id="related-pages">Related pages</h2>
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/language/types/basic/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Basic Types</strong>
+        <span>Learn the built-in value types: NONE, booleans, numbers, strings, arrays, objects, and binary values.</span>
+    </a><a class="docs-card" href="/docs/language/types/host/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Host Values</strong>
+        <span>Understand values provided by modules, runtimes, and embedded hosts, such as database connections, browser pages, files, and other external resources.</span>
+    </a><a class="docs-card" href="/docs/language/types/ordering/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Type Ordering</strong>
+        <span>Learn how FQL compares and sorts values, including values of different types.</span>
+    </a>
 </div>
 
-<p>In this example, <code>total</code> starts at 0 and is updated for each value in numbers.</p>
 
 </article>
 
@@ -2795,8 +2852,24 @@ FOR n IN numbers
     <div class="docs-toc-title">On this page</div>
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#let">LET</a></li>
-    <li><a href="#var">VAR</a></li>
+    <li><a href="#capabilities-vs-basic-types">Capabilities vs basic types</a></li>
+    <li><a href="#capabilities-vs-host-types">Capabilities vs host types</a></li>
+    <li><a href="#common-capabilities">Common capabilities</a>
+      <ul>
+        <li><a href="#queryable">Queryable</a></li>
+        <li><a href="#iterable">Iterable</a></li>
+        <li><a href="#comparable">Comparable</a></li>
+        <li><a href="#sortable">Sortable</a></li>
+        <li><a href="#observable">Observable</a></li>
+        <li><a href="#dispatchable">Dispatchable</a></li>
+        <li><a href="#measurable">Measurable</a></li>
+        <li><a href="#closable">Closable</a></li>
+      </ul>
+    </li>
+    <li><a href="#how-operations-use-capabilities">How operations use capabilities</a></li>
+    <li><a href="#runtime-defined-behavior">Runtime-defined behavior</a></li>
+    <li><a href="#error-behavior">Error behavior</a></li>
+    <li><a href="#related-pages">Related pages</a></li>
   </ul>
 </nav>
 </aside>

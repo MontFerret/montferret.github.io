@@ -392,13 +392,172 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
         
-            <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link is-ancestor">
                 Values and Types
             </a>
         
 
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/basic/" class="docs-nav-link">
+                Basic Types
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/host/" class="docs-nav-link">
+                Host Values
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/capabilities/" class="docs-nav-link">
+                Capability Types
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/ordering/" class="docs-nav-link">
+                Type Ordering
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/language/types/serialization/" class="docs-nav-link is-active" aria-current="page">
+                Serialization
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
         
     </li>
 
@@ -454,9 +613,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/language/variables/" class="docs-nav-link">
                 Variables
             </a>
         
@@ -668,131 +827,10 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="variables">Variables</h1>
-<p>FQL supports two kinds of variable declarations:</p>
-<ul>
-<li><code>LET</code> declares an immutable variable.</li>
-<li><code>VAR</code> declares a mutable variable that can be reassigned later.</li>
-</ul>
-<h2 id="let">LET</h2>
-<p>The <code>LET</code> statement assigns the result of an expression to a variable.</p>
-<p>The variable is introduced into the scope where the <code>LET</code> statement appears.</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET variableName = expression</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-1-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>After a variable is declared with <code>LET</code>, it cannot be reassigned.</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET a = [1, 2, 3]  // initial assignment
-
-a = PUSH(a, 4)     // syntax error, unexpected identifier
-LET a = PUSH(a, 4) // parsing error, variable &#39;a&#39; is assigned multiple times
-LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-2-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p><code>LET</code> bindings often appear where a query needs to refer to an intermediate value, a subquery result, or another computed expression by name.</p>
+    <h1 id="serialization">Serialization</h1>
+<p>Serialization is the process of converting Ferret runtime values into an external representation that can be returned to the host application, CLI, API client, or embedding environment.</p>
+<p>Ferret programs operate on runtime values. When a program finishes, the final result is passed back to the host. Before that result can cross the host boundary, it is serialized into the encoding format selected by the host runtime. The default encoding is JSON, but embedders may choose a different representation.</p>
+<p>While the program is running, this is an FQL object containing FQL values. After execution completes, the runtime serializes the result — for example, as a JSON object:</p>
 
 
 
@@ -840,46 +878,11 @@ LET b = PUSH(a, 4) // allowed, result: [1, 2, 3, 4]</div>
                             <button id="code-editor-1-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">LET users = [
-    {
-        &#34;id&#34;: 1,
-        &#34;firstName&#34;: &#34;Kikelia&#34;,
-        &#34;lastName&#34;: &#34;Coper&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Garlic&#34;, &#34;Price&#34;: &#34;$7.46&#34; },
-            { &#34;Name&#34;: &#34;Flower - Commercial Spider&#34;, &#34;Price&#34;: &#34;$6.59&#34; }
-        ]
-    },
-    {
-        &#34;id&#34;: 2,
-        &#34;firstName&#34;: &#34;Toni&#34;,
-        &#34;lastName&#34;: &#34;MacTeggart&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Spice - Paprika&#34;, &#34;Price&#34;: &#34;$6.31&#34; },
-            { &#34;Name&#34;: &#34;Extract - Vanilla,artificial&#34;, &#34;Price&#34;: &#34;$4.74&#34; },
-            { &#34;Name&#34;: &#34;Wine - White, Cooking&#34;, &#34;Price&#34;: &#34;$1.50&#34; },
-            { &#34;Name&#34;: &#34;Nutmeg - Ground&#34;, &#34;Price&#34;: &#34;$1.30&#34; }
-        ]
-    },
-    {
-        &#34;id&#34;: 3,
-        &#34;firstName&#34;: &#34;Neile&#34;,
-        &#34;lastName&#34;: &#34;Saice&#34;,
-        &#34;cart&#34;: [
-            { &#34;Name&#34;: &#34;Mustard Prepared&#34;, &#34;Price&#34;: &#34;$2.28&#34; },
-            { &#34;Name&#34;: &#34;Flower - Commercial Bronze&#34;, &#34;Price&#34;: &#34;$4.80&#34; }
-        ]
-    }
-]
-
-FOR u IN users
-    LET numProducts = LENGTH(u.cart)
-
-    RETURN {
-        &#34;user&#34;: u,
-        &#34;numProducts&#34;: numProducts,
-        &#34;discount&#34;: numProducts &gt;= 3
-    }</div>
+                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">RETURN {
+  name: &#34;Ada&#34;,
+  active: true,
+  tags: [&#34;math&#34;, &#34;logic&#34;]
+}</div>
                 </div>
 
                 <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -1295,8 +1298,10 @@ FOR u IN users
     </script>
 </div>
 
-<p>In this example, <code>numProducts</code> stores the number of items in the user&rsquo;s cart. The value can then be reused in the returned object without calling <code>LENGTH(u.cart)</code> more than once.</p>
-<p><code>LET</code> is also useful for assigning the result of a subquery to a variable.</p>
+<h2 id="when-serialization-happens">When serialization happens</h2>
+<p>Serialization happens after program execution completes, before the result is returned to the host.</p>
+<p>During execution, values remain Ferret runtime values. Arrays, objects, host values, functions, and other runtime constructs are evaluated according to FQL semantics. Only the final result is serialized.</p>
+<p>Temporary values that are created and discarded during execution are not serialized. A value only needs to be serializable if it becomes part of the returned result.</p>
 
 
 
@@ -1344,34 +1349,14 @@ FOR u IN users
                             <button id="code-editor-2-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET users = [
-    { &#34;id&#34;: 1, &#34;name&#34;: &#34;Moises Grisewood&#34; },
-    { &#34;id&#34;: 2, &#34;name&#34;: &#34;Dell Marnes&#34; },
-    { &#34;id&#34;: 3, &#34;name&#34;: &#34;Tobin Bilbery&#34; },
-    { &#34;id&#34;: 4, &#34;name&#34;: &#34;Lorianne Posten&#34; },
-    { &#34;id&#34;: 5, &#34;name&#34;: &#34;Drucill Cryer&#34; }
-]
-LET friends = [
-    { &#34;id&#34;: 1, &#34;name&#34;: &#34;Maximo Massard&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 2, &#34;name&#34;: &#34;Delainey Sancho&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 3, &#34;name&#34;: &#34;Lindon Beale&#34;, &#34;userId&#34;: 1 },
-    { &#34;id&#34;: 4, &#34;name&#34;: &#34;Gus Sprey&#34;, &#34;userId&#34;: 3 },
-    { &#34;id&#34;: 5, &#34;name&#34;: &#34;Virgil Dallander&#34;, &#34;userId&#34;: 3 },
-    { &#34;id&#34;: 6, &#34;name&#34;: &#34;Agretha Mackerel&#34;, &#34;userId&#34;: 4 },
-    { &#34;id&#34;: 7, &#34;name&#34;: &#34;Christalle Aldins&#34;, &#34;userId&#34;: 4 },
-    { &#34;id&#34;: 8, &#34;name&#34;: &#34;Karalynn Margery&#34;, &#34;userId&#34;: 5 },
-    { &#34;id&#34;: 9, &#34;name&#34;: &#34;Rodolph Ladd&#34;, &#34;userId&#34;: 5 },
-    { &#34;id&#34;: 10, &#34;name&#34;: &#34;Babette Brassill&#34;, &#34;userId&#34;: 1 }
-]
+                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET items = [1, 2, 3, 4, 5]
 
-FOR u IN users
-    LET friends = (
-        FOR f IN friends
-            FILTER u.id == f.userId
-            RETURN f
-    )
+LET doubled = (
+    FOR item IN items
+        RETURN item * 2
+)
 
-    RETURN { &#34;user&#34;: u, &#34;friends&#34;: friends, &#34;numFriends&#34;: LENGTH(friends) }</div>
+RETURN doubled[0]</div>
                 </div>
 
                 <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -1787,66 +1772,58 @@ FOR u IN users
     </script>
 </div>
 
-<p>Here, the inner <code>FOR</code> query finds the friends that belong to the current user. Assigning the result to friends makes the <code>RETURN</code> statement easier to read and allows the same value to be used more than once.</p>
-<h2 id="var">VAR</h2>
-<p>The <code>VAR</code> statement declares a mutable variable. Unlike variables declared with <code>LET</code>, variables declared with <code>VAR</code> can be reassigned.</p>
-<p>The general syntax is:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">VAR variableName = expression</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-3-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>A <code>VAR</code> variable can be updated later using assignment syntax:</p>
+<p>Here, <code>items</code> and <code>doubled</code> are intermediate values. Only the final result — a single number — is serialized.</p>
+<h2 id="serializable-values">Serializable values</h2>
+<p>Basic FQL values have well-defined serialized representations. The exact encoding depends on the output format selected by the host, but the following table shows the typical mapping for JSON:</p>
+<table>
+  <thead>
+      <tr>
+          <th>FQL value</th>
+          <th>JSON representation</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>NONE</code></td>
+          <td><code>null</code></td>
+      </tr>
+      <tr>
+          <td><code>true</code>, <code>false</code></td>
+          <td><code>true</code>, <code>false</code></td>
+      </tr>
+      <tr>
+          <td>integer</td>
+          <td>number</td>
+      </tr>
+      <tr>
+          <td>float</td>
+          <td>number</td>
+      </tr>
+      <tr>
+          <td>string</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>array</td>
+          <td>array</td>
+      </tr>
+      <tr>
+          <td>object</td>
+          <td>object</td>
+      </tr>
+      <tr>
+          <td>binary</td>
+          <td>Base64-encoded string</td>
+      </tr>
+      <tr>
+          <td>date/time</td>
+          <td>RFC 3339 string</td>
+      </tr>
+  </tbody>
+</table>
+<p>See <a href="https://ferretlang.org/docs/language/types/basic/">Basic Types</a> for details on each value type.</p>
+<h2 id="arrays-and-objects">Arrays and objects</h2>
+<p>Arrays and objects are serialized recursively. Each element or field value must itself be serializable.</p>
 
 
 
@@ -1894,12 +1871,12 @@ FOR u IN users
                             <button id="code-editor-3-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">VAR count = 0
-
-count = count &#43; 1
-count = count &#43; 1
-
-RETURN count</div>
+                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">RETURN {
+  users: [
+    { name: &#34;Ada&#34;, scores: [95, 87] },
+    { name: &#34;Grace&#34;, scores: [91, 88] }
+  ]
+}</div>
                 </div>
 
                 <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2315,7 +2292,12 @@ RETURN count</div>
     </script>
 </div>
 
-<p><code>VAR</code> is suitable for values that change across multiple statements, such as counters, accumulators, or flags.</p>
+<p>The runtime serializes the outer object, then each array element, then each nested object and its fields, until every value has been converted.</p>
+<p>Array order is preserved. Elements appear in the serialized output in the same order they have in the runtime value.</p>
+<p>Object field order is not guaranteed. FQL objects are unordered collections of named fields, and the serialized representation may list fields in any order. Scripts should not rely on a specific field order in the output unless the selected encoding explicitly preserves it.</p>
+<p>Object keys are always strings in the serialized representation.</p>
+<h2 id="none">NONE</h2>
+<p><code>NONE</code> represents the absence of a value in FQL. When serialized to JSON, <code>NONE</code> is encoded as <code>null</code>.</p>
 
 
 
@@ -2363,13 +2345,10 @@ RETURN count</div>
                             <button id="code-editor-4-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET numbers = [1, 2, 3, 4, 5]
-VAR total = 0
-
-FOR n IN numbers
-    total = total &#43; n
-    
-    RETURN total</div>
+                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">RETURN {
+  name: &#34;Ada&#34;,
+  middleName: NONE
+}</div>
                 </div>
 
                 <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2785,7 +2764,1785 @@ FOR n IN numbers
     </script>
 </div>
 
-<p>In this example, <code>total</code> starts at 0 and is updated for each value in numbers.</p>
+<p>Fields with a <code>NONE</code> value are included in the serialized output. A field set to <code>NONE</code> is not the same as a missing field — it is a field that is explicitly present with an absent value.</p>
+<h2 id="binary-values">Binary values</h2>
+<p>Binary values represent raw bytes. Because many output formats are text-based, binary values are encoded in a format-appropriate way.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal is-auto-height">
+    <textarea id="code-editor-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
+
+    <div class="code-editor-shell">
+        <div id="code-editor-5-header" class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret v2</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-5-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-5-result-pane">Output</button>
+                <button id="code-editor-5-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-5-params-drawer">Params</button>
+                <button id="code-editor-5-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-5-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="code-editor-5-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-5-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
+        </div>
+
+        <div class="code-editor-workspace">
+            <div id="code-editor-5-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-5-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-5-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-5-text" class="code-editor-text" data-auto-height="true">RETURN IO::NET::HTTP::GET(&#34;https://mockery.ferretlang.org/&#34;)</div>
+                </div>
+
+                <div id="code-editor-5-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-5-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-5-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-5-result" class="code-editor-result" data-auto-height="true"></div>
+                </div>
+            </div>
+
+            <aside id="code-editor-5-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-5-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="code-editor-5-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
+                    </div>
+                    <button id="code-editor-5-params-close-button" class="code-editor-pane-button" type="button">Close</button>
+                </div>
+                <div class="code-editor-params-body">
+                    <div id="code-editor-5-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="code-editor-5-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="code-editor-5-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-5-run-button');
+            const textEditor = createEditor('code-editor-5-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-5-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorHeader = document.querySelector('#code-editor-5-header');
+            const editorWorkspace = document.querySelector('#code-editor-5-grid').parentElement;
+            const editorGrid = document.querySelector('#code-editor-5-grid');
+            const runProgress = document.querySelector('#code-editor-5-progress');
+            const runStatus = document.querySelector('#code-editor-5-run-status');
+            const resultPane = document.querySelector('#code-editor-5-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-5-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-5-result-close-button');
+            const paramsToggleBtn = document.querySelector('#code-editor-5-params-toggle-button');
+            const paramsDrawer = document.querySelector('#code-editor-5-params-drawer');
+            const paramsCloseBtn = document.querySelector('#code-editor-5-params-close-button');
+            const paramsAddBtn = document.querySelector('#code-editor-5-params-add-button');
+            const paramsRows = document.querySelector('#code-editor-5-params-rows');
+            const paramsEmpty = document.querySelector('#code-editor-5-params-empty');
+            let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+
+                if (isResultVisible) {
+                    const resultHeight = getEditorContentHeight(resultEditor);
+                    applyResultHeight(resultHeight);
+                }
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                return getEditorContentHeight(resultEditor);
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                }
+
+                resultEditor.resize();
+            }
+            textEditor.session.on('change', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse("{}");
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+                const copyClipboardEl = document.querySelector('#code-editor-5-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-5-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
+                editorGrid.setAttribute('aria-busy', 'true');
+                btn.classList.add('is-running');
+                btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
+                setParamsControlsDisabled(true);
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
+                editorGrid.setAttribute('aria-busy', 'false');
+                btn.classList.remove('is-running');
+                btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
+                setParamsControlsDisabled(false);
+
+                setContent(resultEditor, result);
+                setResultVisible(true);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: getParams()
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>In JSON, binary values are encoded as Base64 strings. Other encodings may use a native binary representation.</p>
+<h2 id="date-and-time-values">Date and time values</h2>
+<p>Date and time values are serialized as strings. In JSON, date/time values are encoded using the RFC 3339 format.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal is-auto-height">
+    <textarea id="code-editor-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
+
+    <div class="code-editor-shell">
+        <div id="code-editor-6-header" class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret v2</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-6-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-6-result-pane">Output</button>
+                <button id="code-editor-6-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-6-params-drawer">Params</button>
+                <button id="code-editor-6-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-6-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="code-editor-6-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-6-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
+        </div>
+
+        <div class="code-editor-workspace">
+            <div id="code-editor-6-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-6-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-6-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-6-text" class="code-editor-text" data-auto-height="true">RETURN NOW()</div>
+                </div>
+
+                <div id="code-editor-6-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-6-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-6-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-6-result" class="code-editor-result" data-auto-height="true"></div>
+                </div>
+            </div>
+
+            <aside id="code-editor-6-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-6-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="code-editor-6-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
+                    </div>
+                    <button id="code-editor-6-params-close-button" class="code-editor-pane-button" type="button">Close</button>
+                </div>
+                <div class="code-editor-params-body">
+                    <div id="code-editor-6-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="code-editor-6-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="code-editor-6-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-6-run-button');
+            const textEditor = createEditor('code-editor-6-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-6-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorHeader = document.querySelector('#code-editor-6-header');
+            const editorWorkspace = document.querySelector('#code-editor-6-grid').parentElement;
+            const editorGrid = document.querySelector('#code-editor-6-grid');
+            const runProgress = document.querySelector('#code-editor-6-progress');
+            const runStatus = document.querySelector('#code-editor-6-run-status');
+            const resultPane = document.querySelector('#code-editor-6-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-6-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-6-result-close-button');
+            const paramsToggleBtn = document.querySelector('#code-editor-6-params-toggle-button');
+            const paramsDrawer = document.querySelector('#code-editor-6-params-drawer');
+            const paramsCloseBtn = document.querySelector('#code-editor-6-params-close-button');
+            const paramsAddBtn = document.querySelector('#code-editor-6-params-add-button');
+            const paramsRows = document.querySelector('#code-editor-6-params-rows');
+            const paramsEmpty = document.querySelector('#code-editor-6-params-empty');
+            let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+
+                if (isResultVisible) {
+                    const resultHeight = getEditorContentHeight(resultEditor);
+                    applyResultHeight(resultHeight);
+                }
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                return getEditorContentHeight(resultEditor);
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                }
+
+                resultEditor.resize();
+            }
+            textEditor.session.on('change', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse("{}");
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+                const copyClipboardEl = document.querySelector('#code-editor-6-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-6-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
+                editorGrid.setAttribute('aria-busy', 'true');
+                btn.classList.add('is-running');
+                btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
+                setParamsControlsDisabled(true);
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
+                editorGrid.setAttribute('aria-busy', 'false');
+                btn.classList.remove('is-running');
+                btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
+                setParamsControlsDisabled(false);
+
+                setContent(resultEditor, result);
+                setResultVisible(true);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: getParams()
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<h2 id="host-values">Host values</h2>
+<p>Host values represent values provided by the embedding runtime. They may wrap external resources such as database connections, browser pages, files, HTTP clients, streams, or other host-managed objects.</p>
+<p>Host values are not serialized by inspecting their internal structure. Instead, their serialized form is determined by the host runtime.</p>
+<p>A host value may serialize to an object, string, number, array, <code>NONE</code>, or another supported representation. The encoding depends on what the host value exposes. For example, a host value may implement a standard marshaling interface that defines how it is converted to the output format.</p>
+<p>Some host values may not be serializable at all. If a non-serializable host value is part of the returned result, serialization produces an error.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET db = DB::SQLITE::OPEN(&#34;data.db&#34;)
+
+// This may fail — a connection handle may not be serializable
+RETURN db</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Instead, return data extracted from the host value:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET db = DB::SQLITE::OPEN({ memory: true })
+
+RETURN QUERY `
+  SELECT id, name
+  FROM users
+` IN db USING sql</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-2-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>The first example attempts to serialize a database connection handle, which may not have a meaningful external representation. The second example returns query results — basic values that serialize naturally.</p>
+<p>See <a href="https://ferretlang.org/docs/language/types/host/">Host Values</a> and <a href="https://ferretlang.org/docs/language/types/capabilities/">Capability Types</a> for more about host values and their behavioral contracts.</p>
+<h2 id="iterable-values">Iterable values</h2>
+<p>Some runtime values are iterable but are not arrays. For example, host values that represent cursors, result sets, or lazy sequences may produce values on demand rather than holding them all in memory.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-horizontal is-auto-height">
+    <textarea id="code-editor-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
+
+    <div class="code-editor-shell">
+        <div id="code-editor-7-header" class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+                <small>Ferret v2</small>
+            </div>
+
+            <div class="code-editor-actions">
+                <button id="code-editor-7-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-7-result-pane">Output</button>
+                <button id="code-editor-7-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-7-params-drawer">Params</button>
+                <button id="code-editor-7-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
+                    <span class="code-editor-run-label">Run</span>
+                    <span id="code-editor-7-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="code-editor-7-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
+            <span id="code-editor-7-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
+        </div>
+
+        <div class="code-editor-workspace">
+            <div id="code-editor-7-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
+                <div id="code-editor-7-source-pane" class="code-editor-pane code-editor-pane-source">
+                    <div class="code-editor-pane-header">
+                        <span>query.fql</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>FQL</span>
+                            <button id="code-editor-7-copy-button" class="code-editor-pane-button" type="button">Copy</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-7-text" class="code-editor-text" data-auto-height="true">LET doc = WEB::HTML::DOCUMENT(&#34;https://mockery.ferretlang.org/scenarios/ecommerce/products/&#34;)
+LET elements = QUERY `.product-card` IN doc USING css
+
+RETURN elements</div>
+                </div>
+
+                <div id="code-editor-7-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
+                    <div class="code-editor-pane-header">
+                        <span>result.json</span>
+                        <div class="code-editor-pane-header-actions">
+                            <span>output</span>
+                            <button id="code-editor-7-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-7-result-pane">Close</button>
+                        </div>
+                    </div>
+                    <div id="code-editor-7-result" class="code-editor-result" data-auto-height="true"></div>
+                </div>
+            </div>
+
+            <aside id="code-editor-7-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-7-params-title" hidden>
+                <div class="code-editor-params-header">
+                    <div>
+                        <span id="code-editor-7-params-title" class="code-editor-params-title">Query parameters</span>
+                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
+                    </div>
+                    <button id="code-editor-7-params-close-button" class="code-editor-pane-button" type="button">Close</button>
+                </div>
+                <div class="code-editor-params-body">
+                    <div id="code-editor-7-params-empty" class="code-editor-params-empty">No parameters added.</div>
+                    <div id="code-editor-7-params-rows" class="code-editor-params-rows"></div>
+                </div>
+                <div class="code-editor-params-footer">
+                    <button id="code-editor-7-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createEditor(id, mode, useWorker) {
+                const editor = ace.edit(id);
+                editor.setTheme("ace\/theme\/tomorrow_night");
+                editor.session.setUseWorker(useWorker);
+                editor.session.setMode("ace/mode/" + mode);
+                editor.setOptions({
+                    displayIndentGuides: false,
+                    printMargin: false
+                });
+
+                return editor;
+            }
+
+            const btn = document.querySelector('#code-editor-7-run-button');
+            const textEditor = createEditor('code-editor-7-text', 'fql', true);
+            const resultEditor = createEditor('code-editor-7-result', 'json', false);
+            resultEditor.setReadOnly(true);
+            const resultExpandBtn = null;
+            const editorHeader = document.querySelector('#code-editor-7-header');
+            const editorWorkspace = document.querySelector('#code-editor-7-grid').parentElement;
+            const editorGrid = document.querySelector('#code-editor-7-grid');
+            const runProgress = document.querySelector('#code-editor-7-progress');
+            const runStatus = document.querySelector('#code-editor-7-run-status');
+            const resultPane = document.querySelector('#code-editor-7-result-pane');
+            const resultToggleBtn = document.querySelector('#code-editor-7-result-toggle-button');
+            const resultCloseBtn = document.querySelector('#code-editor-7-result-close-button');
+            const paramsToggleBtn = document.querySelector('#code-editor-7-params-toggle-button');
+            const paramsDrawer = document.querySelector('#code-editor-7-params-drawer');
+            const paramsCloseBtn = document.querySelector('#code-editor-7-params-close-button');
+            const paramsAddBtn = document.querySelector('#code-editor-7-params-add-button');
+            const paramsRows = document.querySelector('#code-editor-7-params-rows');
+            const paramsEmpty = document.querySelector('#code-editor-7-params-empty');
+            let isResultVisible = !resultPane.hidden;
+            let isParamsVisible = !paramsDrawer.hidden;
+
+            function resetResultExpansion() {
+                if (!resultExpandBtn) {
+                    return;
+                }
+
+                isResultExpanded = false;
+                resultExpandBtn.setAttribute('aria-expanded', 'false');
+                resultExpandBtn.textContent = 'Expand';
+            }
+
+            function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+
+                if (isResultVisible) {
+                    const resultHeight = getEditorContentHeight(resultEditor);
+                    applyResultHeight(resultHeight);
+                }
+
+                textEditor.resize();
+
+                if (isResultVisible) {
+                    resultEditor.resize();
+                }
+            }
+
+            function setResultVisible(nextVisible) {
+                isResultVisible = nextVisible;
+                resultPane.hidden = !nextVisible;
+                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
+
+                if (!nextVisible) {
+                    resetResultExpansion();
+                    syncEditorLayout();
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    syncEditorLayout();
+                    resultEditor.resize(true);
+                });
+            }
+
+            resultToggleBtn.addEventListener('click', () => {
+                setResultVisible(!isResultVisible);
+            });
+
+            resultCloseBtn.addEventListener('click', () => {
+                setResultVisible(false);
+            });
+
+            const collapsedResultHeightStyle = resultEditor.container.style.height;
+            let isResultExpanded = false;
+
+            function getEditorContentHeight(editor) {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+
+                return Math.max(screenLines * lineHeight, 48);
+            }
+
+            function getMaxResultHeight(fallbackHeight) {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
+                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
+            }
+
+            function getCollapsedResultHeight() {
+                return getEditorContentHeight(resultEditor);
+            }
+
+            function getExpandedResultHeight(collapsedHeight) {
+                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
+                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
+                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
+                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
+                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
+
+                return Math.max(collapsedHeight, Math.round(targetHeight));
+            }
+
+            function applyResultHeight(collapsedHeight) {
+                if (resultExpandBtn && isResultExpanded) {
+                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
+                } else {
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
+                }
+
+                resultEditor.resize();
+            }
+            textEditor.session.on('change', syncEditorLayout);
+
+            if (resultExpandBtn) {
+                resultExpandBtn.addEventListener('click', () => {
+                    isResultExpanded = !isResultExpanded;
+                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
+                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
+                    syncEditorLayout();
+                });
+            }
+
+            function syncParamsEmptyState() {
+                paramsEmpty.hidden = paramsRows.children.length > 0;
+            }
+
+            function formatParamValue(value) {
+                return typeof value === 'string' ? value : JSON.stringify(value);
+            }
+
+            function createParamRow(name, value) {
+                const row = document.createElement('div');
+                row.className = 'code-editor-param-row';
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'code-editor-param-input code-editor-param-name';
+                nameInput.type = 'text';
+                nameInput.placeholder = 'name';
+                nameInput.setAttribute('aria-label', 'Parameter name');
+                nameInput.value = name || '';
+
+                const separator = document.createElement('span');
+                separator.className = 'code-editor-param-separator';
+                separator.setAttribute('aria-hidden', 'true');
+                separator.textContent = ':';
+
+                const valueInput = document.createElement('input');
+                valueInput.className = 'code-editor-param-input code-editor-param-value';
+                valueInput.type = 'text';
+                valueInput.placeholder = 'value';
+                valueInput.setAttribute('aria-label', 'Parameter value');
+                valueInput.value = value === undefined ? '' : formatParamValue(value);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'code-editor-param-remove-button';
+                removeBtn.type = 'button';
+                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    syncParamsEmptyState();
+                });
+
+                row.append(nameInput, separator, valueInput, removeBtn);
+                paramsRows.appendChild(row);
+                syncParamsEmptyState();
+
+                return nameInput;
+            }
+
+            function setParamsVisible(nextVisible) {
+                isParamsVisible = nextVisible;
+                paramsDrawer.hidden = !nextVisible;
+                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
+                editorWorkspace.classList.toggle('is-params-open', nextVisible);
+
+                if (nextVisible) {
+                    paramsCloseBtn.focus();
+                } else {
+                    paramsToggleBtn.focus();
+                }
+            }
+
+            function setParamsControlsDisabled(disabled) {
+                paramsToggleBtn.disabled = disabled;
+                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
+                    control.disabled = disabled;
+                });
+            }
+
+            function parseParamValue(value) {
+                try {
+                    return JSON.parse(value);
+                } catch (err) {
+                    return value;
+                }
+            }
+
+            function getParams() {
+                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
+                    const name = row.querySelector('.code-editor-param-name').value.trim();
+
+                    if (name) {
+                        const value = row.querySelector('.code-editor-param-value').value;
+                        params[name] = parseParamValue(value);
+                    }
+
+                    return params;
+                }, {});
+            }
+
+            const initialParams = JSON.parse("{}");
+
+            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
+                Object.entries(initialParams).forEach(([name, value]) => {
+                    createParamRow(name, value);
+                });
+            }
+
+            syncParamsEmptyState();
+
+            paramsToggleBtn.addEventListener('click', () => {
+                setParamsVisible(!isParamsVisible);
+            });
+
+            paramsCloseBtn.addEventListener('click', () => {
+                setParamsVisible(false);
+            });
+
+            paramsAddBtn.addEventListener('click', () => {
+                createParamRow('', '').focus();
+            });
+
+            window.addEventListener('resize', syncEditorLayout);
+            syncEditorLayout();
+
+            function setContent(editor, content) {
+                editor.setValue(content, -1);
+            }
+                const copyClipboardEl = document.querySelector('#code-editor-7-copy-clipboard');
+                const copyBtn = document.querySelector('#code-editor-7-copy-button');
+
+                function copyTextWithFallback(content) {
+                    copyClipboardEl.value = content;
+                    copyClipboardEl.focus();
+                    copyClipboardEl.select();
+
+                    if (!document.execCommand('copy')) {
+                        throw new Error('Could not copy source to the clipboard');
+                    }
+                }
+
+                function copyTextToClipboard(content) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        return navigator.clipboard.writeText(content).catch(() => {
+                            copyTextWithFallback(content);
+                        });
+                    }
+
+                    copyTextWithFallback(content);
+
+                    return Promise.resolve();
+                }
+
+                copyBtn.addEventListener('click', () => {
+                    copyTextToClipboard(textEditor.getValue())
+                        .then(() => {
+                            copyBtn.textContent = 'Copied';
+                            window.setTimeout(() => {
+                                copyBtn.textContent = 'Copy';
+                            }, 1200);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to copy source');
+                            console.error(err);
+                        });
+                });
+
+            let isRunning = false;
+
+            function onStart() {
+                isRunning = true;
+                textEditor.setReadOnly(true);
+                runProgress.hidden = false;
+                runStatus.textContent = 'Running query';
+                editorHeader.setAttribute('aria-busy', 'true');
+                editorGrid.setAttribute('aria-busy', 'true');
+                btn.classList.add('is-running');
+                btn.setAttribute('aria-busy', 'true');
+                btn.setAttribute('aria-label', 'Running query');
+                btn.disabled = true;
+                setParamsControlsDisabled(true);
+            }
+
+            function onEnd(result) {
+                isRunning = false;
+                textEditor.setReadOnly(false);
+                runProgress.hidden = true;
+                runStatus.textContent = '';
+                editorHeader.setAttribute('aria-busy', 'false');
+                editorGrid.setAttribute('aria-busy', 'false');
+                btn.classList.remove('is-running');
+                btn.setAttribute('aria-busy', 'false');
+                btn.setAttribute('aria-label', 'Run query');
+                btn.disabled = false;
+                setParamsControlsDisabled(false);
+
+                setContent(resultEditor, result);
+                setResultVisible(true);
+            }
+
+            btn.addEventListener('click', () => {
+                if (isRunning) {
+                    return;
+                }
+
+                const body = {
+                        text: textEditor.getValue(),
+                        params: getParams()
+                };
+                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
+
+                onStart();
+                fetch(url, {
+                    method: 'post',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    signal: AbortSignal.timeout(1000 * 60), 
+                    body: JSON.stringify(body)
+                })
+                    .then(r => {
+                        if (r.status === 200) {
+                            return r.json()
+                        }
+                        
+                        if (r.status === 426) {
+                            throw new Error(`Too many requests. Try again later.`);
+                        }
+                        
+                        if (r.status === 400) {
+                            return r.json().then((data) => {
+                                if (data.details) {
+                                    throw new Error(data.details);
+                                }
+                                
+                                throw new Error(data.error);
+                            });
+                        }
+                        
+                        throw new Error(`Unexpected error. Try again later.`);
+                    })
+                    .then((data) => {
+                        onEnd(JSON.stringify(data, null, 4));
+                    })
+                    .catch((err) => {
+                        onEnd(err.message);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>When an iterable value is part of the returned result, the runtime materializes it into a list before serialization. The iterable is fully consumed, and the resulting list is serialized as an array.</p>
+<p>This means iterable values are serializable as long as the values they produce are themselves serializable.</p>
+<h2 id="cleanup-before-return">Cleanup before return</h2>
+<p>Before the serialized result is returned, the runtime gives resource-backed values a chance to release external resources.</p>
+<p>Host values that support the close capability are closed automatically at the end of program execution. This applies to values such as open database connections, file handles, network clients, browser sessions, and other host-owned resources.</p>
+<p>Cleanup happens after execution completes and alongside serialization, before the final result is returned to the host. Errors during cleanup are reported alongside the output.</p>
+<p>FQL code does not need to close these resources manually. The runtime tracks closable values and handles cleanup automatically.</p>
+<p>See <a href="https://ferretlang.org/docs/language/types/capabilities/">Capability Types</a> for more about the close capability.</p>
+<h2 id="encoding-formats">Encoding formats</h2>
+<p>Serialization is controlled by the host runtime.</p>
+<p>Ferret includes built-in support for JSON and MessagePack encodings. The CLI serializes results as JSON by default. An embedded Go application may convert results into Go values, choose MessagePack for a binary format, or register a custom encoding.</p>
+<p>FQL defines the value semantics. The host defines how those values are encoded outside the runtime.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Encoding</th>
+          <th>Content type</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>JSON</td>
+          <td><code>application/json</code></td>
+          <td>Default. Text-based, widely supported.</td>
+      </tr>
+      <tr>
+          <td>MessagePack</td>
+          <td><code>application/vnd.msgpack</code></td>
+          <td>Binary format, compact.</td>
+      </tr>
+      <tr>
+          <td>Custom</td>
+          <td>host-defined</td>
+          <td>Hosts may register additional encodings.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="non-serializable-values">Non-serializable values</h2>
+<p>Some runtime values do not have a portable serialized representation. Returning them as part of the final result produces a serialization error.</p>
+<p>Examples include:</p>
+<ul>
+<li><strong>Functions</strong> — function values are runtime constructs and cannot be represented in an external format.</li>
+<li><strong>Non-serializable host values</strong> — host values that do not define an external representation, such as raw connection handles or internal runtime objects.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">LET format = (val) =&gt; val &#43; &#34;!&#34;
+
+// This fails — functions are not serializable
+RETURN format</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>If a non-serializable value is nested inside an otherwise serializable structure, the entire serialization fails:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">LET format = (val) =&gt; val &#43; &#34;!&#34;
+
+// This also fails — the function is nested inside the returned object
+RETURN {
+  name: &#34;Ada&#34;,
+  formatter: format
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h2 id="serialization-errors">Serialization errors</h2>
+<p>Serialization may fail if the returned value contains something that cannot be represented by the selected encoding.</p>
+<p>Common causes include:</p>
+<ul>
+<li>Returning a host value that does not support serialization, such as a database connection or file handle.</li>
+<li>Returning a function value.</li>
+<li>Returning a value that contains a non-serializable value nested within it.</li>
+</ul>
+<p>When serialization fails, the error identifies what could not be serialized. The fix is usually to return extracted data instead of the raw resource:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">// Instead of returning the connection
+LET db = DB::SQLITE::OPEN(&#34;data.db&#34;)
+
+// Return the data
+LET users = (
+    QUERY `SELECT id, name FROM users` IN db USING sql
+)
+
+RETURN users</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h2 id="related-pages">Related pages</h2>
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/language/types/basic/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Basic Types</strong>
+        <span>Learn the built-in value types: NONE, booleans, numbers, strings, arrays, objects, and binary values.</span>
+    </a><a class="docs-card" href="/docs/language/types/host/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Host Values</strong>
+        <span>Understand values provided by modules, runtimes, and embedded hosts, such as database connections, browser pages, files, and other external resources.</span>
+    </a><a class="docs-card" href="/docs/language/types/capabilities/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Value Capabilities</strong>
+        <span>Learn how values expose behavior such as property access, iteration, querying, dispatch, and serialization.</span>
+    </a>
+</div>
+
 
 </article>
 
@@ -2795,8 +4552,19 @@ FOR n IN numbers
     <div class="docs-toc-title">On this page</div>
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#let">LET</a></li>
-    <li><a href="#var">VAR</a></li>
+    <li><a href="#when-serialization-happens">When serialization happens</a></li>
+    <li><a href="#serializable-values">Serializable values</a></li>
+    <li><a href="#arrays-and-objects">Arrays and objects</a></li>
+    <li><a href="#none">NONE</a></li>
+    <li><a href="#binary-values">Binary values</a></li>
+    <li><a href="#date-and-time-values">Date and time values</a></li>
+    <li><a href="#host-values">Host values</a></li>
+    <li><a href="#iterable-values">Iterable values</a></li>
+    <li><a href="#cleanup-before-return">Cleanup before return</a></li>
+    <li><a href="#encoding-formats">Encoding formats</a></li>
+    <li><a href="#non-serializable-values">Non-serializable values</a></li>
+    <li><a href="#serialization-errors">Serialization errors</a></li>
+    <li><a href="#related-pages">Related pages</a></li>
   </ul>
 </nav>
 </aside>

@@ -392,37 +392,6 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1">
-        
-            <a href="https://ferretlang.org/docs/language/script-structure/" class="docs-nav-link">
-                Script structure
-            </a>
-        
-
-        
-    </li>
-
-
-                
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
         
             <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link is-ancestor">
@@ -483,9 +452,71 @@
 
 
 
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/host/" class="docs-nav-link">
+                Host Values
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/capabilities/" class="docs-nav-link">
+                Capability Types
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
         
-            <a href="https://ferretlang.org/docs/language/types/type-ordering/" class="docs-nav-link is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/language/types/ordering/" class="docs-nav-link is-active" aria-current="page">
                 Type Ordering
             </a>
         
@@ -495,7 +526,69 @@
 
 
                 
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/types/serialization/" class="docs-nav-link">
+                Serialization
+            </a>
+        
+
+        
+    </li>
+
+
+                
             </ul>
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/language/script-structure/" class="docs-nav-link">
+                Script structure
+            </a>
+        
+
         
     </li>
 
@@ -759,7 +852,7 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">none &lt; bool &lt; number &lt; string &lt; array &lt; object</div>
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">NONE &lt; bool &lt; number &lt; string &lt; array &lt; object</div>
         </div>
     </div>
 
@@ -793,7 +886,7 @@
     </script>
 </div>
 
-<p>This means that none sorts before every other value, while objects sort after every other built-in value type.</p>
+<p>This means that <code>NONE</code> sorts before every other value, while objects sort after every other built-in value type.</p>
 <p>For example, a boolean value always sorts before a number, a string, an array, or an object. A string always sorts after a number, even if the string is empty or contains numeric-looking text.</p>
 
 
@@ -816,11 +909,11 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">none &lt; false
-none &lt; 0
-none &lt; &#34;&#34;
-none &lt; []
-none &lt; {}
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">NONE &lt; false
+NONE &lt; 0
+NONE &lt; &#34;&#34;
+NONE &lt; []
+NONE &lt; {}
 
 false &lt; true
 true &lt; 0
@@ -871,7 +964,7 @@ true &lt; 0
 <h2 id="primitive-values">Primitive values</h2>
 <p>Primitive values are ordered as follows:</p>
 <ul>
-<li>none is only equal to none.</li>
+<li><code>NONE</code> is only equal to <code>NONE</code>.</li>
 <li>Booleans are ordered as false &lt; true.</li>
 <li>Numbers are ordered by numeric value.</li>
 <li>Strings are ordered using FQL&rsquo;s string comparison rules.</li>
@@ -897,7 +990,7 @@ true &lt; 0
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">none == none
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">NONE == NONE
 
 false &lt; true
 
@@ -939,7 +1032,7 @@ false &lt; true
 </div>
 
 <div class="notification is-info">
-  none is a regular comparable value in FQL. Comparing a value with none does not produce an unknown result.
+  NONE is a regular comparable value in FQL. Comparing a value with NONE does not produce an unknown result.
 </div>
 <h2 id="arrays">Arrays</h2>
 <p>Arrays are compared element by element from left to right.</p>
@@ -1069,7 +1162,7 @@ false &lt; true
 <h2 id="objects">Objects</h2>
 <p>Objects are compared by their attributes, not by the order in which those attributes were written.</p>
 <p>Before two objects are compared, FQL considers their attribute names in sorted order. For each attribute name, FQL compares the corresponding values from both objects.</p>
-<p>If one object has an attribute that the other object does not have, the missing value is treated as none for comparison purposes.</p>
+<p>If one object has an attribute that the other object does not have, the missing value is treated as <code>NONE</code> for comparison purposes.</p>
 
 
 
@@ -1093,7 +1186,7 @@ false &lt; true
         <div class="code-editor-pane">
             <div id="code-6-text" class="code-editor-text" data-auto-height="true">{} &lt; { &#34;a&#34;: 1 }
 
-{} == { &#34;a&#34;: none }
+{} == { &#34;a&#34;: NONE }
 
 { &#34;a&#34;: 1 } &lt; { &#34;a&#34;: 2 }
 
