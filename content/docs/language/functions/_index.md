@@ -113,41 +113,19 @@ RETURN FIRST(values)
 
 FQL provides built-in functions for common operations on values such as `strings`, `arrays`, `objects`, `numbers`, and `types`.
 
-Built-in functions are available without importing a module.
+Built-in functions are available at the top level, without a namespace prefix.
 
 {{< editor lang="fql" >}}
 LET tags = ["docs", "fql", "runtime"]
 
 RETURN {
-count: LENGTH(tags),
-first: FIRST(tags),
-joined: CONCAT_SEPARATOR(", ", tags)
+    count: LENGTH(tags),
+    first: FIRST(tags),
+    joined: CONCAT_SEPARATOR(", ", tags)
 }
 {{</ editor >}}
 
-The available built-in functions are documented in [the standard library reference]({{% ref "../standard-library" %}}).
-
-## Module functions
-
-Modules may provide additional functions.
-
-A module must be loaded before its functions can be used. The exact names and capabilities provided by a module depend on the module and runtime.
-
-{{< code lang="fql" >}}
-USE moduleName
-{{</ code >}}
-
-After a module is loaded, its exported functions may be called from expressions.
-
-{{< code lang="fql" >}}
-USE EXAMPLE
-
-RETURN EXAMPLE::FUNCTION_NAME("value")
-{{</ code >}}
-
-Module-qualified names avoid ambiguity between functions from different modules. They also make it clear which module provides the operation.
-
-Some modules may expose runtime-backed functionality. For example, a module may read files, issue HTTP requests, query a database, control a browser, or work with binary data. Such functions may depend on runtime permissions and available capabilities.
+The available built-in functions are documented in [the standard library reference]({{% ref "../../standard-library" %}}).
 
 ## Function calls in expressions
 
@@ -165,13 +143,13 @@ They can be used in object projections:
 
 {{< editor lang="fql" >}}
 LET user = {
-name: "Ada",
-email: "ADA@example.com"
+    name: "Ada",
+    email: "ADA@example.com"
 }
 
 RETURN {
-name: user.name,
-email: LOWER(user.email)
+    name: user.name,
+    email: LOWER(user.email)
 }
 {{</ editor >}}
 
@@ -179,14 +157,14 @@ They can be used in filters:
 
 {{< editor lang="fql" >}}
 LET users = [
-{ name: "Ada", active: true },
-{ name: "Grace", active: false },
-{ name: "Linus", active: true }
+    { name: "Ada", active: true },
+    { name: "Grace", active: false },
+    { name: "Linus", active: true }
 ]
 
 FOR user IN users
-FILTER user.active == true AND LENGTH(user.name) >= 4
-RETURN user.name
+    FILTER user.active == true AND LENGTH(user.name) >= 4
+    RETURN user.name
 {{</ editor >}}
 
 They can also be used in array inline expressions:
@@ -197,7 +175,7 @@ LET names = [" Ada ", " Grace ", " Linus "]
 RETURN names[* RETURN TRIM(.)]
 {{</ editor >}}
 
-Inside an inline array expression, the current element is accessed with ..
+Inside an inline array expression, the current element is accessed with `.`.
 
 ## Dynamic values
 
@@ -207,7 +185,7 @@ Some functions operate on values whose exact type is known only at runtime. This
 RETURN LENGTH(@items)
 {{</ editor >}}
 
-The query may compile even when the final value of @items is not known yet. If the provided value is not supported by the function at runtime, the query fails with an error.
+The query may compile even when the final value of `@items` is not known yet. If the provided value is not supported by the function at runtime, the query fails with an error.
 
 This allows the same query text to be reused with different input values while still preserving function-specific validation when the query is executed.
 
@@ -237,3 +215,5 @@ Many functions are pure value operations. They compute a result from their argum
 Other functions may interact with runtime systems. A function provided by a module may read from an external source, perform I/O, query a database, or return a capability-backed value.
 
 The behavior of such functions is defined by the module that provides them. When a function depends on runtime capabilities, the same query may behave differently depending on the runtime configuration, available permissions, and provided host environment.
+
+{{< docs-related tiles="language-functions-user-defined,language-functions-modules" >}}

@@ -191,7 +191,7 @@ RETURN DISPLAY_NAME("Ada", "Lovelace")
 
 Functions can come from the standard library, modules, the runtime environment, or declarations in the current script.
 
-For details on function declarations and calls, see the [Functions section]({{% ref "functions.md" %}}).
+For details on function declarations and calls, see the [Functions section]({{% ref "functions" %}}).
 
 ## Array expressions
 
