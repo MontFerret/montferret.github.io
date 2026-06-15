@@ -3,119 +3,183 @@ title: "Overview"
 sidebarTitle: "Overview"
 weight: 20
 draft: false
-description: "What Ferret is, what it is useful for, and where to start."
+description: "What Ferret is and how its main pieces fit together."
 aliases:
     - /docs/introduction/
 ---
 
 # Overview
-
 Ferret is a programmable data extraction and automation engine for developers.
-It helps you describe where data comes from, how to query it, how to wait for it, how to transform it, and how to return clean structured output.
+It provides a small declarative language, an embeddable runtime, and an extensible execution model for querying, transforming, and automating data from websites, documents, APIs, and application-defined sources.
+Ferret is especially useful when data lives behind messy HTML, browser interactions, inconsistent external systems, or configuration-driven workflows that need more structure than ad-hoc scripts.
+At a high level, Ferret helps you describe:
+- where data comes from
+- how to query it
+- how to wait for it
+- how to transform it
+- how to return clean structured output
+  Ferret can be used as a command-line tool, embedded into Go applications, extended with modules, or used as a small domain-specific language for configuration-driven systems.
 
-Ferret is built around FQL, a small declarative language for targeted data workflows.
-A Ferret script can query documents, work with structured values, interact with browser-backed pages, call runtime functions, and return data that another system can consume.
+## What Ferret is
+Ferret is built around FQL, a declarative language designed for data extraction, transformation, and automation workflows.
+Instead of writing large amounts of imperative glue code, Ferret lets you describe the shape of the data you want and the operations needed to get it.
+A Ferret program can query a document, interact with a browser-backed value, transform arrays and objects, call host-provided functions, and return structured data that can be consumed by another system.
+Ferret is not limited to HTML scraping.
 
-Ferret is commonly used for web extraction, but it is not limited to web scraping.
-The same model can be used with HTML, JSON, APIs, files, browser sessions, embedded application values, and module-defined data sources.
+The web is one important use case, but the language is designed around a broader idea: values expose capabilities, and the runtime uses those capabilities to decide what operations are available.
+That means the same language can work with different kinds of inputs, as long as those inputs provide the capabilities the script needs.
 
-## What Ferret is useful for
-
-Ferret is designed for workflows where extraction and transformation logic should be explicit, repeatable, testable, and easy to embed.
-
-Common use cases include:
-
-- extracting structured data from websites and documents
-- automating browser-driven data collection
+## What you can build with Ferret
+Ferret can be used for many kinds of targeted data workflows:
+- extracting structured data from websites
+- querying HTML, JSON, XML, CSV, and other document-like data
+- automating browser-driven workflows
 - waiting for dynamic content, events, or changing values
-- normalizing external data into predictable objects and arrays
-- validating API responses, HTML pages, or browser states
+- normalizing external data into predictable structures
 - embedding user-defined extraction rules into Go applications
-- evaluating filters, mappings, and lightweight rules from configuration
+- evaluating filters, mappings, and expressions in configuration-driven systems
+- testing API responses, HTML pages, and browser-driven user interfaces
+- validating that external systems return expected structured data
+- writing repeatable workflow checks for dynamic pages or application states
+- and more!
 
-Ferret is not meant to replace Go, Python, JavaScript, or other general-purpose languages.
-It is a focused language and runtime for describing data-oriented automation logic.
+Ferret can power scraping and data collection workflows, including workflows that collect unstructured data. Its main focus, however, is not raw scale for its own sake. Ferret is designed to make extraction logic explicit, repeatable, testable, and easy to embed into developer workflows.
 
 ## A first look at FQL
-
 A Ferret script usually follows a simple pattern:
-
-1. receive or load input
+1. load or receive some input
 2. query the input
 3. transform the result
 4. return structured data
+   For example, a script might query product cards from a document and return a normalized list of objects:
 
-For example, a script can query product cards from a document and return a normalized list of objects:
-
-{{< editor lang="fql" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+{{< code lang="fql" height="160px" >}}
 LET products = doc[~ css`.product-card`]
-
 FOR product IN products
-    RETURN {
-        name: product[~? css`.product-title`],
-        price: TRIM(product[~? css`.product-price`]),
-        url: product[~? css`:attr('href', a.product-link)`]
-    }
-{{</ editor >}}
+RETURN {
+name: product[~ css`.product-title`],
+price: product[~ css`.price`],
+url: product[~ css`a`]
+}
+{{</ code >}}
 
-The exact source of `doc` depends on how Ferret is being used.
-It may come from a browser driver, a document loader, an embedded Go application, a test runner, or another runtime integration.
+The exact source of doc depends on how Ferret is being used. It may come from a browser driver, a document loader, an embedded Go application, a test runner, or another runtime integration.
 
-The script focuses on the extraction logic.
-The host environment provides the input values, functions, modules, and runtime capabilities available to the script.
+The important idea is that the script focuses on the extraction logic, while the host environment provides the values, functions, modules, and capabilities available at runtime.
 
-## Main pieces
+## The core mental model
 
-Ferret is made of a few pieces that can be used together or independently.
+Ferret has a few core concepts that appear throughout the documentation.
 
-### FQL
+### Scripts
 
-FQL is the Ferret query language.
-It is used to describe extraction, transformation, waiting, and automation logic.
+Ferret programs are written in FQL.
 
-### Runtime
+A script describes how to query, transform, automate, and return data. Scripts can be run from the CLI, executed by a test runner, or embedded inside another application.
 
-The runtime executes FQL scripts.
-It works with regular values such as strings, numbers, arrays, and objects, as well as host-provided values such as documents, elements, browser sessions, files, or module-defined values.
+### Values
 
-### Modules
+Ferret works with runtime values such as strings, numbers, booleans, arrays, objects, documents, elements, and module-defined values.
 
-Modules extend Ferret with functions, data formats, integrations, and runtime behavior.
-They let Ferret work with different environments without adding special syntax for every external system.
+Some values are simple data. Others may expose behavior through capabilities.
 
-### CLI
+For example, a plain object can be transformed. A document can be queried. A browser-backed element may support both querying and dispatching events.
 
-The Ferret CLI runs scripts from the command line and provides development tools such as formatting and inspection.
-It is the simplest way to start using Ferret locally.
+### Capabilities
 
-### Embedding
+Capabilities are one of the central ideas in Ferret.
 
-Ferret can be embedded into Go applications.
-In this mode, the host application controls which values, parameters, functions, modules, and capabilities are available to scripts.
+Instead of hard-coding every possible operation into the language, Ferret lets runtime values expose specific capabilities.
+
+For example:
+
+* a queryable value can be queried
+* a dispatchable value can receive events or actions
+* a readable value can provide data
+* a module-defined value can expose domain-specific behavior
+
+This keeps the core language small while allowing Ferret to support different data sources, document types, protocols, and runtime integrations.
+
+### Modules and drivers
+
+Ferret can be extended through modules and drivers.
+
+Modules can add functions, data formats, protocols, integrations, or new runtime behavior. Drivers can provide capabilities for specific environments, such as HTML documents or browser-controlled pages.
+
+This means Ferret’s language does not need special syntax for every external system. Instead, external systems can be exposed through values, functions, and capabilities.
 
 ## Ways to use Ferret
 
-Ferret can be used in several modes:
+Ferret can be used in several different modes.
 
-- as a CLI tool for local scripts and extraction workflows
-- as an embedded runtime inside Go applications
-- as a small DSL for configuration-driven filters, mappings, and rules
-- as part of a larger data pipeline, test workflow, or automation system
+### As a CLI tool
 
-In all modes, the goal is the same: keep data extraction and transformation logic clear, portable, and easy to reason about.
+Ferret can be used from the command line to run scripts, format code, inspect programs, and work with local extraction workflows.
+
+This is the simplest way to start using Ferret.
+
+### As an embedded runtime
+
+Ferret can be embedded into Go applications.
+
+In this mode, the host application provides input values, parameters, functions, modules, and runtime capabilities. Ferret provides the execution engine and the language used to describe the logic.
+
+This is useful when extraction or transformation logic needs to be configurable, versioned, or provided outside the main application code.
+
+### As an expression engine
+
+Ferret can also be used as a small DSL for configuration-driven applications.
+
+Instead of hard-coding every filter, rule, mapping, or transformation in Go, an application can evaluate Ferret expressions or scripts at runtime.
+
+This is useful for systems that need user-defined or configuration-defined behavior, such as:
+
+* filtering records
+* mapping external data into internal structures
+* defining extraction rules
+* evaluating lightweight business rules
+* transforming API responses
+* configuring pipeline steps
+* describing application-specific automation logic
+
+In this mode, the host application remains in control. It decides which functions are available, which values are passed into the script, which modules are loaded, and which capabilities the script can use.
+
+### As part of a larger workflow
+
+Ferret can also be used as one piece of a larger system.
+
+For example, Ferret can extract and shape data, while another system handles storage, analytics, machine learning, reporting, or orchestration.
+
+Ferret is designed to complement general-purpose languages and data tools, not replace them.
 
 ## What Ferret is not
 
-Ferret is not a general-purpose application language.
-It is not intended to replace the languages used to build full applications.
+Ferret is not a general-purpose programming language replacement.
 
-Ferret is also not a massive crawler for downloading the internet.
-Its focus is targeted, precise, repeatable extraction and automation.
+It is not intended to replace Go, Python, JavaScript, or other languages used to build full applications.
+
+Ferret is also not a massive web crawler for downloading the internet. Its focus is targeted, precise, repeatable extraction and automation.
+
+Ferret is not limited to web scraping either. HTML and browser automation are important parts of the ecosystem, but Ferret’s core model is broader: querying, transforming, and automating capable values through a small declarative language.
+
+## The Ferret ecosystem
+
+Ferret is more than a single executable.
+
+The ecosystem includes:
+
+* the Ferret language and runtime
+* the Ferret CLI
+* standard library functions
+* optional modules and drivers
+* embedding APIs for Go applications
+* Lab, a test runner for Ferret scripts
+* Mockery, a safe fake website for demos, examples, and driver testing
+
+These pieces are designed to work together while keeping the core language and runtime small.
 
 ## Where to go next
 
-If you are new to Ferret, start with installation and the quick start guide.
-After that, move into the language overview or the area that matches how you plan to use Ferret.
+If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.
 
 {{< docs-related tiles="getting-started-installation,getting-started-quick-start,language,web-extraction,dynamic-pages,embedding,tools-lab,tools-worker" >}}
