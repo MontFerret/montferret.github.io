@@ -1,7 +1,7 @@
 ---
 title: "Functions"
 sidebarTitle: "Functions"
-weight: 130
+weight: 80
 draft: false
 description: "Call built-in, module-provided, and runtime-provided functions from FQL expressions."
 aliases:

@@ -1,7 +1,7 @@
 ---
 title: "Expressions"
 sidebarTitle: "Expressions"
-weight: 110
+weight: 60
 draft: false
 description: "Use expressions to produce values in FQL queries."
 aliases:

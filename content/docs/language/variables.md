@@ -1,7 +1,7 @@
 ---
 title: "Variables"
 sidebarTitle: "Variables"
-weight: 100
+weight: 50
 draft: false
 description: "Declare immutable variables with LET and mutable variables with VAR."
 aliases:

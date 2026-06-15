@@ -1,7 +1,7 @@
 ---
 title: "Type Ordering"
 sidebarTitle: "Type Ordering"
-weight: 80
+weight: 40
 draft: false
 description: "How Ferret compares and orders values of different types."
 aliases:

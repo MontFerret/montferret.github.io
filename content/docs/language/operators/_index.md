@@ -1,7 +1,7 @@
 ---
 title: "Operators"
 sidebarTitle: "Operators"
-weight: 120
+weight: 70
 draft: false
 description: "Comparison, logical, arithmetic, ternary, range, array, and precedence operators."
 aliases:

@@ -1,7 +1,7 @@
 ---
 title: "Bind Parameters"
 sidebarTitle: "Parameters"
-weight: 140
+weight: 90
 draft: false
 description: "Pass external values into Ferret queries with bind parameters."
 aliases:

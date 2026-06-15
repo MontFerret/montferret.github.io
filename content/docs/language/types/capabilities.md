@@ -1,7 +1,7 @@
 ---
 title: "Capability Types"
 sidebarTitle: "Capability Types"
-weight: 70
+weight: 30
 draft: false
 description: "Behavioral contracts that describe what operations a value supports, regardless of its concrete type."
 ---
