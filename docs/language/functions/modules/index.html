@@ -332,9 +332,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
         
-            <a href="https://ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top is-ancestor">
                 Language
             </a>
         
@@ -547,13 +547,79 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
         
-            <a href="https://ferretlang.org/docs/language/functions/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/language/functions/" class="docs-nav-link is-ancestor">
                 Functions
             </a>
         
 
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/functions/user-defined/" class="docs-nav-link">
+                User-Defined
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/language/functions/modules/" class="docs-nav-link is-active" aria-current="page">
+                Modules
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
         
     </li>
 
@@ -668,44 +734,332 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="language">Language</h1>
-<p>Core syntax, values, expressions, variables, and control flow in the Ferret Query Language.</p>
-<div class="docs-section-card-grid">
-  <a class="docs-section-card" href="/docs/language/overview/">
-    <strong>Overview</strong>
-    <span>The high-level shape of Ferret programs.</span>
-  </a>
-  <a class="docs-section-card" href="/docs/language/syntax/">
-    <strong>Syntax</strong>
-    <span>Statements, expressions, blocks, and comments.</span>
-  </a>
-  <a class="docs-section-card" href="/docs/language/values-and-types/">
-    <strong>Values and Types</strong>
-    <span>Runtime values, type behavior, and data shapes.</span>
-  </a>
-  <a class="docs-section-card" href="/docs/language/parameters/">
-    <strong>Bind Parameters</strong>
-    <span>Pass external values into Ferret scripts.</span>
-  </a>
-  <a class="docs-section-card" href="/docs/language/type-ordering/">
-    <strong>Type Ordering</strong>
-    <span>Understand how Ferret compares and orders values.</span>
-  </a>
-  <a class="docs-section-card" href="/docs/language/operators/">
-    <strong>Operators</strong>
-    <span>Use arithmetic, comparison, logical, access, and related operators.</span>
-  </a>
-  <a class="docs-section-card" href="/docs/language/variables/">
-    <strong>Variables</strong>
-    <span>Bind immutable and mutable values.</span>
-  </a>
+    <h1 id="module-functions">Module functions</h1>
+<p>In addition to built-in functions, which are available at the top level, Ferret supports functions organized in namespaces. These namespaced functions are provided by the host application, modules, or extensions registered at engine startup. They are always available by their full qualified name — no import step is needed.</p>
+<h2 id="namespaced-calls">Namespaced calls</h2>
+<p>A namespaced function is called by prefixing the function name with the namespace and <code>::</code>.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">IO::FS::READ(&#34;/tmp/data.json&#34;)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
 </div>
+
+<p>Namespaces can be nested. Each <code>::</code> separator introduces another level.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">IO::NET::HTTP::GET(&#34;https://api.example.com/data&#34;)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-2-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>The namespace makes it clear where the function comes from and avoids name conflicts between different providers.</p>
+<h2 id="the-use-statement">The USE statement</h2>
+<p>The <code>USE</code> statement creates a compile-time alias for a namespace or a specific namespaced function. It does not import or load anything — the functions are already registered and available. <code>USE</code> provides a shorter way to refer to them.</p>
+<p>The syntax is:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">USE target AS alias</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h3 id="aliasing-a-namespace">Aliasing a namespace</h3>
+<p>When the target is a namespace, the alias can be used as a prefix in place of the original namespace.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">USE IO::FS AS fs
+
+RETURN fs::READ(&#34;/tmp/data.json&#34;)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Here, <code>fs::READ(...)</code> resolves to <code>IO::FS::READ(...)</code> at compile time.</p>
+<h3 id="aliasing-a-function">Aliasing a function</h3>
+<p>When the target includes a function name, the alias can be called directly without any namespace prefix.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">USE IO::FS::READ AS read
+
+RETURN read(&#34;/tmp/data.json&#34;)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Here, <code>read(...)</code> resolves to <code>IO::FS::READ(...)</code>.</p>
+<h2 id="where-functions-come-from">Where functions come from</h2>
+<p>The set of available namespaced functions depends on the host environment. Functions are registered at engine startup by:</p>
+<ul>
+<li><strong>The standard library</strong> — built-in functions like <code>LENGTH</code>, <code>CONCAT</code>, and <code>FLOOR</code> are registered at the top level (no namespace needed). Some groups, such as IO, register under a namespace.</li>
+<li><strong>Modules</strong> — external modules passed to the engine at startup can register functions under any namespace.</li>
+<li><strong>The host application</strong> — an application embedding Ferret can register its own functions and namespaces directly.</li>
+</ul>
+<p>The language does not distinguish between these sources. A namespaced function call works the same way regardless of where the function was registered.</p>
+<h2 id="runtime-backed-functions">Runtime-backed functions</h2>
+<p>Some namespaced functions interact with external systems. They may read files, issue HTTP requests, query databases, control browsers, or work with binary data.</p>
+<p>The behavior of such functions depends on the runtime configuration. The same query may behave differently in a CLI context than in a browser automation runtime — not because the language changes, but because the set of available functions and runtime capabilities differs.</p>
 
 </article>
 
         </main>
 
-        
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#namespaced-calls">Namespaced calls</a></li>
+    <li><a href="#the-use-statement">The USE statement</a>
+      <ul>
+        <li><a href="#aliasing-a-namespace">Aliasing a namespace</a></li>
+        <li><a href="#aliasing-a-function">Aliasing a function</a></li>
+      </ul>
+    </li>
+    <li><a href="#where-functions-come-from">Where functions come from</a></li>
+    <li><a href="#runtime-backed-functions">Runtime-backed functions</a></li>
+  </ul>
+</nav>
+</aside>
     </div>
 </div>
 <script type="module">

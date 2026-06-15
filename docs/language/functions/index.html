@@ -547,13 +547,79 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open is-current">
         
             <a href="https://ferretlang.org/docs/language/functions/" class="docs-nav-link is-active" aria-current="page">
                 Functions
             </a>
         
 
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/functions/user-defined/" class="docs-nav-link">
+                User-Defined
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/functions/modules/" class="docs-nav-link">
+                Modules
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
         
     </li>
 
@@ -4933,7 +4999,7 @@ RETURN FIRST(values)</div>
 
 <h2 id="built-in-functions">Built-in functions</h2>
 <p>FQL provides built-in functions for common operations on values such as <code>strings</code>, <code>arrays</code>, <code>objects</code>, <code>numbers</code>, and <code>types</code>.</p>
-<p>Built-in functions are available without importing a module.</p>
+<p>Built-in functions are available at the top level, without a namespace prefix.</p>
 
 
 
@@ -4984,9 +5050,9 @@ RETURN FIRST(values)</div>
                     <div id="code-editor-10-text" class="code-editor-text" data-auto-height="true">LET tags = [&#34;docs&#34;, &#34;fql&#34;, &#34;runtime&#34;]
 
 RETURN {
-count: LENGTH(tags),
-first: FIRST(tags),
-joined: CONCAT_SEPARATOR(&#34;, &#34;, tags)
+    count: LENGTH(tags),
+    first: FIRST(tags),
+    joined: CONCAT_SEPARATOR(&#34;, &#34;, tags)
 }</div>
                 </div>
 
@@ -5404,124 +5470,6 @@ joined: CONCAT_SEPARATOR(&#34;, &#34;, tags)
 </div>
 
 <p>The available built-in functions are documented in <a href="https://ferretlang.org/docs/standard-library/">the standard library reference</a>.</p>
-<h2 id="module-functions">Module functions</h2>
-<p>Modules may provide additional functions.</p>
-<p>A module must be loaded before its functions can be used. The exact names and capabilities provided by a module depend on the module and runtime.</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">USE moduleName</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-2-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>After a module is loaded, its exported functions may be called from expressions.</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">USE EXAMPLE
-
-RETURN EXAMPLE::FUNCTION_NAME(&#34;value&#34;)</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-3-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>Module-qualified names avoid ambiguity between functions from different modules. They also make it clear which module provides the operation.</p>
-<p>Some modules may expose runtime-backed functionality. For example, a module may read files, issue HTTP requests, query a database, control a browser, or work with binary data. Such functions may depend on runtime permissions and available capabilities.</p>
 <h2 id="function-calls-in-expressions">Function calls in expressions</h2>
 <p>Because function calls are expressions, they can be combined with other expression forms.</p>
 <p>They can be used in LET declarations:</p>
@@ -6039,13 +5987,13 @@ RETURN normalized</div>
                         </div>
                     </div>
                     <div id="code-editor-12-text" class="code-editor-text" data-auto-height="true">LET user = {
-name: &#34;Ada&#34;,
-email: &#34;ADA@example.com&#34;
+    name: &#34;Ada&#34;,
+    email: &#34;ADA@example.com&#34;
 }
 
 RETURN {
-name: user.name,
-email: LOWER(user.email)
+    name: user.name,
+    email: LOWER(user.email)
 }</div>
                 </div>
 
@@ -6511,14 +6459,14 @@ email: LOWER(user.email)
                         </div>
                     </div>
                     <div id="code-editor-13-text" class="code-editor-text" data-auto-height="true">LET users = [
-{ name: &#34;Ada&#34;, active: true },
-{ name: &#34;Grace&#34;, active: false },
-{ name: &#34;Linus&#34;, active: true }
+    { name: &#34;Ada&#34;, active: true },
+    { name: &#34;Grace&#34;, active: false },
+    { name: &#34;Linus&#34;, active: true }
 ]
 
 FOR user IN users
-FILTER user.active == true AND LENGTH(user.name) &gt;= 4
-RETURN user.name</div>
+    FILTER user.active == true AND LENGTH(user.name) &gt;= 4
+    RETURN user.name</div>
                 </div>
 
                 <div id="code-editor-13-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -7400,7 +7348,7 @@ RETURN names[* RETURN TRIM(.)]</div>
     </script>
 </div>
 
-<p>Inside an inline array expression, the current element is accessed with ..</p>
+<p>Inside an inline array expression, the current element is accessed with <code>.</code>.</p>
 <h2 id="dynamic-values">Dynamic values</h2>
 <p>Some functions operate on values whose exact type is known only at runtime. This commonly happens when values come from bind parameters, host applications, modules, external data, or runtime capabilities.</p>
 
@@ -7866,7 +7814,7 @@ RETURN names[* RETURN TRIM(.)]</div>
     </script>
 </div>
 
-<p>The query may compile even when the final value of @items is not known yet. If the provided value is not supported by the function at runtime, the query fails with an error.</p>
+<p>The query may compile even when the final value of <code>@items</code> is not known yet. If the provided value is not supported by the function at runtime, the query fails with an error.</p>
 <p>This allows the same query text to be reused with different input values while still preserving function-specific validation when the query is executed.</p>
 <h2 id="errors">Errors</h2>
 <p>A function call can fail for several reasons:</p>
@@ -8347,6 +8295,17 @@ RETURN names[* RETURN TRIM(.)]</div>
 <p>Many functions are pure value operations. They compute a result from their arguments and do not modify external state.</p>
 <p>Other functions may interact with runtime systems. A function provided by a module may read from an external source, perform I/O, query a database, or return a capability-backed value.</p>
 <p>The behavior of such functions is defined by the module that provides them. When a function depends on runtime capabilities, the same query may behave differently depending on the runtime configuration, available permissions, and provided host environment.</p>
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/language/functions/user-defined/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>User-Defined Functions</strong>
+        <span>Declare reusable functions within a script using the FUNC keyword.</span>
+    </a><a class="docs-card" href="/docs/language/functions/modules/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Module Functions</strong>
+        <span>Call namespaced functions and create aliases with the USE statement.</span>
+    </a>
+</div>
+
 
 </article>
 
@@ -8360,7 +8319,6 @@ RETURN names[* RETURN TRIM(.)]</div>
     <li><a href="#function-arguments">Function arguments</a></li>
     <li><a href="#return-values">Return values</a></li>
     <li><a href="#built-in-functions">Built-in functions</a></li>
-    <li><a href="#module-functions">Module functions</a></li>
     <li><a href="#function-calls-in-expressions">Function calls in expressions</a></li>
     <li><a href="#dynamic-values">Dynamic values</a></li>
     <li><a href="#errors">Errors</a></li>
