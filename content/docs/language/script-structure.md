@@ -1,5 +1,5 @@
 ---
-title: "Syntax"
+title: "Script structure"
 weight: 20
 draft: false
 description: "Learn the basic structure of an FQL script."
