@@ -36,7 +36,7 @@ Use the arrow form when the function body is a single expression.
 
 ### Block form
 
-The block form uses parentheses `(` `)` to enclose one or more statements followed by a `RETURN` statement.
+Unlike many C-like languages, FQL uses parentheses for block function bodies.
 
 {{< editor lang="fql" >}}
 FUNC normalizePrice(input) (
@@ -151,3 +151,5 @@ FUNC A() => 2
 
 RETURN a() + A()
 {{</ editor >}}
+
+By convention, built-in functions are written in uppercase, while user-defined function names may use the style preferred by the script author.
