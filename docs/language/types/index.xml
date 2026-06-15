@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Values and Types on Ferret - The declarative data extraction language</title>
-    <link>https://ferretlang.org/docs/language/types/</link>
-    <description>Recent content in Values and Types on Ferret - The declarative data extraction language</description>
-    <generator>Hugo</generator>
-    <language>en-us</language>
-    <atom:link href="https://ferretlang.org/docs/language/types/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Basic Types</title>
-      <link>https://ferretlang.org/docs/language/types/basic/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://ferretlang.org/docs/language/types/basic/</guid>
-      <description>&lt;h1 id=&#34;basic-types&#34;&gt;Basic types&lt;/h1&gt;&#xA;&lt;p&gt;Every FQL value has a type, which defines how the value behaves in expressions, comparisons, function calls, property access, iteration, and results.&lt;/p&gt;&#xA;&lt;p&gt;This page describes the basic value types built into the language:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;NONE&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;bool&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;number&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;string&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;array&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;object&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;binary&lt;/code&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;These are the ordinary values most FQL scripts work with. Ferret hosts may also define additional value types, such as documents, elements, HTTP responses, files, handles, database connections, or other external resources. These are called &lt;code&gt;host-defined&lt;/code&gt; values and are covered separately.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Type Ordering</title>
-      <link>https://ferretlang.org/docs/language/types/type-ordering/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://ferretlang.org/docs/language/types/type-ordering/</guid>
-      <description>&lt;h1 id=&#34;type-ordering&#34;&gt;Type ordering&lt;/h1&gt;&#xA;&lt;p&gt;FQL comparisons are deterministic. Any two values can be compared, even when they do not have the same type.&lt;/p&gt;&#xA;&lt;p&gt;When two values are compared, FQL first looks at their types. If the types are different, the result is decided by the global type order. The actual values are only compared when both operands have the same type.&lt;/p&gt;&#xA;&lt;p&gt;FQL uses the following type order:&lt;/p&gt;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&lt;div class=&#34;code-editor is-readonly is-auto-height&#34;&gt;&#xA;&#xA;    &lt;div class=&#34;code-editor-shell&#34;&gt;&#xA;        &lt;div class=&#34;code-editor-header&#34;&gt;&#xA;            &lt;div class=&#34;code-editor-title&#34;&gt;&#xA;                &lt;span class=&#34;code-editor-dot&#34; aria-hidden=&#34;true&#34;&gt;&lt;/span&gt;&#xA;                &lt;span&gt;example.fql&lt;/span&gt;&#xA;            &lt;/div&gt;&#xA;            &lt;span class=&#34;code-editor-meta&#34;&gt;read-only&lt;/span&gt;&#xA;        &lt;/div&gt;&#xA;&#xA;        &lt;div class=&#34;code-editor-pane&#34;&gt;&#xA;            &lt;div id=&#34;code-1-text&#34; class=&#34;code-editor-text&#34; data-auto-height=&#34;true&#34;&gt;none &amp;lt; bool &amp;lt; number &amp;lt; string &amp;lt; array &amp;lt; object&lt;/div&gt;&#xA;        &lt;/div&gt;&#xA;    &lt;/div&gt;&#xA;&#xA;    &lt;script&gt;&#xA;        document.addEventListener(&#39;DOMContentLoaded&#39;, function () {&#xA;            const editor = ace.edit(&#39;code-1-text&#39;);&#xA;            editor.setTheme(&#34;ace\/theme\/tomorrow_night&#34;);&#xA;            editor.session.setUseWorker(false);&#xA;            editor.session.setMode(&#34;ace/mode/&#34; + &#39;fql&#39;);&#xA;            editor.setOptions({&#xA;                readOnly: true,&#xA;                highlightActiveLine: false,&#xA;                highlightGutterLine: false,&#xA;                displayIndentGuides: false,&#xA;                printMargin: false&#xA;            });&#xA;            editor.renderer.$cursorLayer.element.style.display = &#34;none&#34;&#xA;            function resizeAutoHeightEditor() {&#xA;                const lineHeight = editor.renderer.lineHeight || 21;&#xA;                const screenLines = Math.max(editor.session.getScreenLength(), 1);&#xA;                const nextHeight = Math.max(screenLines * lineHeight, 48);&#xA;&#xA;                editor.container.style.height = `${nextHeight}px`;&#xA;                editor.resize();&#xA;            }&#xA;&#xA;            editor.session.on(&#39;change&#39;, resizeAutoHeightEditor);&#xA;            window.addEventListener(&#39;resize&#39;, resizeAutoHeightEditor);&#xA;            resizeAutoHeightEditor();&#xA;        }, false);&#xA;    &lt;/script&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&lt;p&gt;This means that none sorts before every other value, while objects sort after every other built-in value type.&lt;/p&gt;</description>
-    </item>
-  </channel>
+	<channel>
+		<title>Values and Types on Ferret - The declarative data extraction language</title>
+		<link>https://ferretlang.org/docs/language/types/</link>
+		<description>Recent content in Values and Types on Ferret - The declarative data extraction language</description>
+		<generator>Hugo</generator>
+		<language>en-us</language>
+		
+		
+		
+		
+			<atom:link href="https://ferretlang.org/docs/language/types/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Basic Types</title>
+				<link>https://ferretlang.org/docs/language/types/basic/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>https://ferretlang.org/docs/language/types/basic/</guid>
+				<description>&lt;h1 id=&#34;basic-types&#34;&gt;Basic types&lt;/h1&gt;&#xA;&lt;p&gt;Every FQL value has a type, which defines how the value behaves in expressions, comparisons, function calls, property access, iteration, and results.&lt;/p&gt;&#xA;&lt;p&gt;This page describes the basic value types built into the language:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;code&gt;NONE&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;bool&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;number&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;string&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;array&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;object&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;code&gt;binary&lt;/code&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;These are the ordinary values most FQL scripts work with. Ferret hosts may also define additional value types, such as documents, elements, HTTP responses, files, handles, database connections, or other external resources. These are called &lt;code&gt;host-defined&lt;/code&gt; values and are covered separately.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Type Ordering</title>
+				<link>https://ferretlang.org/docs/language/types/type-ordering/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>https://ferretlang.org/docs/language/types/type-ordering/</guid>
+				<description>&lt;h1 id=&#34;type-ordering&#34;&gt;Type ordering&lt;/h1&gt;&#xA;&lt;p&gt;FQL comparisons are deterministic. Any two values can be compared, even when they do not have the same type.&lt;/p&gt;&#xA;&lt;p&gt;When two values are compared, FQL first looks at their types. If the types are different, the result is decided by the global type order. The actual values are only compared when both operands have the same type.&lt;/p&gt;&#xA;&lt;p&gt;FQL uses the following type order:&lt;/p&gt;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&lt;div class=&#34;code-editor is-readonly is-auto-height&#34;&gt;&#xA;&#xA;    &lt;div class=&#34;code-editor-shell&#34;&gt;&#xA;        &lt;div class=&#34;code-editor-header&#34;&gt;&#xA;            &lt;div class=&#34;code-editor-title&#34;&gt;&#xA;                &lt;span class=&#34;code-editor-dot&#34; aria-hidden=&#34;true&#34;&gt;&lt;/span&gt;&#xA;                &lt;span&gt;example.fql&lt;/span&gt;&#xA;            &lt;/div&gt;&#xA;            &lt;span class=&#34;code-editor-meta&#34;&gt;read-only&lt;/span&gt;&#xA;        &lt;/div&gt;&#xA;&#xA;        &lt;div class=&#34;code-editor-pane&#34;&gt;&#xA;            &lt;div id=&#34;code-1-text&#34; class=&#34;code-editor-text&#34; data-auto-height=&#34;true&#34;&gt;none &amp;lt; bool &amp;lt; number &amp;lt; string &amp;lt; array &amp;lt; object&lt;/div&gt;&#xA;        &lt;/div&gt;&#xA;    &lt;/div&gt;&#xA;&#xA;    &lt;script&gt;&#xA;        document.addEventListener(&#39;DOMContentLoaded&#39;, function () {&#xA;            const editor = ace.edit(&#39;code-1-text&#39;);&#xA;            editor.setTheme(&#34;ace\/theme\/tomorrow_night&#34;);&#xA;            editor.session.setUseWorker(false);&#xA;            editor.session.setMode(&#34;ace/mode/&#34; + &#39;fql&#39;);&#xA;            editor.setOptions({&#xA;                readOnly: true,&#xA;                highlightActiveLine: false,&#xA;                highlightGutterLine: false,&#xA;                displayIndentGuides: false,&#xA;                printMargin: false&#xA;            });&#xA;            editor.renderer.$cursorLayer.element.style.display = &#34;none&#34;&#xA;            function resizeAutoHeightEditor() {&#xA;                const lineHeight = editor.renderer.lineHeight || 21;&#xA;                const screenLines = Math.max(editor.session.getScreenLength(), 1);&#xA;                const nextHeight = Math.max(screenLines * lineHeight, 48);&#xA;&#xA;                editor.container.style.height = `${nextHeight}px`;&#xA;                editor.resize();&#xA;            }&#xA;&#xA;            editor.session.on(&#39;change&#39;, resizeAutoHeightEditor);&#xA;            window.addEventListener(&#39;resize&#39;, resizeAutoHeightEditor);&#xA;            resizeAutoHeightEditor();&#xA;        }, false);&#xA;    &lt;/script&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&lt;p&gt;This means that none sorts before every other value, while objects sort after every other built-in value type.&lt;/p&gt;</description>
+			</item>
+	</channel>
 </rss>
