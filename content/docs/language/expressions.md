@@ -146,29 +146,17 @@ Operators combine expressions into larger expressions.
 {{< editor lang="fql">}}
 LET price = 100
 LET quantity = 3
-LET total = price * quantity
 
-RETURN total >= 250
+RETURN price * quantity >= 250
 {{</ editor >}}
 
-The expression price `*` quantity produces a number.
+The expression `price * quantity` produces a number, and comparing it with `>= 250` produces a boolean.
 
-The expression `total >= 250` produces a boolean.
-
-Operators are available for common operations such as arithmetic, comparison, logical checks, and value composition. 
 See the [Operators section]({{% ref "operators" %}}) for the full list of supported operators and precedence rules.
 
 ## Function calls
 
 A function call is an expression that invokes a function and produces its result.
-
-{{< editor lang="fql" >}}
-LET name = "Ada Lovelace"
-
-RETURN LOWER(name)
-{{</ editor >}}
-
-Function arguments are expressions:
 
 {{< editor lang="fql" >}}
 LET firstName = "Ada"
@@ -177,25 +165,13 @@ LET lastName = "Lovelace"
 RETURN CONCAT(UPPER(firstName), " ", UPPER(lastName))
 {{</ editor >}}
 
-The inner calls to `UPPER` are evaluated and passed as arguments to `CONCAT`.
-
-Functions declared in the current script are called the same way:
-
-{{< editor lang="fql" >}}
-FUNC DISPLAY_NAME(firstName, lastName) (
-    RETURN CONCAT(firstName, " ", lastName)
-)
-
-RETURN DISPLAY_NAME("Ada", "Lovelace")
-{{</ editor >}}
-
-Functions can come from the standard library, modules, the runtime environment, or declarations in the current script.
+Function arguments are expressions too. The inner calls to `UPPER` are evaluated and passed as arguments to `CONCAT`.
 
 For details on function declarations and calls, see the [Functions section]({{% ref "functions" %}}).
 
-## Array expressions
+## Collection expressions
 
-An array expression creates an array value.
+A collection expression creates an array or object value.
 
 {{< editor lang="fql" >}}
 LET first = "Ada"
@@ -203,21 +179,6 @@ LET second = "Grace"
 
 RETURN [first, second, "Linus"]
 {{</ editor >}}
-
-Each array item is an expression. Items are evaluated in order and stored as array values.
-
-Array expressions can contain any value type, including nested arrays and objects.
-
-{{< editor lang="fql" >}}
-RETURN [
-    { name: "Ada", roles: ["admin", "editor"] },
-    { name: "Grace", roles: ["viewer"] }
-]
-{{</ editor >}}
-
-## Object expressions
-
-An object expression creates an object value.
 
 {{< editor lang="fql" >}}
 LET name = "Ada"
@@ -230,13 +191,22 @@ RETURN {
 }
 {{</ editor >}}
 
-Object field values are expressions.
+Array items and object field values are expressions. They are evaluated in order and stored in the resulting collection.
 
-Object field names are not evaluated unless the syntax explicitly supports a dynamic field name. A regular field name such as name or active is used as the property name in the resulting object.
+Collections can contain any value type, including nested arrays and objects.
+
+{{< editor lang="fql" >}}
+RETURN [
+    { name: "Ada", roles: ["admin", "editor"] },
+    { name: "Grace", roles: ["viewer"] }
+]
+{{</ editor >}}
+
+Object field names become property names in the resulting object.
 
 ## Conditional expressions
 
-A conditional expression selects a value based on a condition.
+A conditional expression selects a value based on a condition, using the ternary operator.
 
 {{< editor lang="fql" >}}
 LET user = {
@@ -247,9 +217,9 @@ LET user = {
 RETURN user.active ? "active" : "inactive"
 {{</ editor >}}
 
-The condition is evaluated first. If it is true, the first branch is used. Otherwise, the second branch is used.
+The condition is evaluated first. If it is true, the first branch is used. Otherwise, the second branch is used. Both branches are expressions.
 
-Both branches are expressions, so they can contain literals, variables, function calls, object expressions, array expressions, or other expressions.
+See the [Ternary Operator section]({{% ref "operators/ternary" %}}) for the full syntax, including the shortcut form.
 
 ## Subquery expressions
 
@@ -325,15 +295,3 @@ FOR user IN users
 In this query, the object expression after `RETURN` is evaluated once for each item produced by the loop.
 
 Expression evaluation follows the structure of the query. Nested expressions are evaluated as needed to produce the value of the outer expression.
-
-## Result values
-
-Every expression produces a value. The result can be a basic value, a structured value, or a runtime-backed value provided by the environment.
-
-{{< editor lang="fql" >}}
-LET response = DOCUMENT("https://mockery.ferretlang.org")
-
-RETURN response
-{{</ editor >}}
-
-In this example, the exact kind of value returned by `DOCUMENT` depends on the runtime and available modules.
