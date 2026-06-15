@@ -1,7 +1,7 @@
 ---
 title: "Values and Types"
 sidebarTitle: "Values and Types"
-weight: 10
+weight: 40
 draft: false
 description: "An overview of FQL values, basic types, host values, and value capabilities."
 aliases:

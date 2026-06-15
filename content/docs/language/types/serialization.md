@@ -1,7 +1,7 @@
 ---
 title: "Serialization"
 sidebarTitle: "Serialization"
-weight: 60
+weight: 90
 draft: false
 description: "How Ferret converts runtime values into external representations when returning results to the host."
 ---

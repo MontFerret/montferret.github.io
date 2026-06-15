@@ -1,6 +1,6 @@
 ---
 title: "Operators"
-weight: 60
+weight: 120
 draft: false
 description: "Comparison, logical, arithmetic, ternary, range, and precedence operators."
 aliases:

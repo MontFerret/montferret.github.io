@@ -1,7 +1,7 @@
 ---
 title: "Host Values"
 sidebarTitle: "Host Values"
-weight: 30
+weight: 60
 draft: false
 description: "How FQL represents runtime-provided values such as database connections, browser pages, files, clients, and other host-managed resources."
 ---

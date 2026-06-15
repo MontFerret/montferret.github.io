@@ -1,6 +1,6 @@
 ---
 title: "Script structure"
-weight: 20
+weight: 30
 draft: false
 description: "Learn the basic structure of an FQL script."
 aliases:

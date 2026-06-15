@@ -1,7 +1,7 @@
 ---
 title: "Basic Types"
 sidebarTitle: "Basic Types"
-weight: 20
+weight: 50
 draft: false
 description: "The basic value types available in FQL."
 aliases:

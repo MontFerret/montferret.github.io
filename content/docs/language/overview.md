@@ -1,7 +1,7 @@
 ---
 title: "Language Overview"
 sidebarTitle: "Overview"
-weight: 10
+weight: 20
 draft: false
 description: "The core ideas behind FQL: how scripts produce values, how expressions compose, how collections transform, and how the runtime shapes what a script can do."
 aliases:

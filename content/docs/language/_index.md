@@ -1,6 +1,6 @@
 ---
 title: "Language"
-weight: 20
+weight: 10
 type: "docs"
 draft: false
 description: "Core Ferret Query Language syntax, values, operators, and concepts."
