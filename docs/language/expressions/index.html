@@ -4041,9 +4041,8 @@ RETURN users[index]</div>
                     </div>
                     <div id="code-editor-8-text" class="code-editor-text" data-auto-height="true">LET price = 100
 LET quantity = 3
-LET total = price * quantity
 
-RETURN total &gt;= 250</div>
+RETURN price * quantity &gt;= 250</div>
                 </div>
 
                 <div id="code-editor-8-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -4459,10 +4458,8 @@ RETURN total &gt;= 250</div>
     </script>
 </div>
 
-<p>The expression price <code>*</code> quantity produces a number.</p>
-<p>The expression <code>total &gt;= 250</code> produces a boolean.</p>
-<p>Operators are available for common operations such as arithmetic, comparison, logical checks, and value composition.
-See the <a href="https://ferretlang.org/docs/language/operators/">Operators section</a> for the full list of supported operators and precedence rules.</p>
+<p>The expression <code>price * quantity</code> produces a number, and comparing it with <code>&gt;= 250</code> produces a boolean.</p>
+<p>See the <a href="https://ferretlang.org/docs/language/operators/">Operators section</a> for the full list of supported operators and precedence rules.</p>
 <h2 id="function-calls">Function calls</h2>
 <p>A function call is an expression that invokes a function and produces its result.</p>
 
@@ -4512,9 +4509,10 @@ See the <a href="https://ferretlang.org/docs/language/operators/">Operators sect
                             <button id="code-editor-9-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-9-text" class="code-editor-text" data-auto-height="true">LET name = &#34;Ada Lovelace&#34;
+                    <div id="code-editor-9-text" class="code-editor-text" data-auto-height="true">LET firstName = &#34;Ada&#34;
+LET lastName = &#34;Lovelace&#34;
 
-RETURN LOWER(name)</div>
+RETURN CONCAT(UPPER(firstName), &#34; &#34;, UPPER(lastName))</div>
                 </div>
 
                 <div id="code-editor-9-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -4930,7 +4928,10 @@ RETURN LOWER(name)</div>
     </script>
 </div>
 
-<p>Function arguments are expressions:</p>
+<p>Function arguments are expressions too. The inner calls to <code>UPPER</code> are evaluated and passed as arguments to <code>CONCAT</code>.</p>
+<p>For details on function declarations and calls, see the <a href="https://ferretlang.org/docs/language/functions/">Functions section</a>.</p>
+<h2 id="collection-expressions">Collection expressions</h2>
+<p>A collection expression creates an array or object value.</p>
 
 
 
@@ -4978,10 +4979,10 @@ RETURN LOWER(name)</div>
                             <button id="code-editor-10-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-10-text" class="code-editor-text" data-auto-height="true">LET firstName = &#34;Ada&#34;
-LET lastName = &#34;Lovelace&#34;
+                    <div id="code-editor-10-text" class="code-editor-text" data-auto-height="true">LET first = &#34;Ada&#34;
+LET second = &#34;Grace&#34;
 
-RETURN CONCAT(UPPER(firstName), &#34; &#34;, UPPER(lastName))</div>
+RETURN [first, second, &#34;Linus&#34;]</div>
                 </div>
 
                 <div id="code-editor-10-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -5397,8 +5398,6 @@ RETURN CONCAT(UPPER(firstName), &#34; &#34;, UPPER(lastName))</div>
     </script>
 </div>
 
-<p>The inner calls to <code>UPPER</code> are evaluated and passed as arguments to <code>CONCAT</code>.</p>
-<p>Functions declared in the current script are called the same way:</p>
 
 
 
@@ -5446,11 +5445,14 @@ RETURN CONCAT(UPPER(firstName), &#34; &#34;, UPPER(lastName))</div>
                             <button id="code-editor-11-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-11-text" class="code-editor-text" data-auto-height="true">FUNC DISPLAY_NAME(firstName, lastName) (
-    RETURN CONCAT(firstName, &#34; &#34;, lastName)
-)
+                    <div id="code-editor-11-text" class="code-editor-text" data-auto-height="true">LET name = &#34;Ada&#34;
+LET active = true
 
-RETURN DISPLAY_NAME(&#34;Ada&#34;, &#34;Lovelace&#34;)</div>
+RETURN {
+    name: name,
+    active: active,
+    label: CONCAT(name, &#34; is active&#34;)
+}</div>
                 </div>
 
                 <div id="code-editor-11-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -5866,10 +5868,8 @@ RETURN DISPLAY_NAME(&#34;Ada&#34;, &#34;Lovelace&#34;)</div>
     </script>
 </div>
 
-<p>Functions can come from the standard library, modules, the runtime environment, or declarations in the current script.</p>
-<p>For details on function declarations and calls, see the <a href="https://ferretlang.org/docs/language/functions/">Functions section</a>.</p>
-<h2 id="array-expressions">Array expressions</h2>
-<p>An array expression creates an array value.</p>
+<p>Array items and object field values are expressions. They are evaluated in order and stored in the resulting collection.</p>
+<p>Collections can contain any value type, including nested arrays and objects.</p>
 
 
 
@@ -5917,10 +5917,10 @@ RETURN DISPLAY_NAME(&#34;Ada&#34;, &#34;Lovelace&#34;)</div>
                             <button id="code-editor-12-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-12-text" class="code-editor-text" data-auto-height="true">LET first = &#34;Ada&#34;
-LET second = &#34;Grace&#34;
-
-RETURN [first, second, &#34;Linus&#34;]</div>
+                    <div id="code-editor-12-text" class="code-editor-text" data-auto-height="true">RETURN [
+    { name: &#34;Ada&#34;, roles: [&#34;admin&#34;, &#34;editor&#34;] },
+    { name: &#34;Grace&#34;, roles: [&#34;viewer&#34;] }
+]</div>
                 </div>
 
                 <div id="code-editor-12-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -6336,8 +6336,9 @@ RETURN [first, second, &#34;Linus&#34;]</div>
     </script>
 </div>
 
-<p>Each array item is an expression. Items are evaluated in order and stored as array values.</p>
-<p>Array expressions can contain any value type, including nested arrays and objects.</p>
+<p>Object field names become property names in the resulting object.</p>
+<h2 id="conditional-expressions">Conditional expressions</h2>
+<p>A conditional expression selects a value based on a condition, using the ternary operator.</p>
 
 
 
@@ -6385,10 +6386,12 @@ RETURN [first, second, &#34;Linus&#34;]</div>
                             <button id="code-editor-13-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-13-text" class="code-editor-text" data-auto-height="true">RETURN [
-    { name: &#34;Ada&#34;, roles: [&#34;admin&#34;, &#34;editor&#34;] },
-    { name: &#34;Grace&#34;, roles: [&#34;viewer&#34;] }
-]</div>
+                    <div id="code-editor-13-text" class="code-editor-text" data-auto-height="true">LET user = {
+    name: &#34;Ada&#34;,
+    active: true
+}
+
+RETURN user.active ? &#34;active&#34; : &#34;inactive&#34;</div>
                 </div>
 
                 <div id="code-editor-13-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -6804,8 +6807,10 @@ RETURN [first, second, &#34;Linus&#34;]</div>
     </script>
 </div>
 
-<h2 id="object-expressions">Object expressions</h2>
-<p>An object expression creates an object value.</p>
+<p>The condition is evaluated first. If it is true, the first branch is used. Otherwise, the second branch is used. Both branches are expressions.</p>
+<p>See the <a href="https://ferretlang.org/docs/language/operators/ternary/">Ternary Operator section</a> for the full syntax, including the shortcut form.</p>
+<h2 id="subquery-expressions">Subquery expressions</h2>
+<p>Some query constructs can produce values and be used as expressions.</p>
 
 
 
@@ -6853,14 +6858,19 @@ RETURN [first, second, &#34;Linus&#34;]</div>
                             <button id="code-editor-14-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-14-text" class="code-editor-text" data-auto-height="true">LET name = &#34;Ada&#34;
-LET active = true
+                    <div id="code-editor-14-text" class="code-editor-text" data-auto-height="true">LET users = [
+    { name: &#34;Ada&#34;, active: true },
+    { name: &#34;Grace&#34;, active: false },
+    { name: &#34;Linus&#34;, active: true }
+]
 
-RETURN {
-    name: name,
-    active: active,
-    label: CONCAT(name, &#34; is active&#34;)
-}</div>
+LET activeUsers = (
+    FOR user IN users
+        FILTER user.active
+        RETURN user.name
+)
+
+RETURN activeUsers</div>
                 </div>
 
                 <div id="code-editor-14-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -7276,10 +7286,7 @@ RETURN {
     </script>
 </div>
 
-<p>Object field values are expressions.</p>
-<p>Object field names are not evaluated unless the syntax explicitly supports a dynamic field name. A regular field name such as name or active is used as the property name in the resulting object.</p>
-<h2 id="conditional-expressions">Conditional expressions</h2>
-<p>A conditional expression selects a value based on a condition.</p>
+<p>Nested query blocks can also be used this way:</p>
 
 
 
@@ -7327,12 +7334,13 @@ RETURN {
                             <button id="code-editor-15-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-15-text" class="code-editor-text" data-auto-height="true">LET user = {
-    name: &#34;Ada&#34;,
-    active: true
-}
+                    <div id="code-editor-15-text" class="code-editor-text" data-auto-height="true">LET products = (
+    FOR i IN 1..5
+        FOR x IN 1..5
+            RETURN i * x
+)
 
-RETURN user.active ? &#34;active&#34; : &#34;inactive&#34;</div>
+RETURN products</div>
                 </div>
 
                 <div id="code-editor-15-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -7748,10 +7756,67 @@ RETURN user.active ? &#34;active&#34; : &#34;inactive&#34;</div>
     </script>
 </div>
 
-<p>The condition is evaluated first. If it is true, the first branch is used. Otherwise, the second branch is used.</p>
-<p>Both branches are expressions, so they can contain literals, variables, function calls, object expressions, array expressions, or other expressions.</p>
-<h2 id="subquery-expressions">Subquery expressions</h2>
-<p>Some query constructs can produce values and be used as expressions.</p>
+<p>A subquery expression evaluates a query block and uses its result as a value. This allows a query result to be assigned to a variable, returned as part of another value, or passed to a function.</p>
+<h2 id="expressions-and-statements">Expressions and statements</h2>
+<p>Expressions produce values.</p>
+<p>Statements describe query structure, control flow, or variable declarations.</p>
+<p>For example, <code>LET</code> is a statement. The code on the right side of <code>=</code> is an expression:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET total = price * quantity</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p><code>RETURN</code> is also a statement. The value after <code>RETURN</code> is an expression:</p>
 
 
 
@@ -7799,19 +7864,7 @@ RETURN user.active ? &#34;active&#34; : &#34;inactive&#34;</div>
                             <button id="code-editor-16-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-16-text" class="code-editor-text" data-auto-height="true">LET users = [
-    { name: &#34;Ada&#34;, active: true },
-    { name: &#34;Grace&#34;, active: false },
-    { name: &#34;Linus&#34;, active: true }
-]
-
-LET activeUsers = (
-    FOR user IN users
-        FILTER user.active
-        RETURN user.name
-)
-
-RETURN activeUsers</div>
+                    <div id="code-editor-16-text" class="code-editor-text" data-auto-height="true">RETURN total &gt;= 250</div>
                 </div>
 
                 <div id="code-editor-16-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -8227,7 +8280,9 @@ RETURN activeUsers</div>
     </script>
 </div>
 
-<p>Nested query blocks can also be used this way:</p>
+<p>Only the expression parts of a statement can be nested inside other expressions.</p>
+<h2 id="evaluation">Evaluation</h2>
+<p>Expressions are evaluated when the surrounding statement or expression is evaluated.</p>
 
 
 
@@ -8275,13 +8330,16 @@ RETURN activeUsers</div>
                             <button id="code-editor-17-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-17-text" class="code-editor-text" data-auto-height="true">LET products = (
-    FOR i IN 1..5
-        FOR x IN 1..5
-            RETURN i * x
-)
+                    <div id="code-editor-17-text" class="code-editor-text" data-auto-height="true">LET users = [
+    { name: &#34;Ada&#34;, active: true },
+    { name: &#34;Grace&#34;, active: false }
+]
 
-RETURN products</div>
+FOR user IN users
+    RETURN {
+        name: user.name,
+        active: user.active
+    }</div>
                 </div>
 
                 <div id="code-editor-17-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -8697,1475 +8755,8 @@ RETURN products</div>
     </script>
 </div>
 
-<p>A subquery expression evaluates a query block and uses its result as a value. This allows a query result to be assigned to a variable, returned as part of another value, or passed to a function.</p>
-<h2 id="expressions-and-statements">Expressions and statements</h2>
-<p>Expressions produce values.</p>
-<p>Statements describe query structure, control flow, or variable declarations.</p>
-<p>For example, <code>LET</code> is a statement. The code on the right side of <code>=</code> is an expression:</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET total = price * quantity</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-1-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p><code>RETURN</code> is also a statement. The value after <code>RETURN</code> is an expression:</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-horizontal is-auto-height">
-    <textarea id="code-editor-18-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div id="code-editor-18-header" class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-                <small>Ferret v2</small>
-            </div>
-
-            <div class="code-editor-actions">
-                <button id="code-editor-18-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-18-result-pane">Output</button>
-                <button id="code-editor-18-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-18-params-drawer">Params</button>
-                <button id="code-editor-18-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
-                    <span class="code-editor-run-label">Run</span>
-                    <span id="code-editor-18-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div id="code-editor-18-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
-            <span id="code-editor-18-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
-        </div>
-
-        <div class="code-editor-workspace">
-            <div id="code-editor-18-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-18-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>FQL</span>
-                            <button id="code-editor-18-copy-button" class="code-editor-pane-button" type="button">Copy</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-18-text" class="code-editor-text" data-auto-height="true">RETURN total &gt;= 250</div>
-                </div>
-
-                <div id="code-editor-18-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-18-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-18-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-18-result" class="code-editor-result" data-auto-height="true"></div>
-                </div>
-            </div>
-
-            <aside id="code-editor-18-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-18-params-title" hidden>
-                <div class="code-editor-params-header">
-                    <div>
-                        <span id="code-editor-18-params-title" class="code-editor-params-title">Query parameters</span>
-                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
-                    </div>
-                    <button id="code-editor-18-params-close-button" class="code-editor-pane-button" type="button">Close</button>
-                </div>
-                <div class="code-editor-params-body">
-                    <div id="code-editor-18-params-empty" class="code-editor-params-empty">No parameters added.</div>
-                    <div id="code-editor-18-params-rows" class="code-editor-params-rows"></div>
-                </div>
-                <div class="code-editor-params-footer">
-                    <button id="code-editor-18-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
-                </div>
-            </aside>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode, useWorker) {
-                const editor = ace.edit(id);
-                editor.setTheme("ace\/theme\/tomorrow_night");
-                editor.session.setUseWorker(useWorker);
-                editor.session.setMode("ace/mode/" + mode);
-                editor.setOptions({
-                    displayIndentGuides: false,
-                    printMargin: false
-                });
-
-                return editor;
-            }
-
-            const btn = document.querySelector('#code-editor-18-run-button');
-            const textEditor = createEditor('code-editor-18-text', 'fql', true);
-            const resultEditor = createEditor('code-editor-18-result', 'json', false);
-            resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
-            const editorHeader = document.querySelector('#code-editor-18-header');
-            const editorWorkspace = document.querySelector('#code-editor-18-grid').parentElement;
-            const editorGrid = document.querySelector('#code-editor-18-grid');
-            const runProgress = document.querySelector('#code-editor-18-progress');
-            const runStatus = document.querySelector('#code-editor-18-run-status');
-            const resultPane = document.querySelector('#code-editor-18-result-pane');
-            const resultToggleBtn = document.querySelector('#code-editor-18-result-toggle-button');
-            const resultCloseBtn = document.querySelector('#code-editor-18-result-close-button');
-            const paramsToggleBtn = document.querySelector('#code-editor-18-params-toggle-button');
-            const paramsDrawer = document.querySelector('#code-editor-18-params-drawer');
-            const paramsCloseBtn = document.querySelector('#code-editor-18-params-close-button');
-            const paramsAddBtn = document.querySelector('#code-editor-18-params-add-button');
-            const paramsRows = document.querySelector('#code-editor-18-params-rows');
-            const paramsEmpty = document.querySelector('#code-editor-18-params-empty');
-            let isResultVisible = !resultPane.hidden;
-            let isParamsVisible = !paramsDrawer.hidden;
-
-            function resetResultExpansion() {
-                if (!resultExpandBtn) {
-                    return;
-                }
-
-                isResultExpanded = false;
-                resultExpandBtn.setAttribute('aria-expanded', 'false');
-                resultExpandBtn.textContent = 'Expand';
-            }
-
-            function syncEditorLayout() {
-                const sourceHeight = getEditorContentHeight(textEditor);
-                textEditor.container.style.height = `${sourceHeight}px`;
-
-                if (isResultVisible) {
-                    const resultHeight = getEditorContentHeight(resultEditor);
-                    applyResultHeight(resultHeight);
-                }
-
-                textEditor.resize();
-
-                if (isResultVisible) {
-                    resultEditor.resize();
-                }
-            }
-
-            function setResultVisible(nextVisible) {
-                isResultVisible = nextVisible;
-                resultPane.hidden = !nextVisible;
-                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
-
-                if (!nextVisible) {
-                    resetResultExpansion();
-                    syncEditorLayout();
-                    return;
-                }
-
-                window.requestAnimationFrame(() => {
-                    syncEditorLayout();
-                    resultEditor.resize(true);
-                });
-            }
-
-            resultToggleBtn.addEventListener('click', () => {
-                setResultVisible(!isResultVisible);
-            });
-
-            resultCloseBtn.addEventListener('click', () => {
-                setResultVisible(false);
-            });
-
-            const collapsedResultHeightStyle = resultEditor.container.style.height;
-            let isResultExpanded = false;
-
-            function getEditorContentHeight(editor) {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-
-                return Math.max(screenLines * lineHeight, 48);
-            }
-
-            function getMaxResultHeight(fallbackHeight) {
-                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
-                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-
-                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
-            }
-
-            function getCollapsedResultHeight() {
-                return getEditorContentHeight(resultEditor);
-            }
-
-            function getExpandedResultHeight(collapsedHeight) {
-                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
-                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
-                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
-                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
-                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
-
-                return Math.max(collapsedHeight, Math.round(targetHeight));
-            }
-
-            function applyResultHeight(collapsedHeight) {
-                if (resultExpandBtn && isResultExpanded) {
-                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
-                } else {
-                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
-                }
-
-                resultEditor.resize();
-            }
-            textEditor.session.on('change', syncEditorLayout);
-
-            if (resultExpandBtn) {
-                resultExpandBtn.addEventListener('click', () => {
-                    isResultExpanded = !isResultExpanded;
-                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
-                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
-                    syncEditorLayout();
-                });
-            }
-
-            function syncParamsEmptyState() {
-                paramsEmpty.hidden = paramsRows.children.length > 0;
-            }
-
-            function formatParamValue(value) {
-                return typeof value === 'string' ? value : JSON.stringify(value);
-            }
-
-            function createParamRow(name, value) {
-                const row = document.createElement('div');
-                row.className = 'code-editor-param-row';
-
-                const nameInput = document.createElement('input');
-                nameInput.className = 'code-editor-param-input code-editor-param-name';
-                nameInput.type = 'text';
-                nameInput.placeholder = 'name';
-                nameInput.setAttribute('aria-label', 'Parameter name');
-                nameInput.value = name || '';
-
-                const separator = document.createElement('span');
-                separator.className = 'code-editor-param-separator';
-                separator.setAttribute('aria-hidden', 'true');
-                separator.textContent = ':';
-
-                const valueInput = document.createElement('input');
-                valueInput.className = 'code-editor-param-input code-editor-param-value';
-                valueInput.type = 'text';
-                valueInput.placeholder = 'value';
-                valueInput.setAttribute('aria-label', 'Parameter value');
-                valueInput.value = value === undefined ? '' : formatParamValue(value);
-
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'code-editor-param-remove-button';
-                removeBtn.type = 'button';
-                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
-                removeBtn.textContent = 'Remove';
-                removeBtn.addEventListener('click', () => {
-                    row.remove();
-                    syncParamsEmptyState();
-                });
-
-                row.append(nameInput, separator, valueInput, removeBtn);
-                paramsRows.appendChild(row);
-                syncParamsEmptyState();
-
-                return nameInput;
-            }
-
-            function setParamsVisible(nextVisible) {
-                isParamsVisible = nextVisible;
-                paramsDrawer.hidden = !nextVisible;
-                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorWorkspace.classList.toggle('is-params-open', nextVisible);
-
-                if (nextVisible) {
-                    paramsCloseBtn.focus();
-                } else {
-                    paramsToggleBtn.focus();
-                }
-            }
-
-            function setParamsControlsDisabled(disabled) {
-                paramsToggleBtn.disabled = disabled;
-                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
-                    control.disabled = disabled;
-                });
-            }
-
-            function parseParamValue(value) {
-                try {
-                    return JSON.parse(value);
-                } catch (err) {
-                    return value;
-                }
-            }
-
-            function getParams() {
-                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
-                    const name = row.querySelector('.code-editor-param-name').value.trim();
-
-                    if (name) {
-                        const value = row.querySelector('.code-editor-param-value').value;
-                        params[name] = parseParamValue(value);
-                    }
-
-                    return params;
-                }, {});
-            }
-
-            const initialParams = JSON.parse("{}");
-
-            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
-                Object.entries(initialParams).forEach(([name, value]) => {
-                    createParamRow(name, value);
-                });
-            }
-
-            syncParamsEmptyState();
-
-            paramsToggleBtn.addEventListener('click', () => {
-                setParamsVisible(!isParamsVisible);
-            });
-
-            paramsCloseBtn.addEventListener('click', () => {
-                setParamsVisible(false);
-            });
-
-            paramsAddBtn.addEventListener('click', () => {
-                createParamRow('', '').focus();
-            });
-
-            window.addEventListener('resize', syncEditorLayout);
-            syncEditorLayout();
-
-            function setContent(editor, content) {
-                editor.setValue(content, -1);
-            }
-                const copyClipboardEl = document.querySelector('#code-editor-18-copy-clipboard');
-                const copyBtn = document.querySelector('#code-editor-18-copy-button');
-
-                function copyTextWithFallback(content) {
-                    copyClipboardEl.value = content;
-                    copyClipboardEl.focus();
-                    copyClipboardEl.select();
-
-                    if (!document.execCommand('copy')) {
-                        throw new Error('Could not copy source to the clipboard');
-                    }
-                }
-
-                function copyTextToClipboard(content) {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        return navigator.clipboard.writeText(content).catch(() => {
-                            copyTextWithFallback(content);
-                        });
-                    }
-
-                    copyTextWithFallback(content);
-
-                    return Promise.resolve();
-                }
-
-                copyBtn.addEventListener('click', () => {
-                    copyTextToClipboard(textEditor.getValue())
-                        .then(() => {
-                            copyBtn.textContent = 'Copied';
-                            window.setTimeout(() => {
-                                copyBtn.textContent = 'Copy';
-                            }, 1200);
-                        })
-                        .catch((err) => {
-                            console.error('Failed to copy source');
-                            console.error(err);
-                        });
-                });
-
-            let isRunning = false;
-
-            function onStart() {
-                isRunning = true;
-                textEditor.setReadOnly(true);
-                runProgress.hidden = false;
-                runStatus.textContent = 'Running query';
-                editorHeader.setAttribute('aria-busy', 'true');
-                editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-running');
-                btn.setAttribute('aria-busy', 'true');
-                btn.setAttribute('aria-label', 'Running query');
-                btn.disabled = true;
-                setParamsControlsDisabled(true);
-            }
-
-            function onEnd(result) {
-                isRunning = false;
-                textEditor.setReadOnly(false);
-                runProgress.hidden = true;
-                runStatus.textContent = '';
-                editorHeader.setAttribute('aria-busy', 'false');
-                editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-running');
-                btn.setAttribute('aria-busy', 'false');
-                btn.setAttribute('aria-label', 'Run query');
-                btn.disabled = false;
-                setParamsControlsDisabled(false);
-
-                setContent(resultEditor, result);
-                setResultVisible(true);
-            }
-
-            btn.addEventListener('click', () => {
-                if (isRunning) {
-                    return;
-                }
-
-                const body = {
-                        text: textEditor.getValue(),
-                        params: getParams()
-                };
-                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
-
-                onStart();
-                fetch(url, {
-                    method: 'post',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
-                    signal: AbortSignal.timeout(1000 * 60), 
-                    body: JSON.stringify(body)
-                })
-                    .then(r => {
-                        if (r.status === 200) {
-                            return r.json()
-                        }
-                        
-                        if (r.status === 426) {
-                            throw new Error(`Too many requests. Try again later.`);
-                        }
-                        
-                        if (r.status === 400) {
-                            return r.json().then((data) => {
-                                if (data.details) {
-                                    throw new Error(data.details);
-                                }
-                                
-                                throw new Error(data.error);
-                            });
-                        }
-                        
-                        throw new Error(`Unexpected error. Try again later.`);
-                    })
-                    .then((data) => {
-                        onEnd(JSON.stringify(data, null, 4));
-                    })
-                    .catch((err) => {
-                        onEnd(err.message);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-<p>Only the expression parts of a statement can be nested inside other expressions.</p>
-<h2 id="evaluation">Evaluation</h2>
-<p>Expressions are evaluated when the surrounding statement or expression is evaluated.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-horizontal is-auto-height">
-    <textarea id="code-editor-19-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div id="code-editor-19-header" class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-                <small>Ferret v2</small>
-            </div>
-
-            <div class="code-editor-actions">
-                <button id="code-editor-19-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-19-result-pane">Output</button>
-                <button id="code-editor-19-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-19-params-drawer">Params</button>
-                <button id="code-editor-19-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
-                    <span class="code-editor-run-label">Run</span>
-                    <span id="code-editor-19-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div id="code-editor-19-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
-            <span id="code-editor-19-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
-        </div>
-
-        <div class="code-editor-workspace">
-            <div id="code-editor-19-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-19-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>FQL</span>
-                            <button id="code-editor-19-copy-button" class="code-editor-pane-button" type="button">Copy</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-19-text" class="code-editor-text" data-auto-height="true">LET users = [
-    { name: &#34;Ada&#34;, active: true },
-    { name: &#34;Grace&#34;, active: false }
-]
-
-FOR user IN users
-    RETURN {
-        name: user.name,
-        active: user.active
-    }</div>
-                </div>
-
-                <div id="code-editor-19-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-19-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-19-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-19-result" class="code-editor-result" data-auto-height="true"></div>
-                </div>
-            </div>
-
-            <aside id="code-editor-19-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-19-params-title" hidden>
-                <div class="code-editor-params-header">
-                    <div>
-                        <span id="code-editor-19-params-title" class="code-editor-params-title">Query parameters</span>
-                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
-                    </div>
-                    <button id="code-editor-19-params-close-button" class="code-editor-pane-button" type="button">Close</button>
-                </div>
-                <div class="code-editor-params-body">
-                    <div id="code-editor-19-params-empty" class="code-editor-params-empty">No parameters added.</div>
-                    <div id="code-editor-19-params-rows" class="code-editor-params-rows"></div>
-                </div>
-                <div class="code-editor-params-footer">
-                    <button id="code-editor-19-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
-                </div>
-            </aside>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode, useWorker) {
-                const editor = ace.edit(id);
-                editor.setTheme("ace\/theme\/tomorrow_night");
-                editor.session.setUseWorker(useWorker);
-                editor.session.setMode("ace/mode/" + mode);
-                editor.setOptions({
-                    displayIndentGuides: false,
-                    printMargin: false
-                });
-
-                return editor;
-            }
-
-            const btn = document.querySelector('#code-editor-19-run-button');
-            const textEditor = createEditor('code-editor-19-text', 'fql', true);
-            const resultEditor = createEditor('code-editor-19-result', 'json', false);
-            resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
-            const editorHeader = document.querySelector('#code-editor-19-header');
-            const editorWorkspace = document.querySelector('#code-editor-19-grid').parentElement;
-            const editorGrid = document.querySelector('#code-editor-19-grid');
-            const runProgress = document.querySelector('#code-editor-19-progress');
-            const runStatus = document.querySelector('#code-editor-19-run-status');
-            const resultPane = document.querySelector('#code-editor-19-result-pane');
-            const resultToggleBtn = document.querySelector('#code-editor-19-result-toggle-button');
-            const resultCloseBtn = document.querySelector('#code-editor-19-result-close-button');
-            const paramsToggleBtn = document.querySelector('#code-editor-19-params-toggle-button');
-            const paramsDrawer = document.querySelector('#code-editor-19-params-drawer');
-            const paramsCloseBtn = document.querySelector('#code-editor-19-params-close-button');
-            const paramsAddBtn = document.querySelector('#code-editor-19-params-add-button');
-            const paramsRows = document.querySelector('#code-editor-19-params-rows');
-            const paramsEmpty = document.querySelector('#code-editor-19-params-empty');
-            let isResultVisible = !resultPane.hidden;
-            let isParamsVisible = !paramsDrawer.hidden;
-
-            function resetResultExpansion() {
-                if (!resultExpandBtn) {
-                    return;
-                }
-
-                isResultExpanded = false;
-                resultExpandBtn.setAttribute('aria-expanded', 'false');
-                resultExpandBtn.textContent = 'Expand';
-            }
-
-            function syncEditorLayout() {
-                const sourceHeight = getEditorContentHeight(textEditor);
-                textEditor.container.style.height = `${sourceHeight}px`;
-
-                if (isResultVisible) {
-                    const resultHeight = getEditorContentHeight(resultEditor);
-                    applyResultHeight(resultHeight);
-                }
-
-                textEditor.resize();
-
-                if (isResultVisible) {
-                    resultEditor.resize();
-                }
-            }
-
-            function setResultVisible(nextVisible) {
-                isResultVisible = nextVisible;
-                resultPane.hidden = !nextVisible;
-                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
-
-                if (!nextVisible) {
-                    resetResultExpansion();
-                    syncEditorLayout();
-                    return;
-                }
-
-                window.requestAnimationFrame(() => {
-                    syncEditorLayout();
-                    resultEditor.resize(true);
-                });
-            }
-
-            resultToggleBtn.addEventListener('click', () => {
-                setResultVisible(!isResultVisible);
-            });
-
-            resultCloseBtn.addEventListener('click', () => {
-                setResultVisible(false);
-            });
-
-            const collapsedResultHeightStyle = resultEditor.container.style.height;
-            let isResultExpanded = false;
-
-            function getEditorContentHeight(editor) {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-
-                return Math.max(screenLines * lineHeight, 48);
-            }
-
-            function getMaxResultHeight(fallbackHeight) {
-                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
-                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-
-                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
-            }
-
-            function getCollapsedResultHeight() {
-                return getEditorContentHeight(resultEditor);
-            }
-
-            function getExpandedResultHeight(collapsedHeight) {
-                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
-                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
-                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
-                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
-                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
-
-                return Math.max(collapsedHeight, Math.round(targetHeight));
-            }
-
-            function applyResultHeight(collapsedHeight) {
-                if (resultExpandBtn && isResultExpanded) {
-                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
-                } else {
-                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
-                }
-
-                resultEditor.resize();
-            }
-            textEditor.session.on('change', syncEditorLayout);
-
-            if (resultExpandBtn) {
-                resultExpandBtn.addEventListener('click', () => {
-                    isResultExpanded = !isResultExpanded;
-                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
-                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
-                    syncEditorLayout();
-                });
-            }
-
-            function syncParamsEmptyState() {
-                paramsEmpty.hidden = paramsRows.children.length > 0;
-            }
-
-            function formatParamValue(value) {
-                return typeof value === 'string' ? value : JSON.stringify(value);
-            }
-
-            function createParamRow(name, value) {
-                const row = document.createElement('div');
-                row.className = 'code-editor-param-row';
-
-                const nameInput = document.createElement('input');
-                nameInput.className = 'code-editor-param-input code-editor-param-name';
-                nameInput.type = 'text';
-                nameInput.placeholder = 'name';
-                nameInput.setAttribute('aria-label', 'Parameter name');
-                nameInput.value = name || '';
-
-                const separator = document.createElement('span');
-                separator.className = 'code-editor-param-separator';
-                separator.setAttribute('aria-hidden', 'true');
-                separator.textContent = ':';
-
-                const valueInput = document.createElement('input');
-                valueInput.className = 'code-editor-param-input code-editor-param-value';
-                valueInput.type = 'text';
-                valueInput.placeholder = 'value';
-                valueInput.setAttribute('aria-label', 'Parameter value');
-                valueInput.value = value === undefined ? '' : formatParamValue(value);
-
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'code-editor-param-remove-button';
-                removeBtn.type = 'button';
-                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
-                removeBtn.textContent = 'Remove';
-                removeBtn.addEventListener('click', () => {
-                    row.remove();
-                    syncParamsEmptyState();
-                });
-
-                row.append(nameInput, separator, valueInput, removeBtn);
-                paramsRows.appendChild(row);
-                syncParamsEmptyState();
-
-                return nameInput;
-            }
-
-            function setParamsVisible(nextVisible) {
-                isParamsVisible = nextVisible;
-                paramsDrawer.hidden = !nextVisible;
-                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorWorkspace.classList.toggle('is-params-open', nextVisible);
-
-                if (nextVisible) {
-                    paramsCloseBtn.focus();
-                } else {
-                    paramsToggleBtn.focus();
-                }
-            }
-
-            function setParamsControlsDisabled(disabled) {
-                paramsToggleBtn.disabled = disabled;
-                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
-                    control.disabled = disabled;
-                });
-            }
-
-            function parseParamValue(value) {
-                try {
-                    return JSON.parse(value);
-                } catch (err) {
-                    return value;
-                }
-            }
-
-            function getParams() {
-                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
-                    const name = row.querySelector('.code-editor-param-name').value.trim();
-
-                    if (name) {
-                        const value = row.querySelector('.code-editor-param-value').value;
-                        params[name] = parseParamValue(value);
-                    }
-
-                    return params;
-                }, {});
-            }
-
-            const initialParams = JSON.parse("{}");
-
-            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
-                Object.entries(initialParams).forEach(([name, value]) => {
-                    createParamRow(name, value);
-                });
-            }
-
-            syncParamsEmptyState();
-
-            paramsToggleBtn.addEventListener('click', () => {
-                setParamsVisible(!isParamsVisible);
-            });
-
-            paramsCloseBtn.addEventListener('click', () => {
-                setParamsVisible(false);
-            });
-
-            paramsAddBtn.addEventListener('click', () => {
-                createParamRow('', '').focus();
-            });
-
-            window.addEventListener('resize', syncEditorLayout);
-            syncEditorLayout();
-
-            function setContent(editor, content) {
-                editor.setValue(content, -1);
-            }
-                const copyClipboardEl = document.querySelector('#code-editor-19-copy-clipboard');
-                const copyBtn = document.querySelector('#code-editor-19-copy-button');
-
-                function copyTextWithFallback(content) {
-                    copyClipboardEl.value = content;
-                    copyClipboardEl.focus();
-                    copyClipboardEl.select();
-
-                    if (!document.execCommand('copy')) {
-                        throw new Error('Could not copy source to the clipboard');
-                    }
-                }
-
-                function copyTextToClipboard(content) {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        return navigator.clipboard.writeText(content).catch(() => {
-                            copyTextWithFallback(content);
-                        });
-                    }
-
-                    copyTextWithFallback(content);
-
-                    return Promise.resolve();
-                }
-
-                copyBtn.addEventListener('click', () => {
-                    copyTextToClipboard(textEditor.getValue())
-                        .then(() => {
-                            copyBtn.textContent = 'Copied';
-                            window.setTimeout(() => {
-                                copyBtn.textContent = 'Copy';
-                            }, 1200);
-                        })
-                        .catch((err) => {
-                            console.error('Failed to copy source');
-                            console.error(err);
-                        });
-                });
-
-            let isRunning = false;
-
-            function onStart() {
-                isRunning = true;
-                textEditor.setReadOnly(true);
-                runProgress.hidden = false;
-                runStatus.textContent = 'Running query';
-                editorHeader.setAttribute('aria-busy', 'true');
-                editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-running');
-                btn.setAttribute('aria-busy', 'true');
-                btn.setAttribute('aria-label', 'Running query');
-                btn.disabled = true;
-                setParamsControlsDisabled(true);
-            }
-
-            function onEnd(result) {
-                isRunning = false;
-                textEditor.setReadOnly(false);
-                runProgress.hidden = true;
-                runStatus.textContent = '';
-                editorHeader.setAttribute('aria-busy', 'false');
-                editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-running');
-                btn.setAttribute('aria-busy', 'false');
-                btn.setAttribute('aria-label', 'Run query');
-                btn.disabled = false;
-                setParamsControlsDisabled(false);
-
-                setContent(resultEditor, result);
-                setResultVisible(true);
-            }
-
-            btn.addEventListener('click', () => {
-                if (isRunning) {
-                    return;
-                }
-
-                const body = {
-                        text: textEditor.getValue(),
-                        params: getParams()
-                };
-                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
-
-                onStart();
-                fetch(url, {
-                    method: 'post',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
-                    signal: AbortSignal.timeout(1000 * 60), 
-                    body: JSON.stringify(body)
-                })
-                    .then(r => {
-                        if (r.status === 200) {
-                            return r.json()
-                        }
-                        
-                        if (r.status === 426) {
-                            throw new Error(`Too many requests. Try again later.`);
-                        }
-                        
-                        if (r.status === 400) {
-                            return r.json().then((data) => {
-                                if (data.details) {
-                                    throw new Error(data.details);
-                                }
-                                
-                                throw new Error(data.error);
-                            });
-                        }
-                        
-                        throw new Error(`Unexpected error. Try again later.`);
-                    })
-                    .then((data) => {
-                        onEnd(JSON.stringify(data, null, 4));
-                    })
-                    .catch((err) => {
-                        onEnd(err.message);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
 <p>In this query, the object expression after <code>RETURN</code> is evaluated once for each item produced by the loop.</p>
 <p>Expression evaluation follows the structure of the query. Nested expressions are evaluated as needed to produce the value of the outer expression.</p>
-<h2 id="result-values">Result values</h2>
-<p>Every expression produces a value. The result can be a basic value, a structured value, or a runtime-backed value provided by the environment.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-horizontal is-auto-height">
-    <textarea id="code-editor-20-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div id="code-editor-20-header" class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-                <small>Ferret v2</small>
-            </div>
-
-            <div class="code-editor-actions">
-                <button id="code-editor-20-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-20-result-pane">Output</button>
-                <button id="code-editor-20-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-20-params-drawer">Params</button>
-                <button id="code-editor-20-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
-                    <span class="code-editor-run-label">Run</span>
-                    <span id="code-editor-20-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div id="code-editor-20-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
-            <span id="code-editor-20-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
-        </div>
-
-        <div class="code-editor-workspace">
-            <div id="code-editor-20-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-20-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>FQL</span>
-                            <button id="code-editor-20-copy-button" class="code-editor-pane-button" type="button">Copy</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-20-text" class="code-editor-text" data-auto-height="true">LET response = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)
-
-RETURN response</div>
-                </div>
-
-                <div id="code-editor-20-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-20-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-20-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-20-result" class="code-editor-result" data-auto-height="true"></div>
-                </div>
-            </div>
-
-            <aside id="code-editor-20-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-20-params-title" hidden>
-                <div class="code-editor-params-header">
-                    <div>
-                        <span id="code-editor-20-params-title" class="code-editor-params-title">Query parameters</span>
-                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
-                    </div>
-                    <button id="code-editor-20-params-close-button" class="code-editor-pane-button" type="button">Close</button>
-                </div>
-                <div class="code-editor-params-body">
-                    <div id="code-editor-20-params-empty" class="code-editor-params-empty">No parameters added.</div>
-                    <div id="code-editor-20-params-rows" class="code-editor-params-rows"></div>
-                </div>
-                <div class="code-editor-params-footer">
-                    <button id="code-editor-20-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
-                </div>
-            </aside>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode, useWorker) {
-                const editor = ace.edit(id);
-                editor.setTheme("ace\/theme\/tomorrow_night");
-                editor.session.setUseWorker(useWorker);
-                editor.session.setMode("ace/mode/" + mode);
-                editor.setOptions({
-                    displayIndentGuides: false,
-                    printMargin: false
-                });
-
-                return editor;
-            }
-
-            const btn = document.querySelector('#code-editor-20-run-button');
-            const textEditor = createEditor('code-editor-20-text', 'fql', true);
-            const resultEditor = createEditor('code-editor-20-result', 'json', false);
-            resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
-            const editorHeader = document.querySelector('#code-editor-20-header');
-            const editorWorkspace = document.querySelector('#code-editor-20-grid').parentElement;
-            const editorGrid = document.querySelector('#code-editor-20-grid');
-            const runProgress = document.querySelector('#code-editor-20-progress');
-            const runStatus = document.querySelector('#code-editor-20-run-status');
-            const resultPane = document.querySelector('#code-editor-20-result-pane');
-            const resultToggleBtn = document.querySelector('#code-editor-20-result-toggle-button');
-            const resultCloseBtn = document.querySelector('#code-editor-20-result-close-button');
-            const paramsToggleBtn = document.querySelector('#code-editor-20-params-toggle-button');
-            const paramsDrawer = document.querySelector('#code-editor-20-params-drawer');
-            const paramsCloseBtn = document.querySelector('#code-editor-20-params-close-button');
-            const paramsAddBtn = document.querySelector('#code-editor-20-params-add-button');
-            const paramsRows = document.querySelector('#code-editor-20-params-rows');
-            const paramsEmpty = document.querySelector('#code-editor-20-params-empty');
-            let isResultVisible = !resultPane.hidden;
-            let isParamsVisible = !paramsDrawer.hidden;
-
-            function resetResultExpansion() {
-                if (!resultExpandBtn) {
-                    return;
-                }
-
-                isResultExpanded = false;
-                resultExpandBtn.setAttribute('aria-expanded', 'false');
-                resultExpandBtn.textContent = 'Expand';
-            }
-
-            function syncEditorLayout() {
-                const sourceHeight = getEditorContentHeight(textEditor);
-                textEditor.container.style.height = `${sourceHeight}px`;
-
-                if (isResultVisible) {
-                    const resultHeight = getEditorContentHeight(resultEditor);
-                    applyResultHeight(resultHeight);
-                }
-
-                textEditor.resize();
-
-                if (isResultVisible) {
-                    resultEditor.resize();
-                }
-            }
-
-            function setResultVisible(nextVisible) {
-                isResultVisible = nextVisible;
-                resultPane.hidden = !nextVisible;
-                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
-
-                if (!nextVisible) {
-                    resetResultExpansion();
-                    syncEditorLayout();
-                    return;
-                }
-
-                window.requestAnimationFrame(() => {
-                    syncEditorLayout();
-                    resultEditor.resize(true);
-                });
-            }
-
-            resultToggleBtn.addEventListener('click', () => {
-                setResultVisible(!isResultVisible);
-            });
-
-            resultCloseBtn.addEventListener('click', () => {
-                setResultVisible(false);
-            });
-
-            const collapsedResultHeightStyle = resultEditor.container.style.height;
-            let isResultExpanded = false;
-
-            function getEditorContentHeight(editor) {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-
-                return Math.max(screenLines * lineHeight, 48);
-            }
-
-            function getMaxResultHeight(fallbackHeight) {
-                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
-                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-
-                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
-            }
-
-            function getCollapsedResultHeight() {
-                return getEditorContentHeight(resultEditor);
-            }
-
-            function getExpandedResultHeight(collapsedHeight) {
-                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
-                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
-                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
-                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
-                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
-
-                return Math.max(collapsedHeight, Math.round(targetHeight));
-            }
-
-            function applyResultHeight(collapsedHeight) {
-                if (resultExpandBtn && isResultExpanded) {
-                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
-                } else {
-                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
-                }
-
-                resultEditor.resize();
-            }
-            textEditor.session.on('change', syncEditorLayout);
-
-            if (resultExpandBtn) {
-                resultExpandBtn.addEventListener('click', () => {
-                    isResultExpanded = !isResultExpanded;
-                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
-                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
-                    syncEditorLayout();
-                });
-            }
-
-            function syncParamsEmptyState() {
-                paramsEmpty.hidden = paramsRows.children.length > 0;
-            }
-
-            function formatParamValue(value) {
-                return typeof value === 'string' ? value : JSON.stringify(value);
-            }
-
-            function createParamRow(name, value) {
-                const row = document.createElement('div');
-                row.className = 'code-editor-param-row';
-
-                const nameInput = document.createElement('input');
-                nameInput.className = 'code-editor-param-input code-editor-param-name';
-                nameInput.type = 'text';
-                nameInput.placeholder = 'name';
-                nameInput.setAttribute('aria-label', 'Parameter name');
-                nameInput.value = name || '';
-
-                const separator = document.createElement('span');
-                separator.className = 'code-editor-param-separator';
-                separator.setAttribute('aria-hidden', 'true');
-                separator.textContent = ':';
-
-                const valueInput = document.createElement('input');
-                valueInput.className = 'code-editor-param-input code-editor-param-value';
-                valueInput.type = 'text';
-                valueInput.placeholder = 'value';
-                valueInput.setAttribute('aria-label', 'Parameter value');
-                valueInput.value = value === undefined ? '' : formatParamValue(value);
-
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'code-editor-param-remove-button';
-                removeBtn.type = 'button';
-                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
-                removeBtn.textContent = 'Remove';
-                removeBtn.addEventListener('click', () => {
-                    row.remove();
-                    syncParamsEmptyState();
-                });
-
-                row.append(nameInput, separator, valueInput, removeBtn);
-                paramsRows.appendChild(row);
-                syncParamsEmptyState();
-
-                return nameInput;
-            }
-
-            function setParamsVisible(nextVisible) {
-                isParamsVisible = nextVisible;
-                paramsDrawer.hidden = !nextVisible;
-                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorWorkspace.classList.toggle('is-params-open', nextVisible);
-
-                if (nextVisible) {
-                    paramsCloseBtn.focus();
-                } else {
-                    paramsToggleBtn.focus();
-                }
-            }
-
-            function setParamsControlsDisabled(disabled) {
-                paramsToggleBtn.disabled = disabled;
-                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
-                    control.disabled = disabled;
-                });
-            }
-
-            function parseParamValue(value) {
-                try {
-                    return JSON.parse(value);
-                } catch (err) {
-                    return value;
-                }
-            }
-
-            function getParams() {
-                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
-                    const name = row.querySelector('.code-editor-param-name').value.trim();
-
-                    if (name) {
-                        const value = row.querySelector('.code-editor-param-value').value;
-                        params[name] = parseParamValue(value);
-                    }
-
-                    return params;
-                }, {});
-            }
-
-            const initialParams = JSON.parse("{}");
-
-            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
-                Object.entries(initialParams).forEach(([name, value]) => {
-                    createParamRow(name, value);
-                });
-            }
-
-            syncParamsEmptyState();
-
-            paramsToggleBtn.addEventListener('click', () => {
-                setParamsVisible(!isParamsVisible);
-            });
-
-            paramsCloseBtn.addEventListener('click', () => {
-                setParamsVisible(false);
-            });
-
-            paramsAddBtn.addEventListener('click', () => {
-                createParamRow('', '').focus();
-            });
-
-            window.addEventListener('resize', syncEditorLayout);
-            syncEditorLayout();
-
-            function setContent(editor, content) {
-                editor.setValue(content, -1);
-            }
-                const copyClipboardEl = document.querySelector('#code-editor-20-copy-clipboard');
-                const copyBtn = document.querySelector('#code-editor-20-copy-button');
-
-                function copyTextWithFallback(content) {
-                    copyClipboardEl.value = content;
-                    copyClipboardEl.focus();
-                    copyClipboardEl.select();
-
-                    if (!document.execCommand('copy')) {
-                        throw new Error('Could not copy source to the clipboard');
-                    }
-                }
-
-                function copyTextToClipboard(content) {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        return navigator.clipboard.writeText(content).catch(() => {
-                            copyTextWithFallback(content);
-                        });
-                    }
-
-                    copyTextWithFallback(content);
-
-                    return Promise.resolve();
-                }
-
-                copyBtn.addEventListener('click', () => {
-                    copyTextToClipboard(textEditor.getValue())
-                        .then(() => {
-                            copyBtn.textContent = 'Copied';
-                            window.setTimeout(() => {
-                                copyBtn.textContent = 'Copy';
-                            }, 1200);
-                        })
-                        .catch((err) => {
-                            console.error('Failed to copy source');
-                            console.error(err);
-                        });
-                });
-
-            let isRunning = false;
-
-            function onStart() {
-                isRunning = true;
-                textEditor.setReadOnly(true);
-                runProgress.hidden = false;
-                runStatus.textContent = 'Running query';
-                editorHeader.setAttribute('aria-busy', 'true');
-                editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-running');
-                btn.setAttribute('aria-busy', 'true');
-                btn.setAttribute('aria-label', 'Running query');
-                btn.disabled = true;
-                setParamsControlsDisabled(true);
-            }
-
-            function onEnd(result) {
-                isRunning = false;
-                textEditor.setReadOnly(false);
-                runProgress.hidden = true;
-                runStatus.textContent = '';
-                editorHeader.setAttribute('aria-busy', 'false');
-                editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-running');
-                btn.setAttribute('aria-busy', 'false');
-                btn.setAttribute('aria-label', 'Run query');
-                btn.disabled = false;
-                setParamsControlsDisabled(false);
-
-                setContent(resultEditor, result);
-                setResultVisible(true);
-            }
-
-            btn.addEventListener('click', () => {
-                if (isRunning) {
-                    return;
-                }
-
-                const body = {
-                        text: textEditor.getValue(),
-                        params: getParams()
-                };
-                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
-
-                onStart();
-                fetch(url, {
-                    method: 'post',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
-                    signal: AbortSignal.timeout(1000 * 60), 
-                    body: JSON.stringify(body)
-                })
-                    .then(r => {
-                        if (r.status === 200) {
-                            return r.json()
-                        }
-                        
-                        if (r.status === 426) {
-                            throw new Error(`Too many requests. Try again later.`);
-                        }
-                        
-                        if (r.status === 400) {
-                            return r.json().then((data) => {
-                                if (data.details) {
-                                    throw new Error(data.details);
-                                }
-                                
-                                throw new Error(data.error);
-                            });
-                        }
-                        
-                        throw new Error(`Unexpected error. Try again later.`);
-                    })
-                    .then((data) => {
-                        onEnd(JSON.stringify(data, null, 4));
-                    })
-                    .catch((err) => {
-                        onEnd(err.message);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-<p>In this example, the exact kind of value returned by <code>DOCUMENT</code> depends on the runtime and available modules.</p>
 
 </article>
 
@@ -10182,13 +8773,11 @@ RETURN response</div>
     <li><a href="#indexed-access">Indexed access</a></li>
     <li><a href="#operators">Operators</a></li>
     <li><a href="#function-calls">Function calls</a></li>
-    <li><a href="#array-expressions">Array expressions</a></li>
-    <li><a href="#object-expressions">Object expressions</a></li>
+    <li><a href="#collection-expressions">Collection expressions</a></li>
     <li><a href="#conditional-expressions">Conditional expressions</a></li>
     <li><a href="#subquery-expressions">Subquery expressions</a></li>
     <li><a href="#expressions-and-statements">Expressions and statements</a></li>
     <li><a href="#evaluation">Evaluation</a></li>
-    <li><a href="#result-values">Result values</a></li>
   </ul>
 </nav>
 </aside>
