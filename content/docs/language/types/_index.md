@@ -94,4 +94,4 @@ Host values are usually most useful while the script is running. When a script r
 
 ## Where to go next
 
-{{< docs-related tiles="language-types-basic,language-types-host,language-types-capabilities,language-types-ordering" >}}
+{{< docs-related tiles="language-types-basic,language-types-host,language-types-capabilities,language-types-ordering,language-types-serialization" >}}

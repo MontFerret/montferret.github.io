@@ -132,7 +132,7 @@ This expression returns a host value during execution. When the program result i
 
 A host value may be serialized using a descriptive representation, converted using a host-defined rule, or rejected if it cannot be represented safely in the selected format.
 
-See [Serialization]({{< ref "#" >}}) for more information about how FQL values are converted to external formats.
+See [Serialization]({{< ref "serialization" >}}) for more information about how FQL values are converted to external formats.
 
 ## Equality and ordering
 
