@@ -1,7 +1,7 @@
 ---
 title: "Basic Types"
 sidebarTitle: "Basic Types"
-weight: 40
+weight: 20
 draft: false
 description: "The basic value types available in FQL."
 aliases:
@@ -10,23 +10,23 @@ aliases:
 
 # Basic types
 
-Every FQL value has a type, which defines how the value behaves in expressions, comparisons, function calls, property access, iteration, and results.
+FQL has seven built-in value types:
 
-This page describes the basic value types built into the language:
+| Type | Example | Description |
+| --- | --- | --- |
+| `NONE` | `NONE` | Represents an absent or undefined value. |
+| `bool` | `true`, `false` | Represents a truth value. |
+| `number` | `42`, `3.14` | Represents numeric values, both integer and floating-point. |
+| `string` | `"hello"` | Represents text. |
+| `array` | `[1, 2, 3]` | Represents an ordered sequence of values. |
+| `object` | `{ name: "Ada" }` | Represents a set of named fields. |
+| `binary` | module-specific | Represents raw bytes. |
 
-- `NONE`
-- `bool`
-- `number`
-- `string`
-- `array`
-- `object`
-- `binary`
-
-These are the ordinary values most FQL scripts work with. Ferret hosts may also define additional value types, such as documents, elements, HTTP responses, files, handles, database connections, or other external resources. These are called `host-defined` values and are covered separately.
+Ferret hosts may also define additional value types — documents, elements, HTTP responses, files, handles, database connections, and other external resources. These are called host values and are covered separately in [Host Values](#).
 
 ## NONE
 
-`NONE` is Ferret’s equivalent of `null`, `nil`, or `None` in other languages.
+`NONE` is Ferret's equivalent of `null`, `nil`, or `None` in other languages.
 
 It represents the absence of a value.
 

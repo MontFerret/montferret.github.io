@@ -17,19 +17,19 @@ When two values are compared, FQL first looks at their types. If the types are d
 FQL uses the following type order:
 
 {{< code >}}
-none < bool < number < string < array < object
+NONE < bool < number < string < array < object
 {{</ code >}}
 
-This means that none sorts before every other value, while objects sort after every other built-in value type.
+This means that `NONE` sorts before every other value, while objects sort after every other built-in value type.
 
 For example, a boolean value always sorts before a number, a string, an array, or an object. A string always sorts after a number, even if the string is empty or contains numeric-looking text.
 
 {{< code lang="fql" >}}
-none < false
-none < 0
-none < ""
-none < []
-none < {}
+NONE < false
+NONE < 0
+NONE < ""
+NONE < []
+NONE < {}
 
 false < true
 true < 0
@@ -51,13 +51,13 @@ Once the types are the same, FQL compares the values according to the rules for 
 
 Primitive values are ordered as follows:
 
-- none is only equal to none.
+- `NONE` is only equal to `NONE`.
 - Booleans are ordered as false < true.
 - Numbers are ordered by numeric value.
 - Strings are ordered using FQL's string comparison rules.
 
 {{< code lang="fql" >}}
-none == none
+NONE == NONE
 
 false < true
 
@@ -68,7 +68,7 @@ false < true
 {{</ code >}}
 
 <div class="notification is-info">
-  none is a regular comparable value in FQL. Comparing a value with none does not produce an unknown result.
+  NONE is a regular comparable value in FQL. Comparing a value with NONE does not produce an unknown result.
 </div>
 
 ## Arrays
@@ -105,12 +105,12 @@ Objects are compared by their attributes, not by the order in which those attrib
 
 Before two objects are compared, FQL considers their attribute names in sorted order. For each attribute name, FQL compares the corresponding values from both objects.
 
-If one object has an attribute that the other object does not have, the missing value is treated as none for comparison purposes.
+If one object has an attribute that the other object does not have, the missing value is treated as `NONE` for comparison purposes.
 
 {{< code >}}
 {} < { "a": 1 }
 
-{} == { "a": none }
+{} == { "a": NONE }
 
 { "a": 1 } < { "a": 2 }
 
