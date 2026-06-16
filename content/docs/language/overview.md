@@ -69,9 +69,9 @@ FOR user IN users
 This script starts with an array of users and returns only the names of active ones. The shape of the data changes; the logic remains declarative. `FOR` expressions can appear inline too, assigned via `LET` and composed with the rest of the script:
 
 {{< editor lang="fql" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 
-FOR item IN doc[~ css`.product-card`]
+FOR item IN page[~ css`.product-card`]
     FILTER item.attributes["data-in-stock"] == "true"
     RETURN {
         title: item[~? css`.product-title`].textContent,
@@ -85,11 +85,11 @@ Even when the source is messy, the final result can be structured and clean.
 
 FQL's query syntax is not tied to one data type or one library. Instead, querying is capability-based: a value can support one or more query dialects, and FQL can query that value using whichever dialect is appropriate.
 
-An HTML document might support both CSS and XPath:
+An HTML object might support both CSS and XPath:
 
 {{< editor lang="fql" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
-LET links = doc[~ css`a[href]`]
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+LET links = page[~ css`a[href]`]
 
 RETURN links
 {{< /editor >}}
@@ -126,10 +126,10 @@ The meaning of `WITH` and `OPTIONS` is defined by the value being queried and th
 Dynamic workflows often involve timing: a page may not have finished loading, an element may appear only after JavaScript runs, or a value may change in response to an event. FQL includes waiting constructs for these cases, and they are first-class expressions rather than library utilities.
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
-RETURN WAITFOR VALUE doc[~ css`.network-result-card p`]
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
+
+RETURN WAITFOR VALUE page[~ css`.network-result-card p`]
     TIMEOUT 5s
-    EVERY 250ms
     ON TIMEOUT RETURN false
 {{< /editor >}}
 
