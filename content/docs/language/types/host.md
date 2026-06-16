@@ -75,11 +75,11 @@ Some host values expose capabilities that make them usable with familiar FQL syn
 
 Other host values may expose no properties at all and can only be used through functions or specific language operations.
 
-{{< code lang="fql" >}}
-LET doc = HTML::PARSE("<a href='https://example.com'>Example</a>")
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::PARSE("<a href='https://example.com'>Example</a>")
 
-RETURN doc.root.text
-{{</ code >}}
+RETURN page.body
+{{</ editor >}}
 
 In this example, property access works because the HTML host value explicitly supports it. FQL is not accessing the host value's internal implementation directly; it is using a capability exposed by that value.
 
@@ -147,3 +147,7 @@ If a host value does not support comparison, it should not be used with ordering
 This keeps host values opaque while still allowing modules and runtimes to make specific host values participate in FQL's ordering model.
 
 See [Type Ordering]({{< ref "ordering" >}}) and [Capability Types]({{< ref "capabilities" >}}) for more information about value ordering.
+
+## Where to go next
+
+{{< docs-related tiles="language-types-capabilities,language-types-ordering,language-types-serialization,embedding" >}}

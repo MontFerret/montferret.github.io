@@ -169,7 +169,7 @@ FUNC fullName(user) => user.firstName + " " + user.lastName
 RETURN fullName({ firstName: "Ada", lastName: "Lovelace" })
 {{< /editor >}}
 
-Each of these has its own detailed rules and is covered in its dedicated documentation. This section shows the structural shape only.
+Each of these has its own detailed rules and is covered in its dedicated documentation — `MATCH` and `WAITFOR` in [Control Flow]({{% ref "control-flow" %}}), and function declarations in [Functions]({{% ref "functions" %}}). This section shows the structural shape only.
 
 ## Comments
 

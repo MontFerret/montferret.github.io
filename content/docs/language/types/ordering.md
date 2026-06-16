@@ -126,3 +126,7 @@ Attribute declaration order does not affect equality:
 {{</ code >}}
 
 If all attributes compare as equal, the objects are considered equal.
+
+## Where to go next
+
+{{< docs-related tiles="language-operators-comparison,language-types-basic,language-types-capabilities" >}}

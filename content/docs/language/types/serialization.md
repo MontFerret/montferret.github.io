@@ -150,8 +150,8 @@ See [Host Values]({{< ref "host" >}}) and [Capability Types]({{< ref "capabiliti
 Some runtime values are iterable but are not arrays. For example, host values that represent cursors, result sets, or lazy sequences may produce values on demand rather than holding them all in memory.
 
 {{< editor lang="fql" >}}
-LET doc = WEB::HTML::DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
-LET elements = QUERY `.product-card` IN doc USING css
+LET page = WEB::HTML::WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+LET elements = QUERY `.product-card` IN page USING css
 
 RETURN elements
 {{</ editor >}}
@@ -238,6 +238,6 @@ LET users = (
 RETURN users
 {{</ code >}}
 
-## Related pages
+## Where to go next
 
-{{< docs-related tiles="language-types-basic,language-types-host,language-types-capabilities" >}}
+{{< docs-related tiles="language-types-host,language-types-capabilities,language-types-ordering,embedding" >}}

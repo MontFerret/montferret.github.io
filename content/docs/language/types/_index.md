@@ -49,15 +49,15 @@ Each type has specific rules for comparison, equality, and how it participates i
 Host values are values defined outside the core language. They are provided by Ferret runtimes, modules, or applications that embed Ferret, and they may represent anything managed by the host environment — an HTML document, a browser element, an HTTP response, a file, a database cursor, or an application-specific object.
 
 {{< editor lang="fql" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
 RETURN {
-    title: doc.title,
-    url: doc.url
+    title: page.title,
+    url: page.url
 }
 {{< /editor >}}
 
-Here, `doc` is not a plain object constructed by the script. It is a host value returned by `DOCUMENT(...)`, and it may represent an HTML document, a remote resource, or something else entirely depending on the runtime. From the script author's perspective, it is still a value: it can be assigned to a variable, passed to functions, and accessed through the operations it supports — such as the `title` and `url` properties read above.
+Here, `page` is not a plain object constructed by the script. It is a host value returned by `WEB::HTML::OPEN(...)`, and it may represent an HTML page, a remote resource, or something else entirely depending on the runtime. From the script author's perspective, it is still a value: it can be assigned to a variable, passed to functions, and accessed through the operations it supports — such as the `title` and `url` properties read above.
 
 This extensibility is central to Ferret's design. Rather than adding a separate built-in type for every external system — browsers, APIs, databases, files, test harnesses — Ferret allows host environments to introduce their own value types that integrate naturally with the rest of the language. A host value participates in the same expressions, assignments, and function calls as any basic value.
 
@@ -94,4 +94,4 @@ Host values are usually most useful while the script is running. When a script r
 
 ## Where to go next
 
-{{< docs-related tiles="language-types-basic,language-types-host,language-types-capabilities,language-types-ordering,language-types-serialization" >}}
+{{< docs-related tiles="language-types-basic,language-types-host,language-types-capabilities,language-types-ordering,language-types-serialization,language-control-flow" >}}

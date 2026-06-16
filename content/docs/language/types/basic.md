@@ -378,7 +378,6 @@ RETURN value == NONE ? "missing" : value
 
 See [the Standard Library section]({{% ref "docs/standard-library/types" %}}) for the full list of available type-checking functions.
 
+## Where to go next
 
-## Related pages
-
-TBD
+{{< docs-related tiles="language-types-host,language-types-capabilities,language-types-ordering,language-types-serialization" >}}

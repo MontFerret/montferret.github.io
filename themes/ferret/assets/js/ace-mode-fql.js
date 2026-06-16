@@ -22,7 +22,8 @@ ace.define(
         "DISTINCT", "FILTER", "SORT", "LIMIT", "LET", "VAR", "COLLECT",
         "ASC", "DESC", "AT", "LEAST", "INTO", "KEEP", "WITH", "ALL",
         "ANY", "AGGREGATE", "EVENT", "LIKE", "NOT", "IN", "DO", "WHILE",
-        "AND", "OR", "ON", "ERROR", "FAIL", "RETRY", "DELAY", "DELETE", "VALUE"
+        "AND", "OR", "ON", "ERROR", "FAIL", "RETRY", "DELAY", "DELETE", "VALUE",
+        "TRIGGER"
       ].join("|");
       var literals = [
         "TRUE", "FALSE", "NONE", "NULL"
