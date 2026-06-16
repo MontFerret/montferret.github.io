@@ -255,6 +255,8 @@ RETURN products
 
 A subquery expression evaluates a query block and uses its result as a value. This allows a query result to be assigned to a variable, returned as part of another value, or passed to a function.
 
+See [Subquery Expressions]({{% ref "control-flow/subqueries" %}}) for more, including nesting and indexing.
+
 ## Expressions and statements
 
 Expressions produce values.
