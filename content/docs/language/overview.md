@@ -31,7 +31,9 @@ A script can also end with a top-level `FOR` expression, in which case the resul
 
 ## Expressions are the main building block
 
-FQL is expression-oriented: most pieces of logic produce a value. Arithmetic, object, and array literals, conditionals, function calls, queries, and waiting constructs all evaluate to values that can be assigned, returned, or composed with other expressions.
+FQL is expression-oriented: most pieces of logic produce a value. Arithmetic, object, and array literals, conditionals, function calls, queries, and waiting constructs all evaluate to values.
+
+That means expressions can usually be assigned to variables, returned from scripts, passed to functions, or nested inside larger expressions.
 
 {{< editor lang="fql" >}}
 LET score = 87

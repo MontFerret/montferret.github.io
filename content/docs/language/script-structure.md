@@ -7,9 +7,11 @@ aliases:
     - /docs/fql/syntax/
 ---
 
-# Script Structure
+## Script structure
 
-An FQL script is a sequence of statements that runs from top to bottom and produces a final value. Statements describe the shape of the script: what bindings exist, how collections are iterated, what gets returned. Expressions produce the values that flow through those statements.
+An FQL script is a sequence of statements that runs from top to bottom and produces a final value.
+
+Statements provide the outer structure of a script: they introduce bindings, iterate collections, and decide what value is returned. Inside those statements, expressions do most of the work. They produce the values that get assigned, returned, filtered, queried, or composed.
 
 ## Scripts
 
