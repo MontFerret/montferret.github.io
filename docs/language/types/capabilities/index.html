@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.b545eb1c0a00841b9db7c0820c3f9304524cff1ccb18e28eebfb7165dcec04b3.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.1175b3b568338f1b7bca84f1092b79dc87a102cb1c3976747baa67fe022f94c4.css" />
     <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
     
@@ -1419,6 +1419,304 @@ QUERY EXISTS `SELECT * FROM users WHERE active = true` IN db USING sql</div>
 <p>Database connections, file handles, browser sessions, network clients, and other resource-backed values may support close. The runtime tracks closable values and releases their resources during program finalization, before the result is returned to the host.</p>
 <p>Host values that support close do not need to be closed manually in FQL code. The runtime handles cleanup automatically.</p>
 <p>See <a href="https://ferretlang.org/docs/language/types/host/">Host Values</a> for more about host values and their lifecycle.</p>
+<h3 id="readable">Readable</h3>
+<p>A readable value supports member access — retrieving an element by position or by key.</p>
+<p>Index-based access uses bracket notation with an integer position:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-10-text" class="code-editor-text" data-auto-height="true">LET first = items[0]
+LET last = items[LENGTH(items) - 1]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-10-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Key-based access uses dot notation or bracket notation with a string key:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-11-text" class="code-editor-text" data-auto-height="true">LET name = user.name
+LET name = user[&#34;name&#34;]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-11-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Safe navigation returns <code>NONE</code> instead of raising an error when the target value is <code>NONE</code>:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-12-text" class="code-editor-text" data-auto-height="true">LET city = user?.address?.city
+LET first = items?[0]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-12-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Built-in arrays are readable by index. Built-in objects are readable by key. Host values may support either or both forms of access.</p>
+<h3 id="writable">Writable</h3>
+<p>A writable value supports member assignment — setting an element at a position or under a key.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-13-text" class="code-editor-text" data-auto-height="true">VAR items = [1, 2, 3]
+items[0] = 10
+
+VAR user = { name: &#34;Ada&#34; }
+user.name = &#34;Grace&#34;
+user[&#34;active&#34;] = true</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-13-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Built-in arrays support index assignment. Built-in objects support key assignment. Host values may support either or both forms.</p>
+<h3 id="removable">Removable</h3>
+<p>A removable value supports member deletion through the <code>DELETE</code> statement.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-14-text" class="code-editor-text" data-auto-height="true">VAR user = { name: &#34;Ada&#34;, deprecated: true }
+DELETE user.deprecated
+DELETE user[&#34;deprecated&#34;]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-14-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Deletion removes the member entirely — it is not the same as assigning <code>NONE</code>, which keeps the key present with an absent value.</p>
+<p>Built-in objects support key removal. Host values may support removal if the host provides that capability.</p>
 <h2 id="how-operations-use-capabilities">How operations use capabilities</h2>
 <p>When an operation requires a capability, the runtime checks whether the value supports it. If it does, the operation proceeds. If it does not, the operation fails with a runtime error.</p>
 <p>This check happens at runtime, not at parse time. FQL does not statically verify that a variable holds a value with a particular capability. The check occurs when the operation is actually executed.</p>
@@ -1454,9 +1752,29 @@ QUERY EXISTS `SELECT * FROM users WHERE active = true` IN db USING sql</div>
           <td><code>value == other</code></td>
           <td>Comparable (when custom ordering is needed)</td>
       </tr>
+      <tr>
+          <td><code>value[index]</code></td>
+          <td>Readable (by index)</td>
+      </tr>
+      <tr>
+          <td><code>value.key</code> / <code>value[&quot;key&quot;]</code></td>
+          <td>Readable (by key)</td>
+      </tr>
+      <tr>
+          <td><code>value[index] = x</code></td>
+          <td>Writable (by index)</td>
+      </tr>
+      <tr>
+          <td><code>value.key = x</code></td>
+          <td>Writable (by key)</td>
+      </tr>
+      <tr>
+          <td><code>DELETE value.key</code></td>
+          <td>Removable</td>
+      </tr>
   </tbody>
 </table>
-<p>A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, and comparable. A host cursor might be iterable and closable but not queryable or sortable.</p>
+<p>A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, comparable, and readable by index. An object is iterable, measurable, comparable, readable by key, writable by key, and removable by key. A host cursor might be iterable and closable but not queryable or sortable.</p>
 <h2 id="runtime-defined-behavior">Runtime-defined behavior</h2>
 <p>Capability behavior is runtime-defined.</p>
 <p>For built-in values, Ferret defines the capability behavior directly. For host values, the embedding runtime defines which capabilities are supported and how they behave. Two different host values may support the same capability but implement it differently.</p>
@@ -2899,6 +3217,9 @@ QUERY EXISTS `SELECT * FROM users WHERE active = true` IN db USING sql</div>
         <li><a href="#dispatchable">Dispatchable</a></li>
         <li><a href="#measurable">Measurable</a></li>
         <li><a href="#closable">Closable</a></li>
+        <li><a href="#readable">Readable</a></li>
+        <li><a href="#writable">Writable</a></li>
+        <li><a href="#removable">Removable</a></li>
       </ul>
     </li>
     <li><a href="#how-operations-use-capabilities">How operations use capabilities</a></li>
