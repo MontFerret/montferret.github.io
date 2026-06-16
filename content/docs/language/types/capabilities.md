@@ -156,6 +156,62 @@ Host values that support close do not need to be closed manually in FQL code. Th
 
 See [Host Values]({{< ref "host" >}}) for more about host values and their lifecycle.
 
+### Readable
+
+A readable value supports member access — retrieving an element by position or by key.
+
+Index-based access uses bracket notation with an integer position:
+
+{{< code lang="fql" >}}
+LET first = items[0]
+LET last = items[LENGTH(items) - 1]
+{{</ code >}}
+
+Key-based access uses dot notation or bracket notation with a string key:
+
+{{< code lang="fql" >}}
+LET name = user.name
+LET name = user["name"]
+{{</ code >}}
+
+Safe navigation returns `NONE` instead of raising an error when the target value is `NONE`:
+
+{{< code lang="fql" >}}
+LET city = user?.address?.city
+LET first = items?[0]
+{{</ code >}}
+
+Built-in arrays are readable by index. Built-in objects are readable by key. Host values may support either or both forms of access.
+
+### Writable
+
+A writable value supports member assignment — setting an element at a position or under a key.
+
+{{< code lang="fql" >}}
+VAR items = [1, 2, 3]
+items[0] = 10
+
+VAR user = { name: "Ada" }
+user.name = "Grace"
+user["active"] = true
+{{</ code >}}
+
+Built-in arrays support index assignment. Built-in objects support key assignment. Host values may support either or both forms.
+
+### Removable
+
+A removable value supports member deletion through the `DELETE` statement.
+
+{{< code lang="fql" >}}
+VAR user = { name: "Ada", deprecated: true }
+DELETE user.deprecated
+DELETE user["deprecated"]
+{{</ code >}}
+
+Deletion removes the member entirely — it is not the same as assigning `NONE`, which keeps the key present with an absent value.
+
+Built-in objects support key removal. Host values may support removal if the host provides that capability.
+
 ## How operations use capabilities
 
 When an operation requires a capability, the runtime checks whether the value supports it. If it does, the operation proceeds. If it does not, the operation fails with a runtime error.
@@ -170,8 +226,13 @@ This check happens at runtime, not at parse time. FQL does not statically verify
 | `WAITFOR EVENT ... IN value` | Observable |
 | `DISPATCH ... IN value` | Dispatchable |
 | `value == other` | Comparable (when custom ordering is needed) |
+| `value[index]` | Readable (by index) |
+| `value.key` / `value["key"]` | Readable (by key) |
+| `value[index] = x` | Writable (by index) |
+| `value.key = x` | Writable (by key) |
+| `DELETE value.key` | Removable |
 
-A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, and comparable. A host cursor might be iterable and closable but not queryable or sortable.
+A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, comparable, and readable by index. An object is iterable, measurable, comparable, readable by key, writable by key, and removable by key. A host cursor might be iterable and closable but not queryable or sortable.
 
 ## Runtime-defined behavior
 
