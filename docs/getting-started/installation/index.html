@@ -520,23 +520,22 @@
 <li>as a Go library for embedding Ferret into your own applications</li>
 </ul>
 <p>The official CLI includes the standard modules needed for common web extraction workflows. When embedding Ferret as a library, HTML and browser support are added explicitly by registering the relevant modules.</p>
+<blockquote>
+<p><strong>Alpha status</strong></p>
+<p>Ferret v2 is currently in alpha. It is ready for experimentation, feedback, prototypes, internal tools, and early integration work, but the language, runtime, CLI, modules, and embedding APIs may still change before beta.</p>
+<p>Pin CLI and Go module versions when using Ferret in scripts, CI, or embedded applications.</p>
+</blockquote>
+<blockquote>
+<p><strong>Looking for Ferret v1?</strong></p>
+<p>Ferret v1 remains available for existing projects, but new users should start with Ferret v2. See the migration guide for differences between v1 and v2.</p>
+</blockquote>
 <h2 id="install-the-cli">Install the CLI</h2>
 <p>The Ferret CLI is the easiest way to run Ferret from your terminal.</p>
 <h3 id="from-a-prebuilt-binary">From a prebuilt binary</h3>
 <p>Download the latest release for your platform from the GitHub releases page:</p>
 <p><a href="https://github.com/MontFerret/cli/releases">https://github.com/MontFerret/cli/releases</a></p>
-<p>After downloading the binary, make sure it is available in your PATH.</p>
+<p>After downloading the binary, make sure it is available in your <code>PATH</code>.</p>
 <p>You can verify the installation with:</p>
-
-
-
-<div id="docs-tabs-0" class="docs-tabs" data-tabs>
-    <div class="docs-tabs-list" role="tablist">
-        <button id="docs-tabs-0-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-0-panel-0" tabindex="0">v2</button>
-        <button id="docs-tabs-0-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-0-panel-1" tabindex="-1">v1</button>
-    </div>
-    <div id="docs-tabs-0-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-0-tab-0">
-        
 
 
 
@@ -607,10 +606,8 @@
     </script>
 </div>
 
-
-    </div>
-    <div id="docs-tabs-0-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-0-tab-1" hidden>
-        
+<h3 id="using-the-install-script">Using the install script</h3>
+<p>You can also install the CLI with the provided shell script:</p>
 
 
 
@@ -621,7 +618,7 @@
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret --version</textarea>
+    <textarea id="terminal-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -634,7 +631,7 @@
             </div>
         </div>
 
-        <pre id="terminal-2-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret --version</span></span></code></pre>
+        <pre id="terminal-2-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -681,22 +678,8 @@
     </script>
 </div>
 
-
-    </div>
-</div>
-<h3 id="using-the-install-script">Using the install script</h3>
-<p>You can also install the CLI with the provided shell script:
-
-
-
-
-<div id="docs-tabs-1" class="docs-tabs" data-tabs>
-    <div class="docs-tabs-list" role="tablist">
-        <button id="docs-tabs-1-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-1-panel-0" tabindex="0">v2</button>
-        <button id="docs-tabs-1-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-1-panel-1" tabindex="-1">v1</button>
-    </div>
-    <div id="docs-tabs-1-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-1-tab-0">
-        
+<p>The script detects your platform, downloads the matching binary, and installs it into your PATH.</p>
+<p>If you prefer to inspect the script before running it:</p>
 
 
 
@@ -707,7 +690,9 @@
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh</textarea>
+    <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh
+less install.sh
+sh install.sh</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -720,7 +705,7 @@
             </div>
         </div>
 
-        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh</span></span></code></pre>
+        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">less install.sh</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">sh install.sh</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -767,10 +752,9 @@
     </script>
 </div>
 
-
-    </div>
-    <div id="docs-tabs-1-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-1-tab-1" hidden>
-        
+<h3 id="from-source">From source</h3>
+<p>If you already have Go installed, you can build and install a specific Ferret CLI version from source.</p>
+<p>This requires <code>Go </code> or later.</p>
 
 
 
@@ -781,7 +765,7 @@
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -v 1.11.1 | sh</textarea>
+    <textarea id="terminal-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">go install github.com/MontFerret/cli/v2/ferret@v2.0.0-alpha.15</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -794,7 +778,7 @@
             </div>
         </div>
 
-        <pre id="terminal-4-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -v 1.11.1 | sh</span></span></code></pre>
+        <pre id="terminal-4-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">go install github.com/MontFerret/cli/v2/ferret@v2.0.0-alpha.15</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -841,21 +825,8 @@
     </script>
 </div>
 
-
-    </div>
-</div></p>
-<p>The script detects your platform, downloads the matching binary, and installs it into your PATH.</p>
-<p>If you prefer to inspect the script before running it:</p>
-
-
-
-<div id="docs-tabs-2" class="docs-tabs" data-tabs>
-    <div class="docs-tabs-list" role="tablist">
-        <button id="docs-tabs-2-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-2-panel-0" tabindex="0">v2</button>
-        <button id="docs-tabs-2-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-2-panel-1" tabindex="-1">v1</button>
-    </div>
-    <div id="docs-tabs-2-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-2-tab-0">
-        
+<p>During the alpha stage, prefer installing a specific tagged version instead of using <code>@latest</code>.</p>
+<p>Verify the installation with:</p>
 
 
 
@@ -866,9 +837,7 @@
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh
-less install.sh
-sh install.sh</textarea>
+    <textarea id="terminal-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret version</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -881,7 +850,7 @@ sh install.sh</textarea>
             </div>
         </div>
 
-        <pre id="terminal-5-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">less install.sh</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">sh install.sh</span></span></code></pre>
+        <pre id="terminal-5-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret version</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -928,10 +897,9 @@ sh install.sh</textarea>
     </script>
 </div>
 
-
-    </div>
-    <div id="docs-tabs-2-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-2-tab-1" hidden>
-        
+<h2 id="add-ferret-to-a-go-project">Add Ferret to a Go project</h2>
+<p>Ferret can also be embedded into Go applications.</p>
+<p>Add the module to your project with:</p>
 
 
 
@@ -942,9 +910,7 @@ sh install.sh</textarea>
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh
-less install.sh
-sh install.sh -v 1.11.1</textarea>
+    <textarea id="terminal-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">go get github.com/MontFerret/ferret/v2@v2.0.0-alpha.21</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -957,7 +923,7 @@ sh install.sh -v 1.11.1</textarea>
             </div>
         </div>
 
-        <pre id="terminal-6-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">less install.sh</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">sh install.sh -v 1.11.1</span></span></code></pre>
+        <pre id="terminal-6-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">go get github.com/MontFerret/ferret/v2@v2.0.0-alpha.21</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -1004,486 +970,6 @@ sh install.sh -v 1.11.1</textarea>
     </script>
 </div>
 
-
-    </div>
-</div>
-<h3 id="from-source">From source</h3>
-<p>If you already have Go installed, you can build and install the CLI from source:</p>
-
-
-
-<div id="docs-tabs-3" class="docs-tabs" data-tabs>
-    <div class="docs-tabs-list" role="tablist">
-        <button id="docs-tabs-3-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-3-panel-0" tabindex="0">v2</button>
-        <button id="docs-tabs-3-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-3-panel-1" tabindex="-1">v1</button>
-    </div>
-    <div id="docs-tabs-3-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-3-tab-0">
-        
-
-
-
-
-
-
-
-
-
-<div class="code-editor terminal-shortcode">
-    <textarea id="terminal-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">go install github.com/MontFerret/cli/v2/ferret@v2.0.0-alpha.15</textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>terminal</span>
-            </div>
-            <div class="code-editor-actions">
-                <button id="terminal-7-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <pre id="terminal-7-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">go install github.com/MontFerret/cli/v2/ferret@v2.0.0-alpha.15</span></span></code></pre>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-7-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-7-copy-clipboard');
-            const terminalContent = copyClipboardEl.value;
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy terminal commands to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(terminalContent)
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy terminal commands');
-                        console.error(err);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-
-    </div>
-    <div id="docs-tabs-3-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-3-tab-1" hidden>
-        
-
-
-
-
-
-
-
-
-
-<div class="code-editor terminal-shortcode">
-    <textarea id="terminal-8-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">go install github.com/MontFerret/cli/ferret@latest</textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>terminal</span>
-            </div>
-            <div class="code-editor-actions">
-                <button id="terminal-8-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <pre id="terminal-8-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">go install github.com/MontFerret/cli/ferret@latest</span></span></code></pre>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-8-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-8-copy-clipboard');
-            const terminalContent = copyClipboardEl.value;
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy terminal commands to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(terminalContent)
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy terminal commands');
-                        console.error(err);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-
-    </div>
-</div>
-<p>Then verify that the binary is available:</p>
-
-
-
-<div id="docs-tabs-4" class="docs-tabs" data-tabs>
-    <div class="docs-tabs-list" role="tablist">
-        <button id="docs-tabs-4-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-4-panel-0" tabindex="0">v2</button>
-        <button id="docs-tabs-4-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-4-panel-1" tabindex="-1">v1</button>
-    </div>
-    <div id="docs-tabs-4-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-4-tab-0">
-        
-
-
-
-
-
-
-
-
-
-<div class="code-editor terminal-shortcode">
-    <textarea id="terminal-9-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret version</textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>terminal</span>
-            </div>
-            <div class="code-editor-actions">
-                <button id="terminal-9-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <pre id="terminal-9-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret version</span></span></code></pre>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-9-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-9-copy-clipboard');
-            const terminalContent = copyClipboardEl.value;
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy terminal commands to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(terminalContent)
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy terminal commands');
-                        console.error(err);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-
-    </div>
-    <div id="docs-tabs-4-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-4-tab-1" hidden>
-        
-
-
-
-
-
-
-
-
-
-<div class="code-editor terminal-shortcode">
-    <textarea id="terminal-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret --version</textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>terminal</span>
-            </div>
-            <div class="code-editor-actions">
-                <button id="terminal-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <pre id="terminal-10-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret --version</span></span></code></pre>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-10-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-10-copy-clipboard');
-            const terminalContent = copyClipboardEl.value;
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy terminal commands to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(terminalContent)
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy terminal commands');
-                        console.error(err);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-
-    </div>
-</div>
-<h2 id="add-ferret-to-a-go-project">Add Ferret to a Go project</h2>
-<p>Ferret can also be embedded into Go applications.</p>
-<p>Add the module to your project with:</p>
-
-
-
-<div id="docs-tabs-5" class="docs-tabs" data-tabs>
-    <div class="docs-tabs-list" role="tablist">
-        <button id="docs-tabs-5-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-5-panel-0" tabindex="0">v2</button>
-        <button id="docs-tabs-5-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-5-panel-1" tabindex="-1">v1</button>
-    </div>
-    <div id="docs-tabs-5-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-5-tab-0">
-        
-
-
-
-
-
-
-
-
-
-<div class="code-editor terminal-shortcode">
-    <textarea id="terminal-11-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">go get github.com/MontFerret/ferret/v2@v2.0.0-alpha.21</textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>terminal</span>
-            </div>
-            <div class="code-editor-actions">
-                <button id="terminal-11-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <pre id="terminal-11-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">go get github.com/MontFerret/ferret/v2@v2.0.0-alpha.21</span></span></code></pre>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-11-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-11-copy-clipboard');
-            const terminalContent = copyClipboardEl.value;
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy terminal commands to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(terminalContent)
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy terminal commands');
-                        console.error(err);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-
-    </div>
-    <div id="docs-tabs-5-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-5-tab-1" hidden>
-        
-
-
-
-
-
-
-
-
-
-<div class="code-editor terminal-shortcode">
-    <textarea id="terminal-12-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">go get github.com/MontFerret/ferret@latest</textarea>
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>terminal</span>
-            </div>
-            <div class="code-editor-actions">
-                <button id="terminal-12-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <pre id="terminal-12-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">go get github.com/MontFerret/ferret@latest</span></span></code></pre>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-12-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-12-copy-clipboard');
-            const terminalContent = copyClipboardEl.value;
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy terminal commands to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(terminalContent)
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy terminal commands');
-                        console.error(err);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-
-    </div>
-</div>
 <p>This is useful when you want to use Ferret as a data extraction engine inside your own services, workers, tools, or automation pipelines.</p>
 <h2 id="browser-and-html-support">Browser and HTML support</h2>
 <p>Ferret’s core runtime is intentionally small. HTML querying, browser automation, and related web capabilities are provided by modules.</p>
@@ -1547,7 +1033,7 @@ sh install.sh -v 1.11.1</textarea>
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-13-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">docker pull montferret/chromium
+    <textarea id="terminal-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">docker pull montferret/chromium
 docker run -d -p 9222:9222 montferret/chromium</textarea>
 
     <div class="code-editor-shell">
@@ -1557,16 +1043,16 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
                 <span>terminal</span>
             </div>
             <div class="code-editor-actions">
-                <button id="terminal-13-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="terminal-7-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
             </div>
         </div>
 
-        <pre id="terminal-13-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker pull montferret/chromium</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker run -d -p 9222:9222 montferret/chromium</span></span></code></pre>
+        <pre id="terminal-7-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker pull montferret/chromium</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker run -d -p 9222:9222 montferret/chromium</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-13-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-13-copy-clipboard');
+            const copyBtn = document.querySelector('#terminal-7-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-7-copy-clipboard');
             const terminalContent = copyClipboardEl.value;
 
             function copyTextWithFallback(content) {
@@ -1620,7 +1106,7 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-14-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl http://127.0.0.1:9222/json/version</textarea>
+    <textarea id="terminal-8-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl http://127.0.0.1:9222/json/version</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -1629,16 +1115,16 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
                 <span>terminal</span>
             </div>
             <div class="code-editor-actions">
-                <button id="terminal-14-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="terminal-8-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
             </div>
         </div>
 
-        <pre id="terminal-14-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl http://127.0.0.1:9222/json/version</span></span></code></pre>
+        <pre id="terminal-8-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl http://127.0.0.1:9222/json/version</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-14-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-14-copy-clipboard');
+            const copyBtn = document.querySelector('#terminal-8-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-8-copy-clipboard');
             const terminalContent = copyClipboardEl.value;
 
             function copyTextWithFallback(content) {
@@ -1694,7 +1180,7 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-15-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">chrome --remote-debugging-port=9222</textarea>
+    <textarea id="terminal-9-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">chrome --remote-debugging-port=9222</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -1703,16 +1189,16 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
                 <span>terminal</span>
             </div>
             <div class="code-editor-actions">
-                <button id="terminal-15-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="terminal-9-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
             </div>
         </div>
 
-        <pre id="terminal-15-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">chrome --remote-debugging-port=9222</span></span></code></pre>
+        <pre id="terminal-9-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">chrome --remote-debugging-port=9222</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-15-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-15-copy-clipboard');
+            const copyBtn = document.querySelector('#terminal-9-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-9-copy-clipboard');
             const terminalContent = copyClipboardEl.value;
 
             function copyTextWithFallback(content) {
@@ -1766,7 +1252,7 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-16-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">powershell chrome.exe --remote-debugging-port=9222</textarea>
+    <textarea id="terminal-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">powershell chrome.exe --remote-debugging-port=9222</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -1775,16 +1261,16 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
                 <span>terminal</span>
             </div>
             <div class="code-editor-actions">
-                <button id="terminal-16-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="terminal-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
             </div>
         </div>
 
-        <pre id="terminal-16-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">powershell chrome.exe --remote-debugging-port=9222</span></span></code></pre>
+        <pre id="terminal-10-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">powershell chrome.exe --remote-debugging-port=9222</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-16-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-16-copy-clipboard');
+            const copyBtn = document.querySelector('#terminal-10-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-10-copy-clipboard');
             const terminalContent = copyClipboardEl.value;
 
             function copyTextWithFallback(content) {
@@ -1837,7 +1323,7 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
 
 
 <div class="code-editor terminal-shortcode">
-    <textarea id="terminal-17-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl http://127.0.0.1:9222/json/version</textarea>
+    <textarea id="terminal-11-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl http://127.0.0.1:9222/json/version</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -1846,16 +1332,16 @@ docker run -d -p 9222:9222 montferret/chromium</textarea>
                 <span>terminal</span>
             </div>
             <div class="code-editor-actions">
-                <button id="terminal-17-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="terminal-11-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
             </div>
         </div>
 
-        <pre id="terminal-17-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl http://127.0.0.1:9222/json/version</span></span></code></pre>
+        <pre id="terminal-11-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl http://127.0.0.1:9222/json/version</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const copyBtn = document.querySelector('#terminal-17-copy-button');
-            const copyClipboardEl = document.querySelector('#terminal-17-copy-clipboard');
+            const copyBtn = document.querySelector('#terminal-11-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-11-copy-clipboard');
             const terminalContent = copyClipboardEl.value;
 
             function copyTextWithFallback(content) {

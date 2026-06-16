@@ -527,7 +527,7 @@
 <div id="docs-tabs-0" class="docs-tabs" data-tabs>
     <div class="docs-tabs-list" role="tablist">
         <button id="docs-tabs-0-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-0-panel-0" tabindex="0">Terminal</button>
-        <button id="docs-tabs-0-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-0-panel-1" tabindex="-1">Browser</button>
+        <button id="docs-tabs-0-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-0-panel-1" tabindex="-1">Try in browser</button>
     </div>
     <div id="docs-tabs-0-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-0-tab-0">
         
@@ -1082,7 +1082,7 @@
 <div id="docs-tabs-1" class="docs-tabs" data-tabs>
     <div class="docs-tabs-list" role="tablist">
         <button id="docs-tabs-1-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-1-panel-0" tabindex="0">Terminal</button>
-        <button id="docs-tabs-1-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-1-panel-1" tabindex="-1">Browser</button>
+        <button id="docs-tabs-1-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-1-panel-1" tabindex="-1">Try in browser</button>
     </div>
     <div id="docs-tabs-1-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-1-tab-0">
         
@@ -1655,7 +1655,7 @@ RETURN {
 <div id="docs-tabs-2" class="docs-tabs" data-tabs>
     <div class="docs-tabs-list" role="tablist">
         <button id="docs-tabs-2-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-2-panel-0" tabindex="0">Terminal</button>
-        <button id="docs-tabs-2-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-2-panel-1" tabindex="-1">Browser</button>
+        <button id="docs-tabs-2-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-2-panel-1" tabindex="-1">Try in browser</button>
     </div>
     <div id="docs-tabs-2-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-2-tab-0">
         
@@ -1670,8 +1670,8 @@ RETURN {
 
 <div class="code-editor terminal-shortcode is-command">
     <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run -e &#39;
-LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)
-RETURN doc[~ css`article`]
+LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
+RETURN page[~ css`article`]
 &#39;</textarea>
 
     <div class="code-editor-shell">
@@ -1685,7 +1685,7 @@ RETURN doc[~ css`article`]
             </div>
         </div>
 
-        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">RETURN doc[~ css`article`]</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">&#39;</span></span></code></pre>
+        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">RETURN page[~ css`article`]</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">&#39;</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -1783,8 +1783,8 @@ RETURN doc[~ css`article`]
                             <button id="code-editor-3-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)
-RETURN doc[~ css`article`]</div>
+                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
+RETURN page[~ css`article`]</div>
                 </div>
 
                 <div id="code-editor-3-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2203,8 +2203,8 @@ RETURN doc[~ css`article`]</div>
 
     </div>
 </div>
-<p><code>DOCUMENT</code> loads the URL and returns a document value. The expression <code>doc[~ css'article']</code> queries that document using the CSS dialect and returns matchingarticleelements.</p>
-<p>The <code>~</code> shorthand is Ferret’s compact query form. It is useful when you want to query a value directly without writing the longer <code>QUERY ... IN ... USING ...</code> form.</p>
+<p><code>WEB::HTML::OPEN</code> loads the URL and returns an HTML page value. The expression <code>page[~ css'article']</code> queries that page using the CSS dialect and returns matching elements.</p>
+<p>The <code>~</code> operator is FQL’s shorthand query operator. The full query syntax is covered later in the language reference.</p>
 <p>HTML support is available in the CLI. When embedding Ferret in a Go application, HTML querying is provided through a module.</p>
 <h2 id="drive-a-browser">Drive a browser</h2>
 <p>Some pages need JavaScript to render their content. For those cases, Ferret can use a browser-backed driver:</p>
@@ -2214,7 +2214,7 @@ RETURN doc[~ css`article`]</div>
 <div id="docs-tabs-3" class="docs-tabs" data-tabs>
     <div class="docs-tabs-list" role="tablist">
         <button id="docs-tabs-3-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-3-panel-0" tabindex="0">Terminal</button>
-        <button id="docs-tabs-3-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-3-panel-1" tabindex="-1">Browser</button>
+        <button id="docs-tabs-3-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-3-panel-1" tabindex="-1">Try in browser</button>
     </div>
     <div id="docs-tabs-3-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-3-tab-0">
          
@@ -2229,7 +2229,7 @@ RETURN doc[~ css`article`]</div>
 
 <div class="code-editor terminal-shortcode is-command">
     <textarea id="terminal-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run -e &#39;
-LET page = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; })
+LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; })
 RETURN page.title
 &#39;</textarea>
 
@@ -2244,7 +2244,7 @@ RETURN page.title
             </div>
         </div>
 
-        <pre id="terminal-4-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET page = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; })</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">RETURN page.title</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">&#39;</span></span></code></pre>
+        <pre id="terminal-4-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; })</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">RETURN page.title</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">&#39;</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -2342,7 +2342,7 @@ RETURN page.title
                             <button id="code-editor-4-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET page = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; }) 
+                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; }) 
 RETURN page.title </div>
                 </div>
 
@@ -2763,7 +2763,7 @@ RETURN page.title </div>
     </div>
 </div>
 <p>This example uses the <code>cdp</code> driver, which talks to a browser through the Chrome DevTools Protocol.<br>
-Use browser mode when the page depends on JavaScript, client-side rendering, delayed content, user interaction, or browser APIs.</p>
+Use the <code>cdp</code> driver when the page depends on JavaScript, client-side rendering, delayed content, user interaction, or browser APIs.</p>
 <p>For static HTML pages, the non-browser mode is usually simpler and faster.</p>
 <h2 id="save-a-script">Save a script</h2>
 <p>For anything longer than a small example, save the script to a <code>.fql</code> file:</p>
@@ -2777,7 +2777,7 @@ Use browser mode when the page depends on JavaScript, client-side rendering, del
 
 
 <div class="code-editor terminal-shortcode is-command">
-    <textarea id="terminal-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">echo &#39;LET name = @name ?: &#34;Ferret&#34; RETURN &#34;Hello, &#34; &#43; name&#39; &gt; hello.fql </textarea>
+    <textarea id="terminal-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">echo &#39;RETURN &#34;Hello, Ferret&#34;&#39; &gt; hello.fql</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -2790,7 +2790,7 @@ Use browser mode when the page depends on JavaScript, client-side rendering, del
             </div>
         </div>
 
-        <pre id="terminal-5-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">echo &#39;LET name = @name ?: &#34;Ferret&#34; RETURN &#34;Hello, &#34; &#43; name&#39; &gt; hello.fql </span></span></code></pre>
+        <pre id="terminal-5-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">echo &#39;RETURN &#34;Hello, Ferret&#34;&#39; &gt; hello.fql</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -2837,7 +2837,7 @@ Use browser mode when the page depends on JavaScript, client-side rendering, del
     </script>
 </div>
 
-<p>Then run it with a parameter:</p>
+<p>Then run it:</p>
 
 
 
@@ -2848,7 +2848,7 @@ Use browser mode when the page depends on JavaScript, client-side rendering, del
 
 
 <div class="code-editor terminal-shortcode is-command">
-    <textarea id="terminal-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run hello.fql --param name=Steve</textarea>
+    <textarea id="terminal-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run hello.fql</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -2861,7 +2861,7 @@ Use browser mode when the page depends on JavaScript, client-side rendering, del
             </div>
         </div>
 
-        <pre id="terminal-6-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run hello.fql --param name=Steve</span></span></code></pre>
+        <pre id="terminal-6-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run hello.fql</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -2908,8 +2908,150 @@ Use browser mode when the page depends on JavaScript, client-side rendering, del
     </script>
 </div>
 
-<p>Parameters are available through the <code>@</code> prefix. In this example, <code>@name</code> reads the name parameter passed from the CLI.</p>
-<p>The <code>?:</code> operator provides a fallback value. If name is not passed, the script returns <code>Hello, Ferret</code>.</p>
+<h2 id="pass-parameters">Pass parameters</h2>
+<p>Scripts can also read parameters passed from the CLI. Parameters are available through the <code>@</code> prefix:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">echo &#39;RETURN &#34;Hello, &#34; &#43; @name&#39; &gt; hello.fql</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-7-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-7-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">echo &#39;RETURN &#34;Hello, &#34; &#43; @name&#39; &gt; hello.fql</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-7-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-7-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Run it with a parameter:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-8-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run hello.fql --param name=Steve</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-8-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-8-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run hello.fql --param name=Steve</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-8-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-8-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>In this example, <code>@name</code> reads the <code>name</code> parameter passed from the CLI.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/language/">
         <span class="docs-card-kicker">Learn</span>
@@ -2944,6 +3086,7 @@ Use browser mode when the page depends on JavaScript, client-side rendering, del
     <li><a href="#query-html">Query HTML</a></li>
     <li><a href="#drive-a-browser">Drive a browser</a></li>
     <li><a href="#save-a-script">Save a script</a></li>
+    <li><a href="#pass-parameters">Pass parameters</a></li>
     <li><a href="#where-to-go-next">Where to go next</a></li>
   </ul>
 </nav>
