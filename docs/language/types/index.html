@@ -737,6 +737,37 @@
 
 
 
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/language/control-flow/" class="docs-nav-link">
+                Control Flow
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <li class="docs-nav-item docs-nav-depth-1">
         
             <a href="https://ferretlang.org/docs/language/parameters/" class="docs-nav-link">
@@ -1377,11 +1408,11 @@ RETURN user.name</div>
                             <button id="code-editor-2-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org&#34;)
+                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
 
 RETURN {
-    title: doc.title,
-    url: doc.url
+    title: page.title,
+    url: page.url
 }</div>
                 </div>
 
@@ -1798,7 +1829,7 @@ RETURN {
     </script>
 </div>
 
-<p>Here, <code>doc</code> is not a plain object constructed by the script. It is a host value returned by <code>DOCUMENT(...)</code>, and it may represent an HTML document, a remote resource, or something else entirely depending on the runtime. From the script author&rsquo;s perspective, it is still a value: it can be assigned to a variable, passed to functions, and accessed through the operations it supports — such as the <code>title</code> and <code>url</code> properties read above.</p>
+<p>Here, <code>page</code> is not a plain object constructed by the script. It is a host value returned by <code>WEB::HTML::OPEN(...)</code>, and it may represent an HTML page, a remote resource, or something else entirely depending on the runtime. From the script author&rsquo;s perspective, it is still a value: it can be assigned to a variable, passed to functions, and accessed through the operations it supports — such as the <code>title</code> and <code>url</code> properties read above.</p>
 <p>This extensibility is central to Ferret&rsquo;s design. Rather than adding a separate built-in type for every external system — browsers, APIs, databases, files, test harnesses — Ferret allows host environments to introduce their own value types that integrate naturally with the rest of the language. A host value participates in the same expressions, assignments, and function calls as any basic value.</p>
 <p>Host values are explained in <a href="https://ferretlang.org/docs/language/types/host/">Host Values</a>.</p>
 <h2 id="capabilities">Capabilities</h2>
@@ -2016,10 +2047,10 @@ RETURN {
     </a><a class="docs-card" href="/docs/language/types/host/">
         <span class="docs-card-kicker">Learn</span>
         <strong>Host Values</strong>
-        <span>Understand values provided by modules, runtimes, and embedded hosts, such as database connections, browser pages, files, and other external resources.</span>
+        <span>Values from modules, runtimes, and hosts: connections, pages, files, and more.</span>
     </a><a class="docs-card" href="/docs/language/types/capabilities/">
         <span class="docs-card-kicker">Learn</span>
-        <strong>Value Capabilities</strong>
+        <strong>Capability Types</strong>
         <span>Learn how values expose behavior such as property access, iteration, querying, dispatch, and serialization.</span>
     </a><a class="docs-card" href="/docs/language/types/ordering/">
         <span class="docs-card-kicker">Learn</span>
@@ -2029,6 +2060,10 @@ RETURN {
         <span class="docs-card-kicker">Learn</span>
         <strong>Value Serialization</strong>
         <span>Learn how values are serialized and deserialized, including JSON and binary formats.</span>
+    </a><a class="docs-card" href="/docs/language/control-flow/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Control Flow</strong>
+        <span>Control the flow of your script with conditional statements, loops, and subqueries.</span>
     </a>
 </div>
 
@@ -2156,7 +2191,7 @@ RETURN {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
     
-    <script src="https://ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
+    <script src="https://ferretlang.org/js/ace-mode-fql.min.5b295e6c5bb782d024d51ec24bd4e9bf9af61c16909b74461542dfde5a6e062f.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"

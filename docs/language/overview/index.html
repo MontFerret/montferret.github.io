@@ -578,6 +578,37 @@
 
 
 
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/language/control-flow/" class="docs-nav-link">
+                Control Flow
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <li class="docs-nav-item docs-nav-depth-1">
         
             <a href="https://ferretlang.org/docs/language/parameters/" class="docs-nav-link">
@@ -2600,9 +2631,9 @@ FOR user IN users
                             <button id="code-editor-5-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-5-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org/scenarios/ecommerce/products/&#34;)
+                    <div id="code-editor-5-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org/scenarios/ecommerce/products/&#34;)
 
-FOR item IN doc[~ css`.product-card`]
+FOR item IN page[~ css`.product-card`]
     FILTER item.attributes[&#34;data-in-stock&#34;] == &#34;true&#34;
     RETURN {
         title: item[~? css`.product-title`].textContent,
@@ -3026,7 +3057,7 @@ FOR item IN doc[~ css`.product-card`]
 <p>Even when the source is messy, the final result can be structured and clean.</p>
 <h2 id="queries-operate-on-capable-values">Queries operate on capable values</h2>
 <p>FQL&rsquo;s query syntax is not tied to one data type or one library. Instead, querying is capability-based: a value can support one or more query dialects, and FQL can query that value using whichever dialect is appropriate.</p>
-<p>An HTML document might support both CSS and XPath:</p>
+<p>An HTML object might support both CSS and XPath:</p>
 
 
 
@@ -3074,8 +3105,8 @@ FOR item IN doc[~ css`.product-card`]
                             <button id="code-editor-6-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-6-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org/scenarios/ecommerce/products/&#34;)
-LET links = doc[~ css`a[href]`]
+                    <div id="code-editor-6-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org/scenarios/ecommerce/products/&#34;)
+LET links = page[~ css`a[href]`]
 
 RETURN links</div>
                 </div>
@@ -4026,10 +4057,10 @@ RETURN db[~ sql`SELECT id, name FROM users`]</div>
                             <button id="code-editor-8-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-8-text" class="code-editor-text" data-auto-height="true">LET doc = DOCUMENT(&#34;https://mockery.ferretlang.org/scenarios/network/delayed-requests/&#34;, { driver: &#34;cdp&#34; })
-RETURN WAITFOR VALUE doc[~ css`.network-result-card p`]
+                    <div id="code-editor-8-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org/scenarios/network/delayed-requests/&#34;, { driver: &#34;cdp&#34; })
+
+RETURN WAITFOR VALUE page[~ css`.network-result-card p`]
     TIMEOUT 5s
-    EVERY 250ms
     ON TIMEOUT RETURN false</div>
                 </div>
 
@@ -4925,7 +4956,7 @@ roles:
 <div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/language/script-structure/">
         <span class="docs-card-kicker">Learn</span>
         <strong>Script structure</strong>
-        <span>Learn about the structure of Ferret scripts.</span>
+        <span>How a Ferret script is organized, top to bottom.</span>
     </a><a class="docs-card" href="/docs/language/types/">
         <span class="docs-card-kicker">Learn</span>
         <strong>Values and Types</strong>
@@ -4933,11 +4964,11 @@ roles:
     </a><a class="docs-card" href="/docs/language/variables/">
         <span class="docs-card-kicker">Learn</span>
         <strong>Variables</strong>
-        <span>Learn about variables, the main building block of FQL.</span>
+        <span>Name a value once and reuse it throughout your script.</span>
     </a><a class="docs-card" href="/docs/language/expressions/">
         <span class="docs-card-kicker">Learn</span>
         <strong>Expressions</strong>
-        <span>Learn about expressions, the main building block of FQL.</span>
+        <span>Build values from literals, operators, and function calls.</span>
     </a>
 </div>
 
@@ -5066,7 +5097,7 @@ roles:
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
         integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
     
-    <script src="https://ferretlang.org/js/ace-mode-fql.min.eb4be7e4b6b008ff50cc1a2b5065ab87a8500a0e691da7d53c3ac65c78a0252d.js"></script>
+    <script src="https://ferretlang.org/js/ace-mode-fql.min.5b295e6c5bb782d024d51ec24bd4e9bf9af61c16909b74461542dfde5a6e062f.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
         integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
