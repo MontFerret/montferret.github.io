@@ -3,18 +3,20 @@ title: "Control Flow"
 sidebarTitle: "Control Flow"
 weight: 90
 draft: false
-description: "How FQL decides whether, how often, and in what order expressions are evaluated: MATCH, FOR, subqueries, QUERY, DISPATCH, and WAITFOR."
+description: "How FQL controls evaluation through branching, iteration, subqueries, queries, dispatch, and waiting."
 ---
 
 # Control Flow
 
-Most FQL code runs in a straight line: every expression is evaluated once, in the order it is written. Control flow is what changes that. These constructs decide **whether** an expression is evaluated, **how often** it is evaluated, and **in what order** — or at what moment — evaluation happens.
+Control flow describes how an FQL script determines which expressions are evaluated, how many times they are evaluated, and when evaluation proceeds.
 
-FQL is expression-oriented, so most control-flow constructs are themselves expressions: they produce a value that can be returned, assigned, or nested inside another expression.
+Most FQL code is evaluated in the order it is written. Control-flow constructs change that linear execution model by introducing branching, iteration, delegation to host values, or suspension until a condition is met.
 
-## Whether: choosing a value
+FQL is expression-oriented, so most control-flow constructs produce values. Their results can be returned, assigned to variables, passed to functions, or composed with other expressions.
 
-A `MATCH` expression selects one of several branches based on a value or a set of conditions, and evaluates only the branch it chooses.
+## Branching with `MATCH`
+
+A `MATCH` expression selects one branch from a set of alternatives. Only the selected branch is evaluated.
 
 {{< code lang="fql" >}}
 MATCH status (
@@ -24,38 +26,50 @@ MATCH status (
 )
 {{</ code >}}
 
+Use `MATCH` when a value should be derived from a known set of cases or conditions.
+
 See [Match Expressions]({{< ref "match" >}}).
 
-## How often: iterating and composing
+## Iteration with `FOR`
 
-A `FOR` loop evaluates its body once per item in a source collection. It is the primary way to repeat work in FQL.
+A `FOR` expression evaluates its body once for each item in a source collection. It is the primary construct for iterating over arrays, query results, and other iterable values.
 
 {{< code lang="fql" >}}
 FOR n IN [1, 2, 3]
     RETURN n * 2
 {{</ code >}}
 
-A subquery wraps a `FOR` block in parentheses so its result becomes a value you can assign, return, or pass to a function.
+The result of a `FOR` expression is the collection of values returned by its body.
+
+See [For Loops]({{< ref "for" >}}).
+
+## Composition with subqueries
+
+A subquery wraps a `FOR` expression in parentheses, allowing its result to be used as a regular value.
 
 {{< code lang="fql" >}}
 LET doubled = (FOR n IN [1, 2, 3] RETURN n * 2)
 {{</ code >}}
 
-See [For Loops]({{< ref "for" >}}) and [Subquery Expressions]({{< ref "subqueries" >}}).
+Subqueries are useful when an intermediate collection needs to be assigned, returned, passed to a function, or embedded inside another expression.
 
-## Delegating: running queries through host values
+See [Subquery Expressions]({{< ref "subqueries" >}}).
 
-A `QUERY` expression hands a query — written in another dialect such as CSS — to a value that knows how to run it, and returns the results.
+## Delegation with `QUERY`
+
+A `QUERY` expression delegates query execution to a value that supports a query capability. The query itself may use another language or selector syntax, such as CSS.
 
 {{< code lang="fql" >}}
 QUERY `.product .title` IN doc USING css
 {{</ code >}}
 
+The runtime does not interpret the query payload directly. Instead, it passes the query to the target value and returns the result produced by that value.
+
 See [Query Expressions]({{< ref "query" >}}).
 
-## In what order: events and conditions
+## Coordination with `DISPATCH` and `WAITFOR`
 
-`DISPATCH` emits an event to a value, and `WAITFOR` suspends evaluation until an event arrives or a condition becomes true. Together they coordinate a query with the outside world.
+`DISPATCH` sends an event or action to a target value. `WAITFOR` suspends evaluation until an event is observed, a value becomes available, or a condition becomes true.
 
 {{< code lang="fql" >}}
 button <- "click"
@@ -63,15 +77,21 @@ button <- "click"
 WAITFOR EVENT "navigation" IN page TIMEOUT 5s
 {{</ code >}}
 
+These constructs are commonly used when FQL interacts with external systems, such as browser pages, dynamic documents, or event-driven runtimes.
+
 See [Dispatch Expressions]({{< ref "dispatch" >}}) and [Waitfor Expressions]({{< ref "waitfor" >}}).
 
 ## Language constructs and host capabilities
 
-`MATCH`, `FOR`, and subqueries are pure language constructs. They are always available and depend only on the values you give them.
+Some control-flow constructs are part of the language itself. `MATCH`, `FOR`, and subqueries are always available and operate on ordinary FQL values.
 
-`QUERY`, `DISPATCH`, and `WAITFOR EVENT` depend on **host capabilities**. They work only when the value they act on supports the matching behavior — a queryable document, a dispatchable target, or an observable event source provided by a module or runtime. `WAITFOR`'s condition (predicate) mode is the exception: it polls an ordinary expression and needs no special capability.
+Other constructs depend on host capabilities. `QUERY`, `DISPATCH`, and `WAITFOR EVENT` require the target value to provide the corresponding runtime behavior. For example, a document may support querying, a browser element may support dispatching events, and a page may support observing navigation or network events.
 
-When a value does not support the required capability, the query fails at runtime. See [Value Capabilities]({{% ref "../types/capabilities" %}}) and [Host Values]({{% ref "../types/host" %}}).
+`WAITFOR` condition mode is different: it evaluates an ordinary expression repeatedly until the condition succeeds or the timeout is reached. It does not require the target value to provide an event capability.
+
+If a value does not support the capability required by a control-flow construct, evaluation fails at runtime.
+
+See [Value Capabilities]({{% ref "../types/capabilities" %}}) and [Host Values]({{% ref "../types/host" %}}).
 
 ## Where to go next
 
