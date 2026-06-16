@@ -531,21 +531,18 @@ Ferret can be used as a command-line tool, embedded into Go applications, extend
 Instead of writing large amounts of imperative glue code, Ferret lets you describe the shape of the data you want and the operations needed to get it.
 A Ferret program can query a document, interact with a browser-backed value, transform arrays and objects, call host-provided functions, and return structured data that can be consumed by another system.
 Ferret is not limited to HTML scraping.</p>
-<p>The web is one important use case, but the language is designed around a broader idea: values expose capabilities, and the runtime uses those capabilities to decide what operations are available.
-That means the same language can work with different kinds of inputs, as long as those inputs provide the capabilities the script needs.</p>
+<p>The web is one important use case, but the language is designed around a broader idea: values can support different operations depending on what they represent.</p>
+<p>Structured data can be filtered, mapped, and transformed. A document can be queried. A browser-backed element can be queried and can receive dispatched events.</p>
+<p>The runtime uses these distinctions — called capabilities — to decide what a script can do with a given value. The same language can work across different inputs as long as those inputs provide the capabilities the script needs.</p>
 <h2 id="what-you-can-build-with-ferret">What you can build with Ferret</h2>
 <p>Ferret can be used for many kinds of targeted data workflows:</p>
 <ul>
-<li>extracting structured data from websites</li>
-<li>querying HTML, JSON, XML, CSV, and other document-like data</li>
-<li>automating browser-driven workflows</li>
-<li>waiting for dynamic content, events, or changing values</li>
-<li>normalizing external data into predictable structures</li>
-<li>embedding user-defined extraction rules into Go applications</li>
+<li>extracting structured data from websites, documents, and APIs</li>
+<li>automating browser-driven workflows, including dynamic content and event-based waits</li>
+<li>normalizing and transforming external data into predictable structures</li>
+<li>embedding user-defined extraction logic into Go applications</li>
 <li>evaluating filters, mappings, and expressions in configuration-driven systems</li>
-<li>testing API responses, HTML pages, and browser-driven user interfaces</li>
-<li>validating that external systems return expected structured data</li>
-<li>writing repeatable workflow checks for dynamic pages or application states</li>
+<li>testing and validating APIs, HTML pages, and browser-driven interfaces</li>
 <li>and more!</li>
 </ul>
 <p>Ferret can power scraping and data collection workflows, including workflows that collect unstructured data. Its main focus, however, is not raw scale for its own sake. Ferret is designed to make extraction logic explicit, repeatable, testable, and easy to embed into developer workflows.</p>
@@ -555,9 +552,9 @@ That means the same language can work with different kinds of inputs, as long as
 <li>load or receive some input</li>
 <li>query the input</li>
 <li>transform the result</li>
-<li>return structured data
-For example, a script might query product cards from a document and return a normalized list of objects:</li>
+<li>return structured data</li>
 </ol>
+<p>For example, a script might query product cards from a document and return a normalized list of objects:</p>
 
 
 
@@ -567,7 +564,7 @@ For example, a script might query product cards from a document and return a nor
 
 
 
-<div class="code-editor is-readonly">
+<div class="code-editor is-readonly is-auto-height">
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -579,13 +576,14 @@ For example, a script might query product cards from a document and return a nor
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" style="height: 160px;">LET products = doc[~ css`.product-card`]
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET products = doc[~ css`.product-card`]
+
 FOR product IN products
-RETURN {
-name: product[~ css`.product-title`],
-price: product[~ css`.price`],
-url: product[~ css`a`]
-}</div>
+    RETURN {
+        name: product[~ css`.product-title`],
+        price: product[~ css`.price`],
+        url: product[~ css`a`]
+    }</div>
         </div>
     </div>
 
@@ -603,11 +601,23 @@ url: product[~ css`a`]
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
         }, false);
     </script>
 </div>
 
-<p>The exact source of doc depends on how Ferret is being used. It may come from a browser driver, a document loader, an embedded Go application, a test runner, or another runtime integration.</p>
+<p>The exact source of <code>doc</code> depends on how Ferret is being used. It may come from a browser driver, a document loader, an embedded Go application, a test runner, or another runtime integration.</p>
 <p>The important idea is that the script focuses on the extraction logic, while the host environment provides the values, functions, modules, and capabilities available at runtime.</p>
 <h2 id="the-core-mental-model">The core mental model</h2>
 <p>Ferret has a few core concepts that appear throughout the documentation.</p>
@@ -643,19 +653,9 @@ url: product[~ css`a`]
 <p>In this mode, the host application provides input values, parameters, functions, modules, and runtime capabilities. Ferret provides the execution engine and the language used to describe the logic.</p>
 <p>This is useful when extraction or transformation logic needs to be configurable, versioned, or provided outside the main application code.</p>
 <h3 id="as-an-expression-engine">As an expression engine</h3>
-<p>Ferret can also be used as a small DSL for configuration-driven applications.</p>
-<p>Instead of hard-coding every filter, rule, mapping, or transformation in Go, an application can evaluate Ferret expressions or scripts at runtime.</p>
-<p>This is useful for systems that need user-defined or configuration-defined behavior, such as:</p>
-<ul>
-<li>filtering records</li>
-<li>mapping external data into internal structures</li>
-<li>defining extraction rules</li>
-<li>evaluating lightweight business rules</li>
-<li>transforming API responses</li>
-<li>configuring pipeline steps</li>
-<li>describing application-specific automation logic</li>
-</ul>
-<p>In this mode, the host application remains in control. It decides which functions are available, which values are passed into the script, which modules are loaded, and which capabilities the script can use.</p>
+<p>Ferret can also be used as a small DSL inside configuration-driven applications. The host application evaluates Ferret expressions or scripts at runtime instead of hard-coding every filter, mapping, or transformation in Go.</p>
+<p>This is useful when extraction rules, pipeline steps, validation checks, or automation logic need to be user-defined, versioned separately, or changed without redeploying the application.</p>
+<p>The host application remains in control: it decides which functions are available, which values are passed into the script, which modules are loaded, and which capabilities the script can use.</p>
 <h3 id="as-part-of-a-larger-workflow">As part of a larger workflow</h3>
 <p>Ferret can also be used as one piece of a larger system.</p>
 <p>For example, Ferret can extract and shape data, while another system handles storage, analytics, machine learning, reporting, or orchestration.</p>
@@ -669,14 +669,14 @@ url: product[~ css`a`]
 <p>Ferret is more than a single executable.</p>
 <p>The ecosystem includes:</p>
 <ul>
-<li>the Ferret language and runtime</li>
-<li>the Ferret CLI</li>
-<li>standard library functions</li>
-<li>optional modules and drivers</li>
-<li>embedding APIs for Go applications</li>
+<li>the Ferret language, runtime, and standard library</li>
+<li>the Ferret CLI for running, formatting, and debugging scripts</li>
+<li>optional modules and drivers for additional functions, data formats, and integrations</li>
+<li>embedding APIs for Go applications that need to control what scripts can see and do</li>
 <li>Lab, a test runner for Ferret scripts</li>
-<li>Mockery, a safe fake website for demos, examples, and driver testing</li>
+<li>Mockery, a safe fake website used in examples, demos, and driver testing</li>
 </ul>
+<p>A Ferret daemon is also in development to provide editor integration through the Language Server Protocol, including syntax highlighting, autocomplete, and debugging support.</p>
 <p>These pieces are designed to work together while keeping the core language and runtime small.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <p>If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.</p>
