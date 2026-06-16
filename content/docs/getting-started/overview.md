@@ -53,18 +53,19 @@ A Ferret script usually follows a simple pattern:
 
 For example, a script might query product cards from a document and return a normalized list of objects:
 
-{{< code lang="fql" >}}
-LET products = doc[~ css`.product-card`]
+{{< editor lang="fql" readonly="true" params="false" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+LET products = page[~ css`.product-card`]
 
 FOR product IN products
     RETURN {
         name: product[~ css`.product-title`],
-        price: product[~ css`.price`],
-        url: product[~ css`a`]
+        price: product[~ css`.product-price`],
+        url: product[~ css`:attr("href", .product-link)`]
     }
-{{</ code >}}
+{{</ editor >}}
 
-The exact source of `doc` depends on how Ferret is being used. It may come from a browser driver, a document loader, an embedded Go application, a test runner, or another runtime integration.
+The exact source of `page` depends on how Ferret is being used. It may come from a browser driver, a document loader, an embedded Go application, a test runner, or another runtime integration.
 
 The important idea is that the script focuses on the extraction logic, while the host environment provides the values, functions, modules, and capabilities available at runtime.
 

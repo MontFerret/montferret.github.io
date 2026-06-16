@@ -21,6 +21,16 @@ Ferret can be used in two main ways:
 
 The official CLI includes the standard modules needed for common web extraction workflows. When embedding Ferret as a library, HTML and browser support are added explicitly by registering the relevant modules.
 
+> **Alpha status**
+>
+> Ferret v2 is currently in alpha. It is ready for experimentation, feedback, prototypes, internal tools, and early integration work, but the language, runtime, CLI, modules, and embedding APIs may still change before beta.
+>
+> Pin CLI and Go module versions when using Ferret in scripts, CI, or embedded applications.
+
+> **Looking for Ferret v1?**
+>
+> Ferret v1 remains available for existing projects, but new users should start with Ferret v2. See the migration guide for differences between v1 and v2.
+
 ## Install the CLI
 
 The Ferret CLI is the easiest way to run Ferret from your terminal.
@@ -31,93 +41,49 @@ Download the latest release for your platform from the GitHub releases page:
 
 https://github.com/MontFerret/cli/releases
 
-After downloading the binary, make sure it is available in your PATH.
+After downloading the binary, make sure it is available in your `PATH`.
 
 You can verify the installation with:
 
-{{< tabs >}}
-{{< tab title="v2" >}}
 {{< terminal >}}
 ferret version
 {{< /terminal >}}
-{{< /tab >}}
-{{< tab title="v1" >}}
-{{< terminal >}}
-ferret --version
-{{< /terminal >}}
-{{< /tab >}}
-{{< /tabs >}}
-
 
 ### Using the install script
 
 You can also install the CLI with the provided shell script:
-{{< tabs >}}
 
-{{< tab title="v2" >}}
 {{< terminal >}}
 curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh
 {{< /terminal >}}
-{{< /tab >}}
-{{< tab title="v1" >}}
-{{< terminal >}}
-curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -v {{< data "versions.cli.v1" >}} | sh
-{{< /terminal >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 The script detects your platform, downloads the matching binary, and installs it into your PATH.
 
 If you prefer to inspect the script before running it:
 
-{{< tabs >}}
-{{< tab title="v2" >}}
 {{< terminal >}}
 curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh
 less install.sh
 sh install.sh
 {{< /terminal >}}
-{{< /tab >}}
-{{< tab title="v1" >}}
-{{< terminal >}}
-curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh
-less install.sh
-sh install.sh -v {{< data "versions.cli.v1" >}}
-{{< /terminal >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 ### From source
 
-If you already have Go installed, you can build and install the CLI from source:
+If you already have Go installed, you can build and install a specific Ferret CLI version from source.
 
-{{< tabs >}}
-{{< tab title="v2" >}}
+This requires `Go {{< data "versions.go" >}}` or later.
+
 {{< terminal >}}
 go install github.com/MontFerret/cli/v2/ferret@v{{< data "versions.cli.v2" >}}
 {{< /terminal >}}
-{{< /tab >}}
-{{< tab title="v1" >}}
-{{< terminal >}}
-go install github.com/MontFerret/cli/ferret@latest
-{{< /terminal >}}
-{{< /tab >}}
-{{< /tabs >}}
 
-Then verify that the binary is available:
+During the alpha stage, prefer installing a specific tagged version instead of using `@latest`.
 
-{{< tabs >}}
-{{< tab title="v2" >}}
+Verify the installation with:
+
 {{< terminal >}}
 ferret version
 {{< /terminal >}}
-{{< /tab >}}
-{{< tab title="v1" >}}
-{{< terminal >}}
-ferret --version
-{{< /terminal >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 ## Add Ferret to a Go project
 
@@ -125,18 +91,9 @@ Ferret can also be embedded into Go applications.
 
 Add the module to your project with:
 
-{{< tabs >}}
-{{< tab title="v2" >}}
 {{< terminal >}}
 go get github.com/MontFerret/ferret/v2@v{{< data "versions.runtime.v2" >}}
 {{< /terminal >}}
-{{< /tab >}}
-{{< tab title="v1" >}}
-{{< terminal >}}
-go get github.com/MontFerret/ferret@latest
-{{< /terminal >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 This is useful when you want to use Ferret as a data extraction engine inside your own services, workers, tools, or automation pipelines.
 

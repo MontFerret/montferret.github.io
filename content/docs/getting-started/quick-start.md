@@ -24,7 +24,7 @@ ferret run -e 'RETURN 1 + 1'
 {{< /terminal >}}
 {{< /tab >}}
 
-{{< tab title="Browser" >}}
+{{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
 RETURN 1 + 1
 {{< /editor >}}
@@ -57,7 +57,7 @@ RETURN {
 {{< /terminal >}}
 {{< /tab >}}
 
-{{< tab title="Browser" >}}
+{{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
 LET user = {
     name: "Ada",
@@ -84,23 +84,23 @@ Now let’s load a page and query HTML elements from it:
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN doc[~ css`article`]
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+RETURN page[~ css`article`]
 '
 {{< /terminal >}}
 {{< /tab >}}
 
-{{< tab title="Browser" >}}
+{{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN doc[~ css`article`]
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+RETURN page[~ css`article`]
 {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
 
-`DOCUMENT` loads the URL and returns a document value. The expression `doc[~ css'article']` queries that document using the CSS dialect and returns matchingarticleelements.
+`WEB::HTML::OPEN` loads the URL and returns an HTML page value. The expression `page[~ css'article']` queries that page using the CSS dialect and returns matching elements.
 
-The `~` shorthand is Ferret’s compact query form. It is useful when you want to query a value directly without writing the longer `QUERY ... IN ... USING ...` form.  
+The `~` operator is FQL’s shorthand query operator. The full query syntax is covered later in the language reference.
 
 HTML support is available in the CLI. When embedding Ferret in a Go application, HTML querying is provided through a module.  
 
@@ -112,40 +112,52 @@ Some pages need JavaScript to render their content. For those cases, Ferret can 
 {{< tab title="Terminal" >}} 
 {{< terminal command="true" >}}
 ferret run -e '
-LET page = DOCUMENT("https://mockery.ferretlang.org", { driver: "cdp" })
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 RETURN page.title
 '
 {{< /terminal >}}
 {{< /tab >}}
-{{< tab title="Browser" >}}
+{{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = DOCUMENT("https://mockery.ferretlang.org", { driver: "cdp" }) 
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" }) 
 RETURN page.title {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
 
 This example uses the `cdp` driver, which talks to a browser through the Chrome DevTools Protocol.  
-Use browser mode when the page depends on JavaScript, client-side rendering, delayed content, user interaction, or browser APIs. 
+Use the `cdp` driver when the page depends on JavaScript, client-side rendering, delayed content, user interaction, or browser APIs. 
 
 For static HTML pages, the non-browser mode is usually simpler and faster.  
 
-## Save a script  
+## Save a script
 
 For anything longer than a small example, save the script to a `.fql` file:
 
 {{< terminal command="true" >}}
-echo 'LET name = @name ?: "Ferret" RETURN "Hello, " + name' > hello.fql 
+echo 'RETURN "Hello, Ferret"' > hello.fql
 {{< /terminal >}}
 
-Then run it with a parameter:
+Then run it:
+
+{{< terminal command="true" >}}
+ferret run hello.fql
+{{< /terminal >}}
+
+## Pass parameters
+
+Scripts can also read parameters passed from the CLI. Parameters are available through the `@` prefix:
+
+{{< terminal command="true" >}}
+echo 'RETURN "Hello, " + @name' > hello.fql
+{{< /terminal >}}
+
+Run it with a parameter:
 
 {{< terminal command="true" >}}
 ferret run hello.fql --param name=Steve
 {{< /terminal >}}
 
-Parameters are available through the `@` prefix. In this example, `@name` reads the name parameter passed from the CLI.
-
-The `?:` operator provides a fallback value. If name is not passed, the script returns `Hello, Ferret`.
+In this example, `@name` reads the `name` parameter passed from the CLI.
 
 ## Where to go next
 
