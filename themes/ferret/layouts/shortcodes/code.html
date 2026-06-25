@@ -10,16 +10,21 @@
 {{ $height := default "auto" ( .Get "height" )}}
 {{ $isAutoHeight := eq (lower $height) "auto" }}
 {{ $autoHeightClass := cond $isAutoHeight " is-auto-height" "" }}
-{{ $copyable := default "false" ( .Get "copy" ) }}
+{{ $copyable := default "true" ( .Get "copy" ) }}
 {{ $isCopyable := eq (lower $copyable) "true" }}
 {{ $width := default "100%" ( .Get "height" ) }}
 {{ $source := trim .Inner "\n" }}
 {{ $name := default "example" ( .Get "name" )}}
+{{ $mode := $lang }}
 
 <div class="code-editor is-readonly{{ $autoHeightClass }}">
     {{- if $isCopyable }}
     <textarea id="{{ $id }}-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
     {{- end }}
+
+    {{- if eq $lang "go" -}}
+    {{- $mode = "golang" -}}
+    {{- end -}}
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -47,7 +52,7 @@
             const editor = ace.edit('{{ $id }}-text');
             editor.setTheme("{{ hugo.Data.repl.theme }}");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + '{{ $lang }}');
+            editor.session.setMode("ace/mode/" + '{{ $mode }}');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
