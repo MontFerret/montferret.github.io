@@ -67,10 +67,10 @@ The HTML module registers two drivers:
 
 Use `driver: "cdp"` when a script needs browser rendering or browser interaction:
 
-```fql
-LET page = DOCUMENT("https://example.com", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://ferretlang.org", { driver: "cdp" })
 RETURN page.title
-```
+{{< /editor >}}
 
 ## Runtime boundaries
 
