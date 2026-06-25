@@ -5,7 +5,6 @@ type: "docs"
 draft: false
 description: "Reference entries for Ferret query statements."
 aliases:
-  - /docs/language/control-flow/
   - /docs/fql/operators/high-level/
 ---
 
