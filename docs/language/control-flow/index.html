@@ -774,6 +774,37 @@
 
 
                 
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/language/control-flow/error-handling/" class="docs-nav-link">
+                Error Handling
+            </a>
+        
+
+        
+    </li>
+
+
+                
             </ul>
         
     </li>
@@ -1195,6 +1226,67 @@ WAITFOR EVENT &#34;navigation&#34; IN page TIMEOUT 5s</div>
 
 <p>These constructs are commonly used when FQL interacts with external systems, such as browser pages, dynamic documents, or event-driven runtimes.</p>
 <p>See <a href="https://ferretlang.org/docs/language/control-flow/dispatch/">Dispatch Expressions</a> and <a href="https://ferretlang.org/docs/language/control-flow/waitfor/">Waitfor Expressions</a>.</p>
+<h2 id="recovering-from-errors">Recovering from errors</h2>
+<p>A recovery tail attaches to an expression and tells the runtime what to do when it fails — return a fallback value, retry the operation, or propagate the error explicitly. The optional chaining operator (<code>?.</code>) handles the common case of accessing a member on a value that may be <code>NONE</code>.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">LET title = QUERY ONE `.title` IN doc ON ERROR RETURN &#34;untitled&#34;
+
+LET name = user?.name</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Recovery tails work on function calls, <code>QUERY</code>, <code>DISPATCH</code>, <code>WAITFOR</code>, and grouped expressions. <code>WAITFOR</code> additionally supports <code>ON TIMEOUT</code> for timeout-specific recovery.</p>
+<p>See <a href="https://ferretlang.org/docs/language/control-flow/error-handling/">Error Handling</a>.</p>
 <h2 id="language-constructs-and-host-capabilities">Language constructs and host capabilities</h2>
 <p>Some control-flow constructs are part of the language itself. <code>MATCH</code>, <code>FOR</code>, and subqueries are always available and operate on ordinary FQL values.</p>
 <p>Other constructs depend on host capabilities. <code>QUERY</code>, <code>DISPATCH</code>, and <code>WAITFOR EVENT</code> require the target value to provide the corresponding runtime behavior. For example, a document may support querying, a browser element may support dispatching events, and a page may support observing navigation or network events.</p>
@@ -1226,6 +1318,10 @@ WAITFOR EVENT &#34;navigation&#34; IN page TIMEOUT 5s</div>
         <span class="docs-card-kicker">Learn</span>
         <strong>Waitfor Expressions</strong>
         <span>Suspend evaluation until a condition becomes true or an event arrives.</span>
+    </a><a class="docs-card" href="/docs/language/control-flow/error-handling/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>Error Handling</strong>
+        <span>Recover from runtime failures with recovery tails and optional chaining.</span>
     </a>
 </div>
 
@@ -1243,6 +1339,7 @@ WAITFOR EVENT &#34;navigation&#34; IN page TIMEOUT 5s</div>
     <li><a href="#composition-with-subqueries">Composition with subqueries</a></li>
     <li><a href="#delegation-with-query">Delegation with <code>QUERY</code></a></li>
     <li><a href="#coordination-with-dispatch-and-waitfor">Coordination with <code>DISPATCH</code> and <code>WAITFOR</code></a></li>
+    <li><a href="#recovering-from-errors">Recovering from errors</a></li>
     <li><a href="#language-constructs-and-host-capabilities">Language constructs and host capabilities</a></li>
     <li><a href="#where-to-go-next">Where to go next</a></li>
   </ul>
