@@ -12,16 +12,16 @@ Custom functions let the host application expose Go logic to FQL scripts. Functi
 
 ## Registering functions
 
-The most direct way to add functions is `WithFunctionsRegistrar`. The callback receives a `runtime.FunctionDefs` builder where you register functions by arity:
+The most direct way to add functions is `WithFunctionsRegistrar`. The callback receives a `runtime.Namespace` where you register functions by arity:
 
 {{< code lang="go" >}}
 engine, err := ferret.New(
-    ferret.WithFunctionsRegistrar(func(fns runtime.FunctionDefs) {
-        fns.A0().Add("NOW_UNIX", func(ctx context.Context) (runtime.Value, error) {
+    ferret.WithFunctionsRegistrar(func(ns runtime.Namespace) {
+        ns.Function().A0().Add("NOW_UNIX", func(ctx context.Context) (runtime.Value, error) {
             return runtime.NewInt(int(time.Now().Unix())), nil
         })
 
-        fns.A1().Add("DOUBLE", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
+        ns.Function().A1().Add("DOUBLE", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
             n, err := runtime.CastArg[runtime.Int](arg, 0)
             if err != nil {
                 return nil, err
@@ -56,9 +56,7 @@ Fixed-arity functions (`A0` through `A4`) automatically validate the argument co
 
 ## Namespaces
 
-Functions can be organized into namespaces. In FQL, namespaced functions are called as `NAMESPACE::FUNCTION_NAME`.
-
-Use `WithNamespace` with the library builder:
+Use `WithNamespace` with a library builder to create a named group of functions:
 
 {{< code lang="go" >}}
 lib := runtime.NewLibrary()
@@ -226,3 +224,7 @@ func main() {
     // {"joined":"abc","titled":"Hello World","wrapped":"**content**"}
 }
 {{</ code >}}
+
+## Next steps
+
+{{< docs-related tiles="embedding-parameters,embedding-configuration,embedding-modules" >}}

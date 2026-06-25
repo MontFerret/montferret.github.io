@@ -224,3 +224,7 @@ engine, err := ferret.New(
 | Basic | `compiler.O1` | Basic optimizations (default) |
 
 Debug compilation (`engine.CompileDebug`) always uses `O0` to ensure stable source-level debugging metadata.
+
+## Next steps
+
+{{< docs-related tiles="embedding-modules" >}}

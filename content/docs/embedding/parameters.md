@@ -189,3 +189,7 @@ func main() {
 {{</ code >}}
 
 The `greeting` parameter is set at the engine level but overridden per session for Bob and Carol. The `punctuation` parameter uses the engine default for all sessions.
+
+## Next steps
+
+{{< docs-related tiles="language-parameters,embedding-configuration,embedding-modules" >}}
