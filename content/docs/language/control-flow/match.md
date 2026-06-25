@@ -8,7 +8,7 @@ description: "Select a value by matching against patterns or conditions with the
 
 # Match Expressions
 
-A `MATCH` expression chooses a result from several branches. Each branch, called an *arm*, pairs a pattern or a condition with a result expression after `=>`. `MATCH` tries the arms from top to bottom, stops at the first one that applies, and produces its result.
+A `MATCH` expression chooses a result from several branches. Each branch, called an **arm**, pairs a pattern or a condition with a result expression after `=>`. `MATCH` tries the arms from top to bottom, stops at the first one that applies, and produces its result.
 
 `MATCH` is an expression: it produces a value, so it can be returned, assigned, or nested inside another expression.
 

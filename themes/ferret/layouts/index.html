@@ -47,16 +47,16 @@
                                         <div id="hero-query-browser" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
 LET page = WEB::HTML::OPEN(@page, { driver: "cdp" })
 
-LET products = WAITFOR VALUE page[~ css`.product-card`]
+LET products = WAITFOR VALUE page[~ `.product-card`]
     WHEN LENGTH(.) > 0
     TIMEOUT 5000
     ON TIMEOUT RETURN []
 
 FOR product IN products
     RETURN {
-        brand: product[~? css`.product-brand`].textContent,
-        title: product[~? css`.product-title`].textContent,
-        price: product[~? css`.product-price`].textContent,
+        brand: product[~? `.product-brand`].textContent,
+        title: product[~? `.product-title`].textContent,
+        price: product[~? `.product-price`].textContent,
     }
                                         </div>
                                     </div>
