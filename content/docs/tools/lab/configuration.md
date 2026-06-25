@@ -65,6 +65,8 @@ lab serve --static ./dist@app --mock ./users.yaml@api
 
 Standalone service entries must use `--static` or `--mock`.
 
+For service-specific examples, see [Static File Server]({{< ref "static-serving" >}}) and [Mock API Server]({{< ref "mock-api" >}}).
+
 ## `lab version`
 
 `lab version` prints the Lab version and the selected runtime version.

@@ -1,7 +1,7 @@
 ---
 title: "Playground"
 weight: 40
-draft: false
+draft: true
 description: "Reserved documentation for the Ferret Playground."
 ---
 

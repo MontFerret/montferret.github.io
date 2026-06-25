@@ -32,6 +32,8 @@ The main packages in Lab mirror that flow:
 | Local services | Serve static directories and OpenAPI-backed mock APIs. |
 | Reporters | Print progress and summary output. |
 
+For local service details, see [Static File Server]({{< ref "static-serving" >}}) and [Mock API Server]({{< ref "mock-api" >}}).
+
 ## Test file types
 
 Lab accepts these test files:

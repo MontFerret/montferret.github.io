@@ -58,6 +58,8 @@ For example, if Lab runs on your laptop but the HTTP runtime runs in a container
 
 The same rule applies to Lab local services. If a remote runtime must fetch `@lab.static` or `@lab.mock` URLs, set `--serve-bind` and `--serve-host` so those URLs are reachable from the runtime.
 
+For Lab-owned local service flags, see [Static File Server]({{< ref "static-serving" >}}) and [Mock API Server]({{< ref "mock-api" >}}).
+
 ## CI pattern
 
 A common CI shape is:

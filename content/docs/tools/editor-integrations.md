@@ -1,7 +1,7 @@
 ---
 title: "Editor Integrations"
 weight: 60
-draft: false
+draft: true
 description: "Reserved documentation for Ferret editor and tooling integrations."
 ---
 

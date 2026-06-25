@@ -106,6 +106,8 @@ lab run tests/e2e \
 
 Tests can read `@lab.static.app` and `@lab.mock.api`.
 
+For the full local service syntax, see [Static File Server]({{< ref "static-serving" >}}) and [Mock API Server]({{< ref "mock-api" >}}).
+
 If the selected Ferret runtime runs outside the Lab process, make the fixture services reachable from that runtime:
 
 {{< terminal >}}

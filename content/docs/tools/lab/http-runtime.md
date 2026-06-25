@@ -106,6 +106,8 @@ When tests use `--serve` or `--mock`, Lab starts those services locally and pass
 
 If the HTTP runtime runs outside the Lab host, `127.0.0.1` may point to the runtime host instead of the Lab host. Use `--serve-host` to advertise a host the runtime can reach, and `--serve-bind` when Lab must listen on a non-loopback interface.
 
+For local service entry syntax, see [Static File Server]({{< ref "static-serving" >}}) and [Mock API Server]({{< ref "mock-api" >}}).
+
 {{< terminal >}}
 lab run \
   --runtime=https://ferret.example.com \

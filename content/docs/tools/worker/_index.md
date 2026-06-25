@@ -1,7 +1,7 @@
 ---
 title: "Worker"
 weight: 30
-draft: false
+draft: true
 description: "Reserved documentation for the Ferret Worker service."
 ---
 
