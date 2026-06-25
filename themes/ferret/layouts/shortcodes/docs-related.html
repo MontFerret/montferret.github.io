@@ -1,4 +1,5 @@
 {{- $tilesParam := trim (default "" (.Get "tiles")) " \n\t" -}}
+{{- $useKickerParam := default true (.Get "kicker") -}}
 {{- $catalog := hugo.Data.docs_tiles.tiles -}}
 {{- $defaultOrder := hugo.Data.docs_tiles.order -}}
 {{- $overrides := default dict (.Page.Param "relatedTileOverrides") -}}
@@ -74,8 +75,10 @@
     {{- end -}}
 
     <a class="docs-card" href="{{ $href }}">
+        {{- if eq $useKickerParam true -}}
         {{- with $kicker }}
         <span class="docs-card-kicker">{{ . }}</span>
+        {{- end }}
         {{- end }}
         <strong>{{ $title }}</strong>
         {{- with $description }}
