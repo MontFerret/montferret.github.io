@@ -6,7 +6,7 @@ description: "Type-checking and conversion functions in the Ferret standard libr
 aliases:
   - /docs/stdlib/types/
 menuTitle: 
-menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BOOL,TO_DATETIME,TO_FLOAT,TO_INT,TO_STRING,TYPENAME,]
+menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_LIST,IS_MAP,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BINARY,TO_BOOL,TO_DATETIME,TO_FLOAT,TO_INT,TO_OBJECT,TO_STRING,TYPENAME,]
 ---
 
 
@@ -163,6 +163,44 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
+{{< header href="is_list" >}}
+
+IS_LIST
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_list.go#L12)
+
+IS_LIST checks whether value is a list value. This is an alias for IS_ARRAY.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `Any`  |  | Input value of arbitrary type.
+
+
+**Returns** `Boolean` Returns true if value is list, otherwise false.
+- - - -
+
+
+{{< header href="is_map" >}}
+
+IS_MAP
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_map.go#L12)
+
+IS_MAP checks whether value is a map value. This is an alias for IS_OBJECT.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `Any`  |  | Input value of arbitrary type.
+
+
+**Returns** `Boolean` Returns true if value is map, otherwise false.
+- - - -
+
+
 {{< header href="is_nan" >}}
 
 IS_NAN
@@ -258,6 +296,25 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
+{{< header href="to_binary" >}}
+
+TO_BINARY
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_binary.go#L12)
+
+TO_BINARY takes an input value of any type and converts it into a binary value. The value is first converted to its string representation, then the string bytes are used as the binary content.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `Any`  |  | Input value of arbitrary type.
+
+
+**Returns** `Binary` A binary value.
+- - - -
+
+
 {{< header href="to_bool" >}}
 
 TO_BOOL
@@ -331,6 +388,25 @@ Argument   | Type     | Default value  | Description
 
 
 **Returns** `Int` An integer value.
+- - - -
+
+
+{{< header href="to_object" >}}
+
+TO_OBJECT
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_object.go#L12)
+
+TO_OBJECT converts the given value to an object. The conversion rules depend on the input type.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `Any`  |  | Input value of arbitrary type.
+
+
+**Returns** `Object` The object representation of the given value.
 - - - -
 
 

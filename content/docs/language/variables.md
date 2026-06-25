@@ -151,3 +151,49 @@ FOR n IN numbers
 {{< /editor >}}
 
 In this example, `total` starts at 0 and is updated for each value in numbers.
+
+## Compound assignment
+
+FQL supports compound assignment operators that combine an arithmetic operation with assignment. They are shorthand for updating a `VAR` variable in place:
+
+| Operator | Equivalent |
+| --- | --- |
+| `a += b` | `a = a + b` |
+| `a -= b` | `a = a - b` |
+| `a *= b` | `a = a * b` |
+| `a /= b` | `a = a / b` |
+
+{{< editor lang="fql" >}}
+VAR total = 100
+
+total += 50
+total -= 10
+total *= 2
+
+RETURN total
+{{</ editor >}}
+
+Compound assignment operators can only be used with `VAR` variables. Using them with `LET` bindings is an error.
+
+## DELETE
+
+The `DELETE` statement removes a property from an object or host value.
+
+{{< code lang="fql" >}}
+DELETE target.property
+DELETE target["property"]
+{{</ code >}}
+
+Both dot notation and bracket notation are supported:
+
+{{< editor lang="fql" >}}
+VAR user = { name: "Ada", deprecated: true, role: "admin" }
+
+DELETE user.deprecated
+
+RETURN user
+{{</ editor >}}
+
+Deletion removes the property entirely — it is not the same as assigning `NONE`, which keeps the key present with an absent value.
+
+`DELETE` works with any value that supports the removable capability. Built-in objects support key removal. Host values may support removal if the host runtime provides that capability.

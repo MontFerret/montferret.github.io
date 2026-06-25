@@ -10,16 +10,21 @@ description: "The evaluation order of FQL operators, from lowest to highest prec
 
 The operator precedence in FQL is similar as in other familiar languages (lowest precedence first):
 
+- ``=``, ``+=``, ``-=``, ``*=``, ``/=`` assignment and compound assignment
 - ``? :`` ternary operator
 - ``||`` logical or
 - ``&&`` logical and
 - ``==``, ``!=`` equality and inequality
-- ``IN`` in operator
+- ``IN``, ``NOT IN`` containment
+- ``LIKE``, ``NOT LIKE`` pattern matching
+- ``=~``, ``!~`` regular expression matching
 - ``<``, ``<=``, ``>=``, ``>`` less than, less equal, greater equal, greater than
+- ``..`` range
 - ``+``, ``-`` addition, subtraction
 - ``*``, ``/``, ``%`` multiplication, division, modulus
 - ``!``, ``+``, ``-`` logical negation, unary plus, unary minus
 - ``()`` function call
+- ``?.`` optional chaining
 - ``.`` member access
 - ``[]`` indexed value access
 

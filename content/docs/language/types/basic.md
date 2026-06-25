@@ -10,7 +10,7 @@ aliases:
 
 # Basic types
 
-FQL has seven built-in value types:
+FQL has eight built-in value types:
 
 | Type | Example | Description |
 | --- | --- | --- |
@@ -18,6 +18,7 @@ FQL has seven built-in value types:
 | `bool` | `true`, `false` | Represents a truth value. |
 | `number` | `42`, `3.14` | Represents numeric values, both integer and floating-point. |
 | `string` | `"hello"` | Represents text. |
+| `datetime` | `NOW()` | Represents a point in time. |
 | `array` | `[1, 2, 3]` | Represents an ordered sequence of values. |
 | `object` | `{ name: "Ada" }` | Represents a set of named fields. |
 | `binary` | module-specific | Represents raw bytes. |
@@ -144,6 +145,8 @@ RETURN {
 
 Use explicit conversion functions when a script needs to turn text into a number or a number into text.
 
+FQL internally distinguishes integers and floats. Most arithmetic and comparison operations work the same for both, but the distinction matters when type-checking functions are used. `IS_INT` returns true only for integer values, and `IS_FLOAT` returns true only for floating-point values. Use `TO_INT` or `TO_FLOAT` to convert between the two when needed.
+
 ## Strings
 
 Strings represent text and can be written as quoted literals:
@@ -192,6 +195,28 @@ String comparisons are always case-sensitive.
 {{< editor lang="fql" >}}
 RETURN "Ferret" == "ferret"
 {{</ editor >}}
+
+### Template literals
+
+Template literals are strings delimited by backticks that support embedded expressions. An expression inside `${...}` is evaluated and its result is inserted into the string.
+
+{{< editor lang="fql" >}}
+LET name = "Ferret"
+LET version = 2
+
+RETURN `Hello from ${name} v${version}!`
+{{</ editor >}}
+
+Any FQL expression can appear inside the interpolation:
+
+{{< editor lang="fql" >}}
+LET price = 19.95
+LET quantity = 3
+
+RETURN `Total: ${price * quantity}`
+{{</ editor >}}
+
+Template literals can span multiple lines. Backtick strings are useful when constructing text that includes variable data without calling `CONCAT`.
 
 ## Arrays
 
@@ -337,6 +362,39 @@ RETURN {
 }
 {{</ editor >}}
 
+## DateTime values
+
+DateTime values represent a specific point in time.
+
+They are typically created using standard library functions such as `NOW()`, `DATE()`, or `TO_DATETIME()`:
+
+{{< editor lang="fql" >}}
+LET now = NOW()
+
+RETURN {
+    current: now,
+    year: DATE_YEAR(now),
+    month: DATE_MONTH(now)
+}
+{{</ editor >}}
+
+DateTime values support comparison and arithmetic through standard library functions like `DATE_ADD`, `DATE_SUBTRACT`, `DATE_DIFF`, and `DATE_COMPARE`.
+
+{{< editor lang="fql" >}}
+LET start = DATE(2024, 1, 1)
+LET end = DATE_ADD(start, 30, "day")
+
+RETURN {
+    start: start,
+    end: end,
+    days: DATE_DIFF(start, end, "day")
+}
+{{</ editor >}}
+
+Use `IS_DATETIME` to check whether a value is a datetime, and `TO_DATETIME` to convert a string or number into one.
+
+See [the DateTime standard library functions]({{% ref "docs/standard-library/datetime" %}}) for the full list of available operations.
+
 ## Binary values
 
 Binary values represent raw bytes.
@@ -354,6 +412,37 @@ RETURN file
 <div class="notification is-info">
   Ferret’s default serializer encodes binary values as Base64 strings, so byte-oriented data can be represented safely in text-based output formats.
 </div>  
+
+## Duration literals
+
+Duration literals represent a length of time. They are written as a number followed by a unit suffix:
+
+| Suffix | Unit |
+| --- | --- |
+| `MS` | milliseconds |
+| `S` | seconds |
+| `M` | minutes |
+| `H` | hours |
+| `D` | days |
+
+{{< code lang="fql" >}}
+100MS    // 100 milliseconds
+5S       // 5 seconds
+10M      // 10 minutes
+2H       // 2 hours
+1D       // 1 day
+0.5S     // 500 milliseconds
+{{</ code >}}
+
+Duration literals are used with `TIMEOUT`, `EVERY`, and `DELAY` clauses in `WAITFOR` expressions and error recovery statements.
+
+{{< code lang="fql" >}}
+WAITFOR VALUE loadStatus()
+    TIMEOUT 10S
+    EVERY 100MS
+{{</ code >}}
+
+Duration values are not a separate type — they are converted to a numeric representation at parse time. The unit suffix controls the scale of the value.
 
 ## Type checks
 

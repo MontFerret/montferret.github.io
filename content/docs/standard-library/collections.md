@@ -6,7 +6,7 @@ description: "Collection functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/collections/
 menuTitle: 
-menu: [INCLUDES,LENGTH,REVERSE,]
+menu: [COUNT,COUNT_DISTINCT,INCLUDES,REVERSE,]
 ---
 
 
@@ -31,22 +31,41 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header href="length" >}}
+{{< header href="count" >}}
 
-LENGTH
+COUNT
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/length.go#L14)
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/count.go#L9)
 
-LENGTH returns the length of a measurable value.
+COUNT returns the number of elements in a collection.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
 Argument   | Type     | Default value  | Description
-`value` | `Measurable`  |  | The value to measure.
+`collection` | `Collection`  |  | The collection to count.
 
 
-**Returns** `Int` The length of the value.
+**Returns** `Int` The number of elements in the collection.
+- - - -
+
+
+{{< header href="count_distinct" >}}
+
+COUNT_DISTINCT
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/count_distinct.go#L11)
+
+COUNT_DISTINCT computes the number of distinct elements in the given collection and returns the count as an integer.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`collection` | `Collection`  |  | The collection to count distinct elements in.
+
+
+**Returns** `Int` The number of distinct elements in the collection.
 - - - -
 
 
