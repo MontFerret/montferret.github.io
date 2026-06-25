@@ -435,6 +435,165 @@
 
 
                 
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/" class="docs-nav-link is-ancestor">
+                Worker
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/overview/" class="docs-nav-link">
+                Overview
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/configuration/" class="docs-nav-link">
+                Configuration
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/deployment/" class="docs-nav-link is-active" aria-current="page">
+                Deployment
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/api/" class="docs-nav-link">
+                API
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+                
             </ul>
         
     </li>
@@ -483,13 +642,863 @@
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
     <h1 id="deployment">Deployment</h1>
-<p>This page is reserved for Ferret Worker deployment documentation.</p>
+<p>Worker can run from a Docker image, a release binary, or a local source build. Docker is the usual deployment path when scripts need the CDP browser driver, because the Worker image includes a Chromium runtime.</p>
+<h2 id="run-with-docker">Run with Docker</h2>
+<p>Worker images are published to Docker Hub and GitHub Container Registry.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">docker run --rm -p 8080:8080 montferret/worker:latest</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker run --rm -p 8080:8080 montferret/worker:latest</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-1-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-1-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">docker run --rm -p 8080:8080 ghcr.io/montferret/worker:latest</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-2-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker run --rm -p 8080:8080 ghcr.io/montferret/worker:latest</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-2-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-2-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Pin a release tag for repeatable deployments:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">docker run --rm -p 8080:8080 montferret/worker:v2.0.0-rc.16</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker run --rm -p 8080:8080 montferret/worker:v2.0.0-rc.16</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-3-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-3-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The release image starts Chromium through the image entrypoint and then starts Worker on port <code>8080</code>.</p>
+<h2 id="configure-the-container">Configure the container</h2>
+<p>The image&rsquo;s default command starts Chromium and then starts Worker. Use environment variables for most container configuration:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">docker run --rm -p 8080:8080 \
+  -e LOG_LEVEL=info \
+  -e BODY_LIMIT=10M \
+  -e REQUEST_LIMIT=10 \
+  montferret/worker:latest</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-4-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker run --rm -p 8080:8080 \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -e LOG_LEVEL=info \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -e BODY_LIMIT=10M \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -e REQUEST_LIMIT=10 \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  montferret/worker:latest</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-4-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-4-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>If you need to pass flags instead, keep the Chromium startup command:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">docker run --rm -p 8080:8080 montferret/worker:latest \
+  /bin/sh -c &#39;/entrypoint.sh &amp; /worker -log-level=info -body-limit=10M -request-limit=10&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-5-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker run --rm -p 8080:8080 montferret/worker:latest \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  /bin/sh -c &#39;/entrypoint.sh &amp; /worker -log-level=info -body-limit=10M -request-limit=10&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-5-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-5-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Mount a directory and set <code>FS_ROOT</code> when scripts need filesystem access:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">docker run --rm -p 8080:8080 \
+  -v &#34;$PWD/data:/data:ro&#34; \
+  -e FS_ROOT=/data \
+  montferret/worker:latest</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-6-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-6-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">docker run --rm -p 8080:8080 \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -v &#34;$PWD/data:/data:ro&#34; \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -e FS_ROOT=/data \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  montferret/worker:latest</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-6-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-6-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Use a read-only mount when scripts only need to read files.</p>
+<h2 id="run-from-a-release-binary">Run from a release binary</h2>
+<p>Download a Worker release archive from GitHub:</p>
+<p><a href="https://github.com/MontFerret/worker/releases">https://github.com/MontFerret/worker/releases</a></p>
+<p>Release archives follow the GoReleaser platform naming pattern, such as <code>worker_linux_x86_64.tar.gz</code>, <code>worker_darwin_arm64.tar.gz</code>, or <code>worker_windows_x86_64.zip</code>.</p>
+<p>After extracting the archive, place the <code>worker</code> binary on <code>PATH</code> and run:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">worker -version
+worker</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-7-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-7-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">worker -version</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">worker</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-7-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-7-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Local binary deployments need a reachable Chrome or Chromium process when scripts use <code>{ driver: &quot;cdp&quot; }</code>.</p>
+<h2 id="build-from-source">Build from source</h2>
+<p>The Worker source is a Go module at <code>github.com/MontFerret/worker</code>. Use the Go version declared in the repository&rsquo;s <code>go.mod</code>.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-8-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">git clone https://github.com/MontFerret/worker.git
+cd worker
+make compile
+./bin/worker -version</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-8-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-8-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">git clone https://github.com/MontFerret/worker.git</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">cd worker</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">make compile</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">./bin/worker -version</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-8-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-8-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The build embeds Worker and Ferret version metadata through linker flags when built by the Makefile or release pipeline.</p>
+<h2 id="chrome-dependency">Chrome dependency</h2>
+<p>Worker waits for Chrome during startup unless Chrome is disabled with <code>-no-chrome</code>. By default it checks:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>http://127.0.0.1:9222
+</span></span></code></pre></div><p>When running outside the Docker image, start Chrome with remote debugging enabled before starting Worker:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-9-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">google-chrome --headless --remote-debugging-port=9222
+worker</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-9-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-9-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">google-chrome --headless --remote-debugging-port=9222</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">worker</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-9-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-9-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>If Chrome runs on another host or port, set <code>-chrome-ip</code> and <code>-chrome-port</code>.</p>
+<h2 id="health-checks">Health checks</h2>
+<p>Use <code>GET /health</code> for load balancer and orchestration checks.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -i http://localhost:8080/health</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-10-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -i http://localhost:8080/health</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-10-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-10-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Status codes:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Status</th>
+          <th>Meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>200</code></td>
+          <td>Worker is running. If Chrome is enabled, Worker could reach Chrome&rsquo;s version endpoint.</td>
+      </tr>
+      <tr>
+          <td><code>424</code></td>
+          <td>Worker is running, but a required dependency such as Chrome is unavailable.</td>
+      </tr>
+  </tbody>
+</table>
+<p>The health endpoint returns an empty body and is skipped by Worker rate limiting.</p>
+<h2 id="network-and-security">Network and security</h2>
+<p>Worker binds to <code>0.0.0.0</code> on the configured port. Put it behind your normal deployment boundary: a private network, reverse proxy, ingress controller, API gateway, or service mesh.</p>
+<p>Worker does not include built-in authentication, authorization, TLS termination, request signing, durable queues, scheduling, or tenant isolation. Add those at the deployment layer when Worker is exposed beyond a trusted network.</p>
+<p>Use body limits and rate limits for public or shared deployments:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-11-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">worker \
+  -log-level=info \
+  -body-limit=10M \
+  -request-limit=10 \
+  -request-limit-time-window=60</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-11-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-11-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">worker \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -log-level=info \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -body-limit=10M \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -request-limit=10 \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -request-limit-time-window=60</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-11-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-11-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The historical baseline in the Worker README is 2 CPU and 2 GB of RAM. Browser-backed scripts, large pages, PDF generation, screenshots, and high concurrency may require more.</p>
 
 </article>
 
         </main>
 
-        
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#run-with-docker">Run with Docker</a></li>
+    <li><a href="#configure-the-container">Configure the container</a></li>
+    <li><a href="#run-from-a-release-binary">Run from a release binary</a></li>
+    <li><a href="#build-from-source">Build from source</a></li>
+    <li><a href="#chrome-dependency">Chrome dependency</a></li>
+    <li><a href="#health-checks">Health checks</a></li>
+    <li><a href="#network-and-security">Network and security</a></li>
+  </ul>
+</nav>
+</aside>
     </div>
 </div>
 <script type="module">

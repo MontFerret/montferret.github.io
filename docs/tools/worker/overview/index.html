@@ -435,6 +435,165 @@
 
 
                 
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/" class="docs-nav-link is-ancestor">
+                Worker
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/overview/" class="docs-nav-link is-active" aria-current="page">
+                Overview
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/configuration/" class="docs-nav-link">
+                Configuration
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/deployment/" class="docs-nav-link">
+                Deployment
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/api/" class="docs-nav-link">
+                API
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+                
             </ul>
         
     </li>
@@ -483,13 +642,314 @@
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
     <h1 id="overview">Overview</h1>
-<p>This page is reserved for a Ferret Worker overview.</p>
+<p>Worker is an HTTP runtime for Ferret. It receives a FQL script, compiles or reuses a cached plan, runs the script with optional parameters, and writes the serialized Ferret result back to the client.</p>
+<p>The current Worker source documented here is <code>main</code> at <code>v2.0.0-rc.16</code>.</p>
+<h2 id="run-a-query">Run a query</h2>
+<p>Start Worker, then send a JSON request to <code>POST /</code>:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -X POST http://localhost:8080/ \
+  -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{&#34;text&#34;:&#34;RETURN 1 &#43; 2&#34;}&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -X POST http://localhost:8080/ \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -H &#34;Content-Type: application/json&#34; \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -d &#39;{&#34;text&#34;:&#34;RETURN 1 &#43; 2&#34;}&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-1-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-1-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The response body is the query result:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#ae81ff">3</span>
+</span></span></code></pre></div><p>Worker does not wrap successful results in a service envelope. If the script returns an object, array, string, number, boolean, or <code>NONE</code>, the response body is that serialized value.</p>
+<h2 id="pass-parameters">Pass parameters</h2>
+<p>Use the <code>params</code> object to pass values that the script reads with <code>@name</code>:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -X POST http://localhost:8080/ \
+  -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{
+    &#34;text&#34;: &#34;LET doc = DOCUMENT(@url) RETURN doc.title&#34;,
+    &#34;params&#34;: {
+      &#34;url&#34;: &#34;https://example.com&#34;
+    }
+  }&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-2-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -X POST http://localhost:8080/ \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -H &#34;Content-Type: application/json&#34; \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -d &#39;{</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    &#34;text&#34;: &#34;LET doc = DOCUMENT(@url) RETURN doc.title&#34;,</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    &#34;params&#34;: {</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">      &#34;url&#34;: &#34;https://example.com&#34;</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    }</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  }&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-2-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-2-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Missing parameters are reported as query execution errors with diagnostic details.</p>
+<h2 id="runtime-capabilities">Runtime capabilities</h2>
+<p>Worker creates a Ferret engine with the standard Ferret runtime plus these contributed modules:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Module area</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>CSV, TOML, XML, YAML</td>
+          <td>Parse and work with common data formats.</td>
+      </tr>
+      <tr>
+          <td>Web HTML</td>
+          <td>Open, parse, query, and interact with HTML documents.</td>
+      </tr>
+      <tr>
+          <td>Web article, robots, sitemap</td>
+          <td>Extract article content and inspect web metadata.</td>
+      </tr>
+      <tr>
+          <td>SQLite</td>
+          <td>Use the SQLite module in memory-only mode.</td>
+      </tr>
+      <tr>
+          <td>JWT</td>
+          <td>Work with JSON Web Tokens.</td>
+      </tr>
+  </tbody>
+</table>
+<p>The HTML module registers two drivers:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Driver</th>
+          <th>Behavior</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>memory</code></td>
+          <td>The default driver. Fetches and parses documents without a browser.</td>
+      </tr>
+      <tr>
+          <td><code>cdp</code></td>
+          <td>Connects to Chrome or Chromium over the Chrome DevTools Protocol for browser-backed scripts.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Use <code>driver: &quot;cdp&quot;</code> when a script needs browser rendering or browser interaction:</p>
+<pre tabindex="0"><code class="language-fql" data-lang="fql">LET page = DOCUMENT(&#34;https://example.com&#34;, { driver: &#34;cdp&#34; })
+RETURN page.title
+</code></pre><h2 id="runtime-boundaries">Runtime boundaries</h2>
+<p>Worker owns service concerns around HTTP, rate limiting, request body limits, query-plan caching, filesystem root selection, and Chrome connection settings.</p>
+<p>The Ferret runtime still owns FQL parsing, compilation, module behavior, parameter semantics, browser-driver behavior, timeout behavior inside scripts, and result serialization.</p>
+<p>Worker does not provide authentication, authorization, durable job queues, persistence, scheduling, or multi-tenant isolation by itself. Add those concerns at the deployment layer, usually with a reverse proxy, service mesh, job runner, or application-specific wrapper.</p>
+<h2 id="use-as-a-remote-runtime">Use as a remote runtime</h2>
+<p>The Ferret CLI and Lab can call a Worker-compatible HTTP runtime. For example:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run --runtime http://localhost:8080 script.fql
+lab run --runtime=http://localhost:8080 tests/</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run --runtime http://localhost:8080 script.fql</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">lab run --runtime=http://localhost:8080 tests/</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-3-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-3-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Remote runtimes execute source queries. Compiled artifacts and interactive debugging require the builtin local runtime.</p>
 
 </article>
 
         </main>
 
-        
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#run-a-query">Run a query</a></li>
+    <li><a href="#pass-parameters">Pass parameters</a></li>
+    <li><a href="#runtime-capabilities">Runtime capabilities</a></li>
+    <li><a href="#runtime-boundaries">Runtime boundaries</a></li>
+    <li><a href="#use-as-a-remote-runtime">Use as a remote runtime</a></li>
+  </ul>
+</nav>
+</aside>
     </div>
 </div>
 <script type="module">

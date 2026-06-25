@@ -280,38 +280,31 @@
     </header>
 
     <div class="blog-post-content">
-        <p>As a developer, you&rsquo;ve probably created a couple of web scrapers to get some data from the Internet during your career. That data could be images for an AI project or hotel prices from booking websites for a new travel mobile app or something else. But something that needs data.</p>
-<p>It&rsquo;s a relatively easy task to write one or two web scrapers if the amount of required data is small. But it&rsquo;s a completely different level of complexity when you need to scrape big amount of data and, moreover, do it frequently.</p>
-<p>This is what happened to me. A while ago, I started a side project which was heavily data driven. The project required to gather data about cosmetological brands and its products, the ingredients of these products and their effect on human&rsquo;s skin. Not huge, but pretty large data set.
-The first impulse was to write bunch of scrapers using some scraping framework. And this is what was done. After a while, I started facing with issues I&rsquo;m going to talk about next and came up with a solution you will see after.</p>
+        <p>As a developer, you have probably written a web scraper at least once.</p>
+<p>Maybe you needed product prices from a few websites. Maybe you wanted to collect images for an AI experiment. Maybe you needed public data from a website that did not provide an API. Or maybe you just needed to turn a messy web page into a clean JSON file.</p>
+<p>At first, this usually feels simple.</p>
+<p>You pick a language, install a library, make an HTTP request, parse some HTML, extract a few fields, and move on.</p>
+<p>But then the simple script starts growing.</p>
+<p>You need to handle pagination. Then retries. Then dynamic pages rendered by JavaScript. Then waiting for elements. Then browser automation. Then configuration. Then output shaping. Then another website with slightly different markup. Then another script. Then another small framework around all those scripts.</p>
+<p>That is where Ferret comes in.</p>
+<p>Ferret is a declarative data extraction tool built around FQL, a query language for describing what data you want and what shape you want it in.</p>
+<p>Instead of building a new scraping project from scratch every time, Ferret lets you write compact, readable programs focused on the data itself.</p>
 <h2 id="the-problem">The problem</h2>
-<p>There are many problems that you need to solve building a solid and scalable scraping system. Thankfully, many of them can be solved by picking a good library or framework. But there are few, that I could not solve and they were pretty important to me:</p>
-<ul>
-<li>Every time you start, you have to write some amount of boilerplate code which might be annoying. Even with a good scraping library or framework - you have to write some glue code.</li>
-<li>Web pages tend to evolve and change their markup. It leads to frequent code updates and re-deploys.</li>
-<li>Nowadays, more and more websites use dynamic page rendering and old plain HTTP GET request is not a solution any more. It gets worse if the pages require some user interaction to get the data you need.</li>
-</ul>
-<p>Of course, these problems are solvable, but wouldn&rsquo;t it be nice if we didn&rsquo;t have to solve them again and again every time we write scraping code?
-So, I started looking a for a tool that would solve the issues for me, but unfortunately, I could not find any. Instead I created one.</p>
+<p>There are many good libraries and frameworks for fetching pages, parsing HTML, controlling browsers, and automating websites.</p>
+<p>They solve important problems.</p>
+<p>But when you build data extraction logic, there are still a few recurring issues that tend to come back again and again.</p>
+<p>First, there is boilerplate.</p>
+<p>Even with a good library, you still need to write glue code. You need to set up requests or browser sessions, parse documents, select elements, transform values, handle errors, and produce the final output. None of that is especially hard, but it is work you repeat every time.</p>
+<p>Second, websites change.</p>
+<p>Markup changes. Class names move around. Pages get redesigned. A scraper that worked yesterday might need a small update today. If the extraction logic is buried inside a deployed application, even a simple selector change can become more annoying than it should be.</p>
+<p>Third, the web is dynamic.</p>
+<p>A plain HTTP request is often not enough anymore. Many pages are rendered by JavaScript. Some data appears only after a delay. Some pages require user interaction: clicking a button, typing into a form, opening a menu, scrolling, or moving to the next page.</p>
+<p>All of these problems are solvable.</p>
+<p>But it would be nice not to solve them from scratch every time.</p>
 <h2 id="the-solution">The solution</h2>
-<figure class="image is-128x128" style="margin: 0 auto;">
-    <img src="https://cdn-images-1.medium.com/max/1600/0*06mYhTdfqmr4QI_K" />
-</figure>
-<p class="subtitle is-7 has-text-centered has-text-grey" style="margin-bottom: 2em;">
-    Logo by Chris Friel
-</p>
-<p>And this is how Ferret was born, a modern web scraping tool with a declarative query language.</p>
-<p>Ferret is a DSL with a runtime that represents pretty powerful and extensible declarative query language.</p>
-<p>It provides very high level solution that lets users focus on data they are looking for instead of writing all that glue code.</p>
-<p>It&rsquo;s embeddable. Even though, it comes with a CLI, it was designed to be easily embedded into applications from the beginning.</p>
-<p>And of course, it&rsquo;s super extensible. You can register not only your own functions, but also create custom types that Ferret runtime will recognize.</p>
-<p>The overall idea is simple, you write a query using the declarative query language focusing only on data you need, and Ferret handles the rest of the work for you.</p>
-<div style="width: 700px;margin: 0 auto;">
-    <iframe style="width: 700px; height:525px" src="https://www.youtube.com/embed/g9gWv1PODi8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
-<h3 id="show-me-thecode">Show me the code</h3>
-<p>Let&rsquo;s see how it works.</p>
-<p>For example, to scrape a list of trending repositories on GitHub, you can use the following query:</p>
+<p>Ferret was created to make this kind of work more direct.</p>
+<p>It provides a declarative language for data extraction and automation. You describe the data you need, how to find it, and how the result should look. Ferret handles the runtime work around that description.</p>
+<p>At its simplest, an FQL program loads a document, queries it, and returns structured data.</p>
 
 
 
@@ -326,7 +319,7 @@ So, I started looking a for a tool that would solve the issues for me, but unfor
 
 
 
-<div class="code-editor is-horizontal is-readonly">
+<div class="code-editor is-horizontal is-readonly is-auto-height">
     <textarea id="code-editor-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
@@ -359,15 +352,14 @@ So, I started looking a for a tool that would solve the issues for me, but unfor
                             <button id="code-editor-1-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-1-text" class="code-editor-text" style="height: 220px;">LET page = DOCUMENT(&#34;https://github.com/trending&#34;)
+                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org/scenarios/ecommerce/products/&#34;)
 
-FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
-    LET nameEl = ELEMENT(row, &#34;h1 a&#34;)
-    LET descEl = ELEMENT(row, &#34;p&#34;)
-    LET name = TRIM(nameEl.innerText)
-    LET description = TRIM(descEl ? descEl.innerText : &#34;&#34;)
-
-    RETURN { name, description }</div>
+FOR card IN page[~ css`.product-card`]
+    RETURN {
+        title: card[~? css`.product-title`].textContent,
+        price: card[~? css`.product-price`].textContent,
+        url: card[~? css`a`].attributes.href
+    }</div>
                 </div>
 
                 <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -375,11 +367,10 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
                         <span>result.json</span>
                         <div class="code-editor-pane-header-actions">
                             <span>output</span>
-                            <button id="code-editor-1-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result">Expand</button>
                             <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
                         </div>
                     </div>
-                    <div id="code-editor-1-result" class="code-editor-result" style="height: 220px;"></div>
+                    <div id="code-editor-1-result" class="code-editor-result" data-auto-height="true"></div>
                 </div>
             </div>
 
@@ -421,7 +412,7 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
             const textEditor = createEditor('code-editor-1-text', 'fql', true);
             const resultEditor = createEditor('code-editor-1-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = document.querySelector('#code-editor-1-result-expand-button');
+            const resultExpandBtn = null;
             const editorHeader = document.querySelector('#code-editor-1-header');
             const editorWorkspace = document.querySelector('#code-editor-1-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-1-grid');
@@ -450,8 +441,12 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
             }
 
             function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+
                 if (isResultVisible) {
-                    applyResultHeight(getCollapsedResultHeight());
+                    const resultHeight = getEditorContentHeight(resultEditor);
+                    applyResultHeight(resultHeight);
                 }
 
                 textEditor.resize();
@@ -505,13 +500,7 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
             }
 
             function getCollapsedResultHeight() {
-                const previousHeight = resultEditor.container.style.height;
-                resultEditor.container.style.height = collapsedResultHeightStyle;
-
-                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
-                resultEditor.container.style.height = previousHeight;
-
-                return nextHeight;
+                return getEditorContentHeight(resultEditor);
             }
 
             function getExpandedResultHeight(collapsedHeight) {
@@ -528,11 +517,12 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
                 if (resultExpandBtn && isResultExpanded) {
                     resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
                 } else {
-                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
                 }
 
                 resultEditor.resize();
             }
+            textEditor.session.on('change', syncEditorLayout);
 
             if (resultExpandBtn) {
                 resultExpandBtn.addEventListener('click', () => {
@@ -786,18 +776,13 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
     </script>
 </div>
 
-<p>There are not many things happening above, but they solve 2 of our 3 problems: boilerplate code and frequent markup changes. We will discuss how to solve the 3rd later.</p>
-<p>Let&rsquo;s take a closer look.</p>
-<p>The first problem gets solved automatically by the language itself - Ferret abstracts away all infrastructural glue code from a user. All heavy lifting is done under the hood. All a user needs to do is to describe what data they need to scrape, and what shape of the data should be as an output. Declarative languages allow you to express yourself in a very readable way.</p>
-<p>The second problem gets solved by the fact that FQL is an interpreted language. Script updates do not require you to redeploy your host server. You can easily change it on your production server without any harm.</p>
-<p>Now, let&rsquo;s discuss what is happening in our script in order to get better understanding of the tool.</p>
-<p>First of all, we tell Ferret what page to load by calling <code>DOCUMENT</code> function. Ferret loads the page and creates its representation in memory as an object. Then we assigned the returned document object to a variable. Yes, in FQL it&rsquo;s possible to define variables which is an extremely useful feature.</p>
-<p>Once the document is loaded, we use the <code>ELEMENTS</code> function to find all list entries and iterate over them using FQL keywords <code>FOR IN</code>, the construction which is familiar to many developers. Notice, for the search we use regular CSS selector like we would use in a browser.</p>
-<p>Inside the <code>FOR</code> loop body we find child elements that represent repository name and description using the <code>ELEMENT</code> function. And again we use variables and CSS selector for simplicity and more efficiency.</p>
-<p>After getting inner text of all elements we are interested in, we use <code>RETURN</code> statement with an object literal. Those who are familiar with JavaScript will recognize the syntax - an object literal with property shorthand. In other words, on each iteration we create an object with 2 properties: name and description. The <code>RETURN</code> statement works as aggregator, and the result of the query is an array of objects.</p>
-<h3 id="dynamic-pages">Dynamic pages</h3>
-<p>The example above solves only 2 problems, and we still cannot scrape pages that are rendered dynamically.</p>
-<p>What if we need to get a list of top songs from SoundCloud? If we execute the following query, we will get an empty array:</p>
+<p>The important part is not the specific website or selector syntax. The important part is the shape of the program.</p>
+<p>Load a document. Find matching elements. Iterate over them. Return clean structured data.</p>
+<p>That is the core idea behind Ferret.</p>
+<h2 id="focus-on-the-data-not-the-glue">Focus on the data, not the glue</h2>
+<p>Ferret is designed so that extraction logic can stay close to the shape of the data you want.</p>
+<p>You do not need to start with a full application just to describe a small data extraction task. You do not need to wrap every script in request setup, parsing setup, browser setup, and output conversion.</p>
+<p>FQL gives you language-level constructs for the common parts of data extraction:</p>
 
 
 
@@ -812,7 +797,7 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
 
 
 
-<div class="code-editor is-horizontal is-readonly">
+<div class="code-editor is-horizontal is-readonly is-auto-height">
     <textarea id="code-editor-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
@@ -845,13 +830,14 @@ FOR row IN ELEMENTS(page, &#34;.Box-row&#34;)
                             <button id="code-editor-2-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-2-text" class="code-editor-text" style="height: 200px;">LET doc = DOCUMENT(&#34;https://soundcloud.com/charts/top&#34;) 
-LET tracks = ELEMENTS(doc, &#34;.chartTrack__details&#34;)
+                    <div id="code-editor-2-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org/scenarios/&#34;)
 
-FOR track IN tracks
+FOR article IN page[~ css`article`]
+    LET title = article[~? css`h2`].textContent
+    LET summary = article[~? css`p`].textContent
     RETURN {
-        artist: TRIM(INNER_TEXT(track, &#34;.chartTrack__username&#34;)),
-        track: TRIM(INNER_TEXT(track, &#34;.chartTrack__title&#34;))
+        title,
+        summary
     }</div>
                 </div>
 
@@ -860,11 +846,10 @@ FOR track IN tracks
                         <span>result.json</span>
                         <div class="code-editor-pane-header-actions">
                             <span>output</span>
-                            <button id="code-editor-2-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-2-result">Expand</button>
                             <button id="code-editor-2-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-2-result-pane">Close</button>
                         </div>
                     </div>
-                    <div id="code-editor-2-result" class="code-editor-result" style="height: 200px;"></div>
+                    <div id="code-editor-2-result" class="code-editor-result" data-auto-height="true"></div>
                 </div>
             </div>
 
@@ -906,7 +891,7 @@ FOR track IN tracks
             const textEditor = createEditor('code-editor-2-text', 'fql', true);
             const resultEditor = createEditor('code-editor-2-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = document.querySelector('#code-editor-2-result-expand-button');
+            const resultExpandBtn = null;
             const editorHeader = document.querySelector('#code-editor-2-header');
             const editorWorkspace = document.querySelector('#code-editor-2-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-2-grid');
@@ -935,8 +920,12 @@ FOR track IN tracks
             }
 
             function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+
                 if (isResultVisible) {
-                    applyResultHeight(getCollapsedResultHeight());
+                    const resultHeight = getEditorContentHeight(resultEditor);
+                    applyResultHeight(resultHeight);
                 }
 
                 textEditor.resize();
@@ -990,13 +979,7 @@ FOR track IN tracks
             }
 
             function getCollapsedResultHeight() {
-                const previousHeight = resultEditor.container.style.height;
-                resultEditor.container.style.height = collapsedResultHeightStyle;
-
-                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
-                resultEditor.container.style.height = previousHeight;
-
-                return nextHeight;
+                return getEditorContentHeight(resultEditor);
             }
 
             function getExpandedResultHeight(collapsedHeight) {
@@ -1013,11 +996,12 @@ FOR track IN tracks
                 if (resultExpandBtn && isResultExpanded) {
                     resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
                 } else {
-                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
                 }
 
                 resultEditor.resize();
             }
+            textEditor.session.on('change', syncEditorLayout);
 
             if (resultExpandBtn) {
                 resultExpandBtn.addEventListener('click', () => {
@@ -1271,12 +1255,12 @@ FOR track IN tracks
     </script>
 </div>
 
-<p>In order to fix the query we need to do 2 things:</p>
-<ul>
-<li>Run Chrome or Chromium either in <a href="https://hub.docker.com/r/alpeware/chrome-headless-stable">Docker</a> or with <em>&ndash;remote-debugging-port=9222</em> argument.</li>
-<li>Add CDP driver&rsquo;s name to the <code>DOCUMENT</code> function — this informs Ferret to use a special driver that allows us to load dynamically rendered (rendered by JavaScript) pages.</li>
-</ul>
-<p>Here is an updated version of the query:</p>
+<p>The result is a collection of objects, not a pile of intermediate parsing code.</p>
+<p>That also makes scripts easier to read later. When extraction rules need to change, you can update the FQL program itself instead of digging through application logic that mixes infrastructure, navigation, parsing, and transformation in one place.</p>
+<h2 id="dynamic-pages">Dynamic pages</h2>
+<p>Of course, not every page is available as static HTML.</p>
+<p>Many modern websites render content in the browser. A document may load first, then fetch data, then render the part you care about a second later. In those cases, the extraction script needs to wait for the page to reach the right state before reading from it.</p>
+<p>Ferret supports this kind of workflow too.</p>
 
 
 
@@ -1291,7 +1275,7 @@ FOR track IN tracks
 
 
 
-<div class="code-editor is-horizontal is-readonly">
+<div class="code-editor is-horizontal is-readonly is-auto-height">
     <textarea id="code-editor-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
@@ -1324,16 +1308,17 @@ FOR track IN tracks
                             <button id="code-editor-3-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-3-text" class="code-editor-text" style="height: 240px;">LET doc = DOCUMENT(&#39;https://soundcloud.com/charts/top&#39;, { driver: &#39;cdp&#39; })
+                    <div id="code-editor-3-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org/scenarios/dynamic-products/basic/&#34;, {
+    driver: &#34;cdp&#34;
+})
 
-WAIT_ELEMENT(doc, &#39;.chartTrack__details&#39;, 5000)
+LET cards = WAITFOR VALUE page[~ css`.product-card`]
+    TIMEOUT 5s
 
-LET tracks = ELEMENTS(doc, &#39;.chartTrack__details&#39;)
-
-FOR track IN tracks
+FOR card IN cards
     RETURN {
-        artist: TRIM(INNER_TEXT(track, &#39;.chartTrack__username&#39;)),
-        track: TRIM(INNER_TEXT(track, &#39;.chartTrack__title&#39;))
+        title: card[~? css`.product-title`].textContent,
+        status: card[~? css`.product-stock`].textContent
     }</div>
                 </div>
 
@@ -1342,11 +1327,10 @@ FOR track IN tracks
                         <span>result.json</span>
                         <div class="code-editor-pane-header-actions">
                             <span>output</span>
-                            <button id="code-editor-3-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-3-result">Expand</button>
                             <button id="code-editor-3-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-3-result-pane">Close</button>
                         </div>
                     </div>
-                    <div id="code-editor-3-result" class="code-editor-result" style="height: 240px;"></div>
+                    <div id="code-editor-3-result" class="code-editor-result" data-auto-height="true"></div>
                 </div>
             </div>
 
@@ -1388,7 +1372,7 @@ FOR track IN tracks
             const textEditor = createEditor('code-editor-3-text', 'fql', true);
             const resultEditor = createEditor('code-editor-3-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = document.querySelector('#code-editor-3-result-expand-button');
+            const resultExpandBtn = null;
             const editorHeader = document.querySelector('#code-editor-3-header');
             const editorWorkspace = document.querySelector('#code-editor-3-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-3-grid');
@@ -1417,8 +1401,12 @@ FOR track IN tracks
             }
 
             function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+
                 if (isResultVisible) {
-                    applyResultHeight(getCollapsedResultHeight());
+                    const resultHeight = getEditorContentHeight(resultEditor);
+                    applyResultHeight(resultHeight);
                 }
 
                 textEditor.resize();
@@ -1472,13 +1460,7 @@ FOR track IN tracks
             }
 
             function getCollapsedResultHeight() {
-                const previousHeight = resultEditor.container.style.height;
-                resultEditor.container.style.height = collapsedResultHeightStyle;
-
-                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
-                resultEditor.container.style.height = previousHeight;
-
-                return nextHeight;
+                return getEditorContentHeight(resultEditor);
             }
 
             function getExpandedResultHeight(collapsedHeight) {
@@ -1495,11 +1477,12 @@ FOR track IN tracks
                 if (resultExpandBtn && isResultExpanded) {
                     resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
                 } else {
-                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
                 }
 
                 resultEditor.resize();
             }
+            textEditor.session.on('change', syncEditorLayout);
 
             if (resultExpandBtn) {
                 resultExpandBtn.addEventListener('click', () => {
@@ -1753,23 +1736,13 @@ FOR track IN tracks
     </script>
 </div>
 
-<p>You may notice, that there is a new line of code: <code>WAIT_ELEMENT(doc, ‘.chartTrack__details’, 5000)</code>. Since everything is dynamically rendered, we need to be sure that the data we need is in place. That’s why we block the execution until the table with tracks appears on the page or the operation times out. The signature is pretty similar to what we have seen above with an extra timeout argument.</p>
-<p>Once the data is loaded and rendered, we are ready to iterate over all table rows and parse them.</p>
-<p>As you can see, the way how we had written the query didn’t change much, but at the same time we need to take into consideration some nuances of dynamic pages and give Ferret some hints how to handle them.</p>
-<h3 id="page-interactions">Page interactions</h3>
-<p>Ok, the above examples may not look very impressive and cannot be a real reason to build such a relatively complex solution like Ferret.</p>
-<p>In order to turn the Internet into the Database of the Web we need to be able to interact with the Web like a real user. Clicks, data inputs or just mouse events — all these regular actions need to be supported.</p>
-<p>And Ferret supports them.</p>
-<p>Let’s imagine, that we are building a website that aggregates product prices from all popular sales platforms like Amazon and eBay.</p>
-<p>In order to get a list of products and their information we need to implement the following algorithm:</p>
-<ul>
-<li>Type a search criteria into an input box</li>
-<li>Click “Search” button</li>
-<li>Wait when the page gets loaded and the data gets rendered</li>
-<li>Iterate over the results</li>
-<li>Move to a next page</li>
-<li>Repeat step #3</li>
-</ul>
+<p>The query still describes the data, but it also gives Ferret enough information to deal with the dynamic nature of the page.</p>
+<p>Use a browser-backed driver. Wait for the content to appear. Then extract the result.</p>
+<p>The script does not need to change into a completely different kind of program just because the page uses JavaScript.</p>
+<h2 id="page-interactions">Page interactions</h2>
+<p>Sometimes waiting is not enough.</p>
+<p>Some pages require interaction before the data appears. A user might need to type a search query, click a button, open a filter, or move through pagination.</p>
+<p>Ferret treats those actions as part of the program.</p>
 
 
 
@@ -1784,7 +1757,7 @@ FOR track IN tracks
 
 
 
-<div class="code-editor is-horizontal is-readonly">
+<div class="code-editor is-horizontal is-auto-height">
     <textarea id="code-editor-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
 
     <div class="code-editor-shell">
@@ -1817,50 +1790,19 @@ FOR track IN tracks
                             <button id="code-editor-4-copy-button" class="code-editor-pane-button" type="button">Copy</button>
                         </div>
                     </div>
-                    <div id="code-editor-4-text" class="code-editor-text" style="height: 680px;">LET baseURL = &#39;https://www.amazon.com/&#39;
-LET amazon = DOCUMENT(baseURL, { driver: &#34;cdp&#34; })
+                    <div id="code-editor-4-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org/scenarios/forms/&#34;, {
+    driver: &#34;cdp&#34;
+})
 
-INPUT(amazon, &#39;#twotabsearchtextbox&#39;, @criteria)
-CLICK(amazon, &#39;.nav-search-submit input[type=&#34;submit&#34;]&#39;)
-WAIT_NAVIGATION(amazon)
+DISPATCH &#34;input&#34; IN page[~? css`#query`] WITH {
+    value: @q
+}
 
-LET resultListSelector = &#39;div.s-result-list&#39;
-LET resultItemSelector = &#39;[data-component-type=&#34;s-search-result&#34;]&#39;
-LET nextBtnSelector = &#39;ul.a-pagination .a-last a&#39;
-LET priceWholeSelector = &#39;.a-price-whole&#39;
-LET priceFracSelector = &#39;.a-price-fraction&#39;
-LET pagers = ELEMENTS(amazon, &#39;ul.a-pagination li.a-disabled&#39;)
-LET pages = LENGTH(pagers) &gt; 0 ? TO_INT(INNER_TEXT(LAST(pagers))) : 0
+DISPATCH &#34;click&#34; IN page[~? css`button[type=&#34;submit&#34;]`]
 
-LET result = (
-    FOR pageNum IN 1..pages
-        LIMIT 2
+LET result = WAITFOR VALUE page[~ css`#form-result`] TIMEOUT 5s
 
-        LET clicked = pageNum == 1 ? false : CLICK(amazon, nextBtnSelector)
-        LET wait = clicked ? WAIT_NAVIGATION(amazon, 10000) : false
-        LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
-
-        PRINT(&#34;page:&#34;, pageNum, &#34;clicked&#34;, clicked)
-
-        LET items = (
-            FOR el IN ELEMENTS(amazon, resultItemSelector)
-                LET hasPrice = ELEMENT_EXISTS(el, priceWholeSelector)
-                LET priceWholeTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceWholeSelector), &#34;[0-9]&#43;&#34;)) : &#34;0&#34;
-                LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), &#34;[0-9]&#43;&#34;)) : &#34;00&#34;
-		        LET price = TO_FLOAT(priceWholeTxt &#43; &#34;.&#34; &#43; priceFracTxt)
-		        LET anchor = ELEMENT(el, &#34;a&#34;)
-
-                RETURN {
-                    url: baseURL &#43; anchor.attributes.href,
-                    title: INNER_TEXT(el, &#39;h2&#39;),
-                    price
-                }
-        )
-
-        RETURN items
-)
-
-RETURN FLATTEN(result)</div>
+RETURN result</div>
                 </div>
 
                 <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -1868,11 +1810,10 @@ RETURN FLATTEN(result)</div>
                         <span>result.json</span>
                         <div class="code-editor-pane-header-actions">
                             <span>output</span>
-                            <button id="code-editor-4-result-expand-button" class="code-editor-pane-button" type="button" aria-expanded="false" aria-controls="code-editor-4-result">Expand</button>
                             <button id="code-editor-4-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-4-result-pane">Close</button>
                         </div>
                     </div>
-                    <div id="code-editor-4-result" class="code-editor-result" style="height: 680px;"></div>
+                    <div id="code-editor-4-result" class="code-editor-result" data-auto-height="true"></div>
                 </div>
             </div>
 
@@ -1914,7 +1855,7 @@ RETURN FLATTEN(result)</div>
             const textEditor = createEditor('code-editor-4-text', 'fql', true);
             const resultEditor = createEditor('code-editor-4-result', 'json', false);
             resultEditor.setReadOnly(true);
-            const resultExpandBtn = document.querySelector('#code-editor-4-result-expand-button');
+            const resultExpandBtn = null;
             const editorHeader = document.querySelector('#code-editor-4-header');
             const editorWorkspace = document.querySelector('#code-editor-4-grid').parentElement;
             const editorGrid = document.querySelector('#code-editor-4-grid');
@@ -1943,8 +1884,12 @@ RETURN FLATTEN(result)</div>
             }
 
             function syncEditorLayout() {
+                const sourceHeight = getEditorContentHeight(textEditor);
+                textEditor.container.style.height = `${sourceHeight}px`;
+
                 if (isResultVisible) {
-                    applyResultHeight(getCollapsedResultHeight());
+                    const resultHeight = getEditorContentHeight(resultEditor);
+                    applyResultHeight(resultHeight);
                 }
 
                 textEditor.resize();
@@ -1998,13 +1943,7 @@ RETURN FLATTEN(result)</div>
             }
 
             function getCollapsedResultHeight() {
-                const previousHeight = resultEditor.container.style.height;
-                resultEditor.container.style.height = collapsedResultHeightStyle;
-
-                const nextHeight = resultEditor.container.getBoundingClientRect().height || resultEditor.container.offsetHeight || 48;
-                resultEditor.container.style.height = previousHeight;
-
-                return nextHeight;
+                return getEditorContentHeight(resultEditor);
             }
 
             function getExpandedResultHeight(collapsedHeight) {
@@ -2021,11 +1960,12 @@ RETURN FLATTEN(result)</div>
                 if (resultExpandBtn && isResultExpanded) {
                     resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
                 } else {
-                    resultEditor.container.style.height = collapsedResultHeightStyle;
+                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
                 }
 
                 resultEditor.resize();
             }
+            textEditor.session.on('change', syncEditorLayout);
 
             if (resultExpandBtn) {
                 resultExpandBtn.addEventListener('click', () => {
@@ -2125,7 +2065,7 @@ RETURN FLATTEN(result)</div>
                 }, {});
             }
 
-            const initialParams = JSON.parse("{ \"criteria\": \"ferret\" }");
+            const initialParams = JSON.parse("{\"q\": \"ferret\"}");
 
             if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
                 Object.entries(initialParams).forEach(([name, value]) => {
@@ -2149,7 +2089,6 @@ RETURN FLATTEN(result)</div>
 
             window.addEventListener('resize', syncEditorLayout);
             syncEditorLayout();
-                textEditor.setReadOnly(true);
 
             function setContent(editor, content) {
                 editor.setValue(content, -1);
@@ -2279,41 +2218,102 @@ RETURN FLATTEN(result)</div>
     </script>
 </div>
 
-<p>At this point, most of the constructions of the language should be familiar, so I will just highlight what has not been covered before.</p>
-<p>First of all, it’s data input and submitting the form by clicking the search button. Notice, we use parameters (words starting with @ symbol) in this script which. Their values are define either via CLI or a context in embedded mode (I will cover how to embed Ferret to you application in next blog post).</p>
-<p>Once the results page gets loaded, we iterate over a range of page numbers, using another parameter. Ideally, you need to extrapolate amount of pages and use this number, but I use the parameter here for simplicity.</p>
-<p>On each iteration, we navigate to the target page (except 1st page) by clicking the pagination button and again wait till it gets loaded. After that we just parse the result table.</p>
-<p>As you can see, most of the actions are similar to what we do as regular users. Also, it’s a good demonstration of how web crawlers can be easily implemented using FQL.</p>
-<p>Here you can find more examples and use cases. PR are welcome.</p>
-<h2 id="who-needs-it">Who needs it?</h2>
-<p>Very reasonable and popular question.</p>
-<p>Well, first of all I need it.</p>
-<p>As for others, I can only suggest that this tool <strong>might be</strong> useful for data scientists, ML/AI researchers, QA specialists and anyone who needs to scrape a website without setting up a new Python/Node/etc project.</p>
+<p>This is where Ferret starts to feel less like a traditional scraper and more like a small language for data-oriented browser automation.</p>
+<p>The program describes the same steps a person would take:</p>
+<p>Open the page. Enter a search term. Submit the form. Wait for the results. Extract the data.</p>
+<p>The difference is that the final output is structured and repeatable.</p>
+<h2 id="more-than-just-selectors">More than just selectors</h2>
+<p>A useful extraction script rarely stops at selecting elements.</p>
+<p>You usually need to clean text, normalize values, handle missing fields, filter results, limit output, combine values, or reshape the final result.</p>
+<p>FQL includes common language features for that work: variables, expressions, loops, conditionals, objects, arrays, functions, and parameters.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">FOR product IN page[~ css`.product`]
+    LET title = TRIM(product[~? css`.title`].textContent)
+    LET priceText = TRIM(product[~? css`.price`].textContent)
+    
+    RETURN {
+        title,
+        price: priceText,
+        available: product[~? css`.sold-out`] == NONE
+    }</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>The goal is not to hide programming completely.</p>
+<p>The goal is to give data extraction its own language, so the logic can stay concise, readable, and focused.</p>
+<h2 id="embeddable-by-design">Embeddable by design</h2>
+<p>Ferret can be used from the command line, but it was designed to be embedded into applications as well.</p>
+<p>That matters because extraction logic often lives inside a larger system.</p>
+<p>A backend service might need to run FQL scripts. A data pipeline might need to execute them on a schedule. A testing tool might use them to verify what appears in a browser. An application might expose its own host values and let FQL query them.</p>
+<p>Ferret is not only a standalone tool. It is also a runtime that can be integrated into other software.</p>
+<p>That is one of the reasons FQL exists as a dedicated language instead of just another library API. Scripts can be stored, updated, passed around, and executed by a host application without turning every extraction rule into application code.</p>
+<h2 id="extensible-runtime">Extensible runtime</h2>
+<p>Ferret is also extensible.</p>
+<p>Applications can provide their own functions, modules, and host values. That means FQL programs are not limited to built-in document querying.</p>
+<p>A host application can decide what values exist, how they behave, and what it means to query them.</p>
+<p>For example, one value might represent an HTML document. Another might represent an API client. Another might represent a database connection. Another might represent something specific to the application embedding Ferret.</p>
+<p>The language stays the same, while the runtime can grow around the needs of the host environment.</p>
+<h2 id="who-is-ferret-for">Who is Ferret for?</h2>
+<p>Ferret is useful for anyone who needs to extract or automate data from places where a small script is not quite enough, but a full custom scraping system feels like too much.</p>
+<p>That includes developers who need to collect data from websites, data engineers building repeatable extraction tasks, QA engineers testing browser-rendered content, researchers collecting public datasets, and teams that want extraction logic to be easier to read and update.</p>
+<p>It is especially useful when the extraction rules matter as much as the application around them.</p>
+<p>If the logic changes often, it helps to keep that logic in a small declarative program. If the same task needs to run in different environments, it helps to have a runtime. If the target is dynamic or interactive, it helps to have browser automation available without turning the whole script into low-level control flow.</p>
+<h2 id="what-ferret-is-not">What Ferret is not</h2>
+<p>Ferret is not a magic solution for every data problem. It will not make unstable websites stable, remove the need to understand the page or system you are querying, or turn messy data into clean data without clear rules.</p>
+<p>Like any extraction tool, it also needs to be used responsibly. Not every website should be automated, and not every piece of data should be collected. Rate limits, terms of service, robots.txt, privacy, and basic respect for other people’s systems still matter. Ferret does not remove those responsibilities; it simply gives you a better language and runtime for the work when that work is appropriate.</p>
 <h2 id="what-next">What next?</h2>
-<p>The project is still growing and one of the main milestones is to stabilize API and provide rich functionality out of the box. Besides the Ferret itself, there are some other projects that are planned to be built:</p>
-<h4>
-    <a href="https://github.com/MontFerret/ferret-server">
-    Ferret Server
-    </a>
-</h4>
-As you may noticed, Ferret is just a library that comes with a handy CLI. But it does not yet provide a production grade solution for complex scraping. That’s what Ferret Server aims to solve — provide a web scraping platform. The platform that would allows you to persists scripts and scraped data in a database, executes scripts manually or with a scheduler, notify 3rd party systems and etc. The project has started but it’s in very early stage.
-<h4>
-    <a href="https://github.com/MontFerret/ferret/issues?utf8=%E2%9C%93&q=is%3Aopen+label%3Aarea%2Fdrivers+Create+in%3Atitle+">
-    More HTML drivers
-    </a>
-</h4>
-Having more HTML drivers will let QA and developers easily test their web apps in different web browsers using same query.
-<h4>
-    <a href="https://github.com/MontFerret/ferret-registry">
-    Ferret Registry
-    </a>
-</h4>
-See it as NPM registry for FQL scripts where people can share and explore scripts which will make data scraping even easier!
-<h4>
-    Jupyter kernel
-</h4>
-I’m not really well familiar with Jupyter, but I know that many data scientists use it, so I figured that it could be useful to integrate Ferret with it.
-<p>So, if you have some spare time and want to contribute to an open source project — you are very welcome!</p>
+<p>Ferret is an open source project, and there is still a lot of work ahead. The current focus is on making the language, runtime, tools, and documentation more stable, more consistent, and easier to use. That includes clearer examples, stronger CLI support, better browser-oriented flows, improved embedding documentation, more modules, and eventually better editor tooling.</p>
+<p>The long-term goal is to make structured data extraction easier to write, easier to read, and easier to maintain. Ferret started as a way to avoid writing the same scraping glue code over and over again, and that motivation is still very much alive. More broadly, though, Ferret is about extracting data with intent: you describe what you want, and Ferret gives you a language and runtime designed to help you get it.</p>
 
     </div>
 

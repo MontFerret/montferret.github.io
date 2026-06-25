@@ -435,6 +435,165 @@
 
 
                 
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/" class="docs-nav-link is-ancestor">
+                Worker
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/overview/" class="docs-nav-link">
+                Overview
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/configuration/" class="docs-nav-link">
+                Configuration
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/deployment/" class="docs-nav-link">
+                Deployment
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/tools/worker/api/" class="docs-nav-link is-active" aria-current="page">
+                API
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+                
             </ul>
         
     </li>
@@ -483,13 +642,629 @@
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
     <h1 id="api">API</h1>
-<p>This page is reserved for Ferret Worker API documentation.</p>
+<p>Worker exposes a small HTTP API:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Endpoint</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>POST /</code></td>
+          <td>Execute a FQL script.</td>
+      </tr>
+      <tr>
+          <td><code>GET /health</code></td>
+          <td>Check Worker and dependency health.</td>
+      </tr>
+      <tr>
+          <td><code>GET /info</code></td>
+          <td>Return public IP and version metadata.</td>
+      </tr>
+  </tbody>
+</table>
+<p>All successful query responses are the serialized Ferret result body. Worker does not return a <code>{ &quot;data&quot;: ... }</code> wrapper.</p>
+<h2 id="post-"><code>POST /</code></h2>
+<p><code>POST /</code> executes a FQL script.</p>
+<p>Request body:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;RETURN @name&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;params&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Ada&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field</th>
+          <th>Required</th>
+          <th>Meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>text</code></td>
+          <td>Yes</td>
+          <td>FQL script source.</td>
+      </tr>
+      <tr>
+          <td><code>params</code></td>
+          <td>No</td>
+          <td>Named values available to the script as <code>@name</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Example:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -X POST http://localhost:8080/ \
+  -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{
+    &#34;text&#34;: &#34;RETURN { name: @name, active: true }&#34;,
+    &#34;params&#34;: {
+      &#34;name&#34;: &#34;Ada&#34;
+    }
+  }&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -X POST http://localhost:8080/ \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -H &#34;Content-Type: application/json&#34; \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -d &#39;{</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    &#34;text&#34;: &#34;RETURN { name: @name, active: true }&#34;,</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    &#34;params&#34;: {</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">      &#34;name&#34;: &#34;Ada&#34;</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    }</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  }&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-1-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-1-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Example shape:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;active&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Ada&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Status codes:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Status</th>
+          <th>Meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>200</code></td>
+          <td>The query ran and the body is the serialized result.</td>
+      </tr>
+      <tr>
+          <td><code>400</code></td>
+          <td>The request body could not be parsed, the query could not compile, or execution failed.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="query-errors">Query errors</h2>
+<p>Error responses use this shape:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;run program: missing parameter&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;details&#34;</span>: <span style="color:#e6db74">&#34;UnresolvedSymbol: missing parameter\n --&gt; anonymous:1:8\n  |\n1 | RETURN @missing\n  |        ^^^^^^^^ parameter &#39;@missing&#39; was not provided\n&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>error</code> is the plain wrapped error. <code>details</code> contains formatted Ferret diagnostics when the error supports diagnostics; otherwise it repeats the plain error text.</p>
+<h2 id="browser-backed-query">Browser-backed query</h2>
+<p>Use the CDP driver from FQL when the script needs Chrome:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -X POST http://localhost:8080/ \
+  -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{
+    &#34;text&#34;: &#34;LET page = DOCUMENT(@url, { driver: \&#34;cdp\&#34; }) RETURN page.title&#34;,
+    &#34;params&#34;: {
+      &#34;url&#34;: &#34;https://example.com&#34;
+    }
+  }&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-2-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -X POST http://localhost:8080/ \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -H &#34;Content-Type: application/json&#34; \</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  -d &#39;{</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    &#34;text&#34;: &#34;LET page = DOCUMENT(@url, { driver: \&#34;cdp\&#34; }) RETURN page.title&#34;,</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    &#34;params&#34;: {</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">      &#34;url&#34;: &#34;https://example.com&#34;</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">    }</span></span><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">  }&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-2-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-2-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The Worker process must be configured with a reachable Chrome DevTools endpoint. See <a href="https://ferretlang.org/docs/tools/worker/configuration/">Configuration</a>.</p>
+<h2 id="get-health"><code>GET /health</code></h2>
+<p><code>GET /health</code> checks whether Worker is running and, when Chrome is enabled, whether Worker can reach Chrome&rsquo;s version endpoint.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -i http://localhost:8080/health</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -i http://localhost:8080/health</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-3-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-3-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Responses:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Status</th>
+          <th>Body</th>
+          <th>Meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>200</code></td>
+          <td>Empty</td>
+          <td>Worker is healthy.</td>
+      </tr>
+      <tr>
+          <td><code>424</code></td>
+          <td>Empty</td>
+          <td>Worker cannot reach a required dependency such as Chrome.</td>
+      </tr>
+  </tbody>
+</table>
+<p>When Worker starts with <code>-no-chrome</code>, <code>/health</code> returns <code>200</code> without checking Chrome.</p>
+<h2 id="get-info"><code>GET /info</code></h2>
+<p><code>GET /info</code> returns public IP and version metadata.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl http://localhost:8080/info</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-4-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl http://localhost:8080/info</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-4-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-4-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Response:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;ip&#34;</span>: <span style="color:#e6db74">&#34;203.0.113.10&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;version&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;worker&#34;</span>: <span style="color:#e6db74">&#34;2.0.0-rc.16&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;chrome&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;browser&#34;</span>: <span style="color:#e6db74">&#34;Chrome/148.0.7778.178&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;protocol&#34;</span>: <span style="color:#e6db74">&#34;1.3&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;v8&#34;</span>: <span style="color:#e6db74">&#34;14.8.x&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;webkit&#34;</span>: <span style="color:#e6db74">&#34;537.36&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ferret&#34;</span>: <span style="color:#e6db74">&#34;2.0.0-alpha.24&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field</th>
+          <th>Meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>ip</code></td>
+          <td>Public IP detected through <code>http://checkip.amazonaws.com</code>.</td>
+      </tr>
+      <tr>
+          <td><code>version.worker</code></td>
+          <td>Worker version embedded at build time.</td>
+      </tr>
+      <tr>
+          <td><code>version.ferret</code></td>
+          <td>Ferret runtime version embedded at build time.</td>
+      </tr>
+      <tr>
+          <td><code>version.chrome</code></td>
+          <td>Chrome version details from the Chrome DevTools <code>/json/version</code> endpoint.</td>
+      </tr>
+  </tbody>
+</table>
+<p>If Worker is built without release linker flags, <code>version.worker</code> and <code>version.ferret</code> may be empty. If Worker runs with <code>-no-chrome</code>, Chrome version fields are empty.</p>
+<p><code>/info</code> can return <code>424</code> when Worker cannot retrieve Chrome version data or public IP data.</p>
+<h2 id="remote-runtime-clients">Remote runtime clients</h2>
+<p>The Ferret CLI and Lab use Worker-compatible HTTP runtimes by sending the same <code>POST /</code> payload:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;RETURN @name&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;params&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Ada&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Use Worker from the CLI:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run --runtime http://localhost:8080 script.fql</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-5-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run --runtime http://localhost:8080 script.fql</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-5-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-5-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Use Worker from Lab:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">lab run --runtime=http://localhost:8080 tests/</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-6-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-6-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">lab run --runtime=http://localhost:8080 tests/</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-6-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-6-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Remote runtime clients expect <code>/info</code> to expose <code>version.ferret</code> when they ask for the runtime version.</p>
 
 </article>
 
         </main>
 
-        
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#post-"><code>POST /</code></a></li>
+    <li><a href="#query-errors">Query errors</a></li>
+    <li><a href="#browser-backed-query">Browser-backed query</a></li>
+    <li><a href="#get-health"><code>GET /health</code></a></li>
+    <li><a href="#get-info"><code>GET /info</code></a></li>
+    <li><a href="#remote-runtime-clients">Remote runtime clients</a></li>
+  </ul>
+</nav>
+</aside>
     </div>
 </div>
 <script type="module">
