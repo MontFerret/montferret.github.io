@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.163.3">
 
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.1175b3b568338f1b7bca84f1092b79dc87a102cb1c3976747baa67fe022f94c4.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.c0bca308a88a9c20b521660041aca89200e06120039bf2e1f38246b84104b9ca.css" />
     <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
     
@@ -1721,58 +1721,58 @@ DELETE user[&#34;deprecated&#34;]</div>
 <p>When an operation requires a capability, the runtime checks whether the value supports it. If it does, the operation proceeds. If it does not, the operation fails with a runtime error.</p>
 <p>This check happens at runtime, not at parse time. FQL does not statically verify that a variable holds a value with a particular capability. The check occurs when the operation is actually executed.</p>
 <table>
-  <thead>
-      <tr>
-          <th>Operation</th>
-          <th>Required capability</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>QUERY ... IN value</code></td>
-          <td>Queryable</td>
-      </tr>
-      <tr>
-          <td><code>FOR item IN value</code></td>
-          <td>Iterable</td>
-      </tr>
-      <tr>
-          <td><code>SORT value</code></td>
-          <td>Sortable</td>
-      </tr>
-      <tr>
-          <td><code>WAITFOR EVENT ... IN value</code></td>
-          <td>Observable</td>
-      </tr>
-      <tr>
-          <td><code>DISPATCH ... IN value</code></td>
-          <td>Dispatchable</td>
-      </tr>
-      <tr>
-          <td><code>value == other</code></td>
-          <td>Comparable (when custom ordering is needed)</td>
-      </tr>
-      <tr>
-          <td><code>value[index]</code></td>
-          <td>Readable (by index)</td>
-      </tr>
-      <tr>
-          <td><code>value.key</code> / <code>value[&quot;key&quot;]</code></td>
-          <td>Readable (by key)</td>
-      </tr>
-      <tr>
-          <td><code>value[index] = x</code></td>
-          <td>Writable (by index)</td>
-      </tr>
-      <tr>
-          <td><code>value.key = x</code></td>
-          <td>Writable (by key)</td>
-      </tr>
-      <tr>
-          <td><code>DELETE value.key</code></td>
-          <td>Removable</td>
-      </tr>
-  </tbody>
+	<thead>
+			<tr>
+					<th>Operation</th>
+					<th>Required capability</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>QUERY ... IN value</code></td>
+					<td>Queryable</td>
+			</tr>
+			<tr>
+					<td><code>FOR item IN value</code></td>
+					<td>Iterable</td>
+			</tr>
+			<tr>
+					<td><code>SORT value</code></td>
+					<td>Sortable</td>
+			</tr>
+			<tr>
+					<td><code>WAITFOR EVENT ... IN value</code></td>
+					<td>Observable</td>
+			</tr>
+			<tr>
+					<td><code>DISPATCH ... IN value</code></td>
+					<td>Dispatchable</td>
+			</tr>
+			<tr>
+					<td><code>value == other</code></td>
+					<td>Comparable (when custom ordering is needed)</td>
+			</tr>
+			<tr>
+					<td><code>value[index]</code></td>
+					<td>Readable (by index)</td>
+			</tr>
+			<tr>
+					<td><code>value.key</code> / <code>value[&quot;key&quot;]</code></td>
+					<td>Readable (by key)</td>
+			</tr>
+			<tr>
+					<td><code>value[index] = x</code></td>
+					<td>Writable (by index)</td>
+			</tr>
+			<tr>
+					<td><code>value.key = x</code></td>
+					<td>Writable (by key)</td>
+			</tr>
+			<tr>
+					<td><code>DELETE value.key</code></td>
+					<td>Removable</td>
+			</tr>
+	</tbody>
 </table>
 <p>A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, comparable, and readable by index. An object is iterable, measurable, comparable, readable by key, writable by key, and removable by key. A host cursor might be iterable and closable but not queryable or sortable.</p>
 <h2 id="runtime-defined-behavior">Runtime-defined behavior</h2>
