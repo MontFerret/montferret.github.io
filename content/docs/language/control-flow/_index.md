@@ -3,7 +3,7 @@ title: "Control Flow"
 sidebarTitle: "Control Flow"
 weight: 90
 draft: false
-description: "How FQL controls evaluation through branching, iteration, subqueries, queries, dispatch, and waiting."
+description: "How FQL controls evaluation through branching, iteration, subqueries, queries, dispatch, waiting, and error recovery."
 ---
 
 # Control Flow
@@ -81,6 +81,20 @@ These constructs are commonly used when FQL interacts with external systems, suc
 
 See [Dispatch Expressions]({{< ref "dispatch" >}}) and [Waitfor Expressions]({{< ref "waitfor" >}}).
 
+## Recovering from errors
+
+A recovery tail attaches to an expression and tells the runtime what to do when it fails — return a fallback value, retry the operation, or propagate the error explicitly. The optional chaining operator (`?.`) handles the common case of accessing a member on a value that may be `NONE`.
+
+{{< code lang="fql" >}}
+LET title = QUERY ONE `.title` IN doc ON ERROR RETURN "untitled"
+
+LET name = user?.name
+{{</ code >}}
+
+Recovery tails work on function calls, `QUERY`, `DISPATCH`, `WAITFOR`, and grouped expressions. `WAITFOR` additionally supports `ON TIMEOUT` for timeout-specific recovery.
+
+See [Error Handling]({{< ref "error-handling" >}}).
+
 ## Language constructs and host capabilities
 
 Some control-flow constructs are part of the language itself. `MATCH`, `FOR`, and subqueries are always available and operate on ordinary FQL values.
@@ -95,4 +109,4 @@ See [Value Capabilities]({{% ref "../types/capabilities" %}}) and [Host Values](
 
 ## Where to go next
 
-{{< docs-related tiles="language-control-flow-match,language-control-flow-for,language-control-flow-subqueries,language-control-flow-query,language-control-flow-dispatch,language-control-flow-waitfor" >}}
+{{< docs-related tiles="language-control-flow-match,language-control-flow-for,language-control-flow-subqueries,language-control-flow-query,language-control-flow-dispatch,language-control-flow-waitfor,language-control-flow-error-handling" >}}
