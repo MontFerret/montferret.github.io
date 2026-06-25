@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Ferret</title>
+
+    <meta name="generator" content="Hugo 0.159.1">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.3aa6c8da94a3406bdb1d48495c2dbf0de5f8948356cda7370764332b3af4b74f.css" />
+    <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
+    <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
+    
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ferret" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        console.log('Google Analytics is enabled');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-135792752-1');
+    </script>
+</head>
+<body>
+        <div id="top" class="site-top-anchor" aria-hidden="true"></div><nav id="site-header" class="navbar site-navbar" role="navigation" aria-label="main navigation" tabindex="-1" data-pagefind-ignore="all">
+    <pagefind-config instance="site-search" highlight-param="highlight"></pagefind-config>
+
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
+            </a>
+
+            
+<pagefind-modal-trigger
+    class="site-navbar-search site-navbar-search-mobile"
+    instance="site-search"
+    placeholder="Search"
+></pagefind-modal-trigger>
+
+
+            <button
+                id="navbar-burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
+                aria-label="menu"
+                aria-expanded="false"
+                aria-controls="primary-nav"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
+                
+                
+                
+                    
+                    
+                    <a href="/try/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
+                
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link active is-active"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
+                
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
+                
+            </div>
+            
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
+                
+<pagefind-modal-trigger
+    class="site-navbar-search site-navbar-search-desktop"
+    instance="site-search"
+    placeholder="Search"
+    shortcut="/"
+></pagefind-modal-trigger>
+
+                
+                
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
+                
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+<pagefind-modal class="site-search-modal" instance="site-search">
+    <pagefind-modal-header>
+        <pagefind-input instance="site-search" placeholder="Search docs" debounce="150"></pagefind-input>
+    </pagefind-modal-header>
+    <pagefind-modal-body>
+        <pagefind-summary instance="site-search" default-message="Type at least 2 characters to search."></pagefind-summary>
+        <pagefind-results instance="site-search" max-results="6" max-sub-results="3"></pagefind-results>
+    </pagefind-modal-body>
+    <pagefind-modal-footer>
+        <a id="site-search-view-all" class="site-search-view-all" href="/search/">View all results</a>
+        <pagefind-keyboard-hints instance="site-search"></pagefind-keyboard-hints>
+    </pagefind-modal-footer>
+</pagefind-modal>
+
+<script type="module">
+    await customElements.whenDefined("pagefind-modal");
+
+    const components = window.PagefindComponents;
+    if (components) {
+        const instanceName = "site-search";
+        const instance = components.getInstanceManager().getInstance(instanceName);
+        const inputComponent = document.querySelector(`pagefind-input[instance="${instanceName}"]`);
+        const modal = document.querySelector(`pagefind-modal[instance="${instanceName}"]`);
+        const viewAll = document.getElementById("site-search-view-all");
+
+        const waitForInput = () => new Promise((resolve) => {
+            const check = () => {
+                if (inputComponent?.inputEl) {
+                    resolve(inputComponent.inputEl);
+                    return;
+                }
+
+                window.requestAnimationFrame(check);
+            };
+
+            check();
+        });
+
+        const input = await waitForInput();
+        const searchURL = (query) => {
+            const url = new URL("/search/", window.location.origin);
+            if (query) {
+                url.searchParams.set("q", query);
+            }
+
+            return `${url.pathname}${url.search}`;
+        };
+        const updateViewAll = (query) => {
+            if (viewAll) {
+                viewAll.href = searchURL(query.trim());
+            }
+        };
+        const addResultHighlights = () => {
+            const query = input.value.trim();
+            if (query.length < 2) {
+                return;
+            }
+
+            modal?.querySelectorAll(".pf-result-link, .pf-heading-link").forEach((link) => {
+                const url = new URL(link.href, window.location.origin);
+                url.searchParams.set("highlight", query);
+                link.href = `${url.pathname}${url.search}${url.hash}`;
+            });
+        };
+
+        const resultObserver = new MutationObserver(addResultHighlights);
+        resultObserver.observe(modal, {
+            childList: true,
+            subtree: true
+        });
+
+        input.addEventListener("input", (event) => {
+            const query = input.value.trim();
+            updateViewAll(query);
+
+            if (query.length < 2) {
+                event.stopImmediatePropagation();
+                inputComponent.updateState?.(input.value);
+                instance.triggerSearch("");
+            }
+        }, true);
+
+        input.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter") {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            const query = input.value.trim();
+            const firstResult = instance.searchTerm.trim() === query
+                ? modal?.querySelector(".pf-result-link, .pf-heading-link")
+                : null;
+
+            window.location.href = firstResult?.href || searchURL(query);
+        }, true);
+
+        instance.on("search", (query) => {
+            if (document.activeElement !== input) {
+                updateViewAll(query);
+            }
+        });
+        instance.on("results", () => {
+            window.requestAnimationFrame(addResultHighlights);
+        });
+    }
+</script>
+
+<script>
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
+
+            el.classList.toggle("is-active");
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
+    })();
+</script>
+<div id="content">
+    <div class="docs">
+    <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Docs navigation" data-pagefind-ignore="all">
+    <nav class="menu" aria-label="Section navigation">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="docs-nav-root">
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/getting-started/" class="docs-nav-link docs-nav-link-top">
+                Getting Started
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top">
+                Language
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
+        
+            <a href="https://ferretlang.org/docs/tools/" class="docs-nav-link docs-nav-link-top is-ancestor">
+                Tools
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/" class="docs-nav-link is-ancestor">
+                CLI
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/install/" class="docs-nav-link">
+                Install
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/run/" class="docs-nav-link">
+                Run
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/repl/" class="docs-nav-link">
+                REPL
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/debug/" class="docs-nav-link">
+                Debug
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/check/" class="docs-nav-link">
+                Check
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/fmt/" class="docs-nav-link">
+                Fmt
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/build/" class="docs-nav-link">
+                Build
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/inspect/" class="docs-nav-link">
+                Inspect
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/browser/" class="docs-nav-link">
+                Browser
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/config/" class="docs-nav-link is-active" aria-current="page">
+                Config
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/tools/lab/" class="docs-nav-link">
+                Lab
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/standard-library/" class="docs-nav-link docs-nav-link-top">
+                Standard Library
+            </a>
+        
+
+        
+    </li>
+
+
+        
+    </ul>
+
+
+</nav>
+
+</aside>
+
+
+        <main id="main" class="docs-main">
+            <article class="docs-content" data-pagefind-body>
+    <h1 id="config">Config</h1>
+<p>The <code>config</code> command reads and writes persistent settings that apply to all CLI commands.</p>
+<h2 id="config-file">Config file</h2>
+<p>Settings are stored in <code>~/.ferret/config.yaml</code>. The file is created automatically the first time you run any <code>ferret</code> command.</p>
+<h2 id="configuration-priority">Configuration priority</h2>
+<p>When the same setting is specified in multiple places, the highest priority wins:</p>
+<ol>
+<li>Command-line flags (highest)</li>
+<li>Environment variables</li>
+<li>Config file</li>
+<li>Built-in defaults (lowest)</li>
+</ol>
+<h2 id="environment-variables">Environment variables</h2>
+<p>Every config key maps to an environment variable with the <code>FERRET_</code> prefix. Dashes become underscores:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Config key</th>
+          <th>Environment variable</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>runtime</code></td>
+          <td><code>FERRET_RUNTIME</code></td>
+      </tr>
+      <tr>
+          <td><code>browser-address</code></td>
+          <td><code>FERRET_BROWSER_ADDRESS</code></td>
+      </tr>
+      <tr>
+          <td><code>log-level</code></td>
+          <td><code>FERRET_LOG_LEVEL</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="set-a-value">Set a value</h2>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret config set runtime builtin</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret config set runtime builtin</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-1-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-1-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret config set browser-address http://127.0.0.1:9333</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-2-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret config set browser-address http://127.0.0.1:9333</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-2-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-2-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<h2 id="get-a-value">Get a value</h2>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret config get runtime</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret config get runtime</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-3-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-3-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<h2 id="list-all-values">List all values</h2>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret config list</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-4-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret config list</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-4-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-4-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The <code>list</code> command (alias <code>ls</code>) prints every configurable key and its current value.</p>
+<h2 id="available-config-keys">Available config keys</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>log-level</code></td>
+          <td><code>info</code></td>
+          <td>Logging level: <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code></td>
+      </tr>
+      <tr>
+          <td><code>log-output</code></td>
+          <td><code>stderr</code></td>
+          <td>Log output destination: <code>stderr</code>, <code>file</code></td>
+      </tr>
+      <tr>
+          <td><code>log-file</code></td>
+          <td><code>ferret.log</code></td>
+          <td>Log file path (when <code>log-output</code> is <code>file</code>)</td>
+      </tr>
+      <tr>
+          <td><code>runtime</code></td>
+          <td><code>builtin</code></td>
+          <td>Runtime type: <code>builtin</code> or a remote URL</td>
+      </tr>
+      <tr>
+          <td><code>runtime-fs-root</code></td>
+          <td>Current working directory</td>
+          <td>File system root for the runtime</td>
+      </tr>
+      <tr>
+          <td><code>browser-cookies</code></td>
+          <td><code>false</code></td>
+          <td>Persist cookies between queries</td>
+      </tr>
+      <tr>
+          <td><code>browser-address</code></td>
+          <td><code>http://127.0.0.1:9222</code></td>
+          <td>Browser remote debugging address</td>
+      </tr>
+      <tr>
+          <td><code>browser-open</code></td>
+          <td><code>false</code></td>
+          <td>Open a browser for script execution</td>
+      </tr>
+      <tr>
+          <td><code>browser-headless</code></td>
+          <td><code>false</code></td>
+          <td>Open browser in headless mode</td>
+      </tr>
+      <tr>
+          <td><code>proxy</code></td>
+          <td></td>
+          <td>Proxy server address</td>
+      </tr>
+      <tr>
+          <td><code>user-agent</code></td>
+          <td></td>
+          <td>Custom User-Agent header</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="global-logging-flags">Global logging flags</h2>
+<p>The logging flags are available on every command as persistent flags:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run --log-level debug script.fql</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-5-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run --log-level debug script.fql</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-5-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-5-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run --log-output file --log-file run.log script.fql</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-6-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-6-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run --log-output file --log-file run.log script.fql</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-6-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-6-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<h2 id="version">Version</h2>
+<p>The <code>version</code> command shows the CLI version and the runtime version:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret version</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-7-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-7-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret version</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-7-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-7-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<pre tabindex="0"><code>Version:
+  Self: 2.0.0-alpha.26
+  Runtime: 2.0.0-alpha.26
+</code></pre><p>To check the version of a remote runtime:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-8-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret version --runtime http://localhost:8080</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-8-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-8-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret version --runtime http://localhost:8080</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-8-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-8-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+</article>
+
+        </main>
+
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#config-file">Config file</a></li>
+    <li><a href="#configuration-priority">Configuration priority</a></li>
+    <li><a href="#environment-variables">Environment variables</a></li>
+    <li><a href="#set-a-value">Set a value</a></li>
+    <li><a href="#get-a-value">Get a value</a></li>
+    <li><a href="#list-all-values">List all values</a></li>
+    <li><a href="#available-config-keys">Available config keys</a></li>
+    <li><a href="#global-logging-flags">Global logging flags</a></li>
+    <li><a href="#version">Version</a></li>
+  </ul>
+</nav>
+</aside>
+    </div>
+</div>
+<script type="module">
+    await import("/pagefind/pagefind-highlight.js");
+    new PagefindHighlight({ highlightParam: "highlight" });
+</script>
+
+
+        </div><a class="site-back-to-top" href="#top" aria-label="Back to top" title="Back to top" data-pagefind-ignore="all">
+    <span class="site-back-to-top-icon" aria-hidden="true"></span>
+</a>
+
+<script>
+    (function() {
+        const button = document.querySelector(".site-back-to-top");
+        const header = document.getElementById("site-header");
+
+        if (!button) {
+            return;
+        }
+
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let ticking = false;
+
+        function setVisible(isVisible) {
+            button.classList.toggle("is-visible", isVisible);
+
+            if (isVisible) {
+                button.removeAttribute("aria-hidden");
+                button.removeAttribute("tabindex");
+            } else {
+                button.setAttribute("aria-hidden", "true");
+                button.setAttribute("tabindex", "-1");
+            }
+        }
+
+        function updateVisibility() {
+            setVisible(window.scrollY > window.innerHeight);
+            ticking = false;
+        }
+
+        function requestVisibilityUpdate() {
+            if (ticking) {
+                return;
+            }
+
+            ticking = true;
+            window.requestAnimationFrame(updateVisibility);
+        }
+
+        function focusHeader() {
+            if (!header) {
+                return;
+            }
+
+            try {
+                header.focus({ preventScroll: true });
+            } catch (error) {
+                header.focus();
+            }
+        }
+
+        button.classList.add("is-enhanced");
+        updateVisibility();
+
+        window.addEventListener("scroll", requestVisibilityUpdate, { passive: true });
+        window.addEventListener("resize", requestVisibilityUpdate);
+
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            window.scrollTo({
+                top: 0,
+                behavior: reducedMotion.matches ? "auto" : "smooth"
+            });
+
+            window.setTimeout(focusHeader, reducedMotion.matches ? 0 : 350);
+        });
+    })();
+</script>
+<footer class="site-footer" data-pagefind-ignore="all">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
+        </div>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://ferretlang.org/js/ace-mode-fql.min.5b295e6c5bb782d024d51ec24bd4e9bf9af61c16909b74461542dfde5a6e062f.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
+</footer>
+</body>
+</html>

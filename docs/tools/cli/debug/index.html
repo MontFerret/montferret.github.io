@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Ferret</title>
+
+    <meta name="generator" content="Hugo 0.159.1">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.3aa6c8da94a3406bdb1d48495c2dbf0de5f8948356cda7370764332b3af4b74f.css" />
+    <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
+    <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
+    
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ferret" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        console.log('Google Analytics is enabled');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-135792752-1');
+    </script>
+</head>
+<body>
+        <div id="top" class="site-top-anchor" aria-hidden="true"></div><nav id="site-header" class="navbar site-navbar" role="navigation" aria-label="main navigation" tabindex="-1" data-pagefind-ignore="all">
+    <pagefind-config instance="site-search" highlight-param="highlight"></pagefind-config>
+
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
+            </a>
+
+            
+<pagefind-modal-trigger
+    class="site-navbar-search site-navbar-search-mobile"
+    instance="site-search"
+    placeholder="Search"
+></pagefind-modal-trigger>
+
+
+            <button
+                id="navbar-burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
+                aria-label="menu"
+                aria-expanded="false"
+                aria-controls="primary-nav"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
+                
+                
+                
+                    
+                    
+                    <a href="/try/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
+                
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link active is-active"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
+                
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
+                
+            </div>
+            
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
+                
+<pagefind-modal-trigger
+    class="site-navbar-search site-navbar-search-desktop"
+    instance="site-search"
+    placeholder="Search"
+    shortcut="/"
+></pagefind-modal-trigger>
+
+                
+                
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
+                
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+<pagefind-modal class="site-search-modal" instance="site-search">
+    <pagefind-modal-header>
+        <pagefind-input instance="site-search" placeholder="Search docs" debounce="150"></pagefind-input>
+    </pagefind-modal-header>
+    <pagefind-modal-body>
+        <pagefind-summary instance="site-search" default-message="Type at least 2 characters to search."></pagefind-summary>
+        <pagefind-results instance="site-search" max-results="6" max-sub-results="3"></pagefind-results>
+    </pagefind-modal-body>
+    <pagefind-modal-footer>
+        <a id="site-search-view-all" class="site-search-view-all" href="/search/">View all results</a>
+        <pagefind-keyboard-hints instance="site-search"></pagefind-keyboard-hints>
+    </pagefind-modal-footer>
+</pagefind-modal>
+
+<script type="module">
+    await customElements.whenDefined("pagefind-modal");
+
+    const components = window.PagefindComponents;
+    if (components) {
+        const instanceName = "site-search";
+        const instance = components.getInstanceManager().getInstance(instanceName);
+        const inputComponent = document.querySelector(`pagefind-input[instance="${instanceName}"]`);
+        const modal = document.querySelector(`pagefind-modal[instance="${instanceName}"]`);
+        const viewAll = document.getElementById("site-search-view-all");
+
+        const waitForInput = () => new Promise((resolve) => {
+            const check = () => {
+                if (inputComponent?.inputEl) {
+                    resolve(inputComponent.inputEl);
+                    return;
+                }
+
+                window.requestAnimationFrame(check);
+            };
+
+            check();
+        });
+
+        const input = await waitForInput();
+        const searchURL = (query) => {
+            const url = new URL("/search/", window.location.origin);
+            if (query) {
+                url.searchParams.set("q", query);
+            }
+
+            return `${url.pathname}${url.search}`;
+        };
+        const updateViewAll = (query) => {
+            if (viewAll) {
+                viewAll.href = searchURL(query.trim());
+            }
+        };
+        const addResultHighlights = () => {
+            const query = input.value.trim();
+            if (query.length < 2) {
+                return;
+            }
+
+            modal?.querySelectorAll(".pf-result-link, .pf-heading-link").forEach((link) => {
+                const url = new URL(link.href, window.location.origin);
+                url.searchParams.set("highlight", query);
+                link.href = `${url.pathname}${url.search}${url.hash}`;
+            });
+        };
+
+        const resultObserver = new MutationObserver(addResultHighlights);
+        resultObserver.observe(modal, {
+            childList: true,
+            subtree: true
+        });
+
+        input.addEventListener("input", (event) => {
+            const query = input.value.trim();
+            updateViewAll(query);
+
+            if (query.length < 2) {
+                event.stopImmediatePropagation();
+                inputComponent.updateState?.(input.value);
+                instance.triggerSearch("");
+            }
+        }, true);
+
+        input.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter") {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            const query = input.value.trim();
+            const firstResult = instance.searchTerm.trim() === query
+                ? modal?.querySelector(".pf-result-link, .pf-heading-link")
+                : null;
+
+            window.location.href = firstResult?.href || searchURL(query);
+        }, true);
+
+        instance.on("search", (query) => {
+            if (document.activeElement !== input) {
+                updateViewAll(query);
+            }
+        });
+        instance.on("results", () => {
+            window.requestAnimationFrame(addResultHighlights);
+        });
+    }
+</script>
+
+<script>
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
+
+            el.classList.toggle("is-active");
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
+    })();
+</script>
+<div id="content">
+    <div class="docs">
+    <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Docs navigation" data-pagefind-ignore="all">
+    <nav class="menu" aria-label="Section navigation">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="docs-nav-root">
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/getting-started/" class="docs-nav-link docs-nav-link-top">
+                Getting Started
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top">
+                Language
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
+        
+            <a href="https://ferretlang.org/docs/tools/" class="docs-nav-link docs-nav-link-top is-ancestor">
+                Tools
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section is-open">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/" class="docs-nav-link is-ancestor">
+                CLI
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/install/" class="docs-nav-link">
+                Install
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/run/" class="docs-nav-link">
+                Run
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/repl/" class="docs-nav-link">
+                REPL
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/debug/" class="docs-nav-link is-active" aria-current="page">
+                Debug
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/check/" class="docs-nav-link">
+                Check
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/fmt/" class="docs-nav-link">
+                Fmt
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/build/" class="docs-nav-link">
+                Build
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/inspect/" class="docs-nav-link">
+                Inspect
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/browser/" class="docs-nav-link">
+                Browser
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-2">
+        
+            <a href="https://ferretlang.org/docs/tools/cli/config/" class="docs-nav-link">
+                Config
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/tools/lab/" class="docs-nav-link">
+                Lab
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/standard-library/" class="docs-nav-link docs-nav-link-top">
+                Standard Library
+            </a>
+        
+
+        
+    </li>
+
+
+        
+    </ul>
+
+
+</nav>
+
+</aside>
+
+
+        <main id="main" class="docs-main">
+            <article class="docs-content" data-pagefind-body>
+    <h1 id="debug">Debug</h1>
+<p>The <code>debug</code> command starts an interactive debugger for a FQL script:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode">
+    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret debug script.fql</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret debug script.fql</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-1-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-1-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>The debugger compiles the script, pauses at the first executable location, and presents a <code>(fdb)</code> prompt:</p>
+<pre tabindex="0"><code>Ferret debugger started.
+Paused at script.fql:1
+1 | LET x = 42
+Type &#34;help&#34; for available commands.
+(fdb)
+</code></pre><h2 id="requirements">Requirements</h2>
+<p>The debugger requires the builtin runtime and a source file. It does not support compiled artifacts, stdin, inline evaluation (<code>--eval</code>), or remote runtimes.</p>
+<h2 id="set-breakpoints">Set breakpoints</h2>
+<p>Use the <code>break</code> command (alias <code>b</code>) to set a breakpoint at a source location:</p>
+<pre tabindex="0"><code>(fdb) break 5
+Breakpoint 1 set at script.fql:5 (next-file).
+</code></pre><p>Locations can include a column and a filename:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Format</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Line</td>
+          <td><code>break 5</code></td>
+      </tr>
+      <tr>
+          <td>Line and column</td>
+          <td><code>break 5:10</code></td>
+      </tr>
+      <tr>
+          <td>File and line</td>
+          <td><code>break utils.fql:12</code></td>
+      </tr>
+      <tr>
+          <td>File, line, and column</td>
+          <td><code>break utils.fql:12:4</code></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="binding-modes">Binding modes</h3>
+<p>By default, a breakpoint binds to the next executable location in the file (<code>--next</code>). Two other modes are available:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Flag</th>
+          <th>Behavior</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>--next</code></td>
+          <td>Bind to the next executable location in the file (default)</td>
+      </tr>
+      <tr>
+          <td><code>--exact</code></td>
+          <td>Bind only at the exact location; fail if it is not executable</td>
+      </tr>
+      <tr>
+          <td><code>--in-function</code></td>
+          <td>Bind to the next executable location within the enclosing function</td>
+      </tr>
+  </tbody>
+</table>
+<pre tabindex="0"><code>(fdb) break --exact 10
+(fdb) break --in-function 15
+</code></pre><h2 id="manage-breakpoints">Manage breakpoints</h2>
+<p>List all breakpoints with <code>breakpoints</code> (aliases <code>bp</code>, <code>bl</code>):</p>
+<pre tabindex="0"><code>(fdb) breakpoints
+ID  Requested      Bound           Mode       State
+1   script.fql:5   script.fql:5    next-file  bound
+</code></pre><p>Delete a breakpoint by ID with <code>delete</code> (alias <code>d</code>):</p>
+<pre tabindex="0"><code>(fdb) delete 1
+Breakpoint 1 deleted.
+</code></pre><h2 id="execution-control">Execution control</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Command</th>
+          <th>Alias</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>continue</code></td>
+          <td><code>c</code></td>
+          <td>Resume execution until the next breakpoint or completion</td>
+      </tr>
+      <tr>
+          <td><code>step</code></td>
+          <td><code>s</code></td>
+          <td>Step into the next source location</td>
+      </tr>
+      <tr>
+          <td><code>next</code></td>
+          <td><code>n</code></td>
+          <td>Step over the current source location</td>
+      </tr>
+      <tr>
+          <td><code>out</code></td>
+          <td></td>
+          <td>Step out of the current frame</td>
+      </tr>
+      <tr>
+          <td><code>pause</code></td>
+          <td></td>
+          <td>Request a pause after the next resume</td>
+      </tr>
+  </tbody>
+</table>
+<p>Pressing Enter with no input repeats the last <code>continue</code>, <code>step</code>, <code>next</code>, or <code>out</code> command.</p>
+<h2 id="inspect-state">Inspect state</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Command</th>
+          <th>Alias</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>where</code></td>
+          <td><code>w</code>, <code>bt</code></td>
+          <td>Show the current stack trace</td>
+      </tr>
+      <tr>
+          <td><code>locals</code></td>
+          <td><code>l</code></td>
+          <td>Show local variables and parameters in the current frame</td>
+      </tr>
+      <tr>
+          <td><code>print &lt;expr&gt;</code></td>
+          <td><code>p</code>, <code>e</code>, <code>eval</code></td>
+          <td>Evaluate a safe expression (no calls, queries, or mutation)</td>
+      </tr>
+  </tbody>
+</table>
+<pre tabindex="0"><code>(fdb) locals
+Locals:
+  x = 42
+  name = &#34;Ada&#34;
+</code></pre><pre tabindex="0"><code>(fdb) print x + 1
+43
+</code></pre><h2 id="exit">Exit</h2>
+<p>Type <code>quit</code> (alias <code>q</code>) or press <code>Ctrl-D</code> to end the debug session.</p>
+<h2 id="command-reference">Command reference</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Command</th>
+          <th>Aliases</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>break &lt;location&gt;</code></td>
+          <td><code>b</code></td>
+          <td>Set breakpoint at next executable location in file</td>
+      </tr>
+      <tr>
+          <td><code>break --exact &lt;location&gt;</code></td>
+          <td></td>
+          <td>Set breakpoint only at exact location</td>
+      </tr>
+      <tr>
+          <td><code>break --next &lt;location&gt;</code></td>
+          <td></td>
+          <td>Set breakpoint at next executable location in file</td>
+      </tr>
+      <tr>
+          <td><code>break --in-function &lt;location&gt;</code></td>
+          <td></td>
+          <td>Set breakpoint at next executable location in function</td>
+      </tr>
+      <tr>
+          <td><code>breakpoints</code></td>
+          <td><code>bp</code>, <code>bl</code></td>
+          <td>List all breakpoints</td>
+      </tr>
+      <tr>
+          <td><code>delete &lt;id&gt;</code></td>
+          <td><code>d</code></td>
+          <td>Delete a breakpoint</td>
+      </tr>
+      <tr>
+          <td><code>continue</code></td>
+          <td><code>c</code></td>
+          <td>Resume execution</td>
+      </tr>
+      <tr>
+          <td><code>step</code></td>
+          <td><code>s</code></td>
+          <td>Step into next source location</td>
+      </tr>
+      <tr>
+          <td><code>next</code></td>
+          <td><code>n</code></td>
+          <td>Step over current source location</td>
+      </tr>
+      <tr>
+          <td><code>out</code></td>
+          <td></td>
+          <td>Step out of current frame</td>
+      </tr>
+      <tr>
+          <td><code>pause</code></td>
+          <td></td>
+          <td>Request pause after next resume</td>
+      </tr>
+      <tr>
+          <td><code>where</code></td>
+          <td><code>w</code>, <code>bt</code></td>
+          <td>Show stack trace</td>
+      </tr>
+      <tr>
+          <td><code>locals</code></td>
+          <td><code>l</code></td>
+          <td>Show local variables</td>
+      </tr>
+      <tr>
+          <td><code>print &lt;expr&gt;</code></td>
+          <td><code>p</code>, <code>e</code>, <code>eval</code></td>
+          <td>Evaluate a safe expression</td>
+      </tr>
+      <tr>
+          <td><code>quit</code></td>
+          <td><code>q</code></td>
+          <td>Stop debugging and exit</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="runtime-and-browser-flags">Runtime and browser flags</h2>
+<p>The debug command accepts the same runtime and browser flags as <a href="../run/#runtime-and-browser-flags"><code>ferret run</code></a>. The <code>--runtime</code> flag is ignored since debugging requires the builtin runtime.</p>
+
+</article>
+
+        </main>
+
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#set-breakpoints">Set breakpoints</a>
+      <ul>
+        <li><a href="#binding-modes">Binding modes</a></li>
+      </ul>
+    </li>
+    <li><a href="#manage-breakpoints">Manage breakpoints</a></li>
+    <li><a href="#execution-control">Execution control</a></li>
+    <li><a href="#inspect-state">Inspect state</a></li>
+    <li><a href="#exit">Exit</a></li>
+    <li><a href="#command-reference">Command reference</a></li>
+    <li><a href="#runtime-and-browser-flags">Runtime and browser flags</a></li>
+  </ul>
+</nav>
+</aside>
+    </div>
+</div>
+<script type="module">
+    await import("/pagefind/pagefind-highlight.js");
+    new PagefindHighlight({ highlightParam: "highlight" });
+</script>
+
+
+        </div><a class="site-back-to-top" href="#top" aria-label="Back to top" title="Back to top" data-pagefind-ignore="all">
+    <span class="site-back-to-top-icon" aria-hidden="true"></span>
+</a>
+
+<script>
+    (function() {
+        const button = document.querySelector(".site-back-to-top");
+        const header = document.getElementById("site-header");
+
+        if (!button) {
+            return;
+        }
+
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let ticking = false;
+
+        function setVisible(isVisible) {
+            button.classList.toggle("is-visible", isVisible);
+
+            if (isVisible) {
+                button.removeAttribute("aria-hidden");
+                button.removeAttribute("tabindex");
+            } else {
+                button.setAttribute("aria-hidden", "true");
+                button.setAttribute("tabindex", "-1");
+            }
+        }
+
+        function updateVisibility() {
+            setVisible(window.scrollY > window.innerHeight);
+            ticking = false;
+        }
+
+        function requestVisibilityUpdate() {
+            if (ticking) {
+                return;
+            }
+
+            ticking = true;
+            window.requestAnimationFrame(updateVisibility);
+        }
+
+        function focusHeader() {
+            if (!header) {
+                return;
+            }
+
+            try {
+                header.focus({ preventScroll: true });
+            } catch (error) {
+                header.focus();
+            }
+        }
+
+        button.classList.add("is-enhanced");
+        updateVisibility();
+
+        window.addEventListener("scroll", requestVisibilityUpdate, { passive: true });
+        window.addEventListener("resize", requestVisibilityUpdate);
+
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            window.scrollTo({
+                top: 0,
+                behavior: reducedMotion.matches ? "auto" : "smooth"
+            });
+
+            window.setTimeout(focusHeader, reducedMotion.matches ? 0 : 350);
+        });
+    })();
+</script>
+<footer class="site-footer" data-pagefind-ignore="all">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
+        </div>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://ferretlang.org/js/ace-mode-fql.min.5b295e6c5bb782d024d51ec24bd4e9bf9af61c16909b74461542dfde5a6e062f.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
+</footer>
+</body>
+</html>
