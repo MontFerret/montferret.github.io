@@ -434,9 +434,8 @@ Argument   | Type     | Default value  | Description
 TYPENAME
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/type_name.go#L12)
 
-TYPENAME returns the data type name of value.
+TYPENAME returns the data type name of a value as a string.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -444,5 +443,5 @@ Argument   | Type     | Default value  | Description
 `value` | `Any`  |  | Input value of arbitrary type.
 
 
-**Returns** `Boolean` Returns string representation of a type.
+**Returns** `String` Returns string representation of a type (e.g. `"Int"`, `"Float"`, `"String"`, `"Array"`, `"Object"`, `"DateTime"`, `"Boolean"`, `"Binary"`, `"None"`).
 - - - -

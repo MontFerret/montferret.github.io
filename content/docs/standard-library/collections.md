@@ -6,7 +6,7 @@ description: "Collection functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/collections/
 menuTitle: 
-menu: [COUNT,COUNT_DISTINCT,INCLUDES,REVERSE,]
+menu: [COUNT,COUNT_DISTINCT,INCLUDES,LENGTH,REVERSE,]
 ---
 
 
@@ -66,6 +66,24 @@ Argument   | Type     | Default value  | Description
 
 
 **Returns** `Int` The number of distinct elements in the collection.
+- - - -
+
+
+{{< header href="length" >}}
+
+LENGTH
+
+{{</ header >}}
+
+LENGTH returns the number of elements or characters in a value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `String` `Any[]` `Object` `Binary`  |  | The value to measure.
+
+
+**Returns** `Int` The length of the value — number of characters for strings, number of elements for arrays and objects, number of bytes for binary values.
 - - - -
 
 
