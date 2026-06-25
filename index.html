@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.e9df89a0f6fa3aa5037a91b598955bdf4042eb3c4acd848ad302aec2288deb94.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.3aa6c8da94a3406bdb1d48495c2dbf0de5f8948356cda7370764332b3af4b74f.css" />
     <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
     
@@ -304,16 +304,16 @@
                                         <div id="hero-query-browser" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
 LET page = WEB::HTML::OPEN(@page, { driver: "cdp" })
 
-LET products = WAITFOR VALUE page[~ css`.product-card`]
+LET products = WAITFOR VALUE page[~ `.product-card`]
     WHEN LENGTH(.) > 0
     TIMEOUT 5000
     ON TIMEOUT RETURN []
 
 FOR product IN products
     RETURN {
-        brand: product[~? css`.product-brand`].textContent,
-        title: product[~? css`.product-title`].textContent,
-        price: product[~? css`.product-price`].textContent,
+        brand: product[~? `.product-brand`].textContent,
+        title: product[~? `.product-title`].textContent,
+        price: product[~? `.product-price`].textContent,
     }
                                         </div>
                                     </div>

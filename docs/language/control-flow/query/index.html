@@ -13,7 +13,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.e9df89a0f6fa3aa5037a91b598955bdf4042eb3c4acd848ad302aec2288deb94.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.3aa6c8da94a3406bdb1d48495c2dbf0de5f8948356cda7370764332b3af4b74f.css" />
     <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
     
@@ -890,7 +890,7 @@
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
     <h1 id="query-expressions">Query Expressions</h1>
-<p>A <code>QUERY</code> expression delegates work to a value that knows how to run queries. Instead of expressing the logic in FQL, you write a query in another dialect — such as CSS for an HTML document — and <code>QUERY</code> passes it to the value and returns the results.</p>
+<p>A <code>QUERY</code> expression delegates work to a value that knows how to run queries. Instead of expressing the logic in FQL, you provide a query payload and pass it to a host value, such as an HTML document, database connection, API client, or JSON document.</p>
 
 
 
@@ -912,7 +912,7 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">QUERY `.product .title` IN doc USING css</div>
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">QUERY `.product .title` IN doc</div>
         </div>
     </div>
 
@@ -946,9 +946,9 @@
     </script>
 </div>
 
-<p>This reads as: run the query <code>`.product .title`</code> against <code>doc</code>, using the <code>css</code> dialect.</p>
-<p>The query string is often written with backticks so selectors and other syntax do not need escaping. It can also be a regular string, a variable, or a bind parameter.</p>
-<h2 id="anatomy">Anatomy</h2>
+<p>This reads as: run the query <code>`.product .title`</code> against <code>doc</code>.</p>
+<p>Some host values support more than one query dialect. In that case, the value may provide a default dialect, so <code>USING</code> is not always required. For example, an HTML document may default to CSS selectors.</p>
+<p>When you need to choose a specific dialect, add <code>USING</code>:</p>
 
 
 
@@ -970,7 +970,7 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">QUERY [modifier] &lt;payload&gt; IN &lt;source&gt; USING &lt;dialect&gt; [WITH &lt;params&gt;] [OPTIONS &lt;options&gt;]</div>
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">QUERY `//article/h1` IN doc USING xpath</div>
         </div>
     </div>
 
@@ -1004,13 +1004,72 @@
     </script>
 </div>
 
+<p>This reads as: run the query <code>`//article/h1`</code> against <code>doc</code>, using the <code>xpath</code> dialect.</p>
+<p>The query expression is often written with backticks so selectors and other syntax do not need escaping. It can also be a regular string, a variable, or a bind parameter.</p>
+<h2 id="anatomy">Anatomy</h2>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">QUERY [modifier] &lt;expression&gt; IN &lt;source&gt; [USING &lt;dialect&gt;] [WITH &lt;params&gt;] [OPTIONS &lt;options&gt;]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
 <ul>
-<li><strong>payload</strong> — the query to run, as a string, variable, or parameter.</li>
+<li><strong>expression</strong> — the query to run, as a string, variable, or parameter.</li>
 <li><strong>source</strong> — an expression that yields the value the query runs against. The value must support querying.</li>
-<li><strong>dialect</strong> — an identifier naming the query language, such as <code>css</code>, <code>xpath</code>, or <code>sql</code>. The available dialects depend on the modules and runtime in use.</li>
+<li><strong>USING</strong> — optionally selects a query dialect, such as <code>css</code>, <code>xpath</code>, or <code>sql</code>. If omitted, the source value chooses its default dialect when one is available.</li>
 <li><strong>WITH</strong> — an optional value passed to the query as parameters.</li>
 <li><strong>OPTIONS</strong> — an optional value carrying execution settings, such as a timeout.</li>
 </ul>
+<p>If <code>USING</code> is omitted and the source value does not provide a default dialect, the query fails at runtime.</p>
 <h2 id="result-modifiers">Result modifiers</h2>
 <p>By default, a <code>QUERY</code> returns a list of every match. A modifier after <code>QUERY</code> changes the shape of the result.</p>
 <table>
@@ -1060,9 +1119,9 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">LET total = QUERY COUNT `.item` IN doc USING css
-LET hasNext = QUERY EXISTS `.pagination .next` IN doc USING css
-LET title = QUERY ONE `.product .title` IN doc USING css
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">LET total = QUERY COUNT `.item` IN doc
+LET hasNext = QUERY EXISTS `.pagination .next` IN doc
+LET title = QUERY ONE `.product .title` IN doc
 
 RETURN { total, hasNext, title }</div>
         </div>
@@ -1070,7 +1129,7 @@ RETURN { total, hasNext, title }</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-3-text');
+            const editor = ace.edit('code-4-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
@@ -1121,67 +1180,9 @@ RETURN { total, hasNext, title }</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" data-auto-height="true">QUERY `SELECT name, price FROM products WHERE category = $c` IN db USING sql
-    WITH { c: &#34;laptops&#34; }
-    OPTIONS { timeout: 5000 }</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-4-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<h2 id="a-host-capability">A host capability</h2>
-<p><code>QUERY</code> only works when the source value supports querying — it must be a <strong>queryable</strong> value, such as an HTML document, a database connection, or a JSON document provided by a module or the host application. If the source does not support querying, or the requested dialect is unavailable, the query fails at runtime.</p>
-<p>You can recover from such failures with a recovery clause.</p>
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-
-    <div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <span class="code-editor-meta">read-only</span>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-5-text" class="code-editor-text" data-auto-height="true">LET rows = QUERY `.row` IN doc USING css ON ERROR RETURN []</div>
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">QUERY `SELECT name, price FROM products WHERE category = $c` IN db
+WITH { c: &#34;laptops&#34; }
+OPTIONS { timeout: 5000 }</div>
         </div>
     </div>
 
@@ -1215,7 +1216,124 @@ RETURN { total, hasNext, title }</div>
     </script>
 </div>
 
-<p>For more on values that expose querying and other behaviors, see <a href="https://ferretlang.org/docs/language/types/capabilities/">Value Capabilities</a> and <a href="https://ferretlang.org/docs/language/types/host/">Host Values</a>. For querying documents in practice, see <a href="">Web Extraction</a>.</p>
+<p>For host values with multiple dialects, <code>USING</code> can still be used together with <code>WITH</code> and <code>OPTIONS</code>:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">QUERY `SELECT name, price FROM products WHERE category = $c` IN db USING sql
+WITH { c: &#34;laptops&#34; }
+OPTIONS { timeout: 5000 }</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h2 id="a-host-capability">A host capability</h2>
+<p><code>QUERY</code> only works when the source value supports querying — it must be a <strong>queryable</strong> value. Queryable values may include HTML documents, database connections, API clients, JSON documents, or other values provided by a module or the host application.</p>
+<p>The source value decides which dialects are available. It may also define a default dialect. If the source does not support querying, the requested dialect is unavailable, or no dialect is provided and the source has no default, the query fails at runtime.</p>
+<p>You can recover from such failures with a recovery clause.</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <span class="code-editor-meta">read-only</span>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">LET rows = QUERY `.row` IN doc ON ERROR RETURN []</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-7-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>For more on values that expose querying and other behaviors, see <a href="https://ferretlang.org/docs/language/types/capabilities/">Value Capabilities</a> and <a href="https://ferretlang.org/docs/language/types/host/">Host Values</a>.</p>
 
 </article>
 
