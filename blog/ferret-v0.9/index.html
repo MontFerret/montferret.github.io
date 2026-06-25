@@ -1,9 +1,24 @@
 <!DOCTYPE html>
 <html lang="en-us"><head>
+    <title>Ferret — Declarative Data Extraction with FQL</title>
+    <link rel="canonical" href="https://ferretlang.org/">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Ferret</title>
+    <meta name="description" content="Ferret is an open-source query language and runtime for structured data extraction from websites, documents, APIs, databases, and custom data sources.">
+    <meta name="keywords" content="scraping, web scraping, browser automation, data extraction">
+    
+
+
+
+
+
+
+
+
+
+
+
 
     <meta name="generator" content="Hugo 0.159.1">
 
@@ -296,15 +311,18 @@ This works by appending the function parameter to any pre-existing <code>&lt;inp
 
 
 
-<div class="code-editor is-readonly">
 
-    <div class="code-editor-shell">
+<div class="code-editor is-readonly">
+    <textarea id="code-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
             </div>
-            <span class="code-editor-meta">read-only</span>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
         </div>
 
         <div class="code-editor-pane">
@@ -330,6 +348,44 @@ RETURN INPUT_CLEAR(doc, &#39;#my-input&#39;)</div>
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-1-copy-button');
+            const copyClipboardEl = document.querySelector('#code-1-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
         }, false);
     </script>
 </div>
@@ -345,15 +401,18 @@ RETURN INPUT_CLEAR(doc, &#39;#my-input&#39;)</div>
 
 
 
-<div class="code-editor is-readonly">
 
-    <div class="code-editor-shell">
+<div class="code-editor is-readonly">
+    <textarea id="code-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
             </div>
-            <span class="code-editor-meta">read-only</span>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
         </div>
 
         <div class="code-editor-pane">
@@ -379,6 +438,44 @@ RETURN CLICK(doc, &#39;#like&#39;, 2)</div>
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-2-copy-button');
+            const copyClipboardEl = document.querySelector('#code-2-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
         }, false);
     </script>
 </div>
@@ -394,15 +491,18 @@ RETURN CLICK(doc, &#39;#like&#39;, 2)</div>
 
 
 
-<div class="code-editor is-readonly">
 
-    <div class="code-editor-shell">
+<div class="code-editor is-readonly">
+    <textarea id="code-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
             </div>
-            <span class="code-editor-meta">read-only</span>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
         </div>
 
         <div class="code-editor-pane">
@@ -431,6 +531,44 @@ RETURN NONE</div>
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-3-copy-button');
+            const copyClipboardEl = document.querySelector('#code-3-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
         }, false);
     </script>
 </div>
@@ -447,15 +585,18 @@ One of the possible use cases is to create drivers with different custom names a
 
 
 
-<div class="code-editor is-readonly">
 
-    <div class="code-editor-shell">
+<div class="code-editor is-readonly">
+    <textarea id="code-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.golang</span>
             </div>
-            <span class="code-editor-meta">read-only</span>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
         </div>
 
         <div class="code-editor-pane">
@@ -517,6 +658,44 @@ cdp.NewDriver(
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-4-copy-button');
+            const copyClipboardEl = document.querySelector('#code-4-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
         }, false);
     </script>
 </div>
@@ -532,15 +711,18 @@ cdp.NewDriver(
 
 
 
-<div class="code-editor is-readonly">
 
-    <div class="code-editor-shell">
+<div class="code-editor is-readonly">
+    <textarea id="code-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
             </div>
-            <span class="code-editor-meta">read-only</span>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
         </div>
 
         <div class="code-editor-pane">
@@ -562,6 +744,44 @@ cdp.NewDriver(
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-5-copy-button');
+            const copyClipboardEl = document.querySelector('#code-5-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
         }, false);
     </script>
 </div>
@@ -584,15 +804,18 @@ cdp.NewDriver(
 
 
 
-<div class="code-editor is-readonly">
 
-    <div class="code-editor-shell">
+<div class="code-editor is-readonly">
+    <textarea id="code-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
                 <span>example.fql</span>
             </div>
-            <span class="code-editor-meta">read-only</span>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-6-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
         </div>
 
         <div class="code-editor-pane">
@@ -615,6 +838,44 @@ RETURN FIRST(items).name</div>
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-6-copy-button');
+            const copyClipboardEl = document.querySelector('#code-6-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
         }, false);
     </script>
 </div>

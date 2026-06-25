@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <title>Ferret — Declarative Data Extraction with FQL</title>
+    <link rel="canonical" href="https://ferretlang.org/">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="description" content="Ferret is an open-source query language and runtime for structured data extraction from websites, documents, APIs, databases, and custom data sources.">
+    <meta name="keywords" content="scraping, web scraping, browser automation, data extraction">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    <meta name="generator" content="Hugo 0.159.1">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.3aa6c8da94a3406bdb1d48495c2dbf0de5f8948356cda7370764332b3af4b74f.css" />
+    <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
+    <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
+    
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ferret" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135792752-1"></script>
+    <script>
+        console.log('Google Analytics is enabled');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-135792752-1');
+    </script>
+</head>
+<body>
+        <div id="top" class="site-top-anchor" aria-hidden="true"></div><nav id="site-header" class="navbar site-navbar" role="navigation" aria-label="main navigation" tabindex="-1" data-pagefind-ignore="all">
+    <pagefind-config instance="site-search" highlight-param="highlight"></pagefind-config>
+
+    <div class="container site-navbar-container">
+        <div class="navbar-brand site-navbar-brand">
+            <a class="navbar-item site-navbar-logo" href="/" aria-label="Ferret home">
+                <span class="site-navbar-logo-mark" aria-hidden="true">
+                    <img src="/img/logo_v2.png" width="30" height="30" alt="" />
+                </span>
+                <span class="site-navbar-logo-text">FERRET</span>
+            </a>
+
+            
+<pagefind-modal-trigger
+    class="site-navbar-search site-navbar-search-mobile"
+    instance="site-search"
+    placeholder="Search"
+></pagefind-modal-trigger>
+
+
+            <button
+                id="navbar-burger"
+                type="button"
+                class="navbar-burger site-navbar-burger"
+                aria-label="menu"
+                aria-expanded="false"
+                aria-controls="primary-nav"
+                data-target="primary-nav"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <div id="primary-nav" class="navbar-menu site-navbar-menu">
+            <div class="navbar-start site-navbar-links">
+                
+                
+                
+                    
+                    
+                    <a href="/try/" class="navbar-item site-navbar-link site-navbar-cta"
+                        title="Try it" id="repl">
+                        Try it
+                    </a>
+                
+                    
+                    
+                    <a href="/docs/" class="navbar-item site-navbar-link active is-active"
+                        title="Project documentation" id="docs">
+                        Docs
+                    </a>
+                
+                    
+                    
+                    <a href="/blog/" class="navbar-item site-navbar-link"
+                        title="Blog" id="blog">
+                        Blog
+                    </a>
+                
+            </div>
+            
+            <div class="navbar-end site-navbar-links site-navbar-links-secondary">
+                
+<pagefind-modal-trigger
+    class="site-navbar-search site-navbar-search-desktop"
+    instance="site-search"
+    placeholder="Search"
+    shortcut="/"
+></pagefind-modal-trigger>
+
+                
+                
+                    
+                    <a href="https://opencollective.com/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="Open collective" id="donate">
+                        Donate
+                    </a>
+                
+                    
+                    <a href="https://github.com/MontFerret/ferret" class="navbar-item site-navbar-link site-navbar-link-secondary"
+                        title="GitHub repository" id="github">
+                        GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+<pagefind-modal class="site-search-modal" instance="site-search">
+    <pagefind-modal-header>
+        <pagefind-input instance="site-search" placeholder="Search docs" debounce="150"></pagefind-input>
+    </pagefind-modal-header>
+    <pagefind-modal-body>
+        <pagefind-summary instance="site-search" default-message="Type at least 2 characters to search."></pagefind-summary>
+        <pagefind-results instance="site-search" max-results="6" max-sub-results="3"></pagefind-results>
+    </pagefind-modal-body>
+    <pagefind-modal-footer>
+        <a id="site-search-view-all" class="site-search-view-all" href="/search/">View all results</a>
+        <pagefind-keyboard-hints instance="site-search"></pagefind-keyboard-hints>
+    </pagefind-modal-footer>
+</pagefind-modal>
+
+<script type="module">
+    await customElements.whenDefined("pagefind-modal");
+
+    const components = window.PagefindComponents;
+    if (components) {
+        const instanceName = "site-search";
+        const instance = components.getInstanceManager().getInstance(instanceName);
+        const inputComponent = document.querySelector(`pagefind-input[instance="${instanceName}"]`);
+        const modal = document.querySelector(`pagefind-modal[instance="${instanceName}"]`);
+        const viewAll = document.getElementById("site-search-view-all");
+
+        const waitForInput = () => new Promise((resolve) => {
+            const check = () => {
+                if (inputComponent?.inputEl) {
+                    resolve(inputComponent.inputEl);
+                    return;
+                }
+
+                window.requestAnimationFrame(check);
+            };
+
+            check();
+        });
+
+        const input = await waitForInput();
+        const searchURL = (query) => {
+            const url = new URL("/search/", window.location.origin);
+            if (query) {
+                url.searchParams.set("q", query);
+            }
+
+            return `${url.pathname}${url.search}`;
+        };
+        const updateViewAll = (query) => {
+            if (viewAll) {
+                viewAll.href = searchURL(query.trim());
+            }
+        };
+        const addResultHighlights = () => {
+            const query = input.value.trim();
+            if (query.length < 2) {
+                return;
+            }
+
+            modal?.querySelectorAll(".pf-result-link, .pf-heading-link").forEach((link) => {
+                const url = new URL(link.href, window.location.origin);
+                url.searchParams.set("highlight", query);
+                link.href = `${url.pathname}${url.search}${url.hash}`;
+            });
+        };
+
+        const resultObserver = new MutationObserver(addResultHighlights);
+        resultObserver.observe(modal, {
+            childList: true,
+            subtree: true
+        });
+
+        input.addEventListener("input", (event) => {
+            const query = input.value.trim();
+            updateViewAll(query);
+
+            if (query.length < 2) {
+                event.stopImmediatePropagation();
+                inputComponent.updateState?.(input.value);
+                instance.triggerSearch("");
+            }
+        }, true);
+
+        input.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter") {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            const query = input.value.trim();
+            const firstResult = instance.searchTerm.trim() === query
+                ? modal?.querySelector(".pf-result-link, .pf-heading-link")
+                : null;
+
+            window.location.href = firstResult?.href || searchURL(query);
+        }, true);
+
+        instance.on("search", (query) => {
+            if (document.activeElement !== input) {
+                updateViewAll(query);
+            }
+        });
+        instance.on("results", () => {
+            window.requestAnimationFrame(addResultHighlights);
+        });
+    }
+</script>
+
+<script>
+    (function(){
+        let navburger = document.getElementById("navbar-burger");
+        if (!navburger) {
+            return;
+        }
+
+        navburger.addEventListener("click", function() {
+            let target = this.getAttribute("data-target");
+            let el = document.getElementById(target);
+            if (!el) {
+                return;
+            }
+
+            el.classList.toggle("is-active");
+            this.classList.toggle("is-active");
+            this.setAttribute("aria-expanded", el.classList.contains("is-active").toString());
+        });
+    })();
+</script>
+<div id="content">
+    <div class="docs">
+    <div class="docs-layout">
+        <aside class="docs-sidebar" aria-label="Docs navigation" data-pagefind-ignore="all">
+    <nav class="menu" aria-label="Section navigation">
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="docs-nav-root">
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/getting-started/" class="docs-nav-link docs-nav-link-top">
+                Getting Started
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top">
+                Language
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
+        
+            <a href="https://ferretlang.org/docs/embedding/" class="docs-nav-link docs-nav-link-top is-ancestor">
+                Embedding
+            </a>
+        
+
+        
+            <ul class="docs-nav-list">
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/embedding/overview/" class="docs-nav-link">
+                Overview
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/embedding/getting-started/" class="docs-nav-link">
+                Getting Started
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/embedding/custom-functions/" class="docs-nav-link">
+                Custom Functions
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/embedding/parameters/" class="docs-nav-link">
+                Parameters
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+        
+            <a href="https://ferretlang.org/docs/embedding/configuration/" class="docs-nav-link is-active" aria-current="page">
+                Configuration
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/embedding/modules/" class="docs-nav-link">
+                Modules &amp; Hooks
+            </a>
+        
+
+        
+    </li>
+
+
+                
+            </ul>
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/tools/" class="docs-nav-link docs-nav-link-top">
+                Tools
+            </a>
+        
+
+        
+    </li>
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section">
+        
+            <a href="https://ferretlang.org/docs/standard-library/" class="docs-nav-link docs-nav-link-top">
+                Standard Library
+            </a>
+        
+
+        
+    </li>
+
+
+        
+    </ul>
+
+
+</nav>
+
+</aside>
+
+
+        <main id="main" class="docs-main">
+            <article class="docs-content" data-pagefind-body>
+    <h1 id="configuration">Configuration</h1>
+<p>The engine accepts functional options that control which capabilities are available to scripts, how results are encoded, how execution is logged, and how concurrency is managed.</p>
+<h2 id="standard-library">Standard library</h2>
+<p>By default, the engine loads the full standard library. You can restrict it to a subset of groups or disable it entirely.</p>
+<h3 id="available-groups">Available groups</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Group</th>
+          <th>Contents</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Types</code></td>
+          <td>Type checking and conversion functions</td>
+      </tr>
+      <tr>
+          <td><code>Strings</code></td>
+          <td>String manipulation</td>
+      </tr>
+      <tr>
+          <td><code>Math</code></td>
+          <td>Mathematical operations</td>
+      </tr>
+      <tr>
+          <td><code>Collections</code></td>
+          <td>Generic collection operations</td>
+      </tr>
+      <tr>
+          <td><code>DateTime</code></td>
+          <td>Date and time functions</td>
+      </tr>
+      <tr>
+          <td><code>Arrays</code></td>
+          <td>Array-specific operations</td>
+      </tr>
+      <tr>
+          <td><code>Objects</code></td>
+          <td>Object-specific operations</td>
+      </tr>
+      <tr>
+          <td><code>IO</code></td>
+          <td>Expands to <code>FS</code> + <code>NET</code></td>
+      </tr>
+      <tr>
+          <td><code>FS</code></td>
+          <td>File system access</td>
+      </tr>
+      <tr>
+          <td><code>NET</code></td>
+          <td>Network operations</td>
+      </tr>
+      <tr>
+          <td><code>Path</code></td>
+          <td>File path manipulation</td>
+      </tr>
+      <tr>
+          <td><code>Utils</code></td>
+          <td>Utility functions</td>
+      </tr>
+      <tr>
+          <td><code>Testing</code></td>
+          <td>Test assertion functions</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="selecting-groups">Selecting groups</h3>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">// Full standard library (default)
+ferret.New(
+    ferret.WithStdlib(stdlib.Full()),
+)
+
+// Everything except file system and network access
+ferret.New(
+    ferret.WithStdlib(stdlib.Safe()),
+)
+
+// Only specific groups
+ferret.New(
+    ferret.WithStdlib(stdlib.Only(stdlib.Strings, stdlib.Math, stdlib.Arrays)),
+)
+
+// Full minus specific groups
+ferret.New(
+    ferret.WithStdlib(stdlib.Full().Without(stdlib.IO, stdlib.Testing)),
+)
+
+// No standard library at all
+ferret.New(
+    ferret.WithoutStdlib(),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-1-copy-button');
+            const copyClipboardEl = document.querySelector('#code-1-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p><code>stdlib.Safe()</code> is equivalent to <code>stdlib.Full().Without(stdlib.IO)</code> — it removes file system and network access while keeping everything else.</p>
+<h2 id="logging">Logging</h2>
+<p>Logging is configured at two levels: engine-wide defaults and per-session overrides.</p>
+<h3 id="engine-level-logging">Engine-level logging</h3>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithLog(os.Stdout),
+    ferret.WithLogLevel(logging.InfoLevel),
+    ferret.WithLogFields(map[string]any{
+        &#34;service&#34;: &#34;query-engine&#34;,
+    }),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-2-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-2-copy-button');
+            const copyClipboardEl = document.querySelector('#code-2-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h3 id="session-level-logging">Session-level logging</h3>
+<p>Per-session options override the engine defaults for that execution:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">session, err := plan.NewSession(ctx,
+    ferret.WithSessionLog(os.Stderr),
+    ferret.WithSessionLogLevel(logging.DebugLevel),
+    ferret.WithSessionLogFields(map[string]any{
+        &#34;request_id&#34;: &#34;abc-123&#34;,
+    }),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-3-copy-button');
+            const copyClipboardEl = document.querySelector('#code-3-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h3 id="log-levels">Log levels</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Level</th>
+          <th>Constant</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Trace</td>
+          <td><code>logging.TraceLevel</code></td>
+      </tr>
+      <tr>
+          <td>Debug</td>
+          <td><code>logging.DebugLevel</code></td>
+      </tr>
+      <tr>
+          <td>Info</td>
+          <td><code>logging.InfoLevel</code></td>
+      </tr>
+      <tr>
+          <td>Warn</td>
+          <td><code>logging.WarnLevel</code></td>
+      </tr>
+      <tr>
+          <td>Error</td>
+          <td><code>logging.ErrorLevel</code></td>
+      </tr>
+      <tr>
+          <td>Disabled</td>
+          <td><code>logging.Disabled</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="output-encoding">Output encoding</h2>
+<p>Query results are encoded before being returned as an <code>Output</code>. The default encoding is JSON.</p>
+<h3 id="selecting-the-output-format">Selecting the output format</h3>
+<p>Set the content type at the session level:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">session, err := plan.NewSession(ctx,
+    ferret.WithOutputContentType(&#34;application/msgpack&#34;),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-4-copy-button');
+            const copyClipboardEl = document.querySelector('#code-4-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h3 id="built-in-codecs">Built-in codecs</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Content type</th>
+          <th>Format</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>application/json</code></td>
+          <td>JSON (default)</td>
+      </tr>
+      <tr>
+          <td><code>application/msgpack</code></td>
+          <td>MessagePack</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="registering-a-custom-codec">Registering a custom codec</h3>
+<p>Implement the <code>encoding.Codec</code> interface and register it on the engine:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithEncodingCodec(&#34;application/yaml&#34;, myYAMLCodec),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-5-copy-button');
+            const copyClipboardEl = document.querySelector('#code-5-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Or replace the entire registry:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-6-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">registry := encoding.NewRegistry(jsonCodec, msgpackCodec, yamlCodec)
+
+engine, err := ferret.New(
+    ferret.WithEncodingRegistry(registry),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-6-copy-button');
+            const copyClipboardEl = document.querySelector('#code-6-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h2 id="concurrency-control">Concurrency control</h2>
+<p>Three options control how the engine manages concurrent execution:</p>
+<h3 id="withmaxactivesessions"><code>WithMaxActiveSessions</code></h3>
+<p>Limits the total number of sessions that can be running at the same time across the entire engine. When the limit is reached, <code>plan.NewSession</code> blocks until another session closes or the context is cancelled.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-7-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithMaxActiveSessions(100),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-7-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-7-copy-button');
+            const copyClipboardEl = document.querySelector('#code-7-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Use this to cap global resource consumption — CPU, memory, network, or downstream service pressure.</p>
+<h3 id="withmaxvmsperplan"><code>WithMaxVMsPerPlan</code></h3>
+<p>A hard cap on the total number of virtual machines a single plan can own, including both idle and active VMs. When the limit is reached and no idle VM is available, session creation fails with an error.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-8-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-8-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-8-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithMaxVMsPerPlan(16),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-8-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-8-copy-button');
+            const copyClipboardEl = document.querySelector('#code-8-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Use this to bound the resource footprint of a single frequently-executed query.</p>
+<h3 id="withmaxidlevmsperplan"><code>WithMaxIdleVMsPerPlan</code></h3>
+<p>Controls how many idle VMs each plan keeps cached for reuse after sessions close. When the idle cache is full, additional returned VMs are discarded instead of retained. The default is 8.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-9-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-9-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-9-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithMaxIdleVMsPerPlan(4),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-9-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-9-copy-button');
+            const copyClipboardEl = document.querySelector('#code-9-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>This is a memory-vs-latency trade-off: more idle VMs means faster session creation but higher steady-state memory usage.</p>
+<h3 id="how-they-work-together">How they work together</h3>
+<ul>
+<li><code>WithMaxActiveSessions</code> is an engine-wide concurrency gate — it controls how many sessions run at once across all plans</li>
+<li><code>WithMaxVMsPerPlan</code> is a per-plan resource cap — it bounds the VM count for one specific compiled query</li>
+<li><code>WithMaxIdleVMsPerPlan</code> is a per-plan cache policy — it decides how many idle VMs stay warm</li>
+</ul>
+<p>A value of 0 disables the limit for <code>WithMaxActiveSessions</code> and <code>WithMaxVMsPerPlan</code>.</p>
+<h2 id="file-system">File system</h2>
+<p>Scripts that use file system functions (from the <code>FS</code> stdlib group) operate within a sandboxed file system. The host can configure the root directory and restrict access to read-only.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-10-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithFSRoot(&#34;/data/extractions&#34;),
+    ferret.WithFSReadOnly(),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-10-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-10-copy-button');
+            const copyClipboardEl = document.querySelector('#code-10-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>If no root is set, file system functions use the process working directory. <code>WithFSReadOnly</code> prevents scripts from writing files regardless of the root.</p>
+<h2 id="compiler-options">Compiler options</h2>
+<p>The compiler can be configured through <code>WithCompilerOptions</code>:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-11-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-11-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-11-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithCompilerOptions(
+        compiler.WithOptimizationLevel(compiler.O1),
+    ),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-11-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-11-copy-button');
+            const copyClipboardEl = document.querySelector('#code-11-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<table>
+  <thead>
+      <tr>
+          <th>Level</th>
+          <th>Constant</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>None</td>
+          <td><code>compiler.O0</code></td>
+          <td>No optimization</td>
+      </tr>
+      <tr>
+          <td>Basic</td>
+          <td><code>compiler.O1</code></td>
+          <td>Basic optimizations (default)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Debug compilation (<code>engine.CompileDebug</code>) always uses <code>O0</code> to ensure stable source-level debugging metadata.</p>
+<h2 id="next-steps">Next steps</h2>
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/modules/">
+        <span class="docs-card-kicker">Extensions</span>
+        <strong>Modules &amp; Hooks</strong>
+        <span>Write self-contained extensions and react to engine lifecycle events.</span>
+    </a>
+</div>
+
+
+</article>
+
+        </main>
+
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#standard-library">Standard library</a>
+      <ul>
+        <li><a href="#available-groups">Available groups</a></li>
+        <li><a href="#selecting-groups">Selecting groups</a></li>
+      </ul>
+    </li>
+    <li><a href="#logging">Logging</a>
+      <ul>
+        <li><a href="#engine-level-logging">Engine-level logging</a></li>
+        <li><a href="#session-level-logging">Session-level logging</a></li>
+        <li><a href="#log-levels">Log levels</a></li>
+      </ul>
+    </li>
+    <li><a href="#output-encoding">Output encoding</a>
+      <ul>
+        <li><a href="#selecting-the-output-format">Selecting the output format</a></li>
+        <li><a href="#built-in-codecs">Built-in codecs</a></li>
+        <li><a href="#registering-a-custom-codec">Registering a custom codec</a></li>
+      </ul>
+    </li>
+    <li><a href="#concurrency-control">Concurrency control</a>
+      <ul>
+        <li><a href="#withmaxactivesessions"><code>WithMaxActiveSessions</code></a></li>
+        <li><a href="#withmaxvmsperplan"><code>WithMaxVMsPerPlan</code></a></li>
+        <li><a href="#withmaxidlevmsperplan"><code>WithMaxIdleVMsPerPlan</code></a></li>
+        <li><a href="#how-they-work-together">How they work together</a></li>
+      </ul>
+    </li>
+    <li><a href="#file-system">File system</a></li>
+    <li><a href="#compiler-options">Compiler options</a></li>
+    <li><a href="#next-steps">Next steps</a></li>
+  </ul>
+</nav>
+</aside>
+    </div>
+</div>
+<script type="module">
+    await import("/pagefind/pagefind-highlight.js");
+    new PagefindHighlight({ highlightParam: "highlight" });
+</script>
+
+
+        </div><a class="site-back-to-top" href="#top" aria-label="Back to top" title="Back to top" data-pagefind-ignore="all">
+    <span class="site-back-to-top-icon" aria-hidden="true"></span>
+</a>
+
+<script>
+    (function() {
+        const button = document.querySelector(".site-back-to-top");
+        const header = document.getElementById("site-header");
+
+        if (!button) {
+            return;
+        }
+
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let ticking = false;
+
+        function setVisible(isVisible) {
+            button.classList.toggle("is-visible", isVisible);
+
+            if (isVisible) {
+                button.removeAttribute("aria-hidden");
+                button.removeAttribute("tabindex");
+            } else {
+                button.setAttribute("aria-hidden", "true");
+                button.setAttribute("tabindex", "-1");
+            }
+        }
+
+        function updateVisibility() {
+            setVisible(window.scrollY > window.innerHeight);
+            ticking = false;
+        }
+
+        function requestVisibilityUpdate() {
+            if (ticking) {
+                return;
+            }
+
+            ticking = true;
+            window.requestAnimationFrame(updateVisibility);
+        }
+
+        function focusHeader() {
+            if (!header) {
+                return;
+            }
+
+            try {
+                header.focus({ preventScroll: true });
+            } catch (error) {
+                header.focus();
+            }
+        }
+
+        button.classList.add("is-enhanced");
+        updateVisibility();
+
+        window.addEventListener("scroll", requestVisibilityUpdate, { passive: true });
+        window.addEventListener("resize", requestVisibilityUpdate);
+
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            window.scrollTo({
+                top: 0,
+                behavior: reducedMotion.matches ? "auto" : "smooth"
+            });
+
+            window.setTimeout(focusHeader, reducedMotion.matches ? 0 : 350);
+        });
+    })();
+</script>
+<footer class="site-footer" data-pagefind-ignore="all">
+    <div class="site-footer-inner">
+        <div class="site-footer-brand">
+            <img class="site-footer-logo" src="/img/logo_v2.png" alt="" />
+            <div>
+                <div class="site-footer-wordmark">Ferret</div>
+                <div class="site-footer-tagline">Declarative data extraction</div>
+            </div>
+        </div>
+
+        <nav class="site-footer-nav" aria-label="Footer">
+            <a href="/docs/">Docs</a>
+            <a href="/blog/">Blog</a>
+            <a href="https://github.com/MontFerret/ferret">GitHub</a>
+            <a href="/try/">Playground</a>
+            <a href="/rss.xml">RSS</a>
+        </nav>
+
+        <div class="site-footer-meta">
+            <div class="site-footer-copy">© 2018-2026 MontFerret Team</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+        integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    
+    <script src="https://ferretlang.org/js/ace-mode-fql.min.5b295e6c5bb782d024d51ec24bd4e9bf9af61c16909b74461542dfde5a6e062f.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-json.min.js"
+        integrity="sha256-oMH6MIx8AGl0OseaL8vGcdSb9ons1Jprkf4xXAyzvNc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-golang.min.js"
+        integrity="sha256-0SvSdpO3x7J6KQZ5Y9ghI0wph0l0DDMUaOQu+Swjup0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-tomorrow_night.min.js"
+        integrity="sha256-NbswWaBBhaLvBJ18ocfQ7sC/Iy/+7KvGq0YRjvLRpk4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/mode-sh.min.js"
+        integrity="sha256-uzCsgXA65+SIa2CRZSX6+Ls6DKZkddI5rtRXr1uOE2Y=" crossorigin="anonymous"></script>
+    
+    <script src="https://ferretlang.org/js/tabs.min.119c58d34d4b8574824c1e858c6d84bc9d32452f12e1ee48e520d4c3a1328481.js"></script>
+</footer>
+</body>
+</html>
