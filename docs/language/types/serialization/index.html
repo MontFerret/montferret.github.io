@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ferret</title>
 
-    <meta name="generator" content="Hugo 0.159.1">
+    <meta name="generator" content="Hugo 0.163.3">
 
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap"
@@ -1807,50 +1807,50 @@ RETURN doubled[0]</div>
 <h2 id="serializable-values">Serializable values</h2>
 <p>Basic FQL values have well-defined serialized representations. The exact encoding depends on the output format selected by the host, but the following table shows the typical mapping for JSON:</p>
 <table>
-  <thead>
-      <tr>
-          <th>FQL value</th>
-          <th>JSON representation</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>NONE</code></td>
-          <td><code>null</code></td>
-      </tr>
-      <tr>
-          <td><code>true</code>, <code>false</code></td>
-          <td><code>true</code>, <code>false</code></td>
-      </tr>
-      <tr>
-          <td>integer</td>
-          <td>number</td>
-      </tr>
-      <tr>
-          <td>float</td>
-          <td>number</td>
-      </tr>
-      <tr>
-          <td>string</td>
-          <td>string</td>
-      </tr>
-      <tr>
-          <td>array</td>
-          <td>array</td>
-      </tr>
-      <tr>
-          <td>object</td>
-          <td>object</td>
-      </tr>
-      <tr>
-          <td>binary</td>
-          <td>Base64-encoded string</td>
-      </tr>
-      <tr>
-          <td>date/time</td>
-          <td>RFC 3339 string</td>
-      </tr>
-  </tbody>
+	<thead>
+			<tr>
+					<th>FQL value</th>
+					<th>JSON representation</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>NONE</code></td>
+					<td><code>null</code></td>
+			</tr>
+			<tr>
+					<td><code>true</code>, <code>false</code></td>
+					<td><code>true</code>, <code>false</code></td>
+			</tr>
+			<tr>
+					<td>integer</td>
+					<td>number</td>
+			</tr>
+			<tr>
+					<td>float</td>
+					<td>number</td>
+			</tr>
+			<tr>
+					<td>string</td>
+					<td>string</td>
+			</tr>
+			<tr>
+					<td>array</td>
+					<td>array</td>
+			</tr>
+			<tr>
+					<td>object</td>
+					<td>object</td>
+			</tr>
+			<tr>
+					<td>binary</td>
+					<td>Base64-encoded string</td>
+			</tr>
+			<tr>
+					<td>date/time</td>
+					<td>RFC 3339 string</td>
+			</tr>
+	</tbody>
 </table>
 <p>See <a href="https://ferretlang.org/docs/language/types/basic/">Basic Types</a> for details on each value type.</p>
 <h2 id="arrays-and-objects">Arrays and objects</h2>
@@ -4334,30 +4334,30 @@ RETURN elements</div>
 <p>Ferret includes built-in support for JSON and MessagePack encodings. The CLI serializes results as JSON by default. An embedded Go application may convert results into Go values, choose MessagePack for a binary format, or register a custom encoding.</p>
 <p>FQL defines the value semantics. The host defines how those values are encoded outside the runtime.</p>
 <table>
-  <thead>
-      <tr>
-          <th>Encoding</th>
-          <th>Content type</th>
-          <th>Notes</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>JSON</td>
-          <td><code>application/json</code></td>
-          <td>Default. Text-based, widely supported.</td>
-      </tr>
-      <tr>
-          <td>MessagePack</td>
-          <td><code>application/vnd.msgpack</code></td>
-          <td>Binary format, compact.</td>
-      </tr>
-      <tr>
-          <td>Custom</td>
-          <td>host-defined</td>
-          <td>Hosts may register additional encodings.</td>
-      </tr>
-  </tbody>
+	<thead>
+			<tr>
+					<th>Encoding</th>
+					<th>Content type</th>
+					<th>Notes</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>JSON</td>
+					<td><code>application/json</code></td>
+					<td>Default. Text-based, widely supported.</td>
+			</tr>
+			<tr>
+					<td>MessagePack</td>
+					<td><code>application/vnd.msgpack</code></td>
+					<td>Binary format, compact.</td>
+			</tr>
+			<tr>
+					<td>Custom</td>
+					<td>host-defined</td>
+					<td>Hosts may register additional encodings.</td>
+			</tr>
+	</tbody>
 </table>
 <h2 id="non-serializable-values">Non-serializable values</h2>
 <p>Some runtime values do not have a portable serialized representation. Returning them as part of the final result produces a serialization error.</p>
