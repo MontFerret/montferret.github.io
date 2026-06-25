@@ -5,239 +5,227 @@ draft: false
 author: "Tim Voronov"
 authorLink: "https://www.twitter.com/ziflex"
 date: "2019-02-08"
+lastmod: 2026-06-25
 ---
 
-As a developer, you've probably created a couple of web scrapers to get some data from the Internet during your career. That data could be images for an AI project or hotel prices from booking websites for a new travel mobile app or something else. But something that needs data.
+As a developer, you have probably written a web scraper at least once.
 
-It's a relatively easy task to write one or two web scrapers if the amount of required data is small. But it's a completely different level of complexity when you need to scrape big amount of data and, moreover, do it frequently.
+Maybe you needed product prices from a few websites. Maybe you wanted to collect images for an AI experiment. Maybe you needed public data from a website that did not provide an API. Or maybe you just needed to turn a messy web page into a clean JSON file.
 
-This is what happened to me. A while ago, I started a side project which was heavily data driven. The project required to gather data about cosmetological brands and its products, the ingredients of these products and their effect on human's skin. Not huge, but pretty large data set.
-The first impulse was to write bunch of scrapers using some scraping framework. And this is what was done. After a while, I started facing with issues I'm going to talk about next and came up with a solution you will see after.
+At first, this usually feels simple.
+
+You pick a language, install a library, make an HTTP request, parse some HTML, extract a few fields, and move on.
+
+But then the simple script starts growing.
+
+You need to handle pagination. Then retries. Then dynamic pages rendered by JavaScript. Then waiting for elements. Then browser automation. Then configuration. Then output shaping. Then another website with slightly different markup. Then another script. Then another small framework around all those scripts.
+
+That is where Ferret comes in.
+
+Ferret is a declarative data extraction tool built around FQL, a query language for describing what data you want and what shape you want it in.
+
+Instead of building a new scraping project from scratch every time, Ferret lets you write compact, readable programs focused on the data itself.
 
 ## The problem
-There are many problems that you need to solve building a solid and scalable scraping system. Thankfully, many of them can be solved by picking a good library or framework. But there are few, that I could not solve and they were pretty important to me:
 
-- Every time you start, you have to write some amount of boilerplate code which might be annoying. Even with a good scraping library or framework - you have to write some glue code.
-- Web pages tend to evolve and change their markup. It leads to frequent code updates and re-deploys.
-- Nowadays, more and more websites use dynamic page rendering and old plain HTTP GET request is not a solution any more. It gets worse if the pages require some user interaction to get the data you need.
+There are many good libraries and frameworks for fetching pages, parsing HTML, controlling browsers, and automating websites.
 
-Of course, these problems are solvable, but wouldn't it be nice if we didn't have to solve them again and again every time we write scraping code?
-So, I started looking a for a tool that would solve the issues for me, but unfortunately, I could not find any. Instead I created one.
+They solve important problems.
+
+But when you build data extraction logic, there are still a few recurring issues that tend to come back again and again.
+
+First, there is boilerplate.
+
+Even with a good library, you still need to write glue code. You need to set up requests or browser sessions, parse documents, select elements, transform values, handle errors, and produce the final output. None of that is especially hard, but it is work you repeat every time.
+
+Second, websites change.
+
+Markup changes. Class names move around. Pages get redesigned. A scraper that worked yesterday might need a small update today. If the extraction logic is buried inside a deployed application, even a simple selector change can become more annoying than it should be.
+
+Third, the web is dynamic.
+
+A plain HTTP request is often not enough anymore. Many pages are rendered by JavaScript. Some data appears only after a delay. Some pages require user interaction: clicking a button, typing into a form, opening a menu, scrolling, or moving to the next page.
+
+All of these problems are solvable.
+
+But it would be nice not to solve them from scratch every time.
 
 ## The solution
-<figure class="image is-128x128" style="margin: 0 auto;">
-    <img src="https://cdn-images-1.medium.com/max/1600/0*06mYhTdfqmr4QI_K" />
-</figure>
 
-<p class="subtitle is-7 has-text-centered has-text-grey" style="margin-bottom: 2em;">
-    Logo by Chris Friel
-</p>
+Ferret was created to make this kind of work more direct.
 
-And this is how Ferret was born, a modern web scraping tool with a declarative query language.    
+It provides a declarative language for data extraction and automation. You describe the data you need, how to find it, and how the result should look. Ferret handles the runtime work around that description.
 
-Ferret is a DSL with a runtime that represents pretty powerful and extensible declarative query language.
+At its simplest, an FQL program loads a document, queries it, and returns structured data.
 
-It provides very high level solution that lets users focus on data they are looking for instead of writing all that glue code.
+{{< editor lang="fql" readonly="true" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 
-It's embeddable. Even though, it comes with a CLI, it was designed to be easily embedded into applications from the beginning.
-
-And of course, it's super extensible. You can register not only your own functions, but also create custom types that Ferret runtime will recognize.
-
-The overall idea is simple, you write a query using the declarative query language focusing only on data you need, and Ferret handles the rest of the work for you.
-
-<div style="width: 700px;margin: 0 auto;">
-    <iframe style="width: 700px; height:525px" src="https://www.youtube.com/embed/g9gWv1PODi8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
-
-### Show me the code
-Let's see how it works.
-
-For example, to scrape a list of trending repositories on GitHub, you can use the following query:
-
-{{< editor height="220px" readonly="true" >}}
-LET page = DOCUMENT("https://github.com/trending")
-
-FOR row IN ELEMENTS(page, ".Box-row")
-    LET nameEl = ELEMENT(row, "h1 a")
-    LET descEl = ELEMENT(row, "p")
-    LET name = TRIM(nameEl.innerText)
-    LET description = TRIM(descEl ? descEl.innerText : "")
-
-    RETURN { name, description }
-{{</ editor >}}
-
-There are not many things happening above, but they solve 2 of our 3 problems: boilerplate code and frequent markup changes. We will discuss how to solve the 3rd later.
-
-Let's take a closer look.
-
-The first problem gets solved automatically by the language itself - Ferret abstracts away all infrastructural glue code from a user. All heavy lifting is done under the hood. All a user needs to do is to describe what data they need to scrape, and what shape of the data should be as an output. Declarative languages allow you to express yourself in a very readable way.
-
-The second problem gets solved by the fact that FQL is an interpreted language. Script updates do not require you to redeploy your host server. You can easily change it on your production server without any harm.
-
-Now, let's discuss what is happening in our script in order to get better understanding of the tool.
-
-First of all, we tell Ferret what page to load by calling ``DOCUMENT`` function. Ferret loads the page and creates its representation in memory as an object. Then we assigned the returned document object to a variable. Yes, in FQL it's possible to define variables which is an extremely useful feature.
-
-Once the document is loaded, we use the ``ELEMENTS`` function to find all list entries and iterate over them using FQL keywords ``FOR IN``, the construction which is familiar to many developers. Notice, for the search we use regular CSS selector like we would use in a browser.
-
-Inside the ``FOR`` loop body we find child elements that represent repository name and description using the ``ELEMENT`` function. And again we use variables and CSS selector for simplicity and more efficiency.
-
-After getting inner text of all elements we are interested in, we use ``RETURN`` statement with an object literal. Those who are familiar with JavaScript will recognize the syntax - an object literal with property shorthand. In other words, on each iteration we create an object with 2 properties: name and description. The ``RETURN`` statement works as aggregator, and the result of the query is an array of objects.
-
-### Dynamic pages
-The example above solves only 2 problems, and we still cannot scrape pages that are rendered dynamically.
-
-What if we need to get a list of top songs from SoundCloud? If we execute the following query, we will get an empty array:
-
-{{< editor height="200px" readonly="true" >}}
-LET doc = DOCUMENT("https://soundcloud.com/charts/top") 
-LET tracks = ELEMENTS(doc, ".chartTrack__details")
-
-FOR track IN tracks
+FOR card IN page[~ css`.product-card`]
     RETURN {
-        artist: TRIM(INNER_TEXT(track, ".chartTrack__username")),
-        track: TRIM(INNER_TEXT(track, ".chartTrack__title"))
+        title: card[~? css`.product-title`].textContent,
+        price: card[~? css`.product-price`].textContent,
+        url: card[~? css`a`].attributes.href
     }
 {{</ editor >}}
 
-In order to fix the query we need to do 2 things:
+The important part is not the specific website or selector syntax. The important part is the shape of the program.
 
-- Run Chrome or Chromium either in [Docker](https://hub.docker.com/r/alpeware/chrome-headless-stable) or with *--remote-debugging-port=9222* argument.
-- Add CDP driver's name to the ``DOCUMENT`` function — this informs Ferret to use a special driver that allows us to load dynamically rendered (rendered by JavaScript) pages.
+Load a document. Find matching elements. Iterate over them. Return clean structured data.
 
-Here is an updated version of the query:
+That is the core idea behind Ferret.
 
-{{< editor height="240px" readonly="true" >}}
-LET doc = DOCUMENT('https://soundcloud.com/charts/top', { driver: 'cdp' })
+## Focus on the data, not the glue
 
-WAIT_ELEMENT(doc, '.chartTrack__details', 5000)
+Ferret is designed so that extraction logic can stay close to the shape of the data you want.
 
-LET tracks = ELEMENTS(doc, '.chartTrack__details')
+You do not need to start with a full application just to describe a small data extraction task. You do not need to wrap every script in request setup, parsing setup, browser setup, and output conversion.
 
-FOR track IN tracks
+FQL gives you language-level constructs for the common parts of data extraction:
+
+{{< editor lang="fql" readonly="true" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/")
+
+FOR article IN page[~ css`article`]
+    LET title = article[~? css`h2`].textContent
+    LET summary = article[~? css`p`].textContent
     RETURN {
-        artist: TRIM(INNER_TEXT(track, '.chartTrack__username')),
-        track: TRIM(INNER_TEXT(track, '.chartTrack__title'))
+        title,
+        summary
     }
 {{</ editor >}}
 
-You may notice, that there is a new line of code: ``WAIT_ELEMENT(doc, ‘.chartTrack__details’, 5000)``. Since everything is dynamically rendered, we need to be sure that the data we need is in place. That’s why we block the execution until the table with tracks appears on the page or the operation times out. The signature is pretty similar to what we have seen above with an extra timeout argument.
+The result is a collection of objects, not a pile of intermediate parsing code.
 
-Once the data is loaded and rendered, we are ready to iterate over all table rows and parse them.
+That also makes scripts easier to read later. When extraction rules need to change, you can update the FQL program itself instead of digging through application logic that mixes infrastructure, navigation, parsing, and transformation in one place.
 
-As you can see, the way how we had written the query didn’t change much, but at the same time we need to take into consideration some nuances of dynamic pages and give Ferret some hints how to handle them.
+## Dynamic pages
 
-### Page interactions
-Ok, the above examples may not look very impressive and cannot be a real reason to build such a relatively complex solution like Ferret.
+Of course, not every page is available as static HTML.
 
-In order to turn the Internet into the Database of the Web we need to be able to interact with the Web like a real user. Clicks, data inputs or just mouse events — all these regular actions need to be supported.
+Many modern websites render content in the browser. A document may load first, then fetch data, then render the part you care about a second later. In those cases, the extraction script needs to wait for the page to reach the right state before reading from it.
 
-And Ferret supports them.
+Ferret supports this kind of workflow too.
 
-Let’s imagine, that we are building a website that aggregates product prices from all popular sales platforms like Amazon and eBay.
+{{< editor lang="fql" readonly="true" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
+    driver: "cdp"
+})
 
-In order to get a list of products and their information we need to implement the following algorithm:
+LET cards = WAITFOR VALUE page[~ css`.product-card`]
+    TIMEOUT 5s
 
-- Type a search criteria into an input box
-- Click “Search” button
-- Wait when the page gets loaded and the data gets rendered
-- Iterate over the results
-- Move to a next page
-- Repeat step #3
-
-{{< editor height="680px" readonly="true" params="{ \"criteria\": \"ferret\" }" >}}
-LET baseURL = 'https://www.amazon.com/'
-LET amazon = DOCUMENT(baseURL, { driver: "cdp" })
-
-INPUT(amazon, '#twotabsearchtextbox', @criteria)
-CLICK(amazon, '.nav-search-submit input[type="submit"]')
-WAIT_NAVIGATION(amazon)
-
-LET resultListSelector = 'div.s-result-list'
-LET resultItemSelector = '[data-component-type="s-search-result"]'
-LET nextBtnSelector = 'ul.a-pagination .a-last a'
-LET priceWholeSelector = '.a-price-whole'
-LET priceFracSelector = '.a-price-fraction'
-LET pagers = ELEMENTS(amazon, 'ul.a-pagination li.a-disabled')
-LET pages = LENGTH(pagers) > 0 ? TO_INT(INNER_TEXT(LAST(pagers))) : 0
-
-LET result = (
-    FOR pageNum IN 1..pages
-        LIMIT 2
-
-        LET clicked = pageNum == 1 ? false : CLICK(amazon, nextBtnSelector)
-        LET wait = clicked ? WAIT_NAVIGATION(amazon, 10000) : false
-        LET waitSelector = wait ? WAIT_ELEMENT(amazon, resultListSelector) : false
-
-        PRINT("page:", pageNum, "clicked", clicked)
-
-        LET items = (
-            FOR el IN ELEMENTS(amazon, resultItemSelector)
-                LET hasPrice = ELEMENT_EXISTS(el, priceWholeSelector)
-                LET priceWholeTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceWholeSelector), "[0-9]+")) : "0"
-                LET priceFracTxt = hasPrice ? FIRST(REGEX_MATCH(INNER_TEXT(el, priceFracSelector), "[0-9]+")) : "00"
-		        LET price = TO_FLOAT(priceWholeTxt + "." + priceFracTxt)
-		        LET anchor = ELEMENT(el, "a")
-
-                RETURN {
-                    url: baseURL + anchor.attributes.href,
-                    title: INNER_TEXT(el, 'h2'),
-                    price
-                }
-        )
-
-        RETURN items
-)
-
-RETURN FLATTEN(result)
+FOR card IN cards
+    RETURN {
+        title: card[~? css`.product-title`].textContent,
+        status: card[~? css`.product-stock`].textContent
+    }
 {{</ editor >}}
 
-At this point, most of the constructions of the language should be familiar, so I will just highlight what has not been covered before.
+The query still describes the data, but it also gives Ferret enough information to deal with the dynamic nature of the page.
 
-First of all, it’s data input and submitting the form by clicking the search button. Notice, we use parameters (words starting with @ symbol) in this script which. Their values are define either via CLI or a context in embedded mode (I will cover how to embed Ferret to you application in next blog post).
+Use a browser-backed driver. Wait for the content to appear. Then extract the result.
 
-Once the results page gets loaded, we iterate over a range of page numbers, using another parameter. Ideally, you need to extrapolate amount of pages and use this number, but I use the parameter here for simplicity.
+The script does not need to change into a completely different kind of program just because the page uses JavaScript.
 
-On each iteration, we navigate to the target page (except 1st page) by clicking the pagination button and again wait till it gets loaded. After that we just parse the result table.
+## Page interactions
 
-As you can see, most of the actions are similar to what we do as regular users. Also, it’s a good demonstration of how web crawlers can be easily implemented using FQL.
+Sometimes waiting is not enough.
 
-Here you can find more examples and use cases. PR are welcome.
+Some pages require interaction before the data appears. A user might need to type a search query, click a button, open a filter, or move through pagination.
 
-## Who needs it?
-Very reasonable and popular question.
+Ferret treats those actions as part of the program.
 
-Well, first of all I need it.
+{{< editor lang="fql" params=`{"q": "ferret"}` >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/forms/", {
+    driver: "cdp"
+})
 
-As for others, I can only suggest that this tool **might be** useful for data scientists, ML/AI researchers, QA specialists and anyone who needs to scrape a website without setting up a new Python/Node/etc project.
+DISPATCH "input" IN page[~? css`#query`] WITH {
+    value: @q
+}
+
+DISPATCH "click" IN page[~? css`button[type="submit"]`]
+
+LET result = WAITFOR VALUE page[~ css`#form-result`] TIMEOUT 5s
+
+RETURN result
+{{</ editor >}}
+
+This is where Ferret starts to feel less like a traditional scraper and more like a small language for data-oriented browser automation.
+
+The program describes the same steps a person would take:
+
+Open the page. Enter a search term. Submit the form. Wait for the results. Extract the data.
+
+The difference is that the final output is structured and repeatable.
+
+## More than just selectors
+
+A useful extraction script rarely stops at selecting elements.
+
+You usually need to clean text, normalize values, handle missing fields, filter results, limit output, combine values, or reshape the final result.
+
+FQL includes common language features for that work: variables, expressions, loops, conditionals, objects, arrays, functions, and parameters.
+
+{{< code lang="fql" >}}
+FOR product IN page[~ css`.product`]
+    LET title = TRIM(product[~? css`.title`].textContent)
+    LET priceText = TRIM(product[~? css`.price`].textContent)
+    
+    RETURN {
+        title,
+        price: priceText,
+        available: product[~? css`.sold-out`] == NONE
+    }
+{{</ code >}}
+
+The goal is not to hide programming completely.
+
+The goal is to give data extraction its own language, so the logic can stay concise, readable, and focused.
+
+## Embeddable by design
+
+Ferret can be used from the command line, but it was designed to be embedded into applications as well.
+
+That matters because extraction logic often lives inside a larger system.
+
+A backend service might need to run FQL scripts. A data pipeline might need to execute them on a schedule. A testing tool might use them to verify what appears in a browser. An application might expose its own host values and let FQL query them.
+
+Ferret is not only a standalone tool. It is also a runtime that can be integrated into other software.
+
+That is one of the reasons FQL exists as a dedicated language instead of just another library API. Scripts can be stored, updated, passed around, and executed by a host application without turning every extraction rule into application code.
+
+## Extensible runtime
+
+Ferret is also extensible.
+
+Applications can provide their own functions, modules, and host values. That means FQL programs are not limited to built-in document querying.
+
+A host application can decide what values exist, how they behave, and what it means to query them.
+
+For example, one value might represent an HTML document. Another might represent an API client. Another might represent a database connection. Another might represent something specific to the application embedding Ferret.
+
+The language stays the same, while the runtime can grow around the needs of the host environment.
+
+## Who is Ferret for?
+
+Ferret is useful for anyone who needs to extract or automate data from places where a small script is not quite enough, but a full custom scraping system feels like too much.
+
+That includes developers who need to collect data from websites, data engineers building repeatable extraction tasks, QA engineers testing browser-rendered content, researchers collecting public datasets, and teams that want extraction logic to be easier to read and update.
+
+It is especially useful when the extraction rules matter as much as the application around them.
+
+If the logic changes often, it helps to keep that logic in a small declarative program. If the same task needs to run in different environments, it helps to have a runtime. If the target is dynamic or interactive, it helps to have browser automation available without turning the whole script into low-level control flow.
+
+## What Ferret is not
+
+Ferret is not a magic solution for every data problem. It will not make unstable websites stable, remove the need to understand the page or system you are querying, or turn messy data into clean data without clear rules.
+
+Like any extraction tool, it also needs to be used responsibly. Not every website should be automated, and not every piece of data should be collected. Rate limits, terms of service, robots.txt, privacy, and basic respect for other people’s systems still matter. Ferret does not remove those responsibilities; it simply gives you a better language and runtime for the work when that work is appropriate.
 
 ## What next?
-The project is still growing and one of the main milestones is to stabilize API and provide rich functionality out of the box. Besides the Ferret itself, there are some other projects that are planned to be built:
 
-<h4>
-    <a href="https://github.com/MontFerret/ferret-server">
-    Ferret Server
-    </a>
-</h4>
-As you may noticed, Ferret is just a library that comes with a handy CLI. But it does not yet provide a production grade solution for complex scraping. That’s what Ferret Server aims to solve — provide a web scraping platform. The platform that would allows you to persists scripts and scraped data in a database, executes scripts manually or with a scheduler, notify 3rd party systems and etc. The project has started but it’s in very early stage.
+Ferret is an open source project, and there is still a lot of work ahead. The current focus is on making the language, runtime, tools, and documentation more stable, more consistent, and easier to use. That includes clearer examples, stronger CLI support, better browser-oriented flows, improved embedding documentation, more modules, and eventually better editor tooling.
 
-<h4>
-    <a href="https://github.com/MontFerret/ferret/issues?utf8=%E2%9C%93&q=is%3Aopen+label%3Aarea%2Fdrivers+Create+in%3Atitle+">
-    More HTML drivers
-    </a>
-</h4>
-Having more HTML drivers will let QA and developers easily test their web apps in different web browsers using same query.
-
-<h4>
-    <a href="https://github.com/MontFerret/ferret-registry">
-    Ferret Registry
-    </a>
-</h4>
-See it as NPM registry for FQL scripts where people can share and explore scripts which will make data scraping even easier!
-
-<h4>
-    Jupyter kernel
-</h4>
-I’m not really well familiar with Jupyter, but I know that many data scientists use it, so I figured that it could be useful to integrate Ferret with it.
-
-So, if you have some spare time and want to contribute to an open source project — you are very welcome!
+The long-term goal is to make structured data extraction easier to write, easier to read, and easier to maintain. Ferret started as a way to avoid writing the same scraping glue code over and over again, and that motivation is still very much alive. More broadly, though, Ferret is about extracting data with intent: you describe what you want, and Ferret gives you a language and runtime designed to help you get it.
