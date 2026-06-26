@@ -531,9 +531,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/embedding/configuration/" class="docs-nav-link is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/embedding/configuration/" class="docs-nav-link">
                 Configuration
             </a>
         
@@ -593,9 +593,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1">
+    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
         
-            <a href="https://ferretlang.org/docs/embedding/programs/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/embedding/programs/" class="docs-nav-link is-active" aria-current="page">
                 Programs
             </a>
         
@@ -714,74 +714,10 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="configuration">Configuration</h1>
-<p>The engine accepts functional options that control which capabilities are available to scripts, how results are encoded, how execution is logged, and how concurrency is managed.</p>
-<h2 id="standard-library">Standard library</h2>
-<p>By default, the engine loads the full standard library. You can restrict it to a subset of groups or disable it entirely.</p>
-<h3 id="available-groups">Available groups</h3>
-<table>
-  <thead>
-      <tr>
-          <th>Group</th>
-          <th>Contents</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>Types</code></td>
-          <td>Type checking and conversion functions</td>
-      </tr>
-      <tr>
-          <td><code>Strings</code></td>
-          <td>String manipulation</td>
-      </tr>
-      <tr>
-          <td><code>Math</code></td>
-          <td>Mathematical operations</td>
-      </tr>
-      <tr>
-          <td><code>Collections</code></td>
-          <td>Generic collection operations</td>
-      </tr>
-      <tr>
-          <td><code>DateTime</code></td>
-          <td>Date and time functions</td>
-      </tr>
-      <tr>
-          <td><code>Arrays</code></td>
-          <td>Array-specific operations</td>
-      </tr>
-      <tr>
-          <td><code>Objects</code></td>
-          <td>Object-specific operations</td>
-      </tr>
-      <tr>
-          <td><code>IO</code></td>
-          <td>Expands to <code>FS</code> + <code>NET</code></td>
-      </tr>
-      <tr>
-          <td><code>FS</code></td>
-          <td>File system access</td>
-      </tr>
-      <tr>
-          <td><code>NET</code></td>
-          <td>Network operations</td>
-      </tr>
-      <tr>
-          <td><code>Path</code></td>
-          <td>File path manipulation</td>
-      </tr>
-      <tr>
-          <td><code>Utils</code></td>
-          <td>Utility functions</td>
-      </tr>
-      <tr>
-          <td><code>Testing</code></td>
-          <td>Test assertion functions</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="selecting-groups">Selecting groups</h3>
+    <h1 id="programs">Programs</h1>
+<p>A compiled Ferret query can be serialized into a binary artifact and loaded later without the compiler. This is useful for distributing pre-compiled queries, skipping compilation at runtime, or caching build output on disk.</p>
+<h2 id="two-paths-to-a-plan">Two paths to a Plan</h2>
+<p>There are two ways to get a <code>Plan</code> from the engine:</p>
 
 
 
@@ -806,30 +742,11 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">// Full standard library (default)
-ferret.New(
-    ferret.WithStdlib(stdlib.Full()),
-)
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">// From FQL source — compiles and returns a plan
+plan, err := engine.Compile(ctx, source.NewAnonymous(`RETURN 1 &#43; 1`))
 
-// Everything except file system and network access
-ferret.New(
-    ferret.WithStdlib(stdlib.Safe()),
-)
-
-// Only specific groups
-ferret.New(
-    ferret.WithStdlib(stdlib.Only(stdlib.Strings, stdlib.Math, stdlib.Arrays)),
-)
-
-// Full minus specific groups
-ferret.New(
-    ferret.WithStdlib(stdlib.Full().Without(stdlib.IO, stdlib.Testing)),
-)
-
-// No standard library at all
-ferret.New(
-    ferret.WithoutStdlib(),
-)</div>
+// From a pre-compiled artifact — loads and returns a plan
+plan, err := engine.Load(artifactBytes)</div>
         </div>
     </div>
 
@@ -901,10 +818,9 @@ ferret.New(
     </script>
 </div>
 
-<p><code>stdlib.Safe()</code> is equivalent to <code>stdlib.Full().Without(stdlib.IO)</code> — it removes file system and network access while keeping everything else.</p>
-<h2 id="logging">Logging</h2>
-<p>Logging is configured at two levels: engine-wide defaults and per-session overrides.</p>
-<h3 id="engine-level-logging">Engine-level logging</h3>
+<p>Both produce the same <code>*Plan</code> that you create sessions from and run. The difference is where the bytecode comes from: the compiler or a serialized artifact.</p>
+<h2 id="serializing-a-program">Serializing a program</h2>
+<p>The <code>artifact</code> package provides <code>Marshal</code> to serialize a compiled program:</p>
 
 
 
@@ -929,13 +845,31 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithLog(os.Stdout),
-    ferret.WithLogLevel(logging.InfoLevel),
-    ferret.WithLogFields(map[string]any{
-        &#34;service&#34;: &#34;query-engine&#34;,
-    }),
-)</div>
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">import (
+    &#34;os&#34;
+
+    &#34;github.com/MontFerret/ferret/v2&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/artifact&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/source&#34;
+)
+
+// Compile to bytecode
+plan, err := engine.Compile(ctx, source.New(&#34;query.fql&#34;, `RETURN UPPER(@name)`))
+if err != nil {
+    log.Fatal(err)
+}
+
+// Serialize to bytes
+data, err := plan.Marshal()
+if err != nil {
+    log.Fatal(err)
+}
+
+// Write to file
+err = os.WriteFile(&#34;query.fbc&#34;, data, 0644)
+if err != nil {
+    log.Fatal(err)
+}</div>
         </div>
     </div>
 
@@ -1007,8 +941,7 @@ ferret.New(
     </script>
 </div>
 
-<h3 id="session-level-logging">Session-level logging</h3>
-<p>Per-session options override the engine defaults for that execution:</p>
+<p>The default payload format is MessagePack. To use JSON instead, set the format in the options:</p>
 
 
 
@@ -1033,13 +966,7 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">session, err := plan.NewSession(ctx,
-    ferret.WithSessionLog(os.Stderr),
-    ferret.WithSessionLogLevel(logging.DebugLevel),
-    ferret.WithSessionLogFields(map[string]any{
-        &#34;request_id&#34;: &#34;abc-123&#34;,
-    }),
-)</div>
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">data, err := plan.Marshal(ferret.WithProgramFormat(artifact.FormatJSON))</div>
         </div>
     </div>
 
@@ -1111,43 +1038,8 @@ ferret.New(
     </script>
 </div>
 
-<h3 id="log-levels">Log levels</h3>
-<table>
-  <thead>
-      <tr>
-          <th>Level</th>
-          <th>Constant</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Trace</td>
-          <td><code>logging.TraceLevel</code></td>
-      </tr>
-      <tr>
-          <td>Debug</td>
-          <td><code>logging.DebugLevel</code></td>
-      </tr>
-      <tr>
-          <td>Info</td>
-          <td><code>logging.InfoLevel</code></td>
-      </tr>
-      <tr>
-          <td>Warn</td>
-          <td><code>logging.WarnLevel</code></td>
-      </tr>
-      <tr>
-          <td>Error</td>
-          <td><code>logging.ErrorLevel</code></td>
-      </tr>
-      <tr>
-          <td>Disabled</td>
-          <td><code>logging.Disabled</code></td>
-      </tr>
-  </tbody>
-</table>
-<h2 id="output-encoding">Output encoding</h2>
-<p>Query results are encoded before being returned as an <code>Output</code>. The default encoding is JSON; MessagePack is also built in. Set the content type at the session level with <code>WithOutputContentType</code>:</p>
+<h2 id="loading-a-program">Loading a program</h2>
+<p>Load the artifact back into the engine with <code>engine.Load</code>:</p>
 
 
 
@@ -1172,9 +1064,26 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" data-auto-height="true">session, err := plan.NewSession(ctx,
-    ferret.WithOutputContentType(&#34;application/vnd.msgpack&#34;),
-)</div>
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">data, err := os.ReadFile(&#34;query.fbc&#34;)
+if err != nil {
+    log.Fatal(err)
+}
+
+plan, err := engine.Load(data)
+if err != nil {
+    log.Fatal(err)
+}
+defer plan.Close()
+
+session, err := plan.NewSession(ctx,
+    ferret.WithSessionParam(&#34;name&#34;, &#34;ferret&#34;),
+)
+if err != nil {
+    log.Fatal(err)
+}
+defer session.Close()
+
+output, err := session.Run(ctx)</div>
         </div>
     </div>
 
@@ -1246,11 +1155,7 @@ ferret.New(
     </script>
 </div>
 
-<p>You can register custom codecs on the engine with <code>WithEncodingCodec</code>. See <a href="https://ferretlang.org/docs/embedding/value-encoders/">Value Encoders</a> for the codec interfaces, hooks, registry, and a complete custom codec example.</p>
-<h2 id="concurrency-control">Concurrency control</h2>
-<p>Three options control how the engine manages concurrent execution:</p>
-<h3 id="withmaxactivesessions"><code>WithMaxActiveSessions</code></h3>
-<p>Limits the total number of sessions that can be running at the same time across the entire engine. When the limit is reached, <code>plan.NewSession</code> blocks until another session closes or the context is cancelled.</p>
+<p>For lower-level access, <code>ferret.UnmarshalProgram</code> returns a <code>*bytecode.Program</code> without wrapping it in a plan:</p>
 
 
 
@@ -1275,9 +1180,7 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-5-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithMaxActiveSessions(100),
-)</div>
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">program, err := ferret.UnmarshalProgram(data)</div>
         </div>
     </div>
 
@@ -1349,9 +1252,83 @@ ferret.New(
     </script>
 </div>
 
-<p>Use this to cap global resource consumption — CPU, memory, network, or downstream service pressure.</p>
-<h3 id="withmaxvmsperplan"><code>WithMaxVMsPerPlan</code></h3>
-<p>A hard cap on the total number of virtual machines a single plan can own, including both idle and active VMs. When the limit is reached and no idle VM is available, session creation fails with an error.</p>
+<h2 id="artifact-format">Artifact format</h2>
+<p>An artifact is a self-describing binary format with a 14-byte header followed by the encoded payload:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Bytes</th>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>0–3</td>
+          <td>Magic</td>
+          <td><code>[4]byte</code></td>
+          <td><code>FBC2</code> — identifies the file as a Ferret artifact</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>Format</td>
+          <td><code>uint8</code></td>
+          <td>Payload format ID (1 = JSON, 2 = MessagePack)</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>Schema</td>
+          <td><code>uint8</code></td>
+          <td>Schema version (currently 1)</td>
+      </tr>
+      <tr>
+          <td>6–7</td>
+          <td>ISA</td>
+          <td><code>uint16 LE</code></td>
+          <td>Bytecode instruction set version</td>
+      </tr>
+      <tr>
+          <td>8–9</td>
+          <td>Flags</td>
+          <td><code>uint16 LE</code></td>
+          <td>Reserved (must be 0 in schema v1)</td>
+      </tr>
+      <tr>
+          <td>10–13</td>
+          <td>Length</td>
+          <td><code>uint32 LE</code></td>
+          <td>Payload length in bytes</td>
+      </tr>
+  </tbody>
+</table>
+<p>All multi-byte fields are little-endian. The header is followed by exactly <code>Length</code> bytes of payload data in the format specified by the Format field.</p>
+<h2 id="payload-formats">Payload formats</h2>
+<table>
+  <thead>
+      <tr>
+          <th>ID</th>
+          <th>Constant</th>
+          <th>Format</th>
+          <th>Use case</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td><code>artifact.FormatJSON</code></td>
+          <td>JSON</td>
+          <td>Human-readable, debugging</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td><code>artifact.FormatMsgPack</code></td>
+          <td>MessagePack</td>
+          <td>Compact, production (default)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Both formats implement the <code>format.Format</code> interface:</p>
 
 
 
@@ -1376,9 +1353,11 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-6-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithMaxVMsPerPlan(16),
-)</div>
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">type Format interface {
+    Name() string
+    Marshal(*bytecode.Program) ([]byte, error)
+    Unmarshal([]byte) (*bytecode.Program, error)
+}</div>
         </div>
     </div>
 
@@ -1450,9 +1429,8 @@ ferret.New(
     </script>
 </div>
 
-<p>Use this to bound the resource footprint of a single frequently-executed query.</p>
-<h3 id="withmaxidlevmsperplan"><code>WithMaxIdleVMsPerPlan</code></h3>
-<p>Controls how many idle VMs each plan keeps cached for reuse after sessions close. When the idle cache is full, additional returned VMs are discarded instead of retained. The default is 8.</p>
+<h2 id="detecting-artifacts">Detecting artifacts</h2>
+<p>Use <code>HasMagic</code> to quickly check whether a byte slice looks like a Ferret artifact:</p>
 
 
 
@@ -1477,9 +1455,13 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-7-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithMaxIdleVMsPerPlan(4),
-)</div>
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">if artifact.HasMagic(data) {
+    plan, err := engine.Load(data)
+    // ...
+} else {
+    plan, err := engine.Compile(ctx, source.NewAnonymous(string(data)))
+    // ...
+}</div>
         </div>
     </div>
 
@@ -1551,16 +1533,9 @@ ferret.New(
     </script>
 </div>
 
-<p>This is a memory-vs-latency trade-off: more idle VMs means faster session creation but higher steady-state memory usage.</p>
-<h3 id="how-they-work-together">How they work together</h3>
-<ul>
-<li><code>WithMaxActiveSessions</code> is an engine-wide concurrency gate — it controls how many sessions run at once across all plans</li>
-<li><code>WithMaxVMsPerPlan</code> is a per-plan resource cap — it bounds the VM count for one specific compiled query</li>
-<li><code>WithMaxIdleVMsPerPlan</code> is a per-plan cache policy — it decides how many idle VMs stay warm</li>
-</ul>
-<p>A value of 0 disables the limit for <code>WithMaxActiveSessions</code> and <code>WithMaxVMsPerPlan</code>.</p>
-<h2 id="file-system">File system</h2>
-<p>Scripts that use file system functions (from the <code>FS</code> stdlib group) operate within a sandboxed file system. The host can configure the root directory and restrict access to read-only.</p>
+<p><code>HasMagic</code> only checks the first 4 bytes. It does not validate the full artifact — use <code>Load</code> or <code>Unmarshal</code> for that.</p>
+<h2 id="custom-loaders">Custom loaders</h2>
+<p>The engine uses a <code>Loader</code> to decode artifacts. By default it supports JSON and MessagePack payloads. You can create a custom loader with additional formats:</p>
 
 
 
@@ -1585,9 +1560,14 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-8-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithFSRoot(&#34;/data/extractions&#34;),
-    ferret.WithFSReadOnly(),
+            <div id="code-8-text" class="code-editor-text" data-auto-height="true">loader := artifact.NewLoader(
+    artifact.RegisteredFormat{ID: 1, Format: formatjson.Default},
+    artifact.RegisteredFormat{ID: 2, Format: formatmsgpack.Default},
+    artifact.RegisteredFormat{ID: 3, Format: myCustomFormat},
+)
+
+engine, err := ferret.New(
+    ferret.WithProgramLoader(loader),
 )</div>
         </div>
     </div>
@@ -1660,9 +1640,48 @@ ferret.New(
     </script>
 </div>
 
-<p>If no root is set, file system functions use the process working directory. <code>WithFSReadOnly</code> prevents scripts from writing files regardless of the root.</p>
-<h2 id="compiler-options">Compiler options</h2>
-<p>The compiler can be configured through <code>WithCompilerOptions</code>:</p>
+<p>The format ID in the <code>RegisteredFormat</code> must match the format ID written in the artifact header. When loading, the loader reads the header, selects the registered format by ID, and delegates decoding to it.</p>
+<h2 id="error-handling">Error handling</h2>
+<p>The <code>artifact</code> package defines sentinel errors for each validation failure:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Error</th>
+          <th>Cause</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>ErrInvalidMagic</code></td>
+          <td>First 4 bytes are not <code>FBC2</code></td>
+      </tr>
+      <tr>
+          <td><code>ErrUnsupportedSchema</code></td>
+          <td>Schema version is not supported by this loader</td>
+      </tr>
+      <tr>
+          <td><code>ErrIncompatibleISA</code></td>
+          <td>Bytecode ISA version does not match the runtime</td>
+      </tr>
+      <tr>
+          <td><code>ErrUnknownFormat</code></td>
+          <td>Payload format ID is not registered</td>
+      </tr>
+      <tr>
+          <td><code>ErrInvalidHeader</code></td>
+          <td>Header is malformed or payload length does not match</td>
+      </tr>
+      <tr>
+          <td><code>ErrInvalidPayload</code></td>
+          <td>Payload format decoder failed</td>
+      </tr>
+      <tr>
+          <td><code>ErrInvalidArtifact</code></td>
+          <td>General loader or artifact state error</td>
+      </tr>
+  </tbody>
+</table>
+<p>Use <code>errors.Is</code> to check for specific failures:</p>
 
 
 
@@ -1687,11 +1706,10 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-9-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithCompilerOptions(
-        compiler.WithOptimizationLevel(compiler.O1),
-    ),
-)</div>
+            <div id="code-9-text" class="code-editor-text" data-auto-height="true">_, err := engine.Load(data)
+if errors.Is(err, artifact.ErrIncompatibleISA) {
+    // artifact was compiled with a different bytecode version
+}</div>
         </div>
     </div>
 
@@ -1763,41 +1781,182 @@ ferret.New(
     </script>
 </div>
 
-<table>
-  <thead>
-      <tr>
-          <th>Level</th>
-          <th>Constant</th>
-          <th>Description</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>None</td>
-          <td><code>compiler.O0</code></td>
-          <td>No optimization</td>
-      </tr>
-      <tr>
-          <td>Basic</td>
-          <td><code>compiler.O1</code></td>
-          <td>Basic optimizations (default)</td>
-      </tr>
-  </tbody>
-</table>
-<p>Debug compilation (<code>engine.CompileDebug</code>) always uses <code>O0</code> to ensure stable source-level debugging metadata.</p>
+<h2 id="complete-example">Complete example</h2>
+<p>Compile a query, save it to disk, then load and run it in a separate step:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-10-text" class="code-editor-text" data-auto-height="true">package main
+
+import (
+    &#34;context&#34;
+    &#34;fmt&#34;
+    &#34;log&#34;
+    &#34;os&#34;
+
+    &#34;github.com/MontFerret/ferret/v2&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/bytecode/artifact&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/compiler&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/source&#34;
+)
+
+func main() {
+    ctx := context.Background()
+
+    // --- Build phase ---
+
+    engine, err := ferret.New()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer engine.Close()
+
+    plan, err := engine.Compile(source.New(&#34;greeting.fql&#34;, `RETURN UPPER(@name)`))
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    data, err := plan.Marshal()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    if err := os.WriteFile(&#34;greeting.fbc&#34;, data, 0644); err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Printf(&#34;compiled %d bytes\n&#34;, len(data))
+
+    // --- Load phase ---
+
+    saved, err := os.ReadFile(&#34;greeting.fbc&#34;)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    plan, err := engine.Load(saved)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer plan.Close()
+
+    session, err := plan.NewSession(ctx,
+        ferret.WithSessionParam(&#34;name&#34;, &#34;ferret&#34;),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer session.Close()
+
+    output, err := session.Run(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(output.Content))
+    // &#34;FERRET&#34;
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-10-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-10-copy-button');
+            const copyClipboardEl = document.querySelector('#code-10-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
 <h2 id="next-steps">Next steps</h2>
 <div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/value-encoders/">
         <span class="docs-card-kicker">Encoding</span>
         <strong>Value Encoders</strong>
         <span>Understand how output values are encoded and implement custom codecs.</span>
-    </a><a class="docs-card" href="/docs/embedding/programs/">
-        <span class="docs-card-kicker">Artifacts</span>
-        <strong>Programs</strong>
-        <span>Compile queries to binary artifacts, load pre-compiled programs, and work with the artifact format.</span>
-    </a><a class="docs-card" href="/docs/embedding/modules/">
-        <span class="docs-card-kicker">Extensions</span>
-        <strong>Modules &amp; Hooks</strong>
-        <span>Write self-contained extensions and react to engine lifecycle events.</span>
+    </a><a class="docs-card" href="/docs/embedding/configuration/">
+        <span class="docs-card-kicker">Runtime setup</span>
+        <strong>Configuration</strong>
+        <span>Control the standard library, logging, encoding, concurrency, and file system access.</span>
     </a>
 </div>
 
@@ -1810,30 +1969,15 @@ ferret.New(
     <div class="docs-toc-title">On this page</div>
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#standard-library">Standard library</a>
-      <ul>
-        <li><a href="#available-groups">Available groups</a></li>
-        <li><a href="#selecting-groups">Selecting groups</a></li>
-      </ul>
-    </li>
-    <li><a href="#logging">Logging</a>
-      <ul>
-        <li><a href="#engine-level-logging">Engine-level logging</a></li>
-        <li><a href="#session-level-logging">Session-level logging</a></li>
-        <li><a href="#log-levels">Log levels</a></li>
-      </ul>
-    </li>
-    <li><a href="#output-encoding">Output encoding</a></li>
-    <li><a href="#concurrency-control">Concurrency control</a>
-      <ul>
-        <li><a href="#withmaxactivesessions"><code>WithMaxActiveSessions</code></a></li>
-        <li><a href="#withmaxvmsperplan"><code>WithMaxVMsPerPlan</code></a></li>
-        <li><a href="#withmaxidlevmsperplan"><code>WithMaxIdleVMsPerPlan</code></a></li>
-        <li><a href="#how-they-work-together">How they work together</a></li>
-      </ul>
-    </li>
-    <li><a href="#file-system">File system</a></li>
-    <li><a href="#compiler-options">Compiler options</a></li>
+    <li><a href="#two-paths-to-a-plan">Two paths to a Plan</a></li>
+    <li><a href="#serializing-a-program">Serializing a program</a></li>
+    <li><a href="#loading-a-program">Loading a program</a></li>
+    <li><a href="#artifact-format">Artifact format</a></li>
+    <li><a href="#payload-formats">Payload formats</a></li>
+    <li><a href="#detecting-artifacts">Detecting artifacts</a></li>
+    <li><a href="#custom-loaders">Custom loaders</a></li>
+    <li><a href="#error-handling">Error handling</a></li>
+    <li><a href="#complete-example">Complete example</a></li>
     <li><a href="#next-steps">Next steps</a></li>
   </ul>
 </nav>

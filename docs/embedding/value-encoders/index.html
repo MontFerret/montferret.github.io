@@ -531,9 +531,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/embedding/configuration/" class="docs-nav-link is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/embedding/configuration/" class="docs-nav-link">
                 Configuration
             </a>
         
@@ -562,9 +562,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1">
+    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
         
-            <a href="https://ferretlang.org/docs/embedding/value-encoders/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/embedding/value-encoders/" class="docs-nav-link is-active" aria-current="page">
                 Value Encoders
             </a>
         
@@ -714,74 +714,8 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="configuration">Configuration</h1>
-<p>The engine accepts functional options that control which capabilities are available to scripts, how results are encoded, how execution is logged, and how concurrency is managed.</p>
-<h2 id="standard-library">Standard library</h2>
-<p>By default, the engine loads the full standard library. You can restrict it to a subset of groups or disable it entirely.</p>
-<h3 id="available-groups">Available groups</h3>
-<table>
-  <thead>
-      <tr>
-          <th>Group</th>
-          <th>Contents</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>Types</code></td>
-          <td>Type checking and conversion functions</td>
-      </tr>
-      <tr>
-          <td><code>Strings</code></td>
-          <td>String manipulation</td>
-      </tr>
-      <tr>
-          <td><code>Math</code></td>
-          <td>Mathematical operations</td>
-      </tr>
-      <tr>
-          <td><code>Collections</code></td>
-          <td>Generic collection operations</td>
-      </tr>
-      <tr>
-          <td><code>DateTime</code></td>
-          <td>Date and time functions</td>
-      </tr>
-      <tr>
-          <td><code>Arrays</code></td>
-          <td>Array-specific operations</td>
-      </tr>
-      <tr>
-          <td><code>Objects</code></td>
-          <td>Object-specific operations</td>
-      </tr>
-      <tr>
-          <td><code>IO</code></td>
-          <td>Expands to <code>FS</code> + <code>NET</code></td>
-      </tr>
-      <tr>
-          <td><code>FS</code></td>
-          <td>File system access</td>
-      </tr>
-      <tr>
-          <td><code>NET</code></td>
-          <td>Network operations</td>
-      </tr>
-      <tr>
-          <td><code>Path</code></td>
-          <td>File path manipulation</td>
-      </tr>
-      <tr>
-          <td><code>Utils</code></td>
-          <td>Utility functions</td>
-      </tr>
-      <tr>
-          <td><code>Testing</code></td>
-          <td>Test assertion functions</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="selecting-groups">Selecting groups</h3>
+    <h1 id="value-encoders">Value Encoders</h1>
+<p>When a session finishes, Ferret encodes the result value into bytes using a codec selected by content type. The <code>Output</code> struct carries the encoded bytes and their MIME type:</p>
 
 
 
@@ -806,30 +740,13 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">// Full standard library (default)
-ferret.New(
-    ferret.WithStdlib(stdlib.Full()),
-)
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">output, err := session.Run(ctx)
+if err != nil {
+    log.Fatal(err)
+}
 
-// Everything except file system and network access
-ferret.New(
-    ferret.WithStdlib(stdlib.Safe()),
-)
-
-// Only specific groups
-ferret.New(
-    ferret.WithStdlib(stdlib.Only(stdlib.Strings, stdlib.Math, stdlib.Arrays)),
-)
-
-// Full minus specific groups
-ferret.New(
-    ferret.WithStdlib(stdlib.Full().Without(stdlib.IO, stdlib.Testing)),
-)
-
-// No standard library at all
-ferret.New(
-    ferret.WithoutStdlib(),
-)</div>
+fmt.Println(output.ContentType) // &#34;application/json&#34;
+fmt.Println(string(output.Content))</div>
         </div>
     </div>
 
@@ -901,10 +818,31 @@ ferret.New(
     </script>
 </div>
 
-<p><code>stdlib.Safe()</code> is equivalent to <code>stdlib.Full().Without(stdlib.IO)</code> — it removes file system and network access while keeping everything else.</p>
-<h2 id="logging">Logging</h2>
-<p>Logging is configured at two levels: engine-wide defaults and per-session overrides.</p>
-<h3 id="engine-level-logging">Engine-level logging</h3>
+<h2 id="built-in-codecs">Built-in codecs</h2>
+<p>Two codecs are registered by default:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Content type</th>
+          <th>Format</th>
+          <th>Package</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>application/json</code></td>
+          <td>JSON (default)</td>
+          <td><code>pkg/encoding/json</code></td>
+      </tr>
+      <tr>
+          <td><code>application/vnd.msgpack</code></td>
+          <td>MessagePack</td>
+          <td><code>pkg/encoding/msgpack</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="selecting-the-output-format">Selecting the output format</h2>
+<p>Set the content type when creating a session:</p>
 
 
 
@@ -929,13 +867,20 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithLog(os.Stdout),
-    ferret.WithLogLevel(logging.InfoLevel),
-    ferret.WithLogFields(map[string]any{
-        &#34;service&#34;: &#34;query-engine&#34;,
-    }),
-)</div>
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">session, err := plan.NewSession(ctx,
+    ferret.WithOutputContentType(&#34;application/vnd.msgpack&#34;),
+)
+if err != nil {
+    log.Fatal(err)
+}
+
+output, err := session.Run(ctx)
+if err != nil {
+    log.Fatal(err)
+}
+
+fmt.Println(output.ContentType)
+// application/vnd.msgpack</div>
         </div>
     </div>
 
@@ -1007,8 +952,9 @@ ferret.New(
     </script>
 </div>
 
-<h3 id="session-level-logging">Session-level logging</h3>
-<p>Per-session options override the engine defaults for that execution:</p>
+<p>If no content type is set, the session defaults to <code>application/json</code>.</p>
+<h2 id="the-codec-interface">The Codec interface</h2>
+<p>A codec combines encoding and decoding behind a single content type:</p>
 
 
 
@@ -1033,13 +979,11 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">session, err := plan.NewSession(ctx,
-    ferret.WithSessionLog(os.Stderr),
-    ferret.WithSessionLogLevel(logging.DebugLevel),
-    ferret.WithSessionLogFields(map[string]any{
-        &#34;request_id&#34;: &#34;abc-123&#34;,
-    }),
-)</div>
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">type Codec interface {
+    ContentType() string
+    Encoder
+    Decoder
+}</div>
         </div>
     </div>
 
@@ -1111,43 +1055,7 @@ ferret.New(
     </script>
 </div>
 
-<h3 id="log-levels">Log levels</h3>
-<table>
-  <thead>
-      <tr>
-          <th>Level</th>
-          <th>Constant</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Trace</td>
-          <td><code>logging.TraceLevel</code></td>
-      </tr>
-      <tr>
-          <td>Debug</td>
-          <td><code>logging.DebugLevel</code></td>
-      </tr>
-      <tr>
-          <td>Info</td>
-          <td><code>logging.InfoLevel</code></td>
-      </tr>
-      <tr>
-          <td>Warn</td>
-          <td><code>logging.WarnLevel</code></td>
-      </tr>
-      <tr>
-          <td>Error</td>
-          <td><code>logging.ErrorLevel</code></td>
-      </tr>
-      <tr>
-          <td>Disabled</td>
-          <td><code>logging.Disabled</code></td>
-      </tr>
-  </tbody>
-</table>
-<h2 id="output-encoding">Output encoding</h2>
-<p>Query results are encoded before being returned as an <code>Output</code>. The default encoding is JSON; MessagePack is also built in. Set the content type at the session level with <code>WithOutputContentType</code>:</p>
+<h3 id="encoder">Encoder</h3>
 
 
 
@@ -1172,9 +1080,10 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" data-auto-height="true">session, err := plan.NewSession(ctx,
-    ferret.WithOutputContentType(&#34;application/vnd.msgpack&#34;),
-)</div>
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">type Encoder interface {
+    Encode(value runtime.Value) ([]byte, error)
+    EncodeWith() EncoderConfigurer
+}</div>
         </div>
     </div>
 
@@ -1246,11 +1155,8 @@ ferret.New(
     </script>
 </div>
 
-<p>You can register custom codecs on the engine with <code>WithEncodingCodec</code>. See <a href="https://ferretlang.org/docs/embedding/value-encoders/">Value Encoders</a> for the codec interfaces, hooks, registry, and a complete custom codec example.</p>
-<h2 id="concurrency-control">Concurrency control</h2>
-<p>Three options control how the engine manages concurrent execution:</p>
-<h3 id="withmaxactivesessions"><code>WithMaxActiveSessions</code></h3>
-<p>Limits the total number of sessions that can be running at the same time across the entire engine. When the limit is reached, <code>plan.NewSession</code> blocks until another session closes or the context is cancelled.</p>
+<p><code>Encode</code> converts a runtime value to bytes. <code>EncodeWith</code> returns a configurer for attaching hooks (see below).</p>
+<h3 id="decoder">Decoder</h3>
 
 
 
@@ -1275,9 +1181,10 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-5-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithMaxActiveSessions(100),
-)</div>
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">type Decoder interface {
+    Decode(data []byte) (runtime.Value, error)
+    DecodeWith() DecoderConfigurer
+}</div>
         </div>
     </div>
 
@@ -1349,9 +1256,9 @@ ferret.New(
     </script>
 </div>
 
-<p>Use this to cap global resource consumption — CPU, memory, network, or downstream service pressure.</p>
-<h3 id="withmaxvmsperplan"><code>WithMaxVMsPerPlan</code></h3>
-<p>A hard cap on the total number of virtual machines a single plan can own, including both idle and active VMs. When the limit is reached and no idle VM is available, session creation fails with an error.</p>
+<p><code>Decode</code> converts bytes back into a runtime value. <code>DecodeWith</code> returns a configurer for attaching hooks.</p>
+<h2 id="encoder-and-decoder-hooks">Encoder and decoder hooks</h2>
+<p>Hooks let you intercept encoding and decoding without replacing the codec. The configurer chain builds a new encoder or decoder with hooks attached:</p>
 
 
 
@@ -1376,9 +1283,16 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-6-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithMaxVMsPerPlan(16),
-)</div>
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">encoder := codec.EncodeWith().
+    PreHook(func(value runtime.Value) error {
+        // runs before encoding
+        return nil
+    }).
+    PostHook(func(value runtime.Value, err error) error {
+        // runs after encoding
+        return nil
+    }).
+    Encoder()</div>
         </div>
     </div>
 
@@ -1450,9 +1364,41 @@ ferret.New(
     </script>
 </div>
 
-<p>Use this to bound the resource footprint of a single frequently-executed query.</p>
-<h3 id="withmaxidlevmsperplan"><code>WithMaxIdleVMsPerPlan</code></h3>
-<p>Controls how many idle VMs each plan keeps cached for reuse after sessions close. When the idle cache is full, additional returned VMs are discarded instead of retained. The default is 8.</p>
+<h3 id="hook-types">Hook types</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Hook</th>
+          <th>Signature</th>
+          <th>When it runs</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>PreEncoderHook</code></td>
+          <td><code>func(value runtime.Value) error</code></td>
+          <td>Before encoding a value</td>
+      </tr>
+      <tr>
+          <td><code>PostEncoderHook</code></td>
+          <td><code>func(value runtime.Value, err error) error</code></td>
+          <td>After encoding; receives the encode error</td>
+      </tr>
+      <tr>
+          <td><code>PreDecoderHook</code></td>
+          <td><code>func(data []byte) error</code></td>
+          <td>Before decoding bytes</td>
+      </tr>
+      <tr>
+          <td><code>PostDecoderHook</code></td>
+          <td><code>func(data []byte, err error) error</code></td>
+          <td>After decoding; receives the decode error</td>
+      </tr>
+  </tbody>
+</table>
+<p>Multiple hooks of the same type run in registration order. If any hook returns an error, processing stops.</p>
+<h2 id="the-registry">The Registry</h2>
+<p>The <code>encoding.Registry</code> stores codecs by MIME-normalized content type:</p>
 
 
 
@@ -1477,9 +1423,12 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-7-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithMaxIdleVMsPerPlan(4),
-)</div>
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">// Create a registry seeded with codecs
+registry := encoding.NewRegistry(jsonCodec, msgpackCodec)
+
+// Or start empty and register individually
+registry := encoding.NewEmptyRegistry()
+registry.Register(myCodec)</div>
         </div>
     </div>
 
@@ -1551,16 +1500,46 @@ ferret.New(
     </script>
 </div>
 
-<p>This is a memory-vs-latency trade-off: more idle VMs means faster session creation but higher steady-state memory usage.</p>
-<h3 id="how-they-work-together">How they work together</h3>
-<ul>
-<li><code>WithMaxActiveSessions</code> is an engine-wide concurrency gate — it controls how many sessions run at once across all plans</li>
-<li><code>WithMaxVMsPerPlan</code> is a per-plan resource cap — it bounds the VM count for one specific compiled query</li>
-<li><code>WithMaxIdleVMsPerPlan</code> is a per-plan cache policy — it decides how many idle VMs stay warm</li>
-</ul>
-<p>A value of 0 disables the limit for <code>WithMaxActiveSessions</code> and <code>WithMaxVMsPerPlan</code>.</p>
-<h2 id="file-system">File system</h2>
-<p>Scripts that use file system functions (from the <code>FS</code> stdlib group) operate within a sandboxed file system. The host can configure the root directory and restrict access to read-only.</p>
+<h3 id="registry-methods">Registry methods</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Method</th>
+          <th>Returns</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Register(codec)</code></td>
+          <td><code>error</code></td>
+          <td>Store a codec by its content type</td>
+      </tr>
+      <tr>
+          <td><code>Codec(contentType)</code></td>
+          <td><code>Codec, error</code></td>
+          <td>Look up a full codec</td>
+      </tr>
+      <tr>
+          <td><code>Encoder(contentType)</code></td>
+          <td><code>Encoder, error</code></td>
+          <td>Look up an encoder</td>
+      </tr>
+      <tr>
+          <td><code>Decoder(contentType)</code></td>
+          <td><code>Decoder, error</code></td>
+          <td>Look up a decoder</td>
+      </tr>
+      <tr>
+          <td><code>Clone()</code></td>
+          <td><code>*Registry</code></td>
+          <td>Create an independent copy</td>
+      </tr>
+  </tbody>
+</table>
+<p>Content types are normalized using MIME media type parsing, so <code>application/json</code> and <code>application/json; charset=utf-8</code> resolve to the same codec.</p>
+<h2 id="registering-codecs-on-the-engine">Registering codecs on the engine</h2>
+<p>Add or override a single codec:</p>
 
 
 
@@ -1586,8 +1565,7 @@ ferret.New(
 
         <div class="code-editor-pane">
             <div id="code-8-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithFSRoot(&#34;/data/extractions&#34;),
-    ferret.WithFSReadOnly(),
+    ferret.WithEncodingCodec(&#34;text/csv&#34;, myCSVCodec),
 )</div>
         </div>
     </div>
@@ -1660,9 +1638,7 @@ ferret.New(
     </script>
 </div>
 
-<p>If no root is set, file system functions use the process working directory. <code>WithFSReadOnly</code> prevents scripts from writing files regardless of the root.</p>
-<h2 id="compiler-options">Compiler options</h2>
-<p>The compiler can be configured through <code>WithCompilerOptions</code>:</p>
+<p>Replace the entire registry:</p>
 
 
 
@@ -1687,10 +1663,10 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-9-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithCompilerOptions(
-        compiler.WithOptimizationLevel(compiler.O1),
-    ),
+            <div id="code-9-text" class="code-editor-text" data-auto-height="true">registry := encoding.NewRegistry(jsonCodec, myCSVCodec)
+
+engine, err := ferret.New(
+    ferret.WithEncodingRegistry(registry),
 )</div>
         </div>
     </div>
@@ -1763,34 +1739,226 @@ ferret.New(
     </script>
 </div>
 
-<table>
-  <thead>
-      <tr>
-          <th>Level</th>
-          <th>Constant</th>
-          <th>Description</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>None</td>
-          <td><code>compiler.O0</code></td>
-          <td>No optimization</td>
-      </tr>
-      <tr>
-          <td>Basic</td>
-          <td><code>compiler.O1</code></td>
-          <td>Basic optimizations (default)</td>
-      </tr>
-  </tbody>
-</table>
-<p>Debug compilation (<code>engine.CompileDebug</code>) always uses <code>O0</code> to ensure stable source-level debugging metadata.</p>
+<p>When you use <code>WithEncodingRegistry</code>, only the codecs in the provided registry are available. The default JSON and MessagePack codecs are not included unless you add them yourself.</p>
+<h2 id="complete-example">Complete example</h2>
+<p>A custom codec that encodes values as plain text:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-10-text" class="code-editor-text" data-auto-height="true">package main
+
+import (
+    &#34;context&#34;
+    &#34;fmt&#34;
+    &#34;log&#34;
+
+    &#34;github.com/MontFerret/ferret/v2&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/encoding&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/runtime&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/source&#34;
+)
+
+type plainTextCodec struct{}
+
+func (plainTextCodec) ContentType() string {
+    return &#34;text/plain&#34;
+}
+
+func (plainTextCodec) Encode(value runtime.Value) ([]byte, error) {
+    return []byte(value.String()), nil
+}
+
+func (c plainTextCodec) EncodeWith() encoding.EncoderConfigurer {
+    return &amp;plainTextEncoderConfigurer{codec: c}
+}
+
+func (plainTextCodec) Decode(data []byte) (runtime.Value, error) {
+    return runtime.NewString(string(data)), nil
+}
+
+func (c plainTextCodec) DecodeWith() encoding.DecoderConfigurer {
+    return &amp;plainTextDecoderConfigurer{codec: c}
+}
+
+type plainTextEncoderConfigurer struct {
+    codec plainTextCodec
+    pre   []encoding.PreEncoderHook
+    post  []encoding.PostEncoderHook
+}
+
+func (e *plainTextEncoderConfigurer) PreHook(hook encoding.PreEncoderHook) encoding.EncoderConfigurer {
+    if hook != nil {
+        e.pre = append(e.pre, hook)
+    }
+    return e
+}
+
+func (e *plainTextEncoderConfigurer) PostHook(hook encoding.PostEncoderHook) encoding.EncoderConfigurer {
+    if hook != nil {
+        e.post = append(e.post, hook)
+    }
+    return e
+}
+
+func (e *plainTextEncoderConfigurer) Encoder() encoding.Encoder {
+    return e.codec
+}
+
+type plainTextDecoderConfigurer struct {
+    codec plainTextCodec
+    pre   []encoding.PreDecoderHook
+    post  []encoding.PostDecoderHook
+}
+
+func (d *plainTextDecoderConfigurer) PreHook(hook encoding.PreDecoderHook) encoding.DecoderConfigurer {
+    if hook != nil {
+        d.pre = append(d.pre, hook)
+    }
+    return d
+}
+
+func (d *plainTextDecoderConfigurer) PostHook(hook encoding.PostDecoderHook) encoding.DecoderConfigurer {
+    if hook != nil {
+        d.post = append(d.post, hook)
+    }
+    return d
+}
+
+func (d *plainTextDecoderConfigurer) Decoder() encoding.Decoder {
+    return d.codec
+}
+
+func main() {
+    engine, err := ferret.New(
+        ferret.WithEncodingCodec(&#34;text/plain&#34;, plainTextCodec{}),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer engine.Close()
+
+    plan, err := engine.Compile(
+        context.Background(),
+        source.NewAnonymous(`RETURN &#34;Hello, Ferret!&#34;`),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer plan.Close()
+
+    session, err := plan.NewSession(
+        context.Background(),
+        ferret.WithOutputContentType(&#34;text/plain&#34;),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer session.Close()
+
+    output, err := session.Run(context.Background())
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(output.ContentType)
+    // text/plain
+    fmt.Println(string(output.Content))
+    // Hello, Ferret!
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-10-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-10-copy-button');
+            const copyClipboardEl = document.querySelector('#code-10-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
 <h2 id="next-steps">Next steps</h2>
-<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/value-encoders/">
-        <span class="docs-card-kicker">Encoding</span>
-        <strong>Value Encoders</strong>
-        <span>Understand how output values are encoded and implement custom codecs.</span>
-    </a><a class="docs-card" href="/docs/embedding/programs/">
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/programs/">
         <span class="docs-card-kicker">Artifacts</span>
         <strong>Programs</strong>
         <span>Compile queries to binary artifacts, load pre-compiled programs, and work with the artifact format.</span>
@@ -1810,30 +1978,26 @@ ferret.New(
     <div class="docs-toc-title">On this page</div>
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#standard-library">Standard library</a>
+    <li><a href="#built-in-codecs">Built-in codecs</a></li>
+    <li><a href="#selecting-the-output-format">Selecting the output format</a></li>
+    <li><a href="#the-codec-interface">The Codec interface</a>
       <ul>
-        <li><a href="#available-groups">Available groups</a></li>
-        <li><a href="#selecting-groups">Selecting groups</a></li>
+        <li><a href="#encoder">Encoder</a></li>
+        <li><a href="#decoder">Decoder</a></li>
       </ul>
     </li>
-    <li><a href="#logging">Logging</a>
+    <li><a href="#encoder-and-decoder-hooks">Encoder and decoder hooks</a>
       <ul>
-        <li><a href="#engine-level-logging">Engine-level logging</a></li>
-        <li><a href="#session-level-logging">Session-level logging</a></li>
-        <li><a href="#log-levels">Log levels</a></li>
+        <li><a href="#hook-types">Hook types</a></li>
       </ul>
     </li>
-    <li><a href="#output-encoding">Output encoding</a></li>
-    <li><a href="#concurrency-control">Concurrency control</a>
+    <li><a href="#the-registry">The Registry</a>
       <ul>
-        <li><a href="#withmaxactivesessions"><code>WithMaxActiveSessions</code></a></li>
-        <li><a href="#withmaxvmsperplan"><code>WithMaxVMsPerPlan</code></a></li>
-        <li><a href="#withmaxidlevmsperplan"><code>WithMaxIdleVMsPerPlan</code></a></li>
-        <li><a href="#how-they-work-together">How they work together</a></li>
+        <li><a href="#registry-methods">Registry methods</a></li>
       </ul>
     </li>
-    <li><a href="#file-system">File system</a></li>
-    <li><a href="#compiler-options">Compiler options</a></li>
+    <li><a href="#registering-codecs-on-the-engine">Registering codecs on the engine</a></li>
+    <li><a href="#complete-example">Complete example</a></li>
     <li><a href="#next-steps">Next steps</a></li>
   </ul>
 </nav>
