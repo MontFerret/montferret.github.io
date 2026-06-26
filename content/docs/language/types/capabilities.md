@@ -269,6 +269,6 @@ This fails because a string does not support dispatch.
 
 Capability errors are reported at the point where the operation is attempted. The error identifies the value, its type, and the capability that was expected.
 
-## Where to go next
+## Next steps
 
 {{< docs-related tiles="language-types-host,language-types-ordering,language-types-serialization,embedding" >}}

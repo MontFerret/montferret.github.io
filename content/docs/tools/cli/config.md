@@ -103,3 +103,7 @@ To check the version of a remote runtime:
 {{< terminal >}}
 ferret version --runtime http://localhost:8080
 {{< /terminal >}}
+
+## Next steps
+
+{{< docs-related tiles="tools-cli,tools-cli-run,tools-cli-browser" >}}

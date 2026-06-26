@@ -140,3 +140,7 @@ lab run tests/smoke \
   --serve ./fixtures@fixtures \
   --reporter=simple
 {{< /terminal >}}
+
+## Next steps
+
+{{< docs-related tiles="tools-worker,tools-lab-running-tests,tools-cli" >}}

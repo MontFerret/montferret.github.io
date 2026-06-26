@@ -73,3 +73,7 @@ lab run browser-tests/ \
   --wait=http://127.0.0.1:9222/json/version \
   --reporter=simple
 {{< /terminal >}}
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-http-runtime,tools-lab-binary-runtime,tools-lab-running-tests" >}}

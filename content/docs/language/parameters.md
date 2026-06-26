@@ -100,3 +100,7 @@ LET doc = {
 
 RETURN doc[@attr][@subattr]
 {{</ editor >}}
+
+## Next steps
+
+{{< docs-related tiles="language-functions,embedding-parameters,language-control-flow" >}}

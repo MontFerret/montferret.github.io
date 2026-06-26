@@ -15,3 +15,7 @@ The ``..`` operator will produce an array of the integer values in the defined r
 {{< editor lang="fql" >}}
 RETURN 2010..2013
 {{</ editor >}}
+
+## Next steps
+
+{{< docs-related tiles="language-operators,language-control-flow-for,language-operators-array" >}}

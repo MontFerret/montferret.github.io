@@ -194,3 +194,7 @@ The same hooks are available through both paths:
 - **Module Bootstrap** (`boot.Hooks().BeforeRun(...)`) — for hooks that belong to a self-contained extension
 
 Both register into the same hook chain. Module hooks are registered during engine construction in the order modules are listed.
+
+## Next steps
+
+{{< docs-related tiles="embedding-custom-functions,embedding-host-values,embedding-value-encoders" >}}

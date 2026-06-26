@@ -59,3 +59,7 @@ LET tax = 0.2
 // With parentheses: subtraction happens before multiplication
 RETURN price * (1 - discount) * (1 + tax)
 {{</ editor >}}
+
+## Next steps
+
+{{< docs-related tiles="language-operators,language-expressions,language-operators-arithmetic" >}}

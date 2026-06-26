@@ -1337,3 +1337,7 @@ Argument   | Type     | Default value  | Description
 
 **Returns** `Any` Returns result of a given xpath expression.
 - - - -
+
+## Next steps
+
+{{< docs-related tiles="web-extraction,language-control-flow-query,tools-cli-run" >}}

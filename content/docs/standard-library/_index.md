@@ -62,3 +62,7 @@ Built-in Ferret functions and modules for working with arrays, objects, strings,
     <span>Utility functions in the Ferret standard library.</span>
   </a>
 </div>
+
+## Next steps
+
+{{< docs-related tiles="web-extraction,embedding,tools-lab" >}}

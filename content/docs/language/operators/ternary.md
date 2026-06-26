@@ -19,3 +19,7 @@ There is also a shortcut variant of the ternary operator with just two operands.
 {{< code lang="fql" >}}
 u.value ? : "value is NONE, 0 or not present"
 {{</ code >}}
+
+## Next steps
+
+{{< docs-related tiles="language-operators,language-control-flow-match,language-operators-logical" >}}

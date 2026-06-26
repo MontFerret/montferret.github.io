@@ -61,4 +61,6 @@ Remove the `ferret` binary from your PATH and, optionally, delete the configurat
 rm -rf ~/.ferret
 {{< /terminal >}}
 
-{{< docs-related tiles="getting-started-installation,tools-cli" >}}
+## Next steps
+
+{{< docs-related tiles="tools-cli-run,tools-cli-repl,getting-started-quick-start" >}}

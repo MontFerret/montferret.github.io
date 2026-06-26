@@ -103,3 +103,7 @@ lab run \
 Both values are hosts only. Do not include a port.
 
 When `--serve-host` is set and `--serve-bind` is omitted, Lab binds to a wildcard host so remote runtimes can reach the service: `0.0.0.0` for IPv4 and hostnames, or `::` for IPv6 literals.
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-mock-api,tools-lab-writing-tests,tools-lab-running-tests" >}}

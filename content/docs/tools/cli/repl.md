@@ -79,3 +79,7 @@ ferret repl --browser-headless
 ## Exit
 
 Type `exit` or press `Ctrl-D` to leave the REPL.
+
+## Next steps
+
+{{< docs-related tiles="language,tools-cli-run,tools-playground" >}}

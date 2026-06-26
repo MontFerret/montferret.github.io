@@ -159,6 +159,6 @@ ferret run hello.fql --param name=Steve
 
 In this example, `@name` reads the `name` parameter passed from the CLI.
 
-## Where to go next
+## Next steps
 
-{{< docs-related tiles="language,web-extraction,dynamic-pages,tools-cli" >}}
+{{< docs-related tiles="language,web-extraction,tools-cli-browser,tools-cli" >}}

@@ -145,3 +145,7 @@ fmt.Println(string(output.Content))
 | `Engine` | Safe | Shared across goroutines |
 | `Plan` | Safe | VM pool handles concurrent session creation |
 | `Session` | Not safe | One session per goroutine |
+
+## Next steps
+
+{{< docs-related tiles="embedding-getting-started,embedding-programs,language" >}}

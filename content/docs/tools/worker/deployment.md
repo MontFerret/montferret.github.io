@@ -140,3 +140,7 @@ worker \
 {{< /terminal >}}
 
 The historical baseline in the Worker README is 2 CPU and 2 GB of RAM. Browser-backed scripts, large pages, PDF generation, screenshots, and high concurrency may require more.
+
+## Next steps
+
+{{< docs-related tiles="tools-worker-api,tools-worker-configuration,embedding" >}}

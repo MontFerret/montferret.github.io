@@ -63,3 +63,7 @@ Each inner subquery is evaluated once per iteration of the outer loop.
 ## Subqueries and query expressions
 
 A subquery composes FQL transformations: it runs a `FOR` block and hands you the result. This is different from a [Query Expression]({{< ref "query" >}}), which delegates a query to a host value such as an HTML document. They share the word "query" but solve different problems — use a subquery to shape data with FQL, and `QUERY` to extract data through a host capability.
+
+## Next steps
+
+{{< docs-related tiles="language-control-flow-query,language-control-flow-for,language-control-flow" >}}

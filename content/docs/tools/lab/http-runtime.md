@@ -117,3 +117,7 @@ lab run \
   --serve-host host.docker.internal \
   tests/
 {{< /terminal >}}
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-binary-runtime,tools-lab-running-tests,tools-worker" >}}

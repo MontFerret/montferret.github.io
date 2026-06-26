@@ -71,3 +71,7 @@ Use lowercase keywords and single quotes:
 {{< terminal >}}
 ferret fmt --case-mode lower --single-quote script.fql
 {{< /terminal >}}
+
+## Next steps
+
+{{< docs-related tiles="tools-cli,tools-cli-check,tools-cli-run" >}}

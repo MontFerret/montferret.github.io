@@ -19,3 +19,7 @@ File system and HTTP modules in the Ferret standard library.
     <span>HTTP functions in the Ferret standard library.</span>
   </a>
 </div>
+
+## Next steps
+
+{{< docs-related tiles="web-extraction,embedding,stdlib" >}}

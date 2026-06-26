@@ -19,3 +19,7 @@ Work with extracted documents, query output, and the errors Ferret reports while
     <span>Understand Ferret query error output.</span>
   </a>
 </div>
+
+## Next steps
+
+{{< docs-related tiles="tools-cli,tools-lab,embedding" >}}

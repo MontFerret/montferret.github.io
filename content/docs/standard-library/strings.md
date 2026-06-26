@@ -671,3 +671,7 @@ Argument   | Type     | Default value  | Description
 
 **Returns** `String` This string in upper case.
 - - - -
+
+## Next steps
+
+{{< docs-related tiles="stdlib,language-operators-comparison,language-types-basic" >}}

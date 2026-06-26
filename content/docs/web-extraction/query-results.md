@@ -48,3 +48,7 @@ Result type
 
 The result data type is in JSON format. 
 All binary data gets encoded into base64 strings.
+
+## Next steps
+
+{{< docs-related tiles="web-extraction,language-control-flow-error-handling,tools-cli-run" >}}

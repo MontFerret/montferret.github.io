@@ -155,3 +155,7 @@ Condition-driven loops keep running until the condition becomes false. Make sure
 ## Loops as values
 
 A `FOR` loop written on its own is the query's output. Wrapped in parentheses, it becomes a value you can assign or nest. See [Subquery Expressions]({{< ref "subqueries" >}}).
+
+## Next steps
+
+{{< docs-related tiles="language-control-flow-subqueries,language-control-flow-error-handling,language-functions" >}}

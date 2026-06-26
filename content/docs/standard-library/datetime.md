@@ -379,3 +379,7 @@ Argument   | Type     | Default value  | Description
 
 **Returns** `DateTime` New datetime object.
 - - - -
+
+## Next steps
+
+{{< docs-related tiles="stdlib,language-types-basic,language-operators-comparison" >}}

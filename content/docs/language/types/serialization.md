@@ -238,6 +238,6 @@ LET users = (
 RETURN users
 {{</ code >}}
 
-## Where to go next
+## Next steps
 
 {{< docs-related tiles="language-types-host,language-types-capabilities,language-types-ordering,embedding" >}}

@@ -90,3 +90,7 @@ lab run --runtime=http://localhost:8080 tests/
 {{< /terminal >}}
 
 Remote runtimes execute source queries. Compiled artifacts and interactive debugging require the builtin local runtime.
+
+## Next steps
+
+{{< docs-related tiles="tools-worker-api,tools-worker-configuration,tools-worker-deployment" >}}

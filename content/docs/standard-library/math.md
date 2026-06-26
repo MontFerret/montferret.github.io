@@ -642,3 +642,7 @@ Argument   | Type     | Default value  | Description
 
 **Returns** `Float` The sample variance.
 - - - -
+
+## Next steps
+
+{{< docs-related tiles="stdlib,language-types-basic,language-operators-arithmetic" >}}

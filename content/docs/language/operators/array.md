@@ -672,3 +672,7 @@ RETURN values ANY == 2
 {{</ editor >}}
 
 Use direct array comparison when the array as a whole is the value being compared. Use array comparison operators when the condition should be applied to the array's elements.
+
+## Next steps
+
+{{< docs-related tiles="language-operators,language-types-basic,language-operators-comparison" >}}

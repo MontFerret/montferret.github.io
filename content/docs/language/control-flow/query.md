@@ -92,3 +92,7 @@ LET rows = QUERY `.row` IN doc ON ERROR RETURN []
 {{</ code >}}
 
 For more on values that expose querying and other behaviors, see [Value Capabilities]({{% ref "../types/capabilities" %}}) and [Host Values]({{% ref "../types/host" %}}).
+
+## Next steps
+
+{{< docs-related tiles="web-extraction,language-types-capabilities,language-control-flow" >}}

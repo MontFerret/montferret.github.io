@@ -53,3 +53,7 @@ Or close the browser associated with the current configuration:
 {{< terminal >}}
 ferret browser close
 {{< /terminal >}}
+
+## Next steps
+
+{{< docs-related tiles="tools-cli-run,web-extraction,tools-lab" >}}

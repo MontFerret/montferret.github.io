@@ -51,3 +51,7 @@ The `check` command returns a non-zero exit code when errors are found, making i
 - name: Lint FQL scripts
   run: ferret check src/**/*.fql
 ```
+
+## Next steps
+
+{{< docs-related tiles="tools-cli,tools-cli-run,tools-lab" >}}

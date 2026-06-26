@@ -95,3 +95,7 @@ The `=~` operator returns true when the string on the left side matches the regu
 {{</ code >}}
 
 Pattern and regular expression operators are intended for string values. They do not perform implicit conversion from other value types to strings.
+
+## Next steps
+
+{{< docs-related tiles="language-operators,language-types-ordering,language-control-flow-match" >}}

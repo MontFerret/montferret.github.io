@@ -75,3 +75,7 @@ The language does not distinguish between these sources. A namespaced function c
 Some namespaced functions interact with external systems. They may read files, issue HTTP requests, query databases, control browsers, or work with binary data.
 
 The behavior of such functions depends on the runtime configuration. The same query may behave differently in a CLI context than in a browser automation runtime — not because the language changes, but because the set of available functions and runtime capabilities differs.
+
+## Next steps
+
+{{< docs-related tiles="embedding-modules,stdlib,language-functions" >}}

@@ -153,3 +153,7 @@ RETURN a() + A()
 {{</ editor >}}
 
 By convention, built-in functions are written in uppercase, while user-defined function names may use the style preferred by the script author.
+
+## Next steps
+
+{{< docs-related tiles="language-functions-modules,embedding-custom-functions,stdlib" >}}

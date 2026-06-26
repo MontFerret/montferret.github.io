@@ -148,6 +148,6 @@ This keeps host values opaque while still allowing modules and runtimes to make 
 
 See [Type Ordering]({{< ref "ordering" >}}) and [Capability Types]({{< ref "capabilities" >}}) for more information about value ordering.
 
-## Where to go next
+## Next steps
 
 {{< docs-related tiles="language-types-capabilities,language-types-ordering,language-types-serialization,embedding" >}}

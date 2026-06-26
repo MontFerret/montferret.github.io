@@ -107,6 +107,6 @@ If a value does not support the capability required by a control-flow construct,
 
 See [Value Capabilities]({{% ref "../types/capabilities" %}}) and [Host Values]({{% ref "../types/host" %}}).
 
-## Where to go next
+## Next steps
 
 {{< docs-related tiles="language-control-flow-match,language-control-flow-for,language-control-flow-subqueries,language-control-flow-query,language-control-flow-dispatch,language-control-flow-waitfor,language-control-flow-error-handling" >}}

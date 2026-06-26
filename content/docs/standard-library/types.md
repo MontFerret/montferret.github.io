@@ -445,3 +445,7 @@ Argument   | Type     | Default value  | Description
 
 **Returns** `String` Returns string representation of a type (e.g. `"Int"`, `"Float"`, `"String"`, `"Array"`, `"Object"`, `"DateTime"`, `"Boolean"`, `"Binary"`, `"None"`).
 - - - -
+
+## Next steps
+
+{{< docs-related tiles="stdlib,language-types-basic,language-types-host" >}}

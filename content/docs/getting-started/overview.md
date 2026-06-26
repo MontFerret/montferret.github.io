@@ -171,8 +171,8 @@ A Ferret daemon is also in development to provide editor integration through the
 
 These pieces are designed to work together while keeping the core language and runtime small.
 
-## Where to go next
+## Next steps
 
 If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.
 
-{{< docs-related tiles="getting-started-installation,getting-started-quick-start,language,web-extraction,dynamic-pages,embedding,tools-lab,tools-worker" >}}
+{{< docs-related tiles="getting-started-installation,getting-started-quick-start,language,web-extraction,embedding,tools-lab,tools-worker" >}}

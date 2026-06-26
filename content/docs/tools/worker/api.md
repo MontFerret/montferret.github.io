@@ -180,3 +180,7 @@ lab run --runtime=http://localhost:8080 tests/
 {{< /terminal >}}
 
 Remote runtime clients expect `/info` to expose `version.ferret` when they ask for the runtime version.
+
+## Next steps
+
+{{< docs-related tiles="tools-worker-configuration,tools-worker-deployment,tools-cli" >}}

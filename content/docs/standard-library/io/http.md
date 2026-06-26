@@ -120,3 +120,7 @@ Argument   | Type     | Default value  | Description
 
 **Returns** `Binary` Response in binary format
 - - - -
+
+## Next steps
+
+{{< docs-related tiles="web-extraction,tools-worker,stdlib" >}}

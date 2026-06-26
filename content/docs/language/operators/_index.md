@@ -111,6 +111,6 @@ Operator precedence determines the order in which operators are evaluated. Paren
 
 See [Operator Precedence]({{< ref "precedence" >}}).
 
-## Where to go next
+## Next steps
 
 {{< docs-related tiles="language-operators-comparison,language-operators-logical,language-operators-arithmetic,language-operators-range,language-operators-ternary,language-operators-array,language-operators-precedence" >}}

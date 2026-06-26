@@ -101,3 +101,7 @@ The summary includes total passed tests, failed tests, and total runner duration
 ## Exit status
 
 Reporters return an error when the summary contains failures. The Lab process exits with status `1` for failed test runs and status `0` when all tests pass.
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-running-tests,tools-lab-configuration,tools-lab" >}}

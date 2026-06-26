@@ -51,3 +51,7 @@ The two forms are equivalent. Like the long form, the shorthand evaluates to `NO
 `DISPATCH` only works when the target value can receive events — it must be a **dispatchable** value provided by a module or the host application, such as a browser element. Dispatching to a value that does not support it fails at runtime. See [Value Capabilities]({{% ref "../types/capabilities" %}}) and [Host Values]({{% ref "../types/host" %}}).
 
 To wait for events instead of emitting them, see [Waitfor Expressions]({{< ref "waitfor" >}}).
+
+## Next steps
+
+{{< docs-related tiles="language-control-flow-waitfor,language-types-capabilities,language-control-flow" >}}

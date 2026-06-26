@@ -297,3 +297,7 @@ FOR user IN users
 In this query, the object expression after `RETURN` is evaluated once for each item produced by the loop.
 
 Expression evaluation follows the structure of the query. Nested expressions are evaluated as needed to produce the value of the outer expression.
+
+## Next steps
+
+{{< docs-related tiles="language-operators,language-control-flow,language-functions" >}}

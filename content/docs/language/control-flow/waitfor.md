@@ -92,3 +92,7 @@ The trigger body can dispatch events and run other statements. See [Dispatch Exp
 ## A host capability
 
 Event mode only works when the source is an **observable** value — one that produces a stream of events, provided by a module or the host application, such as a browser page. Condition mode has no such requirement. See [Value Capabilities]({{% ref "../types/capabilities" %}}) and [Host Values]({{% ref "../types/host" %}}).
+
+## Next steps
+
+{{< docs-related tiles="language-control-flow-dispatch,language-types-capabilities,language-control-flow" >}}

@@ -56,3 +56,7 @@ ferret inspect --summary --bytecode script.fql
 {{< /terminal >}}
 
 When multiple sections are selected, each is preceded by a `==> SectionName <==` header.
+
+## Next steps
+
+{{< docs-related tiles="tools-cli-build,tools-cli-run,tools-cli" >}}

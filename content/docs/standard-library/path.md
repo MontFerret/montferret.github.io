@@ -162,3 +162,7 @@ Argument   | Type     | Default value  | Description
 
 **Returns** `Any[]` First item is a directory component, and second is a filename component.
 - - - -
+
+## Next steps
+
+{{< docs-related tiles="stdlib,language-types-basic,embedding-custom-functions" >}}

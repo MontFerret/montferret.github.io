@@ -126,3 +126,7 @@ Binary runtimes support:
 | `<path>@<alias>:<port>` | Explicit alias and fixed port. |
 
 Static entries must point to existing directories. Mock entries must point to existing files.
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-running-tests,tools-lab-writing-tests,tools-lab" >}}

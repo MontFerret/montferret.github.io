@@ -156,6 +156,6 @@ A module can also provide value types with query support - the HTML module, for 
 
 This means the same script might behave differently in a CLI context than in a browser automation runtime, not because the language changes, but because the set of registered modules and host capabilities differs. This is similar to how a SQL query depends on the database engine it runs against, or how a JavaScript file behaves differently in a browser versus Node.js.
 
-## Where to go next
+## Next steps
 
 {{< docs-related tiles="language-structure,language-types,language-variables,language-expressions" >}}

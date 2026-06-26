@@ -113,3 +113,7 @@ To verify a remote or binary runtime:
 lab version --runtime=http://localhost:8080
 lab version --runtime=bin:/usr/local/bin/ferret
 {{< /terminal >}}
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-writing-tests,tools-lab-running-tests,tools-lab-configuration" >}}

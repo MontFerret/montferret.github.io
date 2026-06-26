@@ -145,3 +145,7 @@ Lab reserves the `@lab` parameter namespace for values it creates during a test 
 | `@lab.data.query.params` | A YAML suite assertion runs after the query. |
 
 Keep user parameters outside `@lab`; Lab writes that namespace for each test.
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-running-tests,tools-lab-configuration,stdlib" >}}

@@ -136,3 +136,7 @@ Type `quit` (alias `q`) or press `Ctrl-D` to end the debug session.
 ## Runtime and browser flags
 
 The debug command accepts the same runtime and browser flags as [`ferret run`](../run/#runtime-and-browser-flags). The `--runtime` flag is ignored since debugging requires the builtin runtime.
+
+## Next steps
+
+{{< docs-related tiles="tools-cli-inspect,tools-cli-run,language-control-flow-error-handling" >}}

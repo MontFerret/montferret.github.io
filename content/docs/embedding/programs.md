@@ -263,4 +263,4 @@ func main() {
 
 ## Next steps
 
-{{< docs-related tiles="embedding-value-encoders,embedding-configuration" >}}
+{{< docs-related tiles="embedding-custom-functions,embedding-parameters,embedding-modules,embedding-configuration" >}}

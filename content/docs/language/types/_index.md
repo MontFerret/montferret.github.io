@@ -92,6 +92,6 @@ FOR product IN products
 
 Host values are usually most useful while the script is running. When a script returns a host value, the embedding application or runtime decides whether it can be serialized and what representation to use.
 
-## Where to go next
+## Next steps
 
 {{< docs-related tiles="language-types-basic,language-types-host,language-types-capabilities,language-types-ordering,language-types-serialization,language-control-flow" >}}

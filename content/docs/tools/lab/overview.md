@@ -88,3 +88,7 @@ Lab passes parameters into Ferret under two groups:
 The system namespace currently includes local service URLs under `@lab.static` and `@lab.mock`, and YAML suite query output under `@lab.data.query`.
 
 Browser-backed FQL depends on the runtime you choose. Lab does not add a separate browser or CDP flag; configure browser access through the Ferret runtime and FQL options you are using.
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-installation,tools-lab-writing-tests,tools-cli" >}}

@@ -90,3 +90,7 @@ When you use `--serve` or `--mock`, Lab forwards the generated `@lab.static` and
 If the binary runs on the same machine as Lab, the default `127.0.0.1` service URLs usually work. If the binary is a wrapper into a container or remote environment, set `--serve-host` and `--serve-bind` so the runtime can reach the local services.
 
 For local service entry syntax, see [Static File Server]({{< ref "static-serving" >}}) and [Mock API Server]({{< ref "mock-api" >}}).
+
+## Next steps
+
+{{< docs-related tiles="tools-lab-http-runtime,tools-lab-cdp,tools-lab-running-tests" >}}

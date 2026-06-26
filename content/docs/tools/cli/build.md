@@ -62,3 +62,7 @@ Compiled artifacts require the builtin runtime. They cannot be used with a remot
 ## Inspect compiled output
 
 Use [`ferret inspect`](../inspect/) to disassemble a compiled program and examine its bytecode, constants, and function definitions.
+
+## Next steps
+
+{{< docs-related tiles="tools-cli-inspect,tools-cli-run,tools-cli" >}}
