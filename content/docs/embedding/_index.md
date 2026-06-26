@@ -9,4 +9,4 @@ description: "Embed Ferret into Go applications as a programmable query and auto
 
 Use Ferret as a library inside your Go application. The host application controls which functions, parameters, modules, and capabilities are available to scripts at runtime.
 
-{{< docs-related tiles="embedding-overview,embedding-getting-started,embedding-custom-functions,embedding-parameters,embedding-configuration,embedding-value-encoders,embedding-programs,embedding-modules" >}}
+{{< docs-related tiles="embedding-overview,embedding-getting-started,embedding-custom-functions,embedding-host-values,embedding-parameters,embedding-configuration,embedding-value-encoders,embedding-programs,embedding-modules" >}}
