@@ -216,4 +216,6 @@ Other functions may interact with runtime systems. A function provided by a modu
 
 The behavior of such functions is defined by the module that provides them. When a function depends on runtime capabilities, the same query may behave differently depending on the runtime configuration, available permissions, and provided host environment.
 
+## Where to go next
+
 {{< docs-related tiles="language-functions-user-defined,language-functions-modules" >}}
