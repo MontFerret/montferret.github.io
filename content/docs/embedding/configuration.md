@@ -106,44 +106,15 @@ session, err := plan.NewSession(ctx,
 
 ## Output encoding
 
-Query results are encoded before being returned as an `Output`. The default encoding is JSON.
-
-### Selecting the output format
-
-Set the content type at the session level:
+Query results are encoded before being returned as an `Output`. The default encoding is JSON; MessagePack is also built in. Set the content type at the session level with `WithOutputContentType`:
 
 {{< code lang="go" >}}
 session, err := plan.NewSession(ctx,
-    ferret.WithOutputContentType("application/msgpack"),
+    ferret.WithOutputContentType("application/vnd.msgpack"),
 )
 {{</ code >}}
 
-### Built-in codecs
-
-| Content type | Format |
-|-------------|--------|
-| `application/json` | JSON (default) |
-| `application/msgpack` | MessagePack |
-
-### Registering a custom codec
-
-Implement the `encoding.Codec` interface and register it on the engine:
-
-{{< code lang="go" >}}
-engine, err := ferret.New(
-    ferret.WithEncodingCodec("application/yaml", myYAMLCodec),
-)
-{{</ code >}}
-
-Or replace the entire registry:
-
-{{< code lang="go" >}}
-registry := encoding.NewRegistry(jsonCodec, msgpackCodec, yamlCodec)
-
-engine, err := ferret.New(
-    ferret.WithEncodingRegistry(registry),
-)
-{{</ code >}}
+You can register custom codecs on the engine with `WithEncodingCodec`. See [Value Encoders]({{< ref "value-encoders" >}}) for the codec interfaces, hooks, registry, and a complete custom codec example.
 
 ## Concurrency control
 
@@ -227,4 +198,4 @@ Debug compilation (`engine.CompileDebug`) always uses `O0` to ensure stable sour
 
 ## Next steps
 
-{{< docs-related tiles="embedding-modules" >}}
+{{< docs-related tiles="embedding-value-encoders,embedding-programs,embedding-modules" >}}
