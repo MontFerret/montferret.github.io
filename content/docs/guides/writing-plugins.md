@@ -164,6 +164,7 @@ import (
     "sync"
 
     "github.com/MontFerret/ferret/v2/pkg/runtime"
+    "github.com/MontFerret/ferret/v2/pkg/sdk"
 )
 
 var CacheType = runtime.NewTypeFor[*Cache]()
@@ -201,13 +202,13 @@ func (c *Cache) Copy() runtime.Value {
 
 // --- Cache operations ---
 
-func (c *Cache) Set(key string, val runtime.Value) {
+func (c *Cache) SetValue(key string, val runtime.Value) {
     c.mu.Lock()
     defer c.mu.Unlock()
     c.items[key] = val
 }
 
-func (c *Cache) Get(key string) (runtime.Value, bool) {
+func (c *Cache) GetValue(key string) (runtime.Value, bool) {
     c.mu.RLock()
     defer c.mu.RUnlock()
     val, ok := c.items[key]
@@ -216,7 +217,7 @@ func (c *Cache) Get(key string) (runtime.Value, bool) {
 
 // --- KeyReadable: cache.key ---
 
-func (c *Cache) Get_(ctx context.Context, key runtime.Value) (runtime.Value, error) {
+func (c *Cache) Get(ctx context.Context, key runtime.Value) (runtime.Value, error) {
     c.mu.RLock()
     defer c.mu.RUnlock()
 
@@ -248,23 +249,7 @@ func (c *Cache) Iterate(_ context.Context) (runtime.Iterator, error) {
 
     sort.Strings(keys)
 
-    return &cacheIterator{keys: keys, pos: 0}, nil
-}
-
-type cacheIterator struct {
-    keys []string
-    pos  int
-}
-
-func (it *cacheIterator) Next(_ context.Context) (runtime.Value, runtime.Value, error) {
-    if it.pos >= len(it.keys) {
-        return nil, nil, io.EOF
-    }
-
-    key := it.keys[it.pos]
-    it.pos++
-
-    return runtime.NewString(key), runtime.NewInt(it.pos - 1), nil
+    return sdk.NewSliceIterator[runtime.Value](keys), nil
 }
 
 // --- io.Closer ---
@@ -276,12 +261,6 @@ func (c *Cache) Close() error {
     return nil
 }
 {{</ code >}}
-
-The `KeyReadable` interface method is named `Get` in the runtime, but since the cache already has a `Get(string)` method, we use `Get_` here to avoid a name collision. Rename as needed for your own types — what matters is satisfying the interface signature `Get(context.Context, runtime.Value) (runtime.Value, error)`.
-
-{{< notification type="info" >}}
-`Iterator.Next` must return `io.EOF` when the sequence is exhausted — this is how the runtime knows to stop the `FOR` loop.
-{{</ notification >}}
 
 ## Add lifecycle hooks
 
