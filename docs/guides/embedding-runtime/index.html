@@ -531,9 +531,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-1">
         
-            <a href="https://ferretlang.org/docs/guides/error-handling/" class="docs-nav-link is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/guides/error-handling/" class="docs-nav-link">
                 Error handling
             </a>
         
@@ -717,9 +717,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1">
+    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
         
-            <a href="https://ferretlang.org/docs/guides/embedding-runtime/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/guides/embedding-runtime/" class="docs-nav-link is-active" aria-current="page">
                 Embedding the runtime
             </a>
         
@@ -900,22 +900,11 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="error-handling-and-resilience">Error handling and resilience</h1>
-<p>Real-world pages are unpredictable. Elements may be missing, networks may be slow, and page structures may change. This guide shows practical patterns for writing extraction scripts that handle these failures gracefully.</p>
-<p>For the full syntax reference, see <a href="https://ferretlang.org/docs/language/control-flow/error-handling/">Error Handling</a>.</p>
-<h2 id="return-a-fallback-value">Return a fallback value</h2>
-<p>The most common pattern: attach <code>ON ERROR RETURN</code> to provide a default when an expression fails.</p>
-
-
-
-
-<div id="docs-tabs-1" class="docs-tabs" data-tabs>
-    <div class="docs-tabs-list" role="tablist">
-        <button id="docs-tabs-1-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="docs-tabs-1-panel-0" tabindex="0">Terminal</button>
-        <button id="docs-tabs-1-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="docs-tabs-1-panel-1" tabindex="-1">Try in browser</button>
-    </div>
-    <div id="docs-tabs-1-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-1-tab-0">
-        
+    <h1 id="embed-ferret-in-a-go-application">Embed Ferret in a Go application</h1>
+<p>Embedding Ferret lets you run FQL queries inside your Go application — useful for user-defined extraction rules, dynamic data pipelines, or sandboxed scripting. This guide walks through building a Go service that accepts queries over HTTP.</p>
+<p>For the full API reference, see the <a href="https://ferretlang.org/docs/embedding/">Embedding</a> section.</p>
+<h2 id="set-up-the-project">Set up the project</h2>
+<p>Create a new Go module and add the Ferret dependency:</p>
 
 
 
@@ -926,11 +915,9 @@
 
 
 <div class="code-editor terminal-shortcode is-command">
-    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">ferret run -e &#39;
-LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-LET title = QUERY ONE &#34;.nonexistent&#34; IN page USING css ON ERROR RETURN NONE
-RETURN title?.textContent
-&#39;</textarea>
+    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">mkdir ferret-service &amp;&amp; cd ferret-service
+go mod init ferret-service
+go get github.com/MontFerret/ferret/v2</textarea>
 
     <div class="code-editor-shell">
         <div class="code-editor-header">
@@ -943,7 +930,7 @@ RETURN title?.textContent
             </div>
         </div>
 
-        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">ferret run -e &#39;</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">LET title = QUERY ONE &#34;.nonexistent&#34; IN page USING css ON ERROR RETURN NONE</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">RETURN title?.textContent</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">&#39;</span></span></code></pre>
+        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">mkdir ferret-service &amp;&amp; cd ferret-service</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">go mod init ferret-service</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">go get github.com/MontFerret/ferret/v2</span></span></code></pre>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -990,507 +977,7 @@ RETURN title?.textContent
     </script>
 </div>
 
-
-    </div>
-    <div id="docs-tabs-1-panel-1" class="docs-tabs-panel" role="tabpanel" aria-labelledby="docs-tabs-1-tab-1" hidden>
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-horizontal is-auto-height">
-    <textarea id="code-editor-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea>
-
-    <div class="code-editor-shell">
-        <div id="code-editor-1-header" class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-                <small>Ferret v2</small>
-            </div>
-
-            <div class="code-editor-actions">
-                <button id="code-editor-1-result-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-result-pane">Output</button>
-                <button id="code-editor-1-params-toggle-button" class="button is-outlined is-light code-editor-button" type="button" aria-expanded="false" aria-controls="code-editor-1-params-drawer">Params</button>
-                <button id="code-editor-1-run-button" class="run button is-outlined is-light code-editor-button" type="button" aria-label="Run query">
-                    <span class="code-editor-run-label">Run</span>
-                    <span id="code-editor-1-run-button-spinner" class="code-editor-run-spinner" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div id="code-editor-1-progress" class="code-editor-progress" role="progressbar" aria-label="Running query" hidden></div>
-            <span id="code-editor-1-run-status" class="code-editor-sr-only" aria-live="polite" aria-atomic="true"></span>
-        </div>
-
-        <div class="code-editor-workspace">
-            <div id="code-editor-1-grid" class="code-editor-grid" style="grid-template-columns: 1fr;">
-                <div id="code-editor-1-source-pane" class="code-editor-pane code-editor-pane-source">
-                    <div class="code-editor-pane-header">
-                        <span>query.fql</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>FQL</span>
-                            <button id="code-editor-1-copy-button" class="code-editor-pane-button" type="button">Copy</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-1-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-LET title = QUERY ONE &#34;.nonexistent&#34; IN page USING css ON ERROR RETURN NONE
-RETURN title?.textContent</div>
-                </div>
-
-                <div id="code-editor-1-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
-                    <div class="code-editor-pane-header">
-                        <span>result.json</span>
-                        <div class="code-editor-pane-header-actions">
-                            <span>output</span>
-                            <button id="code-editor-1-result-close-button" class="code-editor-pane-button" type="button" aria-controls="code-editor-1-result-pane">Close</button>
-                        </div>
-                    </div>
-                    <div id="code-editor-1-result" class="code-editor-result" data-auto-height="true"></div>
-                </div>
-            </div>
-
-            <aside id="code-editor-1-params-drawer" class="code-editor-params-drawer" aria-labelledby="code-editor-1-params-title" hidden>
-                <div class="code-editor-params-header">
-                    <div>
-                        <span id="code-editor-1-params-title" class="code-editor-params-title">Query parameters</span>
-                        <span class="code-editor-params-description">Values are parsed as JSON when possible.</span>
-                    </div>
-                    <button id="code-editor-1-params-close-button" class="code-editor-pane-button" type="button">Close</button>
-                </div>
-                <div class="code-editor-params-body">
-                    <div id="code-editor-1-params-empty" class="code-editor-params-empty">No parameters added.</div>
-                    <div id="code-editor-1-params-rows" class="code-editor-params-rows"></div>
-                </div>
-                <div class="code-editor-params-footer">
-                    <button id="code-editor-1-params-add-button" class="code-editor-params-add-button" type="button">Add parameter</button>
-                </div>
-            </aside>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function createEditor(id, mode, useWorker) {
-                const editor = ace.edit(id);
-                editor.setTheme("ace\/theme\/tomorrow_night");
-                editor.session.setUseWorker(useWorker);
-                editor.session.setMode("ace/mode/" + mode);
-                editor.setOptions({
-                    displayIndentGuides: false,
-                    printMargin: false
-                });
-
-                return editor;
-            }
-
-            const btn = document.querySelector('#code-editor-1-run-button');
-            const textEditor = createEditor('code-editor-1-text', 'fql', true);
-            const resultEditor = createEditor('code-editor-1-result', 'json', false);
-            resultEditor.setReadOnly(true);
-            const resultExpandBtn = null;
-            const editorHeader = document.querySelector('#code-editor-1-header');
-            const editorWorkspace = document.querySelector('#code-editor-1-grid').parentElement;
-            const editorGrid = document.querySelector('#code-editor-1-grid');
-            const runProgress = document.querySelector('#code-editor-1-progress');
-            const runStatus = document.querySelector('#code-editor-1-run-status');
-            const resultPane = document.querySelector('#code-editor-1-result-pane');
-            const resultToggleBtn = document.querySelector('#code-editor-1-result-toggle-button');
-            const resultCloseBtn = document.querySelector('#code-editor-1-result-close-button');
-            const paramsToggleBtn = document.querySelector('#code-editor-1-params-toggle-button');
-            const paramsDrawer = document.querySelector('#code-editor-1-params-drawer');
-            const paramsCloseBtn = document.querySelector('#code-editor-1-params-close-button');
-            const paramsAddBtn = document.querySelector('#code-editor-1-params-add-button');
-            const paramsRows = document.querySelector('#code-editor-1-params-rows');
-            const paramsEmpty = document.querySelector('#code-editor-1-params-empty');
-            let isResultVisible = !resultPane.hidden;
-            let isParamsVisible = !paramsDrawer.hidden;
-
-            function resetResultExpansion() {
-                if (!resultExpandBtn) {
-                    return;
-                }
-
-                isResultExpanded = false;
-                resultExpandBtn.setAttribute('aria-expanded', 'false');
-                resultExpandBtn.textContent = 'Expand';
-            }
-
-            function syncEditorLayout() {
-                const sourceHeight = getEditorContentHeight(textEditor);
-                textEditor.container.style.height = `${sourceHeight}px`;
-
-                if (isResultVisible) {
-                    const resultHeight = getEditorContentHeight(resultEditor);
-                    applyResultHeight(resultHeight);
-                }
-
-                textEditor.resize();
-
-                if (isResultVisible) {
-                    resultEditor.resize();
-                }
-            }
-
-            function setResultVisible(nextVisible) {
-                isResultVisible = nextVisible;
-                resultPane.hidden = !nextVisible;
-                resultToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorGrid.style.gridTemplateColumns = nextVisible ? '' : '1fr';
-
-                if (!nextVisible) {
-                    resetResultExpansion();
-                    syncEditorLayout();
-                    return;
-                }
-
-                window.requestAnimationFrame(() => {
-                    syncEditorLayout();
-                    resultEditor.resize(true);
-                });
-            }
-
-            resultToggleBtn.addEventListener('click', () => {
-                setResultVisible(!isResultVisible);
-            });
-
-            resultCloseBtn.addEventListener('click', () => {
-                setResultVisible(false);
-            });
-
-            const collapsedResultHeightStyle = resultEditor.container.style.height;
-            let isResultExpanded = false;
-
-            function getEditorContentHeight(editor) {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-
-                return Math.max(screenLines * lineHeight, 48);
-            }
-
-            function getMaxResultHeight(fallbackHeight) {
-                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || fallbackHeight;
-                const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
-
-                return Math.min(viewportHeight * 0.45, 32 * rootFontSize);
-            }
-
-            function getCollapsedResultHeight() {
-                return getEditorContentHeight(resultEditor);
-            }
-
-            function getExpandedResultHeight(collapsedHeight) {
-                const lineHeight = resultEditor.renderer.lineHeight || textEditor.renderer.lineHeight || 21;
-                const maxAllowedHeight = getMaxResultHeight(collapsedHeight);
-                const screenLines = Math.max(resultEditor.session.getScreenLength(), 1);
-                const contentHeight = (screenLines * lineHeight) + (lineHeight * 2);
-                const targetHeight = Math.min(contentHeight, maxAllowedHeight);
-
-                return Math.max(collapsedHeight, Math.round(targetHeight));
-            }
-
-            function applyResultHeight(collapsedHeight) {
-                if (resultExpandBtn && isResultExpanded) {
-                    resultEditor.container.style.height = `${getExpandedResultHeight(collapsedHeight)}px`;
-                } else {
-                    resultEditor.container.style.height = `${Math.min(collapsedHeight, getMaxResultHeight(collapsedHeight))}px`;
-                }
-
-                resultEditor.resize();
-            }
-            textEditor.session.on('change', syncEditorLayout);
-
-            if (resultExpandBtn) {
-                resultExpandBtn.addEventListener('click', () => {
-                    isResultExpanded = !isResultExpanded;
-                    resultExpandBtn.setAttribute('aria-expanded', isResultExpanded ? 'true' : 'false');
-                    resultExpandBtn.textContent = isResultExpanded ? 'Collapse' : 'Expand';
-                    syncEditorLayout();
-                });
-            }
-
-            function syncParamsEmptyState() {
-                paramsEmpty.hidden = paramsRows.children.length > 0;
-            }
-
-            function formatParamValue(value) {
-                return typeof value === 'string' ? value : JSON.stringify(value);
-            }
-
-            function createParamRow(name, value) {
-                const row = document.createElement('div');
-                row.className = 'code-editor-param-row';
-
-                const nameInput = document.createElement('input');
-                nameInput.className = 'code-editor-param-input code-editor-param-name';
-                nameInput.type = 'text';
-                nameInput.placeholder = 'name';
-                nameInput.setAttribute('aria-label', 'Parameter name');
-                nameInput.value = name || '';
-
-                const separator = document.createElement('span');
-                separator.className = 'code-editor-param-separator';
-                separator.setAttribute('aria-hidden', 'true');
-                separator.textContent = ':';
-
-                const valueInput = document.createElement('input');
-                valueInput.className = 'code-editor-param-input code-editor-param-value';
-                valueInput.type = 'text';
-                valueInput.placeholder = 'value';
-                valueInput.setAttribute('aria-label', 'Parameter value');
-                valueInput.value = value === undefined ? '' : formatParamValue(value);
-
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'code-editor-param-remove-button';
-                removeBtn.type = 'button';
-                removeBtn.setAttribute('aria-label', `Remove parameter ${name || 'row'}`);
-                removeBtn.textContent = 'Remove';
-                removeBtn.addEventListener('click', () => {
-                    row.remove();
-                    syncParamsEmptyState();
-                });
-
-                row.append(nameInput, separator, valueInput, removeBtn);
-                paramsRows.appendChild(row);
-                syncParamsEmptyState();
-
-                return nameInput;
-            }
-
-            function setParamsVisible(nextVisible) {
-                isParamsVisible = nextVisible;
-                paramsDrawer.hidden = !nextVisible;
-                paramsToggleBtn.setAttribute('aria-expanded', nextVisible ? 'true' : 'false');
-                editorWorkspace.classList.toggle('is-params-open', nextVisible);
-
-                if (nextVisible) {
-                    paramsCloseBtn.focus();
-                } else {
-                    paramsToggleBtn.focus();
-                }
-            }
-
-            function setParamsControlsDisabled(disabled) {
-                paramsToggleBtn.disabled = disabled;
-                paramsDrawer.querySelectorAll('button, input').forEach((control) => {
-                    control.disabled = disabled;
-                });
-            }
-
-            function parseParamValue(value) {
-                try {
-                    return JSON.parse(value);
-                } catch (err) {
-                    return value;
-                }
-            }
-
-            function getParams() {
-                return Array.from(paramsRows.querySelectorAll('.code-editor-param-row')).reduce((params, row) => {
-                    const name = row.querySelector('.code-editor-param-name').value.trim();
-
-                    if (name) {
-                        const value = row.querySelector('.code-editor-param-value').value;
-                        params[name] = parseParamValue(value);
-                    }
-
-                    return params;
-                }, {});
-            }
-
-            const initialParams = JSON.parse("{}");
-
-            if (initialParams && typeof initialParams === 'object' && !Array.isArray(initialParams)) {
-                Object.entries(initialParams).forEach(([name, value]) => {
-                    createParamRow(name, value);
-                });
-            }
-
-            syncParamsEmptyState();
-
-            paramsToggleBtn.addEventListener('click', () => {
-                setParamsVisible(!isParamsVisible);
-            });
-
-            paramsCloseBtn.addEventListener('click', () => {
-                setParamsVisible(false);
-            });
-
-            paramsAddBtn.addEventListener('click', () => {
-                createParamRow('', '').focus();
-            });
-
-            window.addEventListener('resize', syncEditorLayout);
-            syncEditorLayout();
-
-            function setContent(editor, content) {
-                editor.setValue(content, -1);
-            }
-                const copyClipboardEl = document.querySelector('#code-editor-1-copy-clipboard');
-                const copyBtn = document.querySelector('#code-editor-1-copy-button');
-
-                function copyTextWithFallback(content) {
-                    copyClipboardEl.value = content;
-                    copyClipboardEl.focus();
-                    copyClipboardEl.select();
-
-                    if (!document.execCommand('copy')) {
-                        throw new Error('Could not copy source to the clipboard');
-                    }
-                }
-
-                function copyTextToClipboard(content) {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        return navigator.clipboard.writeText(content).catch(() => {
-                            copyTextWithFallback(content);
-                        });
-                    }
-
-                    copyTextWithFallback(content);
-
-                    return Promise.resolve();
-                }
-
-                copyBtn.addEventListener('click', () => {
-                    copyTextToClipboard(textEditor.getValue())
-                        .then(() => {
-                            copyBtn.textContent = 'Copied';
-                            window.setTimeout(() => {
-                                copyBtn.textContent = 'Copy';
-                            }, 1200);
-                        })
-                        .catch((err) => {
-                            console.error('Failed to copy source');
-                            console.error(err);
-                        });
-                });
-
-            let isRunning = false;
-
-            function onStart() {
-                isRunning = true;
-                textEditor.setReadOnly(true);
-                runProgress.hidden = false;
-                runStatus.textContent = 'Running query';
-                editorHeader.setAttribute('aria-busy', 'true');
-                editorGrid.setAttribute('aria-busy', 'true');
-                btn.classList.add('is-running');
-                btn.setAttribute('aria-busy', 'true');
-                btn.setAttribute('aria-label', 'Running query');
-                btn.disabled = true;
-                setParamsControlsDisabled(true);
-            }
-
-            function onEnd(result) {
-                isRunning = false;
-                textEditor.setReadOnly(false);
-                runProgress.hidden = true;
-                runStatus.textContent = '';
-                editorHeader.setAttribute('aria-busy', 'false');
-                editorGrid.setAttribute('aria-busy', 'false');
-                btn.classList.remove('is-running');
-                btn.setAttribute('aria-busy', 'false');
-                btn.setAttribute('aria-label', 'Run query');
-                btn.disabled = false;
-                setParamsControlsDisabled(false);
-
-                setContent(resultEditor, result);
-                setResultVisible(true);
-            }
-
-            btn.addEventListener('click', () => {
-                if (isRunning) {
-                    return;
-                }
-
-                const body = {
-                        text: textEditor.getValue(),
-                        params: getParams()
-                };
-                const url = "https:\/\/worker-v2-811908774949.us-east1.run.app";
-
-                onStart();
-                fetch(url, {
-                    method: 'post',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
-                    signal: AbortSignal.timeout(1000 * 60), 
-                    body: JSON.stringify(body)
-                })
-                    .then(r => {
-                        if (r.status === 200) {
-                            return r.json()
-                        }
-                        
-                        if (r.status === 426) {
-                            throw new Error(`Too many requests. Try again later.`);
-                        }
-                        
-                        if (r.status === 400) {
-                            return r.json().then((data) => {
-                                if (data.details) {
-                                    throw new Error(data.details);
-                                }
-                                
-                                throw new Error(data.error);
-                            });
-                        }
-                        
-                        throw new Error(`Unexpected error. Try again later.`);
-                    })
-                    .then((data) => {
-                        onEnd(JSON.stringify(data, null, 4));
-                    })
-                    .catch((err) => {
-                        onEnd(err.message);
-                    });
-            });
-        }, false);
-    </script>
-</div>
-
-
-    </div>
-</div>
-<p>Common fallback values:</p>
-<table>
-  <thead>
-      <tr>
-          <th>Fallback</th>
-          <th>When to use</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>NONE</code></td>
-          <td>Single optional value</td>
-      </tr>
-      <tr>
-          <td><code>[]</code></td>
-          <td>Expected list that may be empty</td>
-      </tr>
-      <tr>
-          <td><code>{}</code></td>
-          <td>Expected object with no data</td>
-      </tr>
-      <tr>
-          <td><code>&quot;unknown&quot;</code></td>
-          <td>Display-safe placeholder</td>
-      </tr>
-  </tbody>
-</table>
-<h2 id="optional-chaining">Optional chaining</h2>
-<p>The <code>?.</code> operator accesses properties on values that may be <code>NONE</code>. Instead of failing, it returns <code>NONE</code>:</p>
+<p>Run a one-shot query to verify the setup:</p>
 
 
 
@@ -1506,7 +993,7 @@ RETURN title?.textContent</div>
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -1515,14 +1002,34 @@ RETURN title?.textContent</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-LET element = QUERY ONE &#34;.maybe-missing&#34; IN page USING css ON ERROR RETURN NONE
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">package main
 
-// Safe — returns NONE if element is NONE
-LET text = element?.textContent
-LET href = element?.attributes?.href
+import (
+    &#34;context&#34;
+    &#34;fmt&#34;
+    &#34;log&#34;
 
-RETURN { text, href }</div>
+    &#34;github.com/MontFerret/ferret/v2&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/source&#34;
+)
+
+func main() {
+    engine, err := ferret.New()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer engine.Close()
+
+    output, err := engine.Run(
+        context.Background(),
+        source.NewAnonymous(`RETURN { message: &#34;Ferret is running&#34; }`),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(output.Content))
+}</div>
         </div>
     </div>
 
@@ -1531,7 +1038,7 @@ RETURN { text, href }</div>
             const editor = ace.edit('code-1-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -1594,9 +1101,8 @@ RETURN { text, href }</div>
     </script>
 </div>
 
-<p>Without <code>?.</code>, accessing a property on <code>NONE</code> is a runtime error.</p>
-<h2 id="retry-on-failure">Retry on failure</h2>
-<p>Use <code>ON ERROR RETRY</code> when a transient failure may resolve on a second attempt:</p>
+<h2 id="choose-a-standard-library-profile">Choose a standard library profile</h2>
+<p>The full standard library includes file system and network access. For a service that runs user-submitted queries, restrict it:</p>
 
 
 
@@ -1612,7 +1118,7 @@ RETURN { text, href }</div>
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -1621,8 +1127,7 @@ RETURN { text, href }</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-    ON ERROR RETRY 3</div>
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">import &#34;github.com/MontFerret/ferret/v2/pkg/stdlib&#34;</div>
         </div>
     </div>
 
@@ -1631,7 +1136,7 @@ RETURN { text, href }</div>
             const editor = ace.edit('code-2-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -1694,7 +1199,32 @@ RETURN { text, href }</div>
     </script>
 </div>
 
-<h3 id="add-a-delay-between-retries">Add a delay between retries</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Profile</th>
+          <th>What it does</th>
+          <th>When to use</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>stdlib.Full()</code></td>
+          <td>All function groups</td>
+          <td>Trusted scripts, internal pipelines</td>
+      </tr>
+      <tr>
+          <td><code>stdlib.Safe()</code></td>
+          <td>Full minus IO (file system + network)</td>
+          <td>User-submitted queries</td>
+      </tr>
+      <tr>
+          <td><code>stdlib.Only(groups...)</code></td>
+          <td>Only the listed groups</td>
+          <td>Minimal sandboxes</td>
+      </tr>
+  </tbody>
+</table>
 
 
 
@@ -1710,7 +1240,7 @@ RETURN { text, href }</div>
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -1719,8 +1249,9 @@ RETURN { text, href }</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-    ON ERROR RETRY 3 DELAY 500ms</div>
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithStdlib(stdlib.Safe()),
+)</div>
         </div>
     </div>
 
@@ -1729,7 +1260,7 @@ RETURN { text, href }</div>
             const editor = ace.edit('code-3-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -1792,7 +1323,81 @@ RETURN { text, href }</div>
     </script>
 </div>
 
-<h3 id="use-exponential-backoff">Use exponential backoff</h3>
+<p>See <a href="https://ferretlang.org/docs/embedding/configuration/">Configuration</a> for the full list of groups.</p>
+<h2 id="register-modules">Register modules</h2>
+<p>In Ferret v2, capabilities like HTML querying and browser automation are not part of the core runtime or the standard library — they are provided by external modules that the host application registers explicitly.</p>
+<p>The HTML module lives in the <code>contrib</code> repository:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">go get github.com/MontFerret/contrib/modules/web/html</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-2-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">go get github.com/MontFerret/contrib/modules/web/html</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-2-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-2-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Register it when creating the engine:</p>
 
 
 
@@ -1808,7 +1413,7 @@ RETURN { text, href }</div>
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -1817,8 +1422,22 @@ RETURN { text, href }</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-    ON ERROR RETRY 3 DELAY 200ms BACKOFF EXPONENTIAL</div>
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">import (
+    &#34;github.com/MontFerret/contrib/modules/web/html&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/memory&#34;
+)
+
+htmlmod, err := html.New(
+    html.WithDefaultDriver(memory.New()),
+)
+if err != nil {
+    log.Fatal(err)
+}
+
+engine, err := ferret.New(
+    ferret.WithStdlib(stdlib.Safe()),
+    ferret.WithModules(htmlmod),
+)</div>
         </div>
     </div>
 
@@ -1827,7 +1446,7 @@ RETURN { text, href }</div>
             const editor = ace.edit('code-4-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -1890,8 +1509,9 @@ RETURN { text, href }</div>
     </script>
 </div>
 
-<p>The delay doubles on each retry: 200ms, 400ms, 800ms.</p>
-<h3 id="fall-back-after-all-retries-fail">Fall back after all retries fail</h3>
+<p>The <code>memory</code> driver handles static HTML — it fetches and parses pages in-process without a browser.</p>
+<h3 id="add-browser-support">Add browser support</h3>
+<p>For JavaScript-rendered pages, add the <code>cdp</code> driver alongside the <code>memory</code> driver:</p>
 
 
 
@@ -1907,7 +1527,7 @@ RETURN { text, href }</div>
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -1916,11 +1536,26 @@ RETURN { text, href }</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-5-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-    ON ERROR RETRY 3 DELAY 500ms BACKOFF EXPONENTIAL
-    OR RETURN NONE
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">import (
+    &#34;github.com/MontFerret/contrib/modules/web/html&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/cdp&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/memory&#34;
+)
 
-RETURN page != NONE ? page.title : &#34;page unavailable&#34;</div>
+htmlmod, err := html.New(
+    html.WithDefaultDriver(memory.New()),
+    html.WithDrivers(
+        cdp.New(),
+    ),
+)
+if err != nil {
+    log.Fatal(err)
+}
+
+engine, err := ferret.New(
+    ferret.WithStdlib(stdlib.Safe()),
+    ferret.WithModules(htmlmod),
+)</div>
         </div>
     </div>
 
@@ -1929,7 +1564,7 @@ RETURN page != NONE ? page.title : &#34;page unavailable&#34;</div>
             const editor = ace.edit('code-5-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -1992,8 +1627,7 @@ RETURN page != NONE ? page.title : &#34;page unavailable&#34;</div>
     </script>
 </div>
 
-<h2 id="handle-timeouts">Handle timeouts</h2>
-<p><code>WAITFOR</code> expressions support <code>ON TIMEOUT RETURN</code> for a timeout-specific fallback. This is separate from <code>ON ERROR</code>:</p>
+<p>Scripts select the driver at query time with <code>{ driver: &quot;cdp&quot; }</code>:</p>
 
 
 
@@ -2019,13 +1653,7 @@ RETURN page != NONE ? page.title : &#34;page unavailable&#34;</div>
 
         <div class="code-editor-pane">
             <div id="code-6-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; })
-
-LET result = WAITFOR VALUE QUERY ONE &#34;.slow-loading&#34; IN page USING css
-    TIMEOUT 5s
-    ON TIMEOUT RETURN NONE
-    ON ERROR RETURN NONE
-
-RETURN result?.textContent</div>
+RETURN page.title</div>
         </div>
     </div>
 
@@ -2097,8 +1725,16 @@ RETURN result?.textContent</div>
     </script>
 </div>
 
-<h2 id="extract-with-fallback-selectors">Extract with fallback selectors</h2>
-<p>When a site changes its layout, old selectors may stop working. Try multiple selectors and use the first one that matches:</p>
+<p>Without the <code>driver</code> option, the default <code>memory</code> driver is used.</p>
+
+
+<div class="notification is-info">
+    
+If your application only runs pure FQL (no HTML or browser access), you can skip module registration entirely — the core runtime and standard library work on their own.
+
+</div>
+<h2 id="compile-and-reuse-a-plan">Compile and reuse a plan</h2>
+<p>When the same query runs multiple times — with different parameters, in different goroutines, or on a schedule — compile it once and reuse the plan:</p>
 
 
 
@@ -2114,7 +1750,7 @@ RETURN result?.textContent</div>
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -2123,14 +1759,37 @@ RETURN result?.textContent</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-7-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">plan, err := engine.Compile(ctx, source.New(&#34;extract-title&#34;, `
+    LET page = WEB::HTML::OPEN(@url)
+    RETURN page.title
+`))
+if err != nil {
+    log.Fatal(err)
+}
+defer plan.Close()
 
-LET title = QUERY ONE &#34;.new-title&#34; IN page USING css ON ERROR RETURN NONE
-LET titleFallback = title == NONE
-    ? (QUERY ONE &#34;.old-title&#34; IN page USING css ON ERROR RETURN NONE)
-    : title
+urls := []string{
+    &#34;https://mockery.ferretlang.org&#34;,
+    &#34;https://mockery.ferretlang.org/scenarios/ecommerce/&#34;,
+}
 
-RETURN titleFallback?.textContent</div>
+for _, url := range urls {
+    session, err := plan.NewSession(ctx,
+        ferret.WithSessionParam(&#34;url&#34;, url),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    output, err := session.Run(ctx)
+    session.Close()
+
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(output.Content))
+}</div>
         </div>
     </div>
 
@@ -2139,7 +1798,7 @@ RETURN titleFallback?.textContent</div>
             const editor = ace.edit('code-7-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -2202,7 +1861,9 @@ RETURN titleFallback?.textContent</div>
     </script>
 </div>
 
-<p>Or with a function for reuse:</p>
+<p>The plan manages an internal pool of virtual machines. Sessions borrow a VM from the pool and return it on close, so reusing a plan avoids recompilation and reduces allocation overhead.</p>
+<h2 id="build-an-http-handler">Build an HTTP handler</h2>
+<p>The following handler accepts a JSON body with <code>query</code> and optional <code>params</code>, compiles and runs the query, and returns the result:</p>
 
 
 
@@ -2218,7 +1879,7 @@ RETURN titleFallback?.textContent</div>
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -2227,18 +1888,92 @@ RETURN titleFallback?.textContent</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-8-text" class="code-editor-text" data-auto-height="true">FUNC queryFirst(page, selectors) {
-    FOR selector IN selectors
-        LET result = QUERY ONE selector IN page USING css ON ERROR RETURN NONE
-        FILTER result != NONE
-        LIMIT 1
-        RETURN result
+            <div id="code-8-text" class="code-editor-text" data-auto-height="true">package main
+
+import (
+    &#34;context&#34;
+    &#34;encoding/json&#34;
+    &#34;log&#34;
+    &#34;net/http&#34;
+    &#34;time&#34;
+
+    &#34;github.com/MontFerret/ferret/v2&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/source&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/stdlib&#34;
+
+    &#34;github.com/MontFerret/contrib/modules/web/html&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/memory&#34;
+)
+
+type QueryRequest struct {
+    Query  string         `json:&#34;query&#34;`
+    Params map[string]any `json:&#34;params,omitempty&#34;`
 }
 
-LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-LET title = FIRST(queryFirst(page, [&#34;.new-title&#34;, &#34;.old-title&#34;, &#34;h1&#34;]))
+func main() {
+    htmlmod, err := html.New(
+        html.WithDefaultDriver(memory.New()),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
 
-RETURN title?.textContent</div>
+    engine, err := ferret.New(
+        ferret.WithStdlib(stdlib.Safe()),
+        ferret.WithModules(htmlmod),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer engine.Close()
+
+    http.HandleFunc(&#34;/api/query&#34;, func(w http.ResponseWriter, r *http.Request) {
+        if r.Method != http.MethodPost {
+            http.Error(w, &#34;method not allowed&#34;, http.StatusMethodNotAllowed)
+            return
+        }
+
+        var req QueryRequest
+        if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+            http.Error(w, &#34;invalid request body&#34;, http.StatusBadRequest)
+            return
+        }
+
+        ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+        defer cancel()
+
+        plan, err := engine.Compile(ctx, source.New(&#34;api-query&#34;, req.Query))
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+            return
+        }
+        defer plan.Close()
+
+        sessionOpts := make([]ferret.Option, 0, len(req.Params))
+        for k, v := range req.Params {
+            sessionOpts = append(sessionOpts, ferret.WithSessionParam(k, v))
+        }
+
+        session, err := plan.NewSession(ctx, sessionOpts...)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer session.Close()
+
+        output, err := session.Run(ctx)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+        w.Write(output.Content)
+    })
+
+    log.Println(&#34;listening on :8080&#34;)
+    log.Fatal(http.ListenAndServe(&#34;:8080&#34;, nil))
+}</div>
         </div>
     </div>
 
@@ -2247,7 +1982,7 @@ RETURN title?.textContent</div>
             const editor = ace.edit('code-8-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -2310,8 +2045,88 @@ RETURN title?.textContent</div>
     </script>
 </div>
 
-<h2 id="protect-a-loop-from-individual-failures">Protect a loop from individual failures</h2>
-<p>When iterating over items, a single failure in one item should not stop the entire extraction. Use <code>ON ERROR RETURN</code> on individual operations, or wrap the whole loop body:</p>
+<p>Test it:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">curl -s -X POST http://localhost:8080/api/query \
+  -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{&#34;query&#34;: &#34;RETURN UPPER(@name)&#34;, &#34;params&#34;: {&#34;name&#34;: &#34;ferret&#34;}}&#39;</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-3-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">curl -s -X POST http://localhost:8080/api/query \</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">  -H &#34;Content-Type: application/json&#34; \</span></span><span class="terminal-row"><span class="terminal-prompt terminal-prompt-spacer" aria-hidden="true">$</span><span class="terminal-command">  -d &#39;{&#34;query&#34;: &#34;RETURN UPPER(@name)&#34;, &#34;params&#34;: {&#34;name&#34;: &#34;ferret&#34;}}&#39;</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-3-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-3-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+
+
+<div class="notification is-info">
+    
+For production use, consider caching compiled plans by query hash to avoid recompilation on repeated queries.
+
+</div>
+<h2 id="handle-errors">Handle errors</h2>
+<p>Compilation and runtime errors are separate concerns:</p>
 
 
 
@@ -2327,7 +2142,7 @@ RETURN title?.textContent</div>
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -2336,19 +2151,14 @@ RETURN title?.textContent</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-9-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-LET items = page[~ css`article`]
-
-FOR item IN items
-    LET title = item[~? css`h2`]?.textContent
-    LET link = item[~? css`a`]?.attributes?.href
-    LET description = item[~? css`p`]?.textContent
-
-    RETURN {
-        title: title != NONE ? title : &#34;untitled&#34;,
-        link,
-        description
-    }</div>
+            <div id="code-9-text" class="code-editor-text" data-auto-height="true">plan, err := engine.Compile(ctx, source.New(&#34;user-script.fql&#34;, query))
+if err != nil {
+    // Compilation error — syntax or semantic issue.
+    // The error includes source location (line and column).
+    // Safe to return to the user.
+    http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+    return
+}</div>
         </div>
     </div>
 
@@ -2357,7 +2167,7 @@ FOR item IN items
             const editor = ace.edit('code-9-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -2420,7 +2230,7 @@ FOR item IN items
     </script>
 </div>
 
-<p>To catch and skip items that fail entirely, wrap the loop body in a grouped expression:</p>
+<p>Runtime errors come from <code>session.Run</code>:</p>
 
 
 
@@ -2436,7 +2246,7 @@ FOR item IN items
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -2445,17 +2255,13 @@ FOR item IN items
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-10-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;)
-LET items = page[~ css`article`]
-
-FOR item IN items
-    LET result = ({
-        title: item[~? css`h2`]?.textContent,
-        link: item[~? css`a`]?.attributes?.href
-    }) ON ERROR RETURN NONE
-
-    FILTER result != NONE
-    RETURN result</div>
+            <div id="code-10-text" class="code-editor-text" data-auto-height="true">output, err := session.Run(ctx)
+if err != nil {
+    // Runtime error — execution failure, context timeout, etc.
+    // May be context.DeadlineExceeded if the timeout was hit.
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+}</div>
         </div>
     </div>
 
@@ -2464,7 +2270,7 @@ FOR item IN items
             const editor = ace.edit('code-10-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -2527,8 +2333,7 @@ FOR item IN items
     </script>
 </div>
 
-<h2 id="combine-error-and-timeout-handling">Combine error and timeout handling</h2>
-<p>A common pattern for browser-backed extraction: retry on error, provide a timeout fallback, and use optional chaining throughout:</p>
+<p>Always set a timeout on the context to prevent runaway queries:</p>
 
 
 
@@ -2544,7 +2349,7 @@ FOR item IN items
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
+                <span>example.go</span>
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
@@ -2553,24 +2358,8 @@ FOR item IN items
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-11-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; })
-    ON ERROR RETRY 2 DELAY 1s BACKOFF EXPONENTIAL
-    OR RETURN NONE
-
-LET loaded = page != NONE
-    ? (WAITFOR EXISTS QUERY ONE &#34;.content&#34; IN page USING css
-        TIMEOUT 10s
-        ON TIMEOUT RETURN FALSE)
-    : FALSE
-
-RETURN loaded ? {
-    title: page?.title,
-    items: page[~ css`.content .item`][*
-        RETURN {
-            name: .?.textContent
-        }
-    ]
-} : { error: &#34;page unavailable&#34; }</div>
+            <div id="code-11-text" class="code-editor-text" data-auto-height="true">ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+defer cancel()</div>
         </div>
     </div>
 
@@ -2579,7 +2368,7 @@ RETURN loaded ? {
             const editor = ace.edit('code-11-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
+            editor.session.setMode("ace/mode/" + 'golang');
             editor.setOptions({
                 readOnly: true,
                 highlightActiveLine: false,
@@ -2642,23 +2431,520 @@ RETURN loaded ? {
     </script>
 </div>
 
+<h2 id="control-concurrency">Control concurrency</h2>
+<p>Three options control how the engine manages concurrent execution:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-12-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-12-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-12-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithStdlib(stdlib.Safe()),
+    ferret.WithModules(htmlmod),
+    ferret.WithMaxActiveSessions(50),
+    ferret.WithMaxVMsPerPlan(8),
+    ferret.WithMaxIdleVMsPerPlan(4),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-12-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-12-copy-button');
+            const copyClipboardEl = document.querySelector('#code-12-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Effect</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>WithMaxActiveSessions</code></td>
+          <td>Engine-wide cap on concurrent sessions. <code>NewSession</code> blocks when full.</td>
+      </tr>
+      <tr>
+          <td><code>WithMaxVMsPerPlan</code></td>
+          <td>Per-plan cap on total VMs (idle + active). Bounds resource use for hot queries.</td>
+      </tr>
+      <tr>
+          <td><code>WithMaxIdleVMsPerPlan</code></td>
+          <td>Per-plan idle VM cache size. Trade memory for faster session creation.</td>
+      </tr>
+  </tbody>
+</table>
+<p>See <a href="https://ferretlang.org/docs/embedding/configuration/">Configuration</a> for details on how these interact.</p>
+<h2 id="shut-down-cleanly">Shut down cleanly</h2>
+<p>Handle OS signals and close the engine before exiting:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-13-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-13-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-13-text" class="code-editor-text" data-auto-height="true">package main
+
+import (
+    &#34;context&#34;
+    &#34;log&#34;
+    &#34;net/http&#34;
+    &#34;os&#34;
+    &#34;os/signal&#34;
+    &#34;syscall&#34;
+    &#34;time&#34;
+
+    &#34;github.com/MontFerret/ferret/v2&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/stdlib&#34;
+
+    &#34;github.com/MontFerret/contrib/modules/web/html&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/memory&#34;
+)
+
+func main() {
+    htmlmod, err := html.New(
+        html.WithDefaultDriver(memory.New()),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    engine, err := ferret.New(
+        ferret.WithStdlib(stdlib.Safe()),
+        ferret.WithModules(htmlmod),
+        ferret.WithMaxActiveSessions(50),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    srv := &amp;http.Server{Addr: &#34;:8080&#34;}
+
+    // Register handlers using engine ...
+
+    go func() {
+        if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatal(err)
+        }
+    }()
+
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    &lt;-quit
+
+    log.Println(&#34;shutting down&#34;)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    srv.Shutdown(ctx)
+    engine.Close()
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-13-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-13-copy-button');
+            const copyClipboardEl = document.querySelector('#code-13-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p><code>engine.Close()</code> runs cleanup hooks in reverse registration order (LIFO) and releases all pooled VMs. Always close the HTTP server first so no new requests arrive while the engine is shutting down.</p>
+<h2 id="complete-example">Complete example</h2>
+<p>A full runnable service combining everything above:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-14-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-14-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-14-text" class="code-editor-text" data-auto-height="true">package main
+
+import (
+    &#34;context&#34;
+    &#34;encoding/json&#34;
+    &#34;log&#34;
+    &#34;net/http&#34;
+    &#34;os&#34;
+    &#34;os/signal&#34;
+    &#34;syscall&#34;
+    &#34;time&#34;
+
+    &#34;github.com/MontFerret/ferret/v2&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/source&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/stdlib&#34;
+
+    &#34;github.com/MontFerret/contrib/modules/web/html&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/cdp&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/memory&#34;
+)
+
+type QueryRequest struct {
+    Query  string         `json:&#34;query&#34;`
+    Params map[string]any `json:&#34;params,omitempty&#34;`
+}
+
+func main() {
+    htmlmod, err := html.New(
+        html.WithDefaultDriver(memory.New()),
+        html.WithDrivers(
+            cdp.New(),
+        ),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    engine, err := ferret.New(
+        ferret.WithStdlib(stdlib.Safe()),
+        ferret.WithModules(htmlmod),
+        ferret.WithMaxActiveSessions(50),
+        ferret.WithMaxVMsPerPlan(8),
+        ferret.WithMaxIdleVMsPerPlan(4),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    mux := http.NewServeMux()
+
+    mux.HandleFunc(&#34;/api/query&#34;, func(w http.ResponseWriter, r *http.Request) {
+        if r.Method != http.MethodPost {
+            http.Error(w, &#34;method not allowed&#34;, http.StatusMethodNotAllowed)
+            return
+        }
+
+        var req QueryRequest
+        if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+            http.Error(w, &#34;invalid request body&#34;, http.StatusBadRequest)
+            return
+        }
+
+        ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+        defer cancel()
+
+        plan, err := engine.Compile(ctx, source.New(&#34;api-query&#34;, req.Query))
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+            return
+        }
+        defer plan.Close()
+
+        sessionOpts := make([]ferret.Option, 0, len(req.Params))
+        for k, v := range req.Params {
+            sessionOpts = append(sessionOpts, ferret.WithSessionParam(k, v))
+        }
+
+        session, err := plan.NewSession(ctx, sessionOpts...)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer session.Close()
+
+        output, err := session.Run(ctx)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+        w.Write(output.Content)
+    })
+
+    srv := &amp;http.Server{
+        Addr:    &#34;:8080&#34;,
+        Handler: mux,
+    }
+
+    go func() {
+        log.Println(&#34;listening on :8080&#34;)
+        if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatal(err)
+        }
+    }()
+
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    &lt;-quit
+
+    log.Println(&#34;shutting down&#34;)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    srv.Shutdown(ctx)
+    engine.Close()
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-14-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-14-copy-button');
+            const copyClipboardEl = document.querySelector('#code-14-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
 <h2 id="next-steps">Next steps</h2>
-<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/guides/static-pages/">
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/overview/">
+        <span class="docs-card-kicker">Introduction</span>
+        <strong>Overview</strong>
+        <span>Understand the Engine, Plan, and Session lifecycle and when embedding makes sense.</span>
+    </a><a class="docs-card" href="/docs/embedding/configuration/">
+        <span class="docs-card-kicker">Runtime setup</span>
+        <strong>Configuration</strong>
+        <span>Control the standard library, logging, encoding, concurrency, and file system access.</span>
+    </a><a class="docs-card" href="/docs/guides/writing-plugins/">
         <span class="docs-card-kicker">Guide</span>
-        <strong>Extract from static pages</strong>
-        <span>Load HTML, query with CSS selectors, and shape the output.</span>
-    </a><a class="docs-card" href="/docs/guides/browser-pages/">
+        <strong>Write a Ferret plugin</strong>
+        <span>Build a module with functions, host values, and lifecycle hooks.</span>
+    </a><a class="docs-card" href="/docs/guides/precompiled-programs/">
         <span class="docs-card-kicker">Guide</span>
-        <strong>Browser-driven pages</strong>
-        <span>Use a browser for JavaScript-rendered pages and dynamic content.</span>
-    </a><a class="docs-card" href="/docs/language/control-flow/error-handling/">
-        <span class="docs-card-kicker">Learn</span>
-        <strong>Error Handling</strong>
-        <span>Recover from runtime failures with recovery tails and optional chaining.</span>
-    </a><a class="docs-card" href="/docs/language/control-flow/waitfor/">
-        <span class="docs-card-kicker">Learn</span>
-        <strong>Waitfor Expressions</strong>
-        <span>Suspend evaluation until a condition becomes true or an event arrives.</span>
+        <strong>Pre-compile programs</strong>
+        <span>Compile scripts to artifacts, store them, and load them without the compiler.</span>
     </a>
 </div>
 
@@ -2671,19 +2957,19 @@ RETURN loaded ? {
     <div class="docs-toc-title">On this page</div>
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#return-a-fallback-value">Return a fallback value</a></li>
-    <li><a href="#optional-chaining">Optional chaining</a></li>
-    <li><a href="#retry-on-failure">Retry on failure</a>
+    <li><a href="#set-up-the-project">Set up the project</a></li>
+    <li><a href="#choose-a-standard-library-profile">Choose a standard library profile</a></li>
+    <li><a href="#register-modules">Register modules</a>
       <ul>
-        <li><a href="#add-a-delay-between-retries">Add a delay between retries</a></li>
-        <li><a href="#use-exponential-backoff">Use exponential backoff</a></li>
-        <li><a href="#fall-back-after-all-retries-fail">Fall back after all retries fail</a></li>
+        <li><a href="#add-browser-support">Add browser support</a></li>
       </ul>
     </li>
-    <li><a href="#handle-timeouts">Handle timeouts</a></li>
-    <li><a href="#extract-with-fallback-selectors">Extract with fallback selectors</a></li>
-    <li><a href="#protect-a-loop-from-individual-failures">Protect a loop from individual failures</a></li>
-    <li><a href="#combine-error-and-timeout-handling">Combine error and timeout handling</a></li>
+    <li><a href="#compile-and-reuse-a-plan">Compile and reuse a plan</a></li>
+    <li><a href="#build-an-http-handler">Build an HTTP handler</a></li>
+    <li><a href="#handle-errors">Handle errors</a></li>
+    <li><a href="#control-concurrency">Control concurrency</a></li>
+    <li><a href="#shut-down-cleanly">Shut down cleanly</a></li>
+    <li><a href="#complete-example">Complete example</a></li>
     <li><a href="#next-steps">Next steps</a></li>
   </ul>
 </nav>
