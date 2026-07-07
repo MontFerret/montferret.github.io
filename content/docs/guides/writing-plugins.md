@@ -147,9 +147,9 @@ The cache implements several capability interfaces so FQL scripts can interact w
 | --- | --- |
 | `runtime.Value` | Hold and pass the value in scripts |
 | `runtime.Typed` | Type name in error messages |
-| `KeyReadable` | `cache.key` property access |
-| `Iterable` | `FOR key IN cache` |
-| `Measurable` | `LENGTH(cache)` |
+| `runtime.KeyReadable` | `cache.key` property access |
+| `runtime.Iterable` | `FOR key IN cache` |
+| `runtime.Measurable` | `LENGTH(cache)` |
 | `io.Closer` | Automatic cleanup when the session ends |
 
 {{< code lang="go" title="cache.go" >}}
