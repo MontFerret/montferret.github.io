@@ -1427,6 +1427,7 @@ import (
     &#34;sync&#34;
 
     &#34;github.com/MontFerret/ferret/v2/pkg/runtime&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/sdk&#34;
 )
 
 var CacheType = runtime.NewTypeFor[*Cache]()
@@ -1464,13 +1465,13 @@ func (c *Cache) Copy() runtime.Value {
 
 // --- Cache operations ---
 
-func (c *Cache) Set(key string, val runtime.Value) {
+func (c *Cache) SetValue(key string, val runtime.Value) {
     c.mu.Lock()
     defer c.mu.Unlock()
     c.items[key] = val
 }
 
-func (c *Cache) Get(key string) (runtime.Value, bool) {
+func (c *Cache) GetValue(key string) (runtime.Value, bool) {
     c.mu.RLock()
     defer c.mu.RUnlock()
     val, ok := c.items[key]
@@ -1479,7 +1480,7 @@ func (c *Cache) Get(key string) (runtime.Value, bool) {
 
 // --- KeyReadable: cache.key ---
 
-func (c *Cache) Get_(ctx context.Context, key runtime.Value) (runtime.Value, error) {
+func (c *Cache) Get(ctx context.Context, key runtime.Value) (runtime.Value, error) {
     c.mu.RLock()
     defer c.mu.RUnlock()
 
@@ -1511,23 +1512,7 @@ func (c *Cache) Iterate(_ context.Context) (runtime.Iterator, error) {
 
     sort.Strings(keys)
 
-    return &amp;cacheIterator{keys: keys, pos: 0}, nil
-}
-
-type cacheIterator struct {
-    keys []string
-    pos  int
-}
-
-func (it *cacheIterator) Next(_ context.Context) (runtime.Value, runtime.Value, error) {
-    if it.pos &gt;= len(it.keys) {
-        return nil, nil, io.EOF
-    }
-
-    key := it.keys[it.pos]
-    it.pos&#43;&#43;
-
-    return runtime.NewString(key), runtime.NewInt(it.pos - 1), nil
+    return sdk.NewSliceIterator[runtime.Value](keys), nil
 }
 
 // --- io.Closer ---
@@ -1609,14 +1594,6 @@ func (c *Cache) Close() error {
     </script>
 </div>
 
-<p>The <code>KeyReadable</code> interface method is named <code>Get</code> in the runtime, but since the cache already has a <code>Get(string)</code> method, we use <code>Get_</code> here to avoid a name collision. Rename as needed for your own types — what matters is satisfying the interface signature <code>Get(context.Context, runtime.Value) (runtime.Value, error)</code>.</p>
-
-
-<div class="notification is-info">
-    
-`Iterator.Next` must return `io.EOF` when the sequence is exhausted — this is how the runtime knows to stop the `FOR` loop.
-
-</div>
 <h2 id="add-lifecycle-hooks">Add lifecycle hooks</h2>
 <p>Hooks let the plugin react to engine events. Add timing and cleanup:</p>
 
