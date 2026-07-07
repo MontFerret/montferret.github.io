@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta name="description" content="Ferret is an open-source query language and runtime for structured data extraction from websites, documents, APIs, databases, and custom data sources.">
+    <meta name="description" content="Ferret is an open-source query language (FQL) and runtime for structured data extraction from web pages, APIs, databases, and files.">
     <meta name="keywords" content="scraping, web scraping, browser automation, data extraction">
     
 
@@ -28,7 +28,7 @@
     />
 
     
-    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.3aa6c8da94a3406bdb1d48495c2dbf0de5f8948356cda7370764332b3af4b74f.css" />
+    <link rel="stylesheet" href="https://ferretlang.org/sass/main.min.cd96239980419adb2f7bd9895d90e591e64941f18480e4160e2f5d1347e91f0d.css" />
     <link href="/pagefind/pagefind-component-ui.css" rel="stylesheet" />
     <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
     
@@ -282,11 +282,12 @@
                         <span class="hero-wordmark">Ferret</span>
                     </div>
 
-                    <p class="landing-eyebrow">Declarative data extraction</p>
+                    <p class="landing-eyebrow">Declarative data extraction <a class="landing-badge landing-hero-badge" href="#faq">v2 alpha</a></p>
                     <h1 id="landing-title">Extract with intent</h1>
                     <p class="landing-hero-lead">
-                        FQL programs for structured extraction from websites,
-                        documents, APIs, and custom data sources.
+                        Ferret is an open-source query language (FQL) and runtime
+                        for structured data extraction from web pages, APIs,
+                        databases, and files.
                     </p>
 
                     <div class="landing-actions" aria-label="Primary actions">
@@ -401,7 +402,7 @@ FOR invoice IN QUERY `
                             </div>
                         </div>
 
-                        <div id="hero-tabs-panel-3" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-2" hidden>
+                        <div id="hero-tabs-panel-3" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-3" hidden>
                             <div class="code-editor landing-hero-editor is-readonly">
                                 <div class="code-editor-shell">
                                     <div class="code-editor-header">
@@ -466,7 +467,7 @@ FOR row IN CSV::DECODE_ROWS(file)
                     </article>
                     
                     <article class="landing-workflow-step">
-                        <span class="landing-icon-token" aria-hidden="true">RUN</span>
+                        <span class="landing-icon-token" aria-hidden="true">ENV</span>
                         <h3>Move between tools</h3>
                         <p>Playground, CLI, Go embedding, Worker, or Lab. Same language, no rewrite.</p>
                     </article>
@@ -497,19 +498,19 @@ FOR row IN CSV::DECODE_ROWS(file)
                         <article class="landing-position-item">
                             <span class="landing-icon-token" aria-hidden="true">CAP</span>
                             <h3>Capability-based execution</h3>
-                            <p>FQL adapts to values that support querying, dispatching, waiting, mutation, or custom host behavior.</p>
+                            <p>The same program can query a rendered page, an API response, a database row, or a file. FQL adapts to what each value can do.</p>
                         </article>
                         
                         <article class="landing-position-item">
                             <span class="landing-icon-token" aria-hidden="true">Go</span>
                             <h3>Embeddable Go runtime</h3>
-                            <p>Run FQL inside your application, with host-provided modules, functions, and controlled execution boundaries.</p>
+                            <p>Run FQL inside your own application. Expose your own modules and functions, and control what scripts can access.</p>
                         </article>
                         
                         <article class="landing-position-item">
                             <span class="landing-icon-token" aria-hidden="true">MOD</span>
                             <h3>Core plus optional modules</h3>
-                            <p>Keep the runtime focused while modules add support for documents, protocols, browsers, storage systems, APIs, or domain-specific integrations.</p>
+                            <p>The core runtime stays small. Modules add browsers, documents, databases, protocols, and other integrations when you need them.</p>
                         </article>
                         
                     </div>
@@ -764,18 +765,28 @@ FOR row IN CSV::DECODE_ROWS(file)
         </div>
     </details>
     <details class="accordion-item">
+        <summary class="accordion-summary">Is Ferret production-ready?</summary>
+        <div class="accordion-content">
+            <p>Ferret v2 is currently in alpha, so the language, tools, and module ecosystem are still evolving.</p>
+<p>It is ready for experimentation, feedback, prototypes, internal tools, and early integration work. For production use, expect changes and pin versions carefully.</p>
+<p>Ferret v1 is the previous stable line and may still be suitable for existing projects that already depend on it. New projects should start with Ferret v2, since that is where active language, runtime, and ecosystem development is happening.</p>
+
+        </div>
+    </details>
+    <details class="accordion-item">
         <summary class="accordion-summary">Is Ferret only for web scraping?</summary>
         <div class="accordion-content">
             <p>No. Ferret is designed for any structured data workflow that benefits from a declarative description and a dedicated execution environment.</p>
-<p>Web scraping is a common use case, but Ferret can also work with APIs, databases, file systems, or any host-provided values that support querying, dispatching, waiting, or mutation.</p>
+<p>Web scraping is a common use case, but Ferret can also work with APIs, databases, files, or any values your own application exposes to it.</p>
 
         </div>
     </details>
     <details class="accordion-item">
         <summary class="accordion-summary">How does Ferret compare to other data extraction tools?</summary>
         <div class="accordion-content">
-            <p>Ferret is unique in its combination of a declarative language, a core runtime with optional modules, and a focus on structured data workflows.</p>
-<p>It is not a general-purpose programming language or a browser automation tool, but rather a specialized environment for describing and executing data extraction logic in a way that is reusable, testable, and maintainable.</p>
+            <p>Most extraction tools are libraries inside a general-purpose language, or hosted point-and-click services. Ferret is a small language plus a runtime.</p>
+<p>That difference is the point: the same FQL program can run in the playground, from the CLI, inside a Go application, or on a self-hosted Worker without being rewritten. Waiting, timeouts, and error behavior are part of the language rather than glue code around it.</p>
+<p>If you need arbitrary logic around your extraction, a general-purpose language is a better fit. If the extraction itself is the product, Ferret keeps it declarative, testable, and portable.</p>
 
         </div>
     </details>
@@ -794,15 +805,6 @@ FOR row IN CSV::DECODE_ROWS(file)
         <div class="accordion-content">
             <p>Yes. Ferret includes a CLI for running, formatting, validating, and debugging FQL programs.</p>
 <p>Tooling is an active focus of Ferret v2. The current direction includes better diagnostics, an interactive debugger, and editor integration through a language server, so Ferret can feel comfortable both in the terminal and inside an IDE.</p>
-
-        </div>
-    </details>
-    <details class="accordion-item">
-        <summary class="accordion-summary">Is Ferret production-ready?</summary>
-        <div class="accordion-content">
-            <p>Ferret v2 is currently in alpha, so the language, tools, and module ecosystem are still evolving.</p>
-<p>It is ready for experimentation, feedback, prototypes, internal tools, and early integration work. For production use, expect changes and pin versions carefully.</p>
-<p>Ferret v1 is the previous stable line and may still be suitable for existing projects that already depend on it. New projects should start with Ferret v2, since that is where active language, runtime, and ecosystem development is happening.</p>
 
         </div>
     </details>
