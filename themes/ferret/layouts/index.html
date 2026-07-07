@@ -30,7 +30,8 @@
                             <button id="hero-tabs-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="hero-tabs-panel-0" tabindex="0">Browser</button>
                             <button id="hero-tabs-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-1" tabindex="-1">API</button>
                             <button id="hero-tabs-tab-2" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-2" tabindex="-1">Database</button>
-                        <button id="hero-tabs-tab-3" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-3" tabindex="-1">File</button>
+                            <button id="hero-tabs-tab-3" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-3" tabindex="-1">Document</button>
+                            <button id="hero-tabs-tab-4" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-4" tabindex="-1">File</button>
                         </div>
 
                         <div id="hero-tabs-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-0">
@@ -131,6 +132,35 @@ FOR invoice IN QUERY `
                         </div>
 
                         <div id="hero-tabs-panel-3" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-3" hidden>
+                            <div class="code-editor landing-hero-editor is-readonly">
+                                <div class="code-editor-shell">
+                                    <div class="code-editor-header">
+                                        <div class="code-editor-title">
+                                            <span class="code-editor-dot" aria-hidden="true"></span>
+                                            <span>document.fql</span>
+                                        </div>
+                                        <span class="code-editor-meta">read-only script</span>
+                                    </div>
+
+                                    <div class="code-editor-pane">
+                                        <div id="hero-query-document" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
+LET workbook = DOCUMENT::XLSX::OPEN("./sales.xlsx")
+LET sales = DOCUMENT::XLSX::SHEET(workbook, "Sales")
+
+FOR row IN QUERY "A1:D100" IN sales WITH { headers: true }
+    FILTER row.Active
+    RETURN {
+        name: row.Name,
+        department: row.Department,
+        score: row.Score
+    }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="hero-tabs-panel-4" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-4" hidden>
                             <div class="code-editor landing-hero-editor is-readonly">
                                 <div class="code-editor-shell">
                                     <div class="code-editor-header">
