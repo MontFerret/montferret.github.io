@@ -9,7 +9,7 @@ workflow:
     icon: "JSON"
     description: "Predictable objects and arrays, ready for scripts, tests, services, or jobs."
   - title: "Move between tools"
-    icon: "RUN"
+    icon: "ENV"
     description: "Playground, CLI, Go embedding, Worker, or Lab. Same language, no rewrite."
 
 startingPoints:
@@ -113,13 +113,13 @@ positioning:
     description: "Describe what data you need, when it is ready, how to transform it, and which shape to return."
   - title: "Capability-based execution"
     icon: "CAP"
-    description: "FQL adapts to values that support querying, dispatching, waiting, mutation, or custom host behavior."
+    description: "The same program can query a rendered page, an API response, a database row, or a file. FQL adapts to what each value can do."
   - title: "Embeddable Go runtime"
     icon: "Go"
-    description: "Run FQL inside your application, with host-provided modules, functions, and controlled execution boundaries."
+    description: "Run FQL inside your own application. Expose your own modules and functions, and control what scripts can access."
   - title: "Core plus optional modules"
     icon: "MOD"
-    description: "Keep the runtime focused while modules add support for documents, protocols, browsers, storage systems, APIs, or domain-specific integrations."
+    description: "The core runtime stays small. Modules add browsers, documents, databases, protocols, and other integrations when you need them."
 
 learnMore:
   - title: "Documentation"
@@ -155,18 +155,28 @@ faq:
         Ferret is useful when the result needs to become more than a disposable script: something you can review, run again, embed in another application, test, debug, and maintain.
     
         AI can help write extraction logic. Ferret gives that logic a smaller, more predictable shape and a runtime designed specifically for structured data workflows.
-          
+
+    - question: "Is Ferret production-ready?"
+      answer: |
+        Ferret v2 is currently in alpha, so the language, tools, and module ecosystem are still evolving.
+
+        It is ready for experimentation, feedback, prototypes, internal tools, and early integration work. For production use, expect changes and pin versions carefully.
+
+        Ferret v1 is the previous stable line and may still be suitable for existing projects that already depend on it. New projects should start with Ferret v2, since that is where active language, runtime, and ecosystem development is happening.
+
     - question: "Is Ferret only for web scraping?"
       answer: |
         No. Ferret is designed for any structured data workflow that benefits from a declarative description and a dedicated execution environment.
 
-        Web scraping is a common use case, but Ferret can also work with APIs, databases, file systems, or any host-provided values that support querying, dispatching, waiting, or mutation.
+        Web scraping is a common use case, but Ferret can also work with APIs, databases, files, or any values your own application exposes to it.
           
     - question: "How does Ferret compare to other data extraction tools?"
       answer: |
-        Ferret is unique in its combination of a declarative language, a core runtime with optional modules, and a focus on structured data workflows.
+        Most extraction tools are libraries inside a general-purpose language, or hosted point-and-click services. Ferret is a small language plus a runtime.
 
-        It is not a general-purpose programming language or a browser automation tool, but rather a specialized environment for describing and executing data extraction logic in a way that is reusable, testable, and maintainable.
+        That difference is the point: the same FQL program can run in the playground, from the CLI, inside a Go application, or on a self-hosted Worker without being rewritten. Waiting, timeouts, and error behavior are part of the language rather than glue code around it.
+
+        If you need arbitrary logic around your extraction, a general-purpose language is a better fit. If the extraction itself is the product, Ferret keeps it declarative, testable, and portable.
           
     - question: "Can I embed Ferret in my own application?"
       answer: |
@@ -183,11 +193,4 @@ faq:
         Yes. Ferret includes a CLI for running, formatting, validating, and debugging FQL programs.
         
         Tooling is an active focus of Ferret v2. The current direction includes better diagnostics, an interactive debugger, and editor integration through a language server, so Ferret can feel comfortable both in the terminal and inside an IDE.
-          
-    - question: "Is Ferret production-ready?"
-      answer: |
-        Ferret v2 is currently in alpha, so the language, tools, and module ecosystem are still evolving.
-    
-        It is ready for experimentation, feedback, prototypes, internal tools, and early integration work. For production use, expect changes and pin versions carefully.
-    
-        Ferret v1 is the previous stable line and may still be suitable for existing projects that already depend on it. New projects should start with Ferret v2, since that is where active language, runtime, and ecosystem development is happening.
+
