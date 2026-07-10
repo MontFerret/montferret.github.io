@@ -61,6 +61,31 @@ LET title = QUERY ONE `.product .title` IN doc
 RETURN { total, hasNext, title }
 {{</ code >}}
 
+## Shortcut syntax
+
+The two most common query forms have shorter equivalents:
+
+| Shortcut                             | Equivalent form                                  | Returns |
+|--------------------------------------|--------------------------------------------------| --- |
+| `<source>[~ <dialect>'<expression>']` | `QUERY <expression> IN <source> USING <dialect>` | a list of all matches |
+| `<source>[~? <dialect>'<expression>']`          | `QUERY ONE <expression> IN <source> USING <dialect>`            | the first match, or `NONE` |
+
+{{< code lang="fql" >}}
+LET products = doc[~ css`.product`]
+LET title = doc[~? css`.product .title`]
+{{</ code >}}
+
+These are equivalent to:
+
+{{< code lang="fql" >}}
+LET products = QUERY `.product` IN doc
+LET title = QUERY ONE `.product .title` IN doc
+{{</ code >}}
+
+The shortcut provides only the simple query form: a query expression, a source value, and the source value’s dialect. It does not support `WITH`, or `OPTIONS`. Use the full `QUERY` form when you need to pass parameters, configure execution options, or make the query behavior explicit.
+
+`QUERY COUNT` and `QUERY EXISTS` do not have shortcut forms at this time.
+
 ## Parameters and options
 
 `WITH` supplies parameters to the query, and `OPTIONS` carries execution settings. Both are evaluated once.

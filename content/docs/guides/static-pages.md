@@ -16,102 +16,49 @@ Static extraction does not need a browser. Ferret fetches the HTML over HTTP and
 
 Use `WEB::HTML::OPEN` to fetch and parse an HTML page:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
-{{< terminal command="true" >}}
-ferret run -e '
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page.title
-'
-{{< /terminal >}}
-{{< /tab >}}
-
-{{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 RETURN page.title
 {{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 The function returns an HTML page value. You can read properties like `title` directly on it.
 
 ## Query elements
 
-Use the query shorthand `[~ css` `` ` `` `selector` `` ` `` `]` to find elements:
+Use the query expression to find elements:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
-{{< terminal command="true" >}}
-ferret run -e '
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page[~ css`article h2`]
-'
-{{< /terminal >}}
-{{< /tab >}}
 
-{{< tab title="Try in browser" >}}
-{{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page[~ css`article h2`]
+RETURN QUERY "article h2" IN page USING css
 {{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 This returns all matching elements as an array.
 
-To get a single element, use `[~? css` `` ` `` `selector` `` ` `` `]`:
+To get a single element, use `QUERY ONE`:
 
-{{< code lang="fql" >}}
-LET title = page[~? css`article h2`]
-{{</ code >}}
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
-The `~?` shorthand is equivalent to `QUERY ONE`, which returns the first match or `NONE`.
+RETURN QUERY ONE "article h2" IN page USING css
+{{< /editor >}}
 
-You can also use the full `QUERY` syntax when you need more control:
-
-{{< code lang="fql" >}}
-LET items = QUERY "article h2" IN page USING css
-LET first = QUERY ONE "article h2" IN page USING css
-LET count = QUERY COUNT "article h2" IN page USING css
-LET exists = QUERY EXISTS "article h2" IN page USING css
-{{</ code >}}
+More about query expressions [see the documentation]({{< ref "/docs/language/control-flow/query" >}}).
 
 ## Extract text and attributes
 
 Once you have an element, read its properties:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
-{{< terminal command="true" >}}
-ferret run -e '
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-LET links = page[~ css`a`]
-
-FOR link IN links
-    LIMIT 5
-    RETURN {
-        text: link.textContent,
-        href: link.attributes.href
-    }
-'
-{{< /terminal >}}
-{{< /tab >}}
-
-{{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-LET links = page[~ css`a`]
 
-FOR link IN links
+FOR link IN (QUERY "a" IN page USING css)
     LIMIT 5
     RETURN {
         text: link.textContent,
         href: link.attributes.href
     }
 {{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 Common element properties:
 
@@ -126,70 +73,44 @@ Common element properties:
 
 The `[*]` array operator lets you project fields from a list of elements without writing a `FOR` loop:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
-{{< terminal command="true" >}}
-ferret run -e '
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page[~ css`a`][*].attributes.href
-'
-{{< /terminal >}}
-{{< /tab >}}
+LET links = QUERY "a" IN page USING css
 
-{{< tab title="Try in browser" >}}
-{{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page[~ css`a`][*].attributes.href
+RETURN links[*].attributes.href
 {{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 You can also filter inline:
 
-{{< code lang="fql" >}}
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page[~ css`a`][*
+LET links = QUERY "a" IN page USING css
+
+RETURN links[*
     FILTER .attributes.href != NONE
     RETURN {
         text: .textContent,
         href: .attributes.href
     }
 ]
-{{</ code >}}
+{{< /editor >}}
 
 ## Query nested elements
 
 When a page has repeating structures — product cards, table rows, list items — query the container first, then query inside each one:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
-{{< terminal command="true" >}}
-ferret run -e '
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
-LET cards = page[~ css`.product-card`]
+LET cards = QUERY ".product-card" IN page USING css
 
 FOR card IN cards
     RETURN {
-        name: card[~? css`.product-name`]?.textContent,
-        price: card[~? css`.product-price`]?.textContent
-    }
-'
-{{< /terminal >}}
-{{< /tab >}}
-
-{{< tab title="Try in browser" >}}
-{{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
-LET cards = page[~ css`.product-card`]
-
-FOR card IN cards
-    RETURN {
-        name: card[~? css`.product-name`]?.textContent,
-        price: card[~? css`.product-price`]?.textContent
+        name: (QUERY ONE QUERY ".product-name" IN card USING css)?.textContent,
+        price: (QUERY ONE QUERY ".product-price" IN card USING css)?.textContent
     }
 {{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
+
+> NOTE: For simple queries, you can use the shortcut query syntax. For details and limitations, see [Shortcut syntax]({{< ref "/docs/language/control-flow/query#shortcut-syntax" >}}).
 
 The `?.` optional chaining operator returns `NONE` instead of failing when an element is not found. This keeps the script running even when some cards are missing a field.
 
@@ -197,7 +118,7 @@ The `?.` optional chaining operator returns `NONE` instead of failing when an el
 
 Not every page has the elements you expect. Use `QUERY EXISTS` to check before extracting, or `ON ERROR RETURN` to provide a fallback:
 
-{{< code lang="fql" >}}
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
 LET title = QUERY ONE ".page-title" IN page USING css
@@ -209,7 +130,7 @@ RETURN {
     title: title?.textContent,
     hasNav
 }
-{{</ code >}}
+{{</ editor >}}
 
 For more error handling patterns, see [Error handling and resilience]({{< ref "error-handling" >}}).
 
@@ -217,20 +138,20 @@ For more error handling patterns, see [Error handling and resilience]({{< ref "e
 
 Use `FILTER`, `SORT`, and `LIMIT` inside a `FOR` loop to shape the output:
 
-{{< code lang="fql" >}}
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
-LET cards = page[~ css`.product-card`]
+LET cards = QUERY '.product-card' IN page USING css
 
 FOR card IN cards
-    LET name = card[~? css`.product-name`]?.textContent
-    LET price = card[~? css`.product-price`]?.textContent
+    LET title = (QUERY ONE '.product-title' IN card USING css)?.textContent
+    LET price = (QUERY ONE '.product-price' IN card USING css)?.textContent
 
-    FILTER name != NONE
-    SORT name ASC
+    FILTER title != NONE
+    SORT title ASC
     LIMIT 10
 
-    RETURN { name, price }
-{{</ code >}}
+    RETURN { title, price }
+{{</ editor >}}
 
 ## Use parameters for reusable scripts
 
@@ -239,15 +160,30 @@ Save a script to a file and pass the URL as a parameter:
 {{< terminal command="true" >}}
 echo '
 LET page = WEB::HTML::OPEN(@url)
-RETURN page[~ css`h1, h2, h3`][*].textContent
+LET headers = QUERY 'h1, h2, h3' IN page USING css
+RETURN headers[*].textContent
 ' > headings.fql
 {{< /terminal >}}
 
 Run it with any URL:
 
+{{< tabs >}}
+{{< tab title="Terminal" >}}
+
 {{< terminal command="true" >}}
 ferret run headings.fql --param url=https://mockery.ferretlang.org
 {{< /terminal >}}
+{{</ tab >}}
+{{< tab title="Try in browser" >}}
+
+{{< editor lang="fql" params=`{ "url": "https://mockery.ferretlang.org/"}` >}}
+LET page = WEB::HTML::OPEN(@url)
+LET headers = QUERY 'h1, h2, h3' IN page USING css
+
+RETURN headers[*].textContent
+{{</ editor >}}
+{{</ tab >}}
+{{</ tabs >}}
 
 ## Next steps
 
