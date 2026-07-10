@@ -71,7 +71,7 @@ LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/delayed-ren
 WAITFOR EXISTS QUERY ONE '[data-testid="delayed-long"]' IN page USING css
     TIMEOUT 5s
 
-RETURN page[~ css`[data-testid="delayed-long"]`]
+RETURN QUERY '[data-testid="delayed-long"]' IN page USING css
 {{</ editor >}}
 
 `WAITFOR EXISTS` re-checks the expression on a polling interval until it has a value or the timeout is reached.
@@ -103,7 +103,7 @@ LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", {
 
 WAITFOR EVENT "network.idle" IN page TIMEOUT 10s
 
-RETURN page[~ css`article`]
+RETURN QUERY "article" IN page USING css
 {{</ editor >}}
 
 ### Tune the polling
@@ -167,11 +167,11 @@ Use `NAVIGATE` to go to a different URL within the same browser session:
 {{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 LET titleBefore = page.title
-LET btn = page[~? css`:nth(1, nav li)`]
+LET link = QUERY ONE ":nth(1, nav li)" IN page USING css
 
 WAITFOR EVENT "navigation" IN page
     TRIGGER (
-        DISPATCH "click" IN btn
+        DISPATCH "click" IN link
     )
     TIMEOUT 10s
 
