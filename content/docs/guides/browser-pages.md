@@ -47,23 +47,13 @@ See [CLI Browser]({{< ref "/docs/tools/cli/browser" >}}) for full details on bro
 
 Pass `{ driver: "cdp" }` to `WEB::HTML::OPEN`:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
-{{< terminal command="true" >}}
-ferret run -e '
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-RETURN page.title
-'
-{{< /terminal >}}
-{{< /tab >}}
-
-{{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { 
+    driver: "cdp"
+})
+
 RETURN page.title
 {{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 Once opened, querying and element access work the same as with static pages. The difference is that the page value reflects the live browser DOM, including content added by JavaScript.
 
@@ -73,14 +63,16 @@ JavaScript-rendered pages may not have all content immediately after the page lo
 
 ### Wait for an element
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/delayed-rendering/", {
+    driver: "cdp"
+})
 
-WAITFOR EXISTS QUERY ONE ".dynamic-content" IN page USING css
+WAITFOR EXISTS QUERY ONE '[data-testid="delayed-long"]' IN page USING css
     TIMEOUT 5s
 
-RETURN page[~ css`.dynamic-content`]
-{{</ code >}}
+RETURN page[~ css`[data-testid="delayed-long"]`]
+{{</ editor >}}
 
 `WAITFOR EXISTS` re-checks the expression on a polling interval until it has a value or the timeout is reached.
 
@@ -88,27 +80,31 @@ RETURN page[~ css`.dynamic-content`]
 
 Use `WAITFOR VALUE` when you need the result of the check itself:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/delayed/", { 
+    driver: "cdp"
+})
 
-LET element = WAITFOR VALUE QUERY ONE ".lazy-item" IN page USING css
+LET element = WAITFOR VALUE QUERY ONE '[data-testid="dynamic-product-card"]' IN page USING css
     TIMEOUT 10s
     EVERY 200ms
 
 RETURN element?.textContent
-{{</ code >}}
+{{</ editor >}}
 
 ### Wait for network idle
 
 After a navigation or interaction, you may want to wait until the page finishes loading resources:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", {
+    driver: "cdp"
+})
 
-WAITFOR EVENT "idle" IN page TIMEOUT 10s
+WAITFOR EVENT "network.idle" IN page TIMEOUT 10s
 
 RETURN page[~ css`article`]
-{{</ code >}}
+{{</ editor >}}
 
 ### Tune the polling
 
@@ -131,69 +127,58 @@ WAITFOR EXISTS QUERY ONE ".result" IN page USING css
 
 When `WAITFOR` times out, it returns `false` (or `NONE` for `WAITFOR VALUE`). Add `ON TIMEOUT RETURN` for a custom fallback:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { 
+    driver: "cdp"
+})
 
 LET items = WAITFOR VALUE QUERY ".product" IN page USING css
     TIMEOUT 5s
     ON TIMEOUT RETURN []
 
 RETURN items
-{{</ code >}}
+{{</ editor >}}
 
 ## Extract from a browser-backed page
 
 Once the content is loaded, extraction works the same as with static pages:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
-{{< terminal command="true" >}}
-ferret run -e '
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-
-LET articles = page[~ css`article`]
-
-FOR article IN articles
-    LET title = article[~? css`h2`]
-    RETURN {
-        title: title?.textContent,
-        html: article.innerHTML
-    }
-'
-{{< /terminal >}}
-{{< /tab >}}
-
-{{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
+    driver: "cdp"
+})
 
-LET articles = page[~ css`article`]
+LET grid = WAITFOR VALUE QUERY ONE "#dynamic-products-grid" IN page USING css
+WAITFOR EXISTS QUERY '[data-testid="dynamic-product-card"]' IN page USING css
 
-FOR article IN articles
-    LET title = article[~? css`h2`]
+FOR product IN grid.children
+    LET title = product[~? css`.product-title`]
     RETURN {
         title: title?.textContent,
-        html: article.innerHTML
+        price: product[~? css`.product-price`],
+        inStock: product[~? css`.product-in-stock`]?.attributes["data-stock-count"] != "0"
     }
 {{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 ## Navigate within a page
 
 Use `NAVIGATE` to go to a different URL within the same browser session:
 
-{{< code lang="fql" >}}
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 LET titleBefore = page.title
+LET btn = page[~? css`:nth(1, nav li)`]
 
-NAVIGATE(page, "https://mockery.ferretlang.org/scenarios/ecommerce/")
-WAIT_NAVIGATION(page)
+WAITFOR EVENT "navigation" IN page
+    TRIGGER (
+        DISPATCH "click" IN btn
+    )
+    TIMEOUT 10s
 
 LET titleAfter = page.title
 
 RETURN { titleBefore, titleAfter }
-{{</ code >}}
+{{</ editor >}}
 
 `NAVIGATE_BACK(page)` and `NAVIGATE_FORWARD(page)` move through the browser history.
 
