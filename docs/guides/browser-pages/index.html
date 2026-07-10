@@ -1585,7 +1585,7 @@ RETURN page.title</div>
 WAITFOR EXISTS QUERY ONE &#39;[data-testid=&#34;delayed-long&#34;]&#39; IN page USING css
     TIMEOUT 5s
 
-RETURN page[~ css`[data-testid=&#34;delayed-long&#34;]`]</div>
+RETURN QUERY &#39;[data-testid=&#34;delayed-long&#34;]&#39; IN page USING css</div>
                 </div>
 
                 <div id="code-editor-2-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -2530,7 +2530,7 @@ RETURN element?.textContent</div>
 
 WAITFOR EVENT &#34;network.idle&#34; IN page TIMEOUT 10s
 
-RETURN page[~ css`article`]</div>
+RETURN QUERY &#34;article&#34; IN page USING css</div>
                 </div>
 
                 <div id="code-editor-4-result-pane" class="code-editor-pane code-editor-pane-result" hidden>
@@ -4056,11 +4056,11 @@ FOR product IN grid.children
                     </div>
                     <div id="code-editor-7-text" class="code-editor-text" data-auto-height="true">LET page = WEB::HTML::OPEN(&#34;https://mockery.ferretlang.org&#34;, { driver: &#34;cdp&#34; })
 LET titleBefore = page.title
-LET btn = page[~? css`:nth(1, nav li)`]
+LET link = QUERY ONE &#34;:nth(1, nav li)&#34; IN page USING css
 
 WAITFOR EVENT &#34;navigation&#34; IN page
     TRIGGER (
-        DISPATCH &#34;click&#34; IN btn
+        DISPATCH &#34;click&#34; IN link
     )
     TIMEOUT 10s
 
