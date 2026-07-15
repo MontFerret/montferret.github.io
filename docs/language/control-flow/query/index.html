@@ -438,6 +438,37 @@
 
 
 
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/language/use/" class="docs-nav-link">
+                USE
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
         
             <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link">
@@ -1195,8 +1226,7 @@
 </div>
 
 <p>This reads as: run the query <code>`//article/h1`</code> against <code>doc</code>, using the <code>xpath</code> dialect.</p>
-<p>The query expression is often written with backticks so selectors and other syntax do not need escaping. It can also be a regular string, a variable, or a bind parameter.</p>
-<h2 id="anatomy">Anatomy</h2>
+<p>The query expression is often written with backticks so selectors and other syntax do not need escaping. It can also be a regular string, variable, bind parameter, member expression, indexed expression, or function call. Compound expressions must be wrapped in parentheses so the boundary before <code>IN</code> is explicit.</p>
 
 
 
@@ -1221,7 +1251,8 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">QUERY [modifier] &lt;expression&gt; IN &lt;source&gt; [USING &lt;dialect&gt;] [WITH &lt;params&gt;] [OPTIONS &lt;options&gt;]</div>
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">QUERY config.selector IN page
+QUERY (&#34;.item-&#34; &#43; category) IN page</div>
         </div>
     </div>
 
@@ -1293,8 +1324,105 @@
     </script>
 </div>
 
+<h2 id="anatomy">Anatomy</h2>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">QUERY [modifier] &lt;expression&gt; IN &lt;source&gt; [USING &lt;dialect&gt;] [WITH &lt;params&gt;] [OPTIONS &lt;options&gt;]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-4-copy-button');
+            const copyClipboardEl = document.querySelector('#code-4-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
 <ul>
-<li><strong>expression</strong> — the query to run, as a string, variable, or parameter.</li>
+<li><strong>expression</strong> — the query to run. Literals and atomic expressions can be used directly; compound expressions such as concatenation, comparisons, logical operations, ternaries, or <code>IN</code> predicates must be parenthesized.</li>
 <li><strong>source</strong> — an expression that yields the value the query runs against. The value must support querying.</li>
 <li><strong>USING</strong> — optionally selects a query dialect, such as <code>css</code>, <code>xpath</code>, or <code>sql</code>. If omitted, the source value chooses its default dialect when one is available.</li>
 <li><strong>WITH</strong> — an optional value passed to the query as parameters.</li>
@@ -1340,7 +1468,7 @@
 
 
 <div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+    <textarea id="code-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
@@ -1348,12 +1476,12 @@
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
-                <button id="code-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="code-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
             </div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" data-auto-height="true">LET total = QUERY COUNT `.item` IN doc
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">LET total = QUERY COUNT `.item` IN doc
 LET hasNext = QUERY EXISTS `.pagination .next` IN doc
 LET title = QUERY ONE `.product .title` IN doc
 
@@ -1363,7 +1491,7 @@ RETURN { total, hasNext, title }</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-4-text');
+            const editor = ace.edit('code-5-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
@@ -1375,8 +1503,8 @@ RETURN { total, hasNext, title }</div>
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-4-copy-button');
-            const copyClipboardEl = document.querySelector('#code-4-copy-clipboard');
+            const copyBtn = document.querySelector('#code-5-copy-button');
+            const copyClipboardEl = document.querySelector('#code-5-copy-clipboard');
 
             function copyTextWithFallback(content) {
                 copyClipboardEl.value = content;
@@ -1463,104 +1591,6 @@ RETURN { total, hasNext, title }</div>
 
 
 <div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-5-text" class="code-editor-text" data-auto-height="true">LET products = doc[~ css`.product`]
-LET title = doc[~? css`.product .title`]</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-5-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-5-copy-button');
-            const copyClipboardEl = document.querySelector('#code-5-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>These are equivalent to:</p>
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
     <textarea id="code-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
@@ -1574,8 +1604,8 @@ LET title = doc[~? css`.product .title`]</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-6-text" class="code-editor-text" data-auto-height="true">LET products = QUERY `.product` IN doc
-LET title = QUERY ONE `.product .title` IN doc</div>
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">LET products = doc[~ css`.product`]
+LET title = doc[~? css`.product .title`]</div>
         </div>
     </div>
 
@@ -1647,10 +1677,7 @@ LET title = QUERY ONE `.product .title` IN doc</div>
     </script>
 </div>
 
-<p>The shortcut provides only the simple query form: a query expression, a source value, and the source value’s dialect. It does not support <code>WITH</code>, or <code>OPTIONS</code>. Use the full <code>QUERY</code> form when you need to pass parameters, configure execution options, or make the query behavior explicit.</p>
-<p><code>QUERY COUNT</code> and <code>QUERY EXISTS</code> do not have shortcut forms at this time.</p>
-<h2 id="parameters-and-options">Parameters and options</h2>
-<p><code>WITH</code> supplies parameters to the query, and <code>OPTIONS</code> carries execution settings. Both are evaluated once.</p>
+<p>These are equivalent to:</p>
 
 
 
@@ -1675,9 +1702,8 @@ LET title = QUERY ONE `.product .title` IN doc</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-7-text" class="code-editor-text" data-auto-height="true">QUERY `SELECT name, price FROM products WHERE category = $c` IN db
-WITH { c: &#34;laptops&#34; }
-OPTIONS { timeout: 5000 }</div>
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">LET products = QUERY `.product` IN doc
+LET title = QUERY ONE `.product .title` IN doc</div>
         </div>
     </div>
 
@@ -1749,7 +1775,10 @@ OPTIONS { timeout: 5000 }</div>
     </script>
 </div>
 
-<p>For host values with multiple dialects, <code>USING</code> can still be used together with <code>WITH</code> and <code>OPTIONS</code>:</p>
+<p>The shortcut provides only the simple query form: a query expression, a source value, and the source value’s dialect. It does not support <code>WITH</code>, or <code>OPTIONS</code>. Use the full <code>QUERY</code> form when you need to pass parameters, configure execution options, or make the query behavior explicit.</p>
+<p><code>QUERY COUNT</code> and <code>QUERY EXISTS</code> do not have shortcut forms at this time.</p>
+<h2 id="parameters-and-options">Parameters and options</h2>
+<p><code>WITH</code> supplies parameters to the query, and <code>OPTIONS</code> carries execution settings. Both are evaluated once.</p>
 
 
 
@@ -1774,7 +1803,7 @@ OPTIONS { timeout: 5000 }</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-8-text" class="code-editor-text" data-auto-height="true">QUERY `SELECT name, price FROM products WHERE category = $c` IN db USING sql
+            <div id="code-8-text" class="code-editor-text" data-auto-height="true">QUERY `SELECT name, price FROM products WHERE category = $c` IN db
 WITH { c: &#34;laptops&#34; }
 OPTIONS { timeout: 5000 }</div>
         </div>
@@ -1848,10 +1877,7 @@ OPTIONS { timeout: 5000 }</div>
     </script>
 </div>
 
-<h2 id="a-host-capability">A host capability</h2>
-<p><code>QUERY</code> only works when the source value supports querying — it must be a <strong>queryable</strong> value. Queryable values may include HTML documents, database connections, API clients, JSON documents, or other values provided by a module or the host application.</p>
-<p>The source value decides which dialects are available. It may also define a default dialect. If the source does not support querying, the requested dialect is unavailable, or no dialect is provided and the source has no default, the query fails at runtime.</p>
-<p>You can recover from such failures with a recovery clause.</p>
+<p>For host values with multiple dialects, <code>USING</code> can still be used together with <code>WITH</code> and <code>OPTIONS</code>:</p>
 
 
 
@@ -1876,7 +1902,9 @@ OPTIONS { timeout: 5000 }</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-9-text" class="code-editor-text" data-auto-height="true">LET rows = QUERY `.row` IN doc ON ERROR RETURN []</div>
+            <div id="code-9-text" class="code-editor-text" data-auto-height="true">QUERY `SELECT name, price FROM products WHERE category = $c` IN db USING sql
+WITH { c: &#34;laptops&#34; }
+OPTIONS { timeout: 5000 }</div>
         </div>
     </div>
 
@@ -1896,6 +1924,106 @@ OPTIONS { timeout: 5000 }</div>
             editor.renderer.$cursorLayer.element.style.display = "none"
             const copyBtn = document.querySelector('#code-9-copy-button');
             const copyClipboardEl = document.querySelector('#code-9-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h2 id="a-host-capability">A host capability</h2>
+<p><code>QUERY</code> only works when the source value supports querying — it must be a <strong>queryable</strong> value. Queryable values may include HTML documents, database connections, API clients, JSON documents, or other values provided by a module or the host application.</p>
+<p>The source value decides which dialects are available. It may also define a default dialect. If the source does not support querying, the requested dialect is unavailable, or no dialect is provided and the source has no default, the query fails at runtime.</p>
+<p>You can recover from such failures with a recovery clause.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-10-text" class="code-editor-text" data-auto-height="true">LET rows = QUERY `.row` IN doc ON ERROR RETURN []</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-10-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-10-copy-button');
+            const copyClipboardEl = document.querySelector('#code-10-copy-clipboard');
 
             function copyTextWithFallback(content) {
                 copyClipboardEl.value = content;

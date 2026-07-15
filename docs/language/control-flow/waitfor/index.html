@@ -438,6 +438,37 @@
 
 
 
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/language/use/" class="docs-nav-link">
+                USE
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
         
             <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link">
@@ -1018,7 +1049,7 @@
       </tr>
       <tr>
           <td><code>WAITFOR EXISTS &lt;expr&gt;</code></td>
-          <td>the expression has a value</td>
+          <td>the expression is non-empty according to <code>EXISTS</code> semantics</td>
           <td><code>true</code>, or <code>false</code> on timeout</td>
       </tr>
       <tr>
@@ -1028,7 +1059,7 @@
       </tr>
       <tr>
           <td><code>WAITFOR VALUE &lt;expr&gt;</code></td>
-          <td>the expression yields a value</td>
+          <td>the expression yields anything other than <code>NONE</code></td>
           <td>that value, or <code>NONE</code> on timeout</td>
       </tr>
   </tbody>
@@ -1492,6 +1523,105 @@
                         onEnd(err.message);
                     });
             });
+        }, false);
+    </script>
+</div>
+
+<p><code>WAITFOR VALUE</code> treats empty strings, arrays, and objects as valid values and returns them immediately. When you need the candidate itself but also require it to be non-empty, add a <code>WHEN</code> condition:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">RETURN WAITFOR VALUE loadItems()
+    WHEN LENGTH(.) &gt; 0
+    TIMEOUT 5s</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-1-copy-button');
+            const copyClipboardEl = document.querySelector('#code-1-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
         }, false);
     </script>
 </div>
@@ -1980,7 +2110,7 @@
 
 
 <div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+    <textarea id="code-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
                 <span class="code-editor-dot" aria-hidden="true"></span>
@@ -1988,12 +2118,12 @@
             </div>
             <div class="code-editor-actions">
                 <span class="code-editor-meta">read-only</span>
-                <button id="code-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+                <button id="code-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
             </div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">WAITFOR VALUE loadStatus()
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">WAITFOR VALUE loadStatus()
     TIMEOUT 10s
     EVERY 100ms, 1s
     BACKOFF EXPONENTIAL
@@ -2003,7 +2133,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-1-text');
+            const editor = ace.edit('code-2-text');
             editor.setTheme("ace\/theme\/tomorrow_night");
             editor.session.setUseWorker(false);
             editor.session.setMode("ace/mode/" + 'fql');
@@ -2015,8 +2145,8 @@
                 printMargin: false
             });
             editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-1-copy-button');
-            const copyClipboardEl = document.querySelector('#code-1-copy-clipboard');
+            const copyBtn = document.querySelector('#code-2-copy-button');
+            const copyClipboardEl = document.querySelector('#code-2-copy-clipboard');
 
             function copyTextWithFallback(content) {
                 copyClipboardEl.value = content;
@@ -2548,103 +2678,6 @@
 
 
 <div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">LET event = WAITFOR EVENT &#34;navigation&#34; IN page TIMEOUT 5s</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-2-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-2-copy-button');
-            const copyClipboardEl = document.querySelector('#code-2-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>A <code>WHEN</code> filter accepts only events that match a condition. Inside the filter, the incoming event is available as <code>.</code>. Multiple <code>WHEN</code> clauses must all pass.</p>
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
     <textarea id="code-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
         <div class="code-editor-header">
             <div class="code-editor-title">
@@ -2658,9 +2691,7 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">WAITFOR EVENT &#34;message&#34; IN socket
-    WHEN .type == &#34;data&#34;
-    TIMEOUT 5s</div>
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">LET event = WAITFOR EVENT &#34;navigation&#34; IN page TIMEOUT 5s</div>
         </div>
     </div>
 
@@ -2732,8 +2763,7 @@
     </script>
 </div>
 
-<h3 id="triggering-the-event">Triggering the event</h3>
-<p>A <code>TRIGGER</code> clause runs statements <em>after</em> the subscription is set up but <em>before</em> waiting begins. This is how you cause the event you are waiting for without risking a race where it fires before you start listening.</p>
+<p>A <code>WHEN</code> filter accepts only events that match a condition. Inside the filter, the incoming event is available as <code>.</code>. Multiple <code>WHEN</code> clauses must all pass.</p>
 
 
 
@@ -2758,9 +2788,9 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" data-auto-height="true">WAITFOR EVENT &#34;response&#34; IN page
-    TRIGGER ( button &lt;- &#34;click&#34; )
-    TIMEOUT 10s</div>
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">WAITFOR EVENT &#34;message&#34; IN socket
+    WHEN .type == &#34;data&#34;
+    TIMEOUT 5s</div>
         </div>
     </div>
 
@@ -2780,6 +2810,106 @@
             editor.renderer.$cursorLayer.element.style.display = "none"
             const copyBtn = document.querySelector('#code-4-copy-button');
             const copyClipboardEl = document.querySelector('#code-4-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h3 id="triggering-the-event">Triggering the event</h3>
+<p>A <code>TRIGGER</code> clause runs statements <em>after</em> the subscription is set up but <em>before</em> waiting begins. This is how you cause the event you are waiting for without risking a race where it fires before you start listening.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">WAITFOR EVENT &#34;response&#34; IN page
+    TRIGGER ( button &lt;- &#34;click&#34; )
+    TIMEOUT 10s</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-5-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-5-copy-button');
+            const copyClipboardEl = document.querySelector('#code-5-copy-clipboard');
 
             function copyTextWithFallback(content) {
                 copyClipboardEl.value = content;

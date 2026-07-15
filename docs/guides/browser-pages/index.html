@@ -2001,7 +2001,7 @@ RETURN QUERY &#39;[data-testid=&#34;delayed-long&#34;]&#39; IN page USING css</d
     </script>
 </div>
 
-<p><code>WAITFOR EXISTS</code> re-checks the expression on a polling interval until it has a value or the timeout is reached.</p>
+<p><code>WAITFOR EXISTS</code> re-checks the expression on a polling interval until it is non-empty according to <code>EXISTS</code> semantics or the timeout is reached.</p>
 <h3 id="wait-for-a-value">Wait for a value</h3>
 <p>Use <code>WAITFOR VALUE</code> when you need the result of the check itself:</p>
 
@@ -3108,6 +3108,7 @@ RETURN QUERY &#34;article&#34; IN page USING css</div>
 })
 
 LET items = WAITFOR VALUE QUERY &#34;.product&#34; IN page USING css
+    WHEN LENGTH(.) &gt; 0
     TIMEOUT 5s
     ON TIMEOUT RETURN []
 

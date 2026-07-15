@@ -347,9 +347,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open is-current">
+    <li class="docs-nav-item docs-nav-depth-0 docs-nav-section is-open">
         
-            <a href="https://ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top is-active" aria-current="page">
+            <a href="https://ferretlang.org/docs/language/" class="docs-nav-link docs-nav-link-top is-ancestor">
                 Language
             </a>
         
@@ -438,9 +438,9 @@
 
 
 
-    <li class="docs-nav-item docs-nav-depth-1">
+    <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
         
-            <a href="https://ferretlang.org/docs/language/use/" class="docs-nav-link">
+            <a href="https://ferretlang.org/docs/language/use/" class="docs-nav-link is-active" aria-current="page">
                 USE
             </a>
         
@@ -807,36 +807,433 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="language">Language</h1>
-<p>Core syntax, values, expressions, variables, and control flow in the Ferret Query Language.</p>
-<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/language/overview/">
+    <h1 id="the-use-statement">The USE statement</h1>
+<p><code>USE</code> creates a local alias for a fully qualified namespace or namespaced function. Use it when repeating a long qualified name would make a script harder to read.</p>
+<p>Aliases are resolved when the script is compiled. <code>USE</code> does not import, load, or register a module.</p>
+<h2 id="alias-a-namespace">Alias a namespace</h2>
+<p>Use a namespace alias as the first segment of a qualified function name:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">USE IO::NET::HTTP AS HTTP
+
+RETURN HTTP::GET(&#34;https://api.example.com/data&#34;)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-1-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-1-copy-button');
+            const copyClipboardEl = document.querySelector('#code-1-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Here, <code>HTTP::GET(...)</code> resolves to <code>IO::NET::HTTP::GET(...)</code>.</p>
+<p>The syntax is:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-2-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-2-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">USE target AS alias</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-2-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-2-copy-button');
+            const copyClipboardEl = document.querySelector('#code-2-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>For a namespace alias, <code>target</code> is the fully qualified namespace and <code>alias</code> is the shorter name used by the rest of the script.</p>
+<h2 id="alias-a-function">Alias a function</h2>
+<p><code>USE</code> can also alias a specific namespaced function. The alias is then called without a namespace prefix:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-3-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-3-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">USE IO::NET::HTTP::GET AS GET
+
+RETURN GET(&#34;https://api.example.com/data&#34;)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-3-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-3-copy-button');
+            const copyClipboardEl = document.querySelector('#code-3-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Here, <code>GET(...)</code> resolves to <code>IO::NET::HTTP::GET(...)</code>.</p>
+<h2 id="place-use-before-the-script-body">Place USE before the script body</h2>
+<p><code>USE</code> declarations belong in the script header. Put them before variable declarations, function declarations, function calls, and terminal statements such as <code>RETURN</code> or a top-level <code>FOR</code>.</p>
+<p>A script may declare more than one alias:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.fql</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-4-text" class="code-editor-text" data-auto-height="true">USE IO::FS AS FS
+USE IO::NET::HTTP::GET AS GET
+
+LET data = FS::READ(&#34;/tmp/data.json&#34;)
+
+RETURN [data, GET(&#34;https://api.example.com/data&#34;)]</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-4-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'fql');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-4-copy-button');
+            const copyClipboardEl = document.querySelector('#code-4-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<h2 id="resolution-rules">Resolution rules</h2>
+<ul>
+<li>Aliases and qualified function names are case-sensitive. <code>HTTP</code>, <code>http</code>, and <code>Http</code> are different names.</li>
+<li>Reusing an alias for a different target produces a compile-time name error.</li>
+<li>An alias does not make its target available. The runtime still needs to register the namespace or function named by the target.</li>
+<li>Runtime capabilities may differ between the CLI, browser runtime, and embedding applications, so an alias can only call functions provided by the current environment.</li>
+</ul>
+<h2 id="next-steps">Next steps</h2>
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/language/functions/modules/">
         <span class="docs-card-kicker">Learn</span>
-        <strong>Overview</strong>
-        <span>See the high-level shape of a Ferret program.</span>
+        <strong>Module Functions</strong>
+        <span>Call namespaced functions and create aliases with the USE statement.</span>
     </a><a class="docs-card" href="/docs/language/script-structure/">
         <span class="docs-card-kicker">Learn</span>
         <strong>Script structure</strong>
         <span>How a Ferret script is organized, top to bottom.</span>
-    </a><a class="docs-card" href="/docs/language/use/">
-        <span class="docs-card-kicker">Learn</span>
-        <strong>USE Statement</strong>
-        <span>Create local aliases for namespaces and namespaced functions.</span>
-    </a><a class="docs-card" href="/docs/language/types/">
-        <span class="docs-card-kicker">Learn</span>
-        <strong>Values and Types</strong>
-        <span>Understand how FQL values work, from basic data types to host values and runtime capabilities.</span>
-    </a><a class="docs-card" href="/docs/language/expressions/">
-        <span class="docs-card-kicker">Learn</span>
-        <strong>Expressions</strong>
-        <span>Build values from literals, operators, and function calls.</span>
-    </a><a class="docs-card" href="/docs/language/operators/">
-        <span class="docs-card-kicker">Learn</span>
-        <strong>Operators</strong>
-        <span>Compare, combine, and transform values with FQL&#39;s operators.</span>
-    </a><a class="docs-card" href="/docs/language/functions/">
-        <span class="docs-card-kicker">Learn</span>
-        <strong>Functions</strong>
-        <span>Call built-in functions, write your own, and use modules.</span>
+    </a><a class="docs-card" href="/docs/embedding/modules/">
+        <span class="docs-card-kicker">Extensions</span>
+        <strong>Modules &amp; Hooks</strong>
+        <span>Write self-contained extensions and react to engine lifecycle events.</span>
     </a>
 </div>
 
@@ -845,7 +1242,18 @@
 
         </main>
 
-        
+        <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#alias-a-namespace">Alias a namespace</a></li>
+    <li><a href="#alias-a-function">Alias a function</a></li>
+    <li><a href="#place-use-before-the-script-body">Place USE before the script body</a></li>
+    <li><a href="#resolution-rules">Resolution rules</a></li>
+    <li><a href="#next-steps">Next steps</a></li>
+  </ul>
+</nav>
+</aside>
     </div>
 </div>
 <script type="module">

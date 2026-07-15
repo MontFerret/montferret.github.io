@@ -438,6 +438,37 @@
 
 
 
+    <li class="docs-nav-item docs-nav-depth-1">
+        
+            <a href="https://ferretlang.org/docs/language/use/" class="docs-nav-link">
+                USE
+            </a>
+        
+
+        
+    </li>
+
+
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <li class="docs-nav-item docs-nav-depth-1 docs-nav-section">
         
             <a href="https://ferretlang.org/docs/language/types/" class="docs-nav-link">
@@ -1041,8 +1072,7 @@
 
 <p>The namespace makes it clear where the function comes from and avoids name conflicts between different providers.</p>
 <h2 id="the-use-statement">The USE statement</h2>
-<p>The <code>USE</code> statement creates a compile-time alias for a namespace or a specific namespaced function. It does not import or load anything — the functions are already registered and available. <code>USE</code> provides a shorter way to refer to them.</p>
-<p>The syntax is:</p>
+<p>When a script repeatedly calls functions from the same namespace, <code>USE</code> can create a shorter local alias. Put the declaration at the start of the script, before the script body.</p>
 
 
 
@@ -1067,7 +1097,9 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">USE target AS alias</div>
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">USE IO::FS AS FS
+
+RETURN FS::READ(&#34;/tmp/data.json&#34;)</div>
         </div>
     </div>
 
@@ -1139,208 +1171,7 @@
     </script>
 </div>
 
-<h3 id="aliasing-a-namespace">Aliasing a namespace</h3>
-<p>When the target is a namespace, the alias can be used as a prefix in place of the original namespace.</p>
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-4-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-4-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-4-text" class="code-editor-text" data-auto-height="true">USE IO::FS AS fs
-
-RETURN fs::READ(&#34;/tmp/data.json&#34;)</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-4-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-4-copy-button');
-            const copyClipboardEl = document.querySelector('#code-4-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>Here, <code>fs::READ(...)</code> resolves to <code>IO::FS::READ(...)</code> at compile time.</p>
-<h3 id="aliasing-a-function">Aliasing a function</h3>
-<p>When the target includes a function name, the alias can be called directly without any namespace prefix.</p>
-
-
-
-
-
-
-
-
-
-
-<div class="code-editor is-readonly is-auto-height">
-    <textarea id="code-5-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
-        <div class="code-editor-header">
-            <div class="code-editor-title">
-                <span class="code-editor-dot" aria-hidden="true"></span>
-                <span>example.fql</span>
-            </div>
-            <div class="code-editor-actions">
-                <span class="code-editor-meta">read-only</span>
-                <button id="code-5-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
-            </div>
-        </div>
-
-        <div class="code-editor-pane">
-            <div id="code-5-text" class="code-editor-text" data-auto-height="true">USE IO::FS::READ AS read
-
-RETURN read(&#34;/tmp/data.json&#34;)</div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const editor = ace.edit('code-5-text');
-            editor.setTheme("ace\/theme\/tomorrow_night");
-            editor.session.setUseWorker(false);
-            editor.session.setMode("ace/mode/" + 'fql');
-            editor.setOptions({
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                displayIndentGuides: false,
-                printMargin: false
-            });
-            editor.renderer.$cursorLayer.element.style.display = "none"
-            const copyBtn = document.querySelector('#code-5-copy-button');
-            const copyClipboardEl = document.querySelector('#code-5-copy-clipboard');
-
-            function copyTextWithFallback(content) {
-                copyClipboardEl.value = content;
-                copyClipboardEl.focus();
-                copyClipboardEl.select();
-
-                if (!document.execCommand('copy')) {
-                    throw new Error('Could not copy source to the clipboard');
-                }
-            }
-
-            function copyTextToClipboard(content) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    return navigator.clipboard.writeText(content).catch(() => {
-                        copyTextWithFallback(content);
-                    });
-                }
-
-                copyTextWithFallback(content);
-
-                return Promise.resolve();
-            }
-
-            copyBtn.addEventListener('click', () => {
-                copyTextToClipboard(editor.getValue())
-                    .then(() => {
-                        copyBtn.textContent = 'Copied';
-                        window.setTimeout(() => {
-                            copyBtn.textContent = 'Copy';
-                        }, 1200);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy source');
-                        console.error(err);
-                    });
-            });
-            function resizeAutoHeightEditor() {
-                const lineHeight = editor.renderer.lineHeight || 21;
-                const screenLines = Math.max(editor.session.getScreenLength(), 1);
-                const nextHeight = Math.max(screenLines * lineHeight, 48);
-
-                editor.container.style.height = `${nextHeight}px`;
-                editor.resize();
-            }
-
-            editor.session.on('change', resizeAutoHeightEditor);
-            window.addEventListener('resize', resizeAutoHeightEditor);
-            resizeAutoHeightEditor();
-        }, false);
-    </script>
-</div>
-
-<p>Here, <code>read(...)</code> resolves to <code>IO::FS::READ(...)</code>.</p>
+<p><code>USE</code> is a compile-time alias; it does not load a module or change which functions the runtime provides. See the <a href="https://ferretlang.org/docs/language/use/"><code>USE</code> statement reference</a> for function aliases, placement rules, and name-resolution behavior.</p>
 <h2 id="where-functions-come-from">Where functions come from</h2>
 <p>The set of available namespaced functions depends on the host environment. Functions are registered at engine startup by:</p>
 <ul>
@@ -1353,7 +1184,11 @@ RETURN read(&#34;/tmp/data.json&#34;)</div>
 <p>Some namespaced functions interact with external systems. They may read files, issue HTTP requests, query databases, control browsers, or work with binary data.</p>
 <p>The behavior of such functions depends on the runtime configuration. The same query may behave differently in a CLI context than in a browser automation runtime — not because the language changes, but because the set of available functions and runtime capabilities differs.</p>
 <h2 id="next-steps">Next steps</h2>
-<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/modules/">
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/language/use/">
+        <span class="docs-card-kicker">Learn</span>
+        <strong>USE Statement</strong>
+        <span>Create local aliases for namespaces and namespaced functions.</span>
+    </a><a class="docs-card" href="/docs/embedding/modules/">
         <span class="docs-card-kicker">Extensions</span>
         <strong>Modules &amp; Hooks</strong>
         <span>Write self-contained extensions and react to engine lifecycle events.</span>
@@ -1378,12 +1213,7 @@ RETURN read(&#34;/tmp/data.json&#34;)</div>
     <nav id="TableOfContents">
   <ul>
     <li><a href="#namespaced-calls">Namespaced calls</a></li>
-    <li><a href="#the-use-statement">The USE statement</a>
-      <ul>
-        <li><a href="#aliasing-a-namespace">Aliasing a namespace</a></li>
-        <li><a href="#aliasing-a-function">Aliasing a function</a></li>
-      </ul>
-    </li>
+    <li><a href="#the-use-statement">The USE statement</a></li>
     <li><a href="#where-functions-come-from">Where functions come from</a></li>
     <li><a href="#runtime-backed-functions">Runtime-backed functions</a></li>
     <li><a href="#next-steps">Next steps</a></li>
