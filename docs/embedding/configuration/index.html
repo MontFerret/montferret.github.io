@@ -1621,7 +1621,9 @@ ferret.New(
 <li><code>WithMaxIdleVMsPerPlan</code> is a per-plan cache policy — it decides how many idle VMs stay warm</li>
 </ul>
 <p>A value of 0 disables the limit for <code>WithMaxActiveSessions</code> and <code>WithMaxVMsPerPlan</code>.</p>
-<h2 id="file-system">File system</h2>
+<h2 id="sandboxed-components">Sandboxed components</h2>
+<p>Sandboxed components control how scripts access host resources outside the Ferret runtime. Configure each component independently according to what the embedding application should allow. The engine adds the configured components to the <code>context.Context</code> passed to functions during execution.</p>
+<h3 id="file-system">File system</h3>
 <p>Scripts that use file system functions (from the <code>FS</code> stdlib group) operate within a sandboxed file system. The host can configure the root directory and restrict access to read-only.</p>
 
 
@@ -1722,9 +1724,9 @@ ferret.New(
     </script>
 </div>
 
-<p>If no root is set, file system functions use the process working directory. <code>WithFSReadOnly</code> prevents scripts from writing files regardless of the root.</p>
-<h2 id="compiler-options">Compiler options</h2>
-<p>The compiler can be configured through <code>WithCompilerOptions</code>:</p>
+<p>If <code>WithFSRoot</code> is not set, file system access is disabled and <code>FS</code> functions return a root-not-configured error. <code>WithFSReadOnly</code> prevents scripts from writing within the configured root.</p>
+<h4 id="accessing-the-file-system-from-a-function">Accessing the file system from a function</h4>
+<p>Retrieve the configured file system from the function context. Prefer the narrowest helper for the operation the function performs:</p>
 
 
 
@@ -1749,11 +1751,33 @@ ferret.New(
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-9-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithCompilerOptions(
-        compiler.WithOptimizationLevel(compiler.O1),
-    ),
-)</div>
+            <div id="code-9-text" class="code-editor-text" data-auto-height="true">package files
+
+import (
+    &#34;context&#34;
+
+    ferretfs &#34;github.com/MontFerret/ferret/v2/pkg/fs&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/runtime&#34;
+)
+
+func ReadFile(ctx context.Context, pathArg runtime.Value) (runtime.Value, error) {
+    path, err := runtime.CastArg[runtime.String](pathArg, 0)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    reader, err := ferretfs.ReaderFrom(ctx)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    data, err := reader.ReadFile(path.String())
+    if err != nil {
+        return runtime.None, err
+    }
+
+    return runtime.NewBinary(data), nil
+}</div>
         </div>
     </div>
 
@@ -1773,6 +1797,389 @@ ferret.New(
             editor.renderer.$cursorLayer.element.style.display = "none"
             const copyBtn = document.querySelector('#code-9-copy-button');
             const copyClipboardEl = document.querySelector('#code-9-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>The <code>fs</code> package also provides <code>WriterFrom</code>, <code>DirectoriesFrom</code>, and <code>RemoverFrom</code>. Use <code>FileSystemFrom</code> only when a function needs several capabilities.</p>
+<p>For public modules, these context helpers are the recommended way to access files. They keep the module inside the root and read-only policy selected by the embedding host. Calling <code>os.ReadFile</code>, <code>os.WriteFile</code>, or constructing a separate file system would bypass that configuration.</p>
+<h3 id="http-client">HTTP client</h3>
+<p>Scripts that use network functions (from the <code>NET</code> stdlib group) make outbound requests through the engine&rsquo;s network service. Supply a policy-configured HTTP client to restrict which destinations scripts can reach and how much data they can send or receive.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-10-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-10-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-10-text" class="code-editor-text" data-auto-height="true">httpClient := ferrethttp.New(
+    ferrethttp.WithAllowedSchemes(&#34;https&#34;),
+    ferrethttp.WithAllowedHosts(&#34;api.example.com&#34;),
+    ferrethttp.WithAllowLocalhost(false),
+    ferrethttp.WithAllowPrivateNetworks(false),
+    ferrethttp.WithTimeout(10*time.Second),
+    ferrethttp.WithMaxRequestSize(1&lt;&lt;20),  // 1 MiB
+    ferrethttp.WithMaxResponseSize(4&lt;&lt;20), // 4 MiB
+)
+
+engine, err := ferret.New(
+    ferret.WithNetwork(
+        ferretnet.New(
+            ferretnet.WithHTTPClient(httpClient),
+        ),
+    ),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-10-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-10-copy-button');
+            const copyClipboardEl = document.querySelector('#code-10-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>The HTTP client supports these policy controls:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Control</th>
+          <th>Options</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>URL schemes and destinations</td>
+          <td><code>WithAllowedSchemes</code>, <code>WithAllowedHosts</code>, <code>WithBlockedHosts</code></td>
+      </tr>
+      <tr>
+          <td>Local and private addresses</td>
+          <td><code>WithAllowLocalhost</code>, <code>WithAllowPrivateNetworks</code></td>
+      </tr>
+      <tr>
+          <td>Redirects</td>
+          <td><code>WithFollowRedirects</code>, <code>WithMaxRedirects</code></td>
+      </tr>
+      <tr>
+          <td>Request headers</td>
+          <td><code>WithDefaultHeader</code>, <code>WithDefaultHeaders</code>, <code>WithBlockedRequestHeaders</code></td>
+      </tr>
+      <tr>
+          <td>Time and payload limits</td>
+          <td><code>WithTimeout</code>, <code>WithMaxRequestSize</code>, <code>WithMaxResponseSize</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>By default, the client allows HTTP and HTTPS, permits localhost and private IP addresses, and follows redirects. Timeout and payload-size limits are disabled until configured. For untrusted scripts, prefer an explicit host allowlist; URL policies are checked for the initial request and each redirect destination.</p>
+<h4 id="accessing-http-from-a-function">Accessing HTTP from a function</h4>
+<p>Retrieve the configured HTTP client from the function context and pass the same context to the request:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-11-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-11-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-11-text" class="code-editor-text" data-auto-height="true">package request
+
+import (
+    &#34;context&#34;
+
+    ferretnet &#34;github.com/MontFerret/ferret/v2/pkg/net&#34;
+    ferrethttp &#34;github.com/MontFerret/ferret/v2/pkg/net/http&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/runtime&#34;
+)
+
+func FetchStatus(ctx context.Context, urlArg runtime.Value) (runtime.Value, error) {
+    url, err := runtime.CastArg[runtime.String](urlArg, 0)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    client, err := ferretnet.HTTPClientFrom(ctx)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    response, err := client.Do(ctx, &amp;ferrethttp.Request{
+        Method: &#34;GET&#34;,
+        URL:    url.String(),
+    })
+    if err != nil {
+        return runtime.None, err
+    }
+    if response == nil {
+        return runtime.None, runtime.Error(runtime.ErrUnexpected, &#34;HTTP response is nil&#34;)
+    }
+
+    return runtime.NewInt(response.StatusCode), nil
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-11-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-11-copy-button');
+            const copyClipboardEl = document.querySelector('#code-11-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>For public modules, use <code>HTTPClientFrom</code> instead of <code>net/http</code> or a separately constructed client. Requests then follow the host&rsquo;s destination, redirect, header, timeout, and payload-size policies, while the execution context continues to carry cancellation and deadlines. Use <code>NetworkFrom</code> only when a function needs the complete network service.</p>
+<p>Both examples have valid Ferret function signatures and can be registered with <code>sdk.Func</code>. See <a href="https://ferretlang.org/docs/guides/writing-plugins/">Writing plugins</a> for the complete registration pattern.</p>
+<h2 id="compiler-options">Compiler options</h2>
+<p>The compiler can be configured through <code>WithCompilerOptions</code>:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-12-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-12-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-12-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithCompilerOptions(
+        compiler.WithOptimizationLevel(compiler.O1),
+    ),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-12-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-12-copy-button');
+            const copyClipboardEl = document.querySelector('#code-12-copy-clipboard');
 
             function copyTextWithFallback(content) {
                 copyClipboardEl.value = content;
@@ -1898,7 +2305,12 @@ ferret.New(
         <li><a href="#how-they-work-together">How they work together</a></li>
       </ul>
     </li>
-    <li><a href="#file-system">File system</a></li>
+    <li><a href="#sandboxed-components">Sandboxed components</a>
+      <ul>
+        <li><a href="#file-system">File system</a></li>
+        <li><a href="#http-client">HTTP client</a></li>
+      </ul>
+    </li>
     <li><a href="#compiler-options">Compiler options</a></li>
     <li><a href="#next-steps">Next steps</a></li>
   </ul>
