@@ -28,37 +28,15 @@ The namespace makes it clear where the function comes from and avoids name confl
 
 ## The USE statement
 
-The `USE` statement creates a compile-time alias for a namespace or a specific namespaced function. It does not import or load anything — the functions are already registered and available. `USE` provides a shorter way to refer to them.
-
-The syntax is:
+When a script repeatedly calls functions from the same namespace, `USE` can create a shorter local alias. Put the declaration at the start of the script, before the script body.
 
 {{< code lang="fql" >}}
-USE target AS alias
+USE IO::FS AS FS
+
+RETURN FS::READ("/tmp/data.json")
 {{</ code >}}
 
-### Aliasing a namespace
-
-When the target is a namespace, the alias can be used as a prefix in place of the original namespace.
-
-{{< code lang="fql" >}}
-USE IO::FS AS fs
-
-RETURN fs::READ("/tmp/data.json")
-{{</ code >}}
-
-Here, `fs::READ(...)` resolves to `IO::FS::READ(...)` at compile time.
-
-### Aliasing a function
-
-When the target includes a function name, the alias can be called directly without any namespace prefix.
-
-{{< code lang="fql" >}}
-USE IO::FS::READ AS read
-
-RETURN read("/tmp/data.json")
-{{</ code >}}
-
-Here, `read(...)` resolves to `IO::FS::READ(...)`.
+`USE` is a compile-time alias; it does not load a module or change which functions the runtime provides. See the [`USE` statement reference]({{< ref "/docs/language/use" >}}) for function aliases, placement rules, and name-resolution behavior.
 
 ## Where functions come from
 
@@ -78,4 +56,4 @@ The behavior of such functions depends on the runtime configuration. The same qu
 
 ## Next steps
 
-{{< docs-related tiles="embedding-modules,stdlib,language-functions" >}}
+{{< docs-related tiles="language-use,embedding-modules,stdlib,language-functions" >}}

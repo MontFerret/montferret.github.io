@@ -19,13 +19,21 @@ There are four forms:
 | Form | Waits until | Returns |
 | --- | --- | --- |
 | `WAITFOR <expr>` | the expression is true | `true`, or `false` on timeout |
-| `WAITFOR EXISTS <expr>` | the expression has a value | `true`, or `false` on timeout |
+| `WAITFOR EXISTS <expr>` | the expression is non-empty according to `EXISTS` semantics | `true`, or `false` on timeout |
 | `WAITFOR NOT EXISTS <expr>` | the expression is empty or absent | `true`, or `false` on timeout |
-| `WAITFOR VALUE <expr>` | the expression yields a value | that value, or `NONE` on timeout |
+| `WAITFOR VALUE <expr>` | the expression yields anything other than `NONE` | that value, or `NONE` on timeout |
 
 {{< editor lang="fql" >}}
 RETURN WAITFOR EXISTS [1, 2, 3] TIMEOUT 100ms
 {{</ editor >}}
+
+`WAITFOR VALUE` treats empty strings, arrays, and objects as valid values and returns them immediately. When you need the candidate itself but also require it to be non-empty, add a `WHEN` condition:
+
+{{< code lang="fql" >}}
+RETURN WAITFOR VALUE loadItems()
+    WHEN LENGTH(.) > 0
+    TIMEOUT 5s
+{{</ code >}}
 
 The expression is re-evaluated on each attempt, so it can reflect state that changes over time. When the wait runs out, the result reports the timeout rather than raising an error:
 

@@ -14,7 +14,7 @@ LET doc = DOCUMENT('https://mockery.ferretlang.org/scenarios/dynamic-products/ba
 
 // Wait until at least one product card is present on the page
 // This is important because the page loads content asynchronously
-// WAITFOR VALUE returns the value of the expression once it evaluates to a non-empty value or until the timeout is reached
+// WAITFOR VALUE accepts any non-NONE candidate; WHEN keeps polling until this list is non-empty
 LET products = WAITFOR VALUE doc[~ css`.product-card`]
     WHEN LENGTH(.) > 0
     TIMEOUT 5000

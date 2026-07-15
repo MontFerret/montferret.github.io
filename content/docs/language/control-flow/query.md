@@ -26,7 +26,12 @@ QUERY `//article/h1` IN doc USING xpath
 
 This reads as: run the query `` `//article/h1` `` against `doc`, using the `xpath` dialect.
 
-The query expression is often written with backticks so selectors and other syntax do not need escaping. It can also be a regular string, a variable, or a bind parameter.
+The query expression is often written with backticks so selectors and other syntax do not need escaping. It can also be a regular string, variable, bind parameter, member expression, indexed expression, or function call. Compound expressions must be wrapped in parentheses so the boundary before `IN` is explicit.
+
+{{< code lang="fql" >}}
+QUERY config.selector IN page
+QUERY (".item-" + category) IN page
+{{</ code >}}
 
 ## Anatomy
 
@@ -34,7 +39,7 @@ The query expression is often written with backticks so selectors and other synt
 QUERY [modifier] <expression> IN <source> [USING <dialect>] [WITH <params>] [OPTIONS <options>]
 {{</ code >}}
 
-- **expression** — the query to run, as a string, variable, or parameter.
+- **expression** — the query to run. Literals and atomic expressions can be used directly; compound expressions such as concatenation, comparisons, logical operations, ternaries, or `IN` predicates must be parenthesized.
 - **source** — an expression that yields the value the query runs against. The value must support querying.
 - **USING** — optionally selects a query dialect, such as `css`, `xpath`, or `sql`. If omitted, the source value chooses its default dialect when one is available.
 - **WITH** — an optional value passed to the query as parameters.

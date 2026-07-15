@@ -17,8 +17,10 @@ Page interactions require the `cdp` driver. See [Browser-driven pages]({{< ref "
 Use `DISPATCH "click"` or the arrow shorthand `<-` to click:
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-LET button = QUERY ONE "button.load-more" IN page USING css
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
+    driver: "cdp"
+})
+LET button = QUERY ONE '[data-testid="page-next"]' IN page USING css
 
 DISPATCH "click" IN button
 
@@ -28,77 +30,86 @@ button <- "click"
 
 After a click, the page may change. Use `WAITFOR` to wait for the result before extracting data:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-LET button = QUERY ONE "button.load-more" IN page USING css
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
+    driver: "cdp"
+})
+LET button = QUERY ONE '[data-testid="page-next"]' IN page USING css
 
-button <- "click"
+DISPATCH "click" IN button
 
-WAITFOR EXISTS QUERY ONE ".results" IN page USING css
+WAITFOR EXISTS (QUERY ONE '[data-testid="dynamic-product-card"]' IN page USING css)
     TIMEOUT 5s
 
-RETURN page[~ css`.results .item`]
-{{</ code >}}
+RETURN QUERY '[data-testid="dynamic-product-card"]' IN page USING css
+{{</ editor >}}
 
 ## Fill a text input
 
 Use `DISPATCH "input"` with a `WITH` payload to type into an input field:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-LET input = QUERY ONE "input[name='search']" IN page USING css
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", {
+    driver: "cdp"
+})
+LET input = QUERY ONE "#search-query" IN page USING css
 
-DISPATCH "input" IN input WITH "ferret"
-{{</ code >}}
+LET beforeCount = QUERY COUNT '.product-card' IN page USING css
+DISPATCH "input" IN input WITH { value: "camera" }
+LET afterCount = QUERY COUNT '.product-card' IN page USING css
 
-You can also use the `INPUT` stdlib function:
-
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-INPUT(page, "input[name='search']", "ferret")
-{{</ code >}}
+RETURN {
+    beforeCount,
+    afterCount
+}
+{{</ editor >}}
 
 ## Select from a dropdown
 
 Use `DISPATCH "select"` with an array of values:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-LET dropdown = QUERY ONE "select[name='category']" IN page USING css
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", {
+    driver: "cdp"
+})
+LET categories = QUERY ONE "#search-category" IN page USING css
 
-DISPATCH "select" IN dropdown WITH ["electronics"]
-{{</ code >}}
+LET beforeCount = QUERY COUNT '.product-card' IN page USING css
+DISPATCH "select" IN categories WITH { value: "laptops" }
+LET afterCount = QUERY COUNT '.product-card' IN page USING css
 
-Or with the `SELECT` stdlib function:
-
-{{< code lang="fql" >}}
-SELECT(page, "select[name='category']", ["electronics"])
-{{</ code >}}
+RETURN {
+    beforeCount,
+    afterCount
+}
+{{</ editor >}}
 
 ## Submit a form
 
 A typical form interaction combines filling inputs with a click or form submission:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/forms/", {
+    driver: "cdp"
+})
 
-INPUT(page, "input[name='search']", "ferret")
+DISPATCH "input" IN (QUERY ONE "#query" IN page USING css) WITH { value: "ferret" }
+DISPATCH "click" IN (QUERY ONE "#search-form button[type='submit']" IN page USING css)
 
-LET submit = QUERY ONE "button[type='submit']" IN page USING css
-submit <- "click"
+LET result = WAITFOR VALUE (QUERY ONE "#form-result" IN page USING css)
+    WHEN .textContent != ""
+    TIMEOUT 3s
+    ON TIMEOUT FAIL
 
-WAITFOR EXISTS QUERY ONE ".search-results" IN page USING css
-    TIMEOUT 10s
-
-RETURN page[~ css`.search-results .item`][*].textContent
-{{</ code >}}
+RETURN result.textContent
+{{</ editor >}}
 
 ## Wait for the result of an interaction
 
 The `WAITFOR EVENT ... TRIGGER` pattern is the safest way to combine an interaction with waiting for its result. It subscribes to the event *before* triggering the action, avoiding a race condition where the event fires before listening begins:
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/", { driver: "cdp" })
 LET button = QUERY ONE "button.submit" IN page USING css
 
 WAITFOR EVENT "navigation" IN page

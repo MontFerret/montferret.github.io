@@ -12,4 +12,4 @@ aliases:
 
 Core syntax, values, expressions, variables, and control flow in the Ferret Query Language.
 
-{{< docs-related tiles="language-overview,language-structure,language-types,language-expressions,language-operators,language-functions"  >}}
+{{< docs-related tiles="language-overview,language-structure,language-use,language-types,language-expressions,language-operators,language-functions"  >}}

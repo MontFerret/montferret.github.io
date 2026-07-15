@@ -33,6 +33,10 @@ RETURN {
 }
 {{< /editor >}}
 
+## Script headers
+
+A script can begin with one or more `USE` declarations. They create local aliases for namespaces or namespaced functions and must appear before the script body. See the [`USE` statement reference]({{< ref "/docs/language/use" >}}) for the syntax and resolution rules.
+
 ## Statements
 
 A statement describes a step in the script. Some statements create bindings; others produce results or control iteration.
@@ -270,4 +274,4 @@ RETURN {
 
 ## Next steps
 
-{{< docs-related tiles="language-variables,language-expressions,language-operators" >}}
+{{< docs-related tiles="language-use,language-variables,language-expressions,language-operators" >}}

@@ -74,7 +74,7 @@ WAITFOR EXISTS QUERY ONE '[data-testid="delayed-long"]' IN page USING css
 RETURN QUERY '[data-testid="delayed-long"]' IN page USING css
 {{</ editor >}}
 
-`WAITFOR EXISTS` re-checks the expression on a polling interval until it has a value or the timeout is reached.
+`WAITFOR EXISTS` re-checks the expression on a polling interval until it is non-empty according to `EXISTS` semantics or the timeout is reached.
 
 ### Wait for a value
 
@@ -133,6 +133,7 @@ LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", {
 })
 
 LET items = WAITFOR VALUE QUERY ".product" IN page USING css
+    WHEN LENGTH(.) > 0
     TIMEOUT 5s
     ON TIMEOUT RETURN []
 

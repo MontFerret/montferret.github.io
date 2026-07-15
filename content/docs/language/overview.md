@@ -131,6 +131,7 @@ Dynamic workflows often involve timing: a page may not have finished loading, an
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
 
 RETURN WAITFOR VALUE page[~ css`.network-result-card p`]
+    WHEN LENGTH(.) > 0
     TIMEOUT 5s
     ON TIMEOUT RETURN false
 {{< /editor >}}
