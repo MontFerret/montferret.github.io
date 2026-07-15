@@ -36,7 +36,7 @@ USE IO::FS AS FS
 RETURN FS::READ("/tmp/data.json")
 {{</ code >}}
 
-`USE` is a compile-time alias; it does not load a module or change which functions the runtime provides. See the [`USE` statement reference]({{< ref "/docs/language/use" >}}) for function aliases, placement rules, and name-resolution behavior.
+`USE` is a compile-time alias; it does not load a module or change which functions the runtime provides. See the [`USE` statement reference]({{< ref "/docs/language/script-structure/use" >}}) for function aliases, placement rules, and name-resolution behavior.
 
 ## Where functions come from
 

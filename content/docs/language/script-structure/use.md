@@ -1,7 +1,7 @@
 ---
 title: "USE Statement"
-sidebarTitle: "USE"
-weight: 35
+sidebarTitle: "Use"
+weight: 10
 draft: false
 description: "Create local aliases for namespaces and namespaced functions with the USE statement."
 ---

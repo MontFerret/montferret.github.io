@@ -1,5 +1,5 @@
 ---
-title: "Script structure"
+title: "Script Structure"
 weight: 30
 draft: false
 description: "Learn the basic structure of an FQL script."
@@ -7,7 +7,7 @@ aliases:
     - /docs/fql/syntax/
 ---
 
-## Script structure
+# Script Structure
 
 An FQL script is a sequence of statements that runs from top to bottom and produces a final value.
 
@@ -35,7 +35,7 @@ RETURN {
 
 ## Script headers
 
-A script can begin with one or more `USE` declarations. They create local aliases for namespaces or namespaced functions and must appear before the script body. See the [`USE` statement reference]({{< ref "/docs/language/use" >}}) for the syntax and resolution rules.
+A script can begin with one or more `USE` declarations. They create local aliases for namespaces or namespaced functions and must appear before the script body. See the [`USE` statement reference]({{< ref "/docs/language/script-structure/use" >}}) for the syntax and resolution rules.
 
 ## Statements
 
