@@ -3,7 +3,7 @@ title: "Configuration"
 sidebarTitle: "Configuration"
 weight: 50
 draft: false
-description: "Control the standard library, logging, encoding, concurrency, and file system access."
+description: "Control the standard library, logging, encoding, concurrency, and sandboxed host services."
 ---
 
 # Configuration
@@ -164,7 +164,11 @@ This is a memory-vs-latency trade-off: more idle VMs means faster session creati
 
 A value of 0 disables the limit for `WithMaxActiveSessions` and `WithMaxVMsPerPlan`.
 
-## File system
+## Sandboxed components
+
+Sandboxed components control how scripts access host resources outside the Ferret runtime. Configure each component independently according to what the embedding application should allow. The engine adds the configured components to the `context.Context` passed to functions during execution.
+
+### File system
 
 Scripts that use file system functions (from the `FS` stdlib group) operate within a sandboxed file system. The host can configure the root directory and restrict access to read-only.
 
@@ -175,7 +179,126 @@ engine, err := ferret.New(
 )
 {{</ code >}}
 
-If no root is set, file system functions use the process working directory. `WithFSReadOnly` prevents scripts from writing files regardless of the root.
+If `WithFSRoot` is not set, file system access is disabled and `FS` functions return a root-not-configured error. `WithFSReadOnly` prevents scripts from writing within the configured root.
+
+#### Accessing the file system from a function
+
+Retrieve the configured file system from the function context. Prefer the narrowest helper for the operation the function performs:
+
+{{< code lang="go" title="read_file.go" >}}
+package files
+
+import (
+    "context"
+
+    ferretfs "github.com/MontFerret/ferret/v2/pkg/fs"
+    "github.com/MontFerret/ferret/v2/pkg/runtime"
+)
+
+func ReadFile(ctx context.Context, pathArg runtime.Value) (runtime.Value, error) {
+    path, err := runtime.CastArg[runtime.String](pathArg, 0)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    reader, err := ferretfs.ReaderFrom(ctx)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    data, err := reader.ReadFile(path.String())
+    if err != nil {
+        return runtime.None, err
+    }
+
+    return runtime.NewBinary(data), nil
+}
+{{</ code >}}
+
+The `fs` package also provides `WriterFrom`, `DirectoriesFrom`, and `RemoverFrom`. Use `FileSystemFrom` only when a function needs several capabilities.
+
+For public modules, these context helpers are the recommended way to access files. They keep the module inside the root and read-only policy selected by the embedding host. Calling `os.ReadFile`, `os.WriteFile`, or constructing a separate file system would bypass that configuration.
+
+### HTTP client
+
+Scripts that use network functions (from the `NET` stdlib group) make outbound requests through the engine's network service. Supply a policy-configured HTTP client to restrict which destinations scripts can reach and how much data they can send or receive.
+
+{{< code lang="go" >}}
+httpClient := ferrethttp.New(
+    ferrethttp.WithAllowedSchemes("https"),
+    ferrethttp.WithAllowedHosts("api.example.com"),
+    ferrethttp.WithAllowLocalhost(false),
+    ferrethttp.WithAllowPrivateNetworks(false),
+    ferrethttp.WithTimeout(10*time.Second),
+    ferrethttp.WithMaxRequestSize(1<<20),  // 1 MiB
+    ferrethttp.WithMaxResponseSize(4<<20), // 4 MiB
+)
+
+engine, err := ferret.New(
+    ferret.WithNetwork(
+        ferretnet.New(
+            ferretnet.WithHTTPClient(httpClient),
+        ),
+    ),
+)
+{{</ code >}}
+
+The HTTP client supports these policy controls:
+
+| Control | Options |
+|---------|---------|
+| URL schemes and destinations | `WithAllowedSchemes`, `WithAllowedHosts`, `WithBlockedHosts` |
+| Local and private addresses | `WithAllowLocalhost`, `WithAllowPrivateNetworks` |
+| Redirects | `WithFollowRedirects`, `WithMaxRedirects` |
+| Request headers | `WithDefaultHeader`, `WithDefaultHeaders`, `WithBlockedRequestHeaders` |
+| Time and payload limits | `WithTimeout`, `WithMaxRequestSize`, `WithMaxResponseSize` |
+
+By default, the client allows HTTP and HTTPS, permits localhost and private IP addresses, and follows redirects. Timeout and payload-size limits are disabled until configured. For untrusted scripts, prefer an explicit host allowlist; URL policies are checked for the initial request and each redirect destination.
+
+#### Accessing HTTP from a function
+
+Retrieve the configured HTTP client from the function context and pass the same context to the request:
+
+{{< code lang="go" title="fetch_status.go" >}}
+package request
+
+import (
+    "context"
+
+    ferretnet "github.com/MontFerret/ferret/v2/pkg/net"
+    ferrethttp "github.com/MontFerret/ferret/v2/pkg/net/http"
+    "github.com/MontFerret/ferret/v2/pkg/runtime"
+)
+
+func FetchStatus(ctx context.Context, urlArg runtime.Value) (runtime.Value, error) {
+    url, err := runtime.CastArg[runtime.String](urlArg, 0)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    client, err := ferretnet.HTTPClientFrom(ctx)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    response, err := client.Do(ctx, &ferrethttp.Request{
+        Method: "GET",
+        URL:    url.String(),
+    })
+    if err != nil {
+        return runtime.None, err
+    }
+    if response == nil {
+        return runtime.None, runtime.Error(runtime.ErrUnexpected, "HTTP response is nil")
+    }
+
+    return runtime.NewInt(response.StatusCode), nil
+}
+{{</ code >}}
+
+For public modules, use `HTTPClientFrom` instead of `net/http` or a separately constructed client. Requests then follow the host's destination, redirect, header, timeout, and payload-size policies, while the execution context continues to carry cancellation and deadlines. Use `NetworkFrom` only when a function needs the complete network service.
+
+Both examples have valid Ferret function signatures and can be registered with `sdk.Func`. See [Writing plugins]({{< ref "/docs/guides/writing-plugins" >}}) for the complete registration pattern.
 
 ## Compiler options
 
