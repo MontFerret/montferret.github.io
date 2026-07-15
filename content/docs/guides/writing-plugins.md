@@ -10,7 +10,7 @@ description: "Build a self-contained module with namespaced functions, host valu
 
 A Ferret plugin is a Go module that bundles namespaced functions, host values, and lifecycle hooks into a single registerable unit. This guide builds a complete plugin from scratch — a key-value cache that FQL scripts can create, populate, read, and iterate.
 
-For the underlying API reference, see [Modules & Hooks]({{< ref "/docs/embedding/modules" >}}), [Custom Functions]({{< ref "/docs/embedding/custom-functions" >}}), and [Host Values]({{< ref "/docs/embedding/host-values" >}}).
+For the registration and lifecycle model, see [Modules]({{< ref "/docs/embedding/modules" >}}). For the underlying extension APIs, see [Custom Functions]({{< ref "/docs/embedding/custom-functions" >}}) and [Host Values]({{< ref "/docs/embedding/host-values" >}}).
 
 ## What the plugin will do
 
@@ -110,7 +110,7 @@ func (m *Module) registerFunctions(ns runtime.Namespace) {
             return nil, err
         }
 
-        cache.Set(string(key), valArg)
+        cache.SetValue(string(key), valArg)
 
         return runtime.None, nil
     })
@@ -127,7 +127,7 @@ func (m *Module) registerFunctions(ns runtime.Namespace) {
             return nil, err
         }
 
-        val, found := cache.Get(string(key))
+        val, found := cache.GetValue(string(key))
         if !found {
             return runtime.None, nil
         }
@@ -159,7 +159,6 @@ import (
     "context"
     "fmt"
     "hash/fnv"
-    "io"
     "sort"
     "sync"
 
@@ -249,7 +248,7 @@ func (c *Cache) Iterate(_ context.Context) (runtime.Iterator, error) {
 
     sort.Strings(keys)
 
-    return sdk.NewSliceIterator[runtime.Value](keys), nil
+    return sdk.NewSliceIterator(keys), nil
 }
 
 // --- io.Closer ---
@@ -270,11 +269,11 @@ Hooks let the plugin react to engine events. Add timing and cleanup:
 type ctxStartKey struct{}
 
 func (m *Module) registerHooks(boot module.Bootstrap) {
-    boot.Hooks().BeforeRun(func(ctx context.Context) (context.Context, error) {
+    boot.Hooks().Session().BeforeRun(func(ctx context.Context) (context.Context, error) {
         return context.WithValue(ctx, ctxStartKey{}, time.Now()), nil
     })
 
-    boot.Hooks().AfterRun(func(ctx context.Context, runErr error) error {
+    boot.Hooks().Session().AfterRun(func(ctx context.Context, runErr error) error {
         start, _ := ctx.Value(ctxStartKey{}).(time.Time)
         log.Printf("[kv] query took %s (err=%v)", time.Since(start), runErr)
         return nil

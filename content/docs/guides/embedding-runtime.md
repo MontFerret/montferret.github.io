@@ -77,17 +77,15 @@ engine, err := ferret.New(
 
 See [Configuration]({{< ref "/docs/embedding/configuration" >}}) for the full list of groups.
 
-## Register modules
+## Configure the HTML module
 
-In Ferret v2, capabilities like HTML querying and browser automation are not part of the core runtime or the standard library — they are provided by external modules that the host application registers explicitly.
-
-The HTML module lives in the `contrib` repository:
+This service needs the HTML module to fetch and query pages. Install it from the `contrib` repository:
 
 {{< terminal command="true" >}}
 go get github.com/MontFerret/contrib/modules/web/html
 {{</ terminal >}}
 
-Register it when creating the engine:
+Configure the in-process memory driver for static HTML, then pass the module to `ferret.WithModules`:
 
 {{< code lang="go" >}}
 import (
@@ -108,7 +106,7 @@ engine, err := ferret.New(
 )
 {{</ code >}}
 
-The `memory` driver handles static HTML — it fetches and parses pages in-process without a browser.
+The `memory` driver fetches and parses static HTML without a browser. Ferret modules are installed, configured, and registered explicitly by the host application. See [Modules]({{< ref "/docs/embedding/modules" >}}) for the complete registration and lifecycle model.
 
 ### Add browser support
 
@@ -145,10 +143,6 @@ RETURN page.title
 {{</ code >}}
 
 Without the `driver` option, the default `memory` driver is used.
-
-{{< notification type="info" >}}
-If your application only runs pure FQL (no HTML or browser access), you can skip module registration entirely — the core runtime and standard library work on their own.
-{{</ notification >}}
 
 ## Compile and reuse a plan
 
@@ -415,7 +409,7 @@ func main() {
 }
 {{</ code >}}
 
-`engine.Close()` runs cleanup hooks in reverse registration order (LIFO) and releases all pooled VMs. Always close the HTTP server first so no new requests arrive while the engine is shutting down.
+Close active sessions and plans before closing the engine. `engine.Close()` runs engine-level cleanup hooks in reverse registration order (LIFO). Always close the HTTP server first so no new requests arrive while the engine is shutting down.
 
 ## Complete example
 
@@ -544,4 +538,4 @@ func main() {
 
 ## Next steps
 
-{{< docs-related tiles="embedding-overview,embedding-configuration,guide-writing-plugins,guide-precompiled-programs" >}}
+{{< docs-related tiles="embedding-modules,embedding-configuration,guide-writing-plugins,guide-precompiled-programs" >}}

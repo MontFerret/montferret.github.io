@@ -159,4 +159,4 @@ if err != nil {
 
 ## Next steps
 
-{{< docs-related tiles="embedding-custom-functions,embedding-parameters,embedding-configuration" >}}
+{{< docs-related tiles="embedding-modules,embedding-custom-functions,embedding-configuration,guide-writing-plugins" >}}

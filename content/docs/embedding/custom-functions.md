@@ -227,4 +227,4 @@ func main() {
 
 ## Next steps
 
-{{< docs-related tiles="embedding-host-values,embedding-parameters,embedding-configuration,embedding-modules" >}}
+{{< docs-related tiles="embedding-modules,embedding-host-values,embedding-configuration,guide-writing-plugins" >}}

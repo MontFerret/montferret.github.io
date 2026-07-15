@@ -198,4 +198,4 @@ Debug compilation (`engine.CompileDebug`) always uses `O0` to ensure stable sour
 
 ## Next steps
 
-{{< docs-related tiles="embedding-value-encoders,embedding-programs,embedding-modules" >}}
+{{< docs-related tiles="embedding-getting-started,embedding-modules,embedding-value-encoders,embedding-programs" >}}
