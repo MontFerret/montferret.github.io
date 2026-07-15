@@ -902,7 +902,7 @@
             <article class="docs-content" data-pagefind-body>
     <h1 id="write-a-ferret-plugin">Write a Ferret plugin</h1>
 <p>A Ferret plugin is a Go module that bundles namespaced functions, host values, and lifecycle hooks into a single registerable unit. This guide builds a complete plugin from scratch — a key-value cache that FQL scripts can create, populate, read, and iterate.</p>
-<p>For the underlying API reference, see <a href="https://ferretlang.org/docs/embedding/modules/">Modules &amp; Hooks</a>, <a href="https://ferretlang.org/docs/embedding/custom-functions/">Custom Functions</a>, and <a href="https://ferretlang.org/docs/embedding/host-values/">Host Values</a>.</p>
+<p>For the registration and lifecycle model, see <a href="https://ferretlang.org/docs/embedding/modules/">Modules</a>. For the underlying extension APIs, see <a href="https://ferretlang.org/docs/embedding/custom-functions/">Custom Functions</a> and <a href="https://ferretlang.org/docs/embedding/host-values/">Host Values</a>.</p>
 <h2 id="what-the-plugin-will-do">What the plugin will do</h2>
 <p>The <code>KV</code> plugin exposes three functions and a host value:</p>
 
@@ -1259,7 +1259,7 @@ func (m *Module) Register(boot module.Bootstrap) error {
             return nil, err
         }
 
-        cache.Set(string(key), valArg)
+        cache.SetValue(string(key), valArg)
 
         return runtime.None, nil
     })
@@ -1276,7 +1276,7 @@ func (m *Module) Register(boot module.Bootstrap) error {
             return nil, err
         }
 
-        val, found := cache.Get(string(key))
+        val, found := cache.GetValue(string(key))
         if !found {
             return runtime.None, nil
         }
@@ -1422,7 +1422,6 @@ import (
     &#34;context&#34;
     &#34;fmt&#34;
     &#34;hash/fnv&#34;
-    &#34;io&#34;
     &#34;sort&#34;
     &#34;sync&#34;
 
@@ -1512,7 +1511,7 @@ func (c *Cache) Iterate(_ context.Context) (runtime.Iterator, error) {
 
     sort.Strings(keys)
 
-    return sdk.NewSliceIterator[runtime.Value](keys), nil
+    return sdk.NewSliceIterator(keys), nil
 }
 
 // --- io.Closer ---
@@ -1623,11 +1622,11 @@ func (c *Cache) Close() error {
             <div id="code-5-text" class="code-editor-text" data-auto-height="true">type ctxStartKey struct{}
 
 func (m *Module) registerHooks(boot module.Bootstrap) {
-    boot.Hooks().BeforeRun(func(ctx context.Context) (context.Context, error) {
+    boot.Hooks().Session().BeforeRun(func(ctx context.Context) (context.Context, error) {
         return context.WithValue(ctx, ctxStartKey{}, time.Now()), nil
     })
 
-    boot.Hooks().AfterRun(func(ctx context.Context, runErr error) error {
+    boot.Hooks().Session().AfterRun(func(ctx context.Context, runErr error) error {
         start, _ := ctx.Value(ctxStartKey{}).(time.Time)
         log.Printf(&#34;[kv] query took %s (err=%v)&#34;, time.Since(start), runErr)
         return nil
@@ -2294,9 +2293,9 @@ func TestCache(t *testing.T) {
 
 <h2 id="next-steps">Next steps</h2>
 <div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/modules/">
-        <span class="docs-card-kicker">Extensions</span>
-        <strong>Modules &amp; Hooks</strong>
-        <span>Write self-contained extensions and react to engine lifecycle events.</span>
+        <span class="docs-card-kicker">Runtime modules</span>
+        <strong>Modules</strong>
+        <span>Install, configure, register, and manage modules in an embedded runtime.</span>
     </a><a class="docs-card" href="/docs/embedding/custom-functions/">
         <span class="docs-card-kicker">Host functions</span>
         <strong>Custom Functions</strong>

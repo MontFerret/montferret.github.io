@@ -1324,9 +1324,8 @@ func main() {
 </div>
 
 <p>See <a href="https://ferretlang.org/docs/embedding/configuration/">Configuration</a> for the full list of groups.</p>
-<h2 id="register-modules">Register modules</h2>
-<p>In Ferret v2, capabilities like HTML querying and browser automation are not part of the core runtime or the standard library — they are provided by external modules that the host application registers explicitly.</p>
-<p>The HTML module lives in the <code>contrib</code> repository:</p>
+<h2 id="configure-the-html-module">Configure the HTML module</h2>
+<p>This service needs the HTML module to fetch and query pages. Install it from the <code>contrib</code> repository:</p>
 
 
 
@@ -1397,7 +1396,7 @@ func main() {
     </script>
 </div>
 
-<p>Register it when creating the engine:</p>
+<p>Configure the in-process memory driver for static HTML, then pass the module to <code>ferret.WithModules</code>:</p>
 
 
 
@@ -1509,7 +1508,7 @@ engine, err := ferret.New(
     </script>
 </div>
 
-<p>The <code>memory</code> driver handles static HTML — it fetches and parses pages in-process without a browser.</p>
+<p>The <code>memory</code> driver fetches and parses static HTML without a browser. Ferret modules are installed, configured, and registered explicitly by the host application. See <a href="https://ferretlang.org/docs/embedding/modules/">Modules</a> for the complete registration and lifecycle model.</p>
 <h3 id="add-browser-support">Add browser support</h3>
 <p>For JavaScript-rendered pages, add the <code>cdp</code> driver alongside the <code>memory</code> driver:</p>
 
@@ -1726,13 +1725,6 @@ RETURN page.title</div>
 </div>
 
 <p>Without the <code>driver</code> option, the default <code>memory</code> driver is used.</p>
-
-
-<div class="notification is-info">
-    
-If your application only runs pure FQL (no HTML or browser access), you can skip module registration entirely — the core runtime and standard library work on their own.
-
-</div>
 <h2 id="compile-and-reuse-a-plan">Compile and reuse a plan</h2>
 <p>When the same query runs multiple times — with different parameters, in different goroutines, or on a schedule — compile it once and reuse the plan:</p>
 
@@ -2712,7 +2704,7 @@ func main() {
     </script>
 </div>
 
-<p><code>engine.Close()</code> runs cleanup hooks in reverse registration order (LIFO) and releases all pooled VMs. Always close the HTTP server first so no new requests arrive while the engine is shutting down.</p>
+<p>Close active sessions and plans before closing the engine. <code>engine.Close()</code> runs engine-level cleanup hooks in reverse registration order (LIFO). Always close the HTTP server first so no new requests arrive while the engine is shutting down.</p>
 <h2 id="complete-example">Complete example</h2>
 <p>A full runnable service combining everything above:</p>
 
@@ -2929,10 +2921,10 @@ func main() {
 </div>
 
 <h2 id="next-steps">Next steps</h2>
-<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/overview/">
-        <span class="docs-card-kicker">Introduction</span>
-        <strong>Overview</strong>
-        <span>Understand the Engine, Plan, and Session lifecycle and when embedding makes sense.</span>
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/modules/">
+        <span class="docs-card-kicker">Runtime modules</span>
+        <strong>Modules</strong>
+        <span>Install, configure, register, and manage modules in an embedded runtime.</span>
     </a><a class="docs-card" href="/docs/embedding/configuration/">
         <span class="docs-card-kicker">Runtime setup</span>
         <strong>Configuration</strong>
@@ -2959,7 +2951,7 @@ func main() {
   <ul>
     <li><a href="#set-up-the-project">Set up the project</a></li>
     <li><a href="#choose-a-standard-library-profile">Choose a standard library profile</a></li>
-    <li><a href="#register-modules">Register modules</a>
+    <li><a href="#configure-the-html-module">Configure the HTML module</a>
       <ul>
         <li><a href="#add-browser-support">Add browser support</a></li>
       </ul>

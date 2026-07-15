@@ -689,7 +689,7 @@
     <li class="docs-nav-item docs-nav-depth-1 is-open is-current">
         
             <a href="https://ferretlang.org/docs/embedding/modules/" class="docs-nav-link is-active" aria-current="page">
-                Modules &amp; Hooks
+                Modules
             </a>
         
 
@@ -776,10 +776,90 @@
 
         <main id="main" class="docs-main">
             <article class="docs-content" data-pagefind-body>
-    <h1 id="modules--hooks">Modules &amp; Hooks</h1>
-<p>Modules are self-contained extensions that bundle functions, parameters, codecs, and lifecycle hooks into a single registerable unit. Hooks let both modules and the host application react to events in the engine lifecycle.</p>
-<h2 id="the-module-interface">The Module interface</h2>
-<p>A module implements two methods:</p>
+    <h1 id="modules">Modules</h1>
+<h2 id="overview">Overview</h2>
+<p>Modules add capabilities to an embedded Ferret runtime. Official, contributed, third-party, and application-defined modules all use the same registration model:</p>
+<ol>
+<li>Import the module as a Go package.</li>
+<li>Construct and configure it in the host application.</li>
+<li>Pass it to the engine with <code>ferret.WithModules</code>.</li>
+<li>Let <code>ferret.New</code> register it and run its initialization hooks.</li>
+<li>Close module-owned resources through the engine lifecycle.</li>
+</ol>
+<p>The host application chooses which modules are available. Importing a package alone does not add its functions or runtime capabilities to Ferret.</p>
+<h2 id="installing-a-module">Installing a module</h2>
+<p>Install a module with <code>go get</code>. For example, the HTML module is published from the Ferret <code>contrib</code> repository:</p>
+
+
+
+
+
+
+
+
+
+<div class="code-editor terminal-shortcode is-command">
+    <textarea id="terminal-1-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true">go get github.com/MontFerret/contrib/modules/web/html</textarea>
+
+    <div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>terminal</span>
+            </div>
+            <div class="code-editor-actions">
+                <button id="terminal-1-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <pre id="terminal-1-content" class="terminal-body"><code><span class="terminal-row"><span class="terminal-prompt" aria-hidden="true">$</span><span class="terminal-command">go get github.com/MontFerret/contrib/modules/web/html</span></span></code></pre>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.querySelector('#terminal-1-copy-button');
+            const copyClipboardEl = document.querySelector('#terminal-1-copy-clipboard');
+            const terminalContent = copyClipboardEl.value;
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy terminal commands to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(terminalContent)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy terminal commands');
+                        console.error(err);
+                    });
+            });
+        }, false);
+    </script>
+</div>
+
+<p>Import the module and any supporting packages your configuration needs:</p>
 
 
 
@@ -804,10 +884,10 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-1-text" class="code-editor-text" data-auto-height="true">type Module interface {
-    Name() string
-    Register(Bootstrap) error
-}</div>
+            <div id="code-1-text" class="code-editor-text" data-auto-height="true">import (
+    &#34;github.com/MontFerret/contrib/modules/web/html&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/memory&#34;
+)</div>
         </div>
     </div>
 
@@ -879,45 +959,10 @@
     </script>
 </div>
 
-<p><code>Name</code> returns an identifier for logging and diagnostics. <code>Register</code> receives a <code>Bootstrap</code> context that provides access to the engine&rsquo;s registries and hook system.</p>
-<h2 id="bootstrap-context">Bootstrap context</h2>
-<p>The <code>Bootstrap</code> passed to <code>Register</code> exposes two surfaces:</p>
-<h3 id="host-context">Host context</h3>
-<p><code>bootstrap.Host()</code> returns a <code>HostContext</code> with access to:</p>
-<table>
-  <thead>
-      <tr>
-          <th>Method</th>
-          <th>Purpose</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>Library()</code></td>
-          <td>Register functions and namespaces</td>
-      </tr>
-      <tr>
-          <td><code>Params()</code></td>
-          <td>Set default parameters</td>
-      </tr>
-      <tr>
-          <td><code>Encoding()</code></td>
-          <td>Register encoding codecs</td>
-      </tr>
-      <tr>
-          <td><code>Logger()</code></td>
-          <td>Access the engine logger</td>
-      </tr>
-      <tr>
-          <td><code>FileSystem()</code></td>
-          <td>Access the engine file system</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="hook-registrar">Hook registrar</h3>
-<p><code>bootstrap.Hooks()</code> returns a <code>HookRegistrar</code> for subscribing to lifecycle events (see <a href="#lifecycle-hooks">Lifecycle hooks</a> below).</p>
-<h2 id="registering-modules">Registering modules</h2>
-<p>Pass modules to the engine with <code>WithModules</code>:</p>
+<p>Application-defined modules can live in the same Go module as the host application and do not need to be published separately.</p>
+<h2 id="creating-and-configuring-a-module">Creating and configuring a module</h2>
+<p>Construct modules before creating the engine. Constructors and functional options belong to the module package, so their configuration differs by module.</p>
+<p>The HTML module requires a driver. This configuration uses the in-process memory driver for static HTML:</p>
 
 
 
@@ -942,12 +987,12 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-2-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithModules(
-        &amp;metricsModule{},
-        &amp;cacheModule{},
-    ),
-)</div>
+            <div id="code-2-text" class="code-editor-text" data-auto-height="true">htmlmod, err := html.New(
+    html.WithDefaultDriver(memory.New()),
+)
+if err != nil {
+    log.Fatal(err)
+}</div>
         </div>
     </div>
 
@@ -1019,9 +1064,9 @@
     </script>
 </div>
 
-<p>Modules are registered in order. Each module&rsquo;s <code>Register</code> is called during engine construction, before the engine is returned to the caller.</p>
-<h2 id="writing-a-module">Writing a module</h2>
-<p>A module that registers a <code>METRICS</code> namespace and logs query execution times:</p>
+<p>Handle constructor errors before calling <code>ferret.New</code>. At this point, the module has not joined the engine lifecycle yet.</p>
+<h2 id="registering-modules">Registering modules</h2>
+<p>Pass constructed modules to <code>ferret.WithModules</code> when creating the engine:</p>
 
 
 
@@ -1046,53 +1091,36 @@
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-3-text" class="code-editor-text" data-auto-height="true">package metrics
+            <div id="code-3-text" class="code-editor-text" data-auto-height="true">package main
 
 import (
-    &#34;context&#34;
     &#34;log&#34;
-    &#34;time&#34;
 
-    &#34;github.com/MontFerret/ferret/v2/pkg/module&#34;
-    &#34;github.com/MontFerret/ferret/v2/pkg/runtime&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html&#34;
+    &#34;github.com/MontFerret/contrib/modules/web/html/drivers/memory&#34;
+    &#34;github.com/MontFerret/ferret/v2&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/stdlib&#34;
 )
 
-type Module struct {
-    prefix string
-}
+func main() {
+    htmlmod, err := html.New(
+        html.WithDefaultDriver(memory.New()),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
 
-func New(prefix string) *Module {
-    return &amp;Module{prefix: prefix}
-}
+    engine, err := ferret.New(
+        ferret.WithStdlib(stdlib.Safe()),
+        ferret.WithModules(htmlmod),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer engine.Close()
 
-func (m *Module) Name() string {
-    return &#34;metrics&#34;
-}
-
-func (m *Module) Register(boot module.Bootstrap) error {
-    // Register functions
-    ns := boot.Host().Library().Namespace(&#34;METRICS&#34;)
-
-    ns.Function().A1().Add(&#34;TAG&#34;, func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
-        return runtime.NewString(m.prefix &#43; &#34;.&#34; &#43; arg.String()), nil
-    })
-
-    // Register hooks
-    boot.Hooks().BeforeRun(func(ctx context.Context) (context.Context, error) {
-        return context.WithValue(ctx, ctxStartKey{}, time.Now()), nil
-    })
-
-    boot.Hooks().AfterRun(func(ctx context.Context, runErr error) error {
-        start, _ := ctx.Value(ctxStartKey{}).(time.Time)
-        elapsed := time.Since(start)
-        log.Printf(&#34;[%s] query took %s (err=%v)&#34;, m.prefix, elapsed, runErr)
-        return nil
-    })
-
-    return nil
-}
-
-type ctxStartKey struct{}</div>
+    // Compile and run FQL programs with engine.
+}</div>
         </div>
     </div>
 
@@ -1164,7 +1192,9 @@ type ctxStartKey struct{}</div>
     </script>
 </div>
 
-<p>Use it in the host application:</p>
+<p><code>ferret.New</code> calls the module&rsquo;s <code>Register</code> method while assembling the engine. The engine is returned only after every module has registered, the host registries have been built, and all engine initialization hooks have completed.</p>
+<h2 id="registering-multiple-modules">Registering multiple modules</h2>
+<p><code>ferret.WithModules</code> accepts any number of modules:</p>
 
 
 
@@ -1190,7 +1220,11 @@ type ctxStartKey struct{}</div>
 
         <div class="code-editor-pane">
             <div id="code-4-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithModules(metrics.New(&#34;myapp&#34;)),
+    ferret.WithModules(
+        htmlmod,
+        sqlitemod,
+        appmod,
+    ),
 )</div>
         </div>
     </div>
@@ -1263,31 +1297,77 @@ type ctxStartKey struct{}</div>
     </script>
 </div>
 
-<h2 id="lifecycle-hooks">Lifecycle hooks</h2>
-<p>Hooks let you react to events at different stages of the engine lifecycle. They can be registered through modules or directly on the engine with option functions.</p>
-<h3 id="engine-hooks">Engine hooks</h3>
+<p>Modules register sequentially in the order passed. Multiple <code>WithModules</code> options append to the same ordered list.</p>
+<p>Modules may add different functions to the same namespace. A shared namespace is not itself an error. If two modules register the same fully qualified function name, however, engine construction fails instead of choosing one implementation or overriding the earlier registration.</p>
+<h2 id="registration-errors">Registration errors</h2>
+<p>Module construction and engine registration report errors at different points:</p>
 <table>
   <thead>
       <tr>
-          <th>Hook</th>
-          <th>When it runs</th>
-          <th>Signature</th>
+          <th>Failure</th>
+          <th>Result</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td><code>WithEngineInitHook</code></td>
-          <td>After engine construction</td>
-          <td><code>func() error</code></td>
+          <td>A module constructor returns an error</td>
+          <td>Handle the error before calling <code>ferret.New</code></td>
       </tr>
       <tr>
-          <td><code>WithEngineCloseHook</code></td>
-          <td>When <code>engine.Close()</code> is called</td>
-          <td><code>func() error</code></td>
+          <td>A nil module is passed to <code>WithModules</code></td>
+          <td>Engine option validation fails</td>
+      </tr>
+      <tr>
+          <td>A module&rsquo;s <code>Register</code> method returns an error</td>
+          <td>Registration stops; later modules are not registered</td>
+      </tr>
+      <tr>
+          <td>Host registries cannot be built, such as after a duplicate function registration</td>
+          <td>Engine construction fails after module registration</td>
+      </tr>
+      <tr>
+          <td>An engine initialization hook returns an error</td>
+          <td>Initialization stops and engine construction fails</td>
       </tr>
   </tbody>
 </table>
-<p>Init hooks run in registration order (FIFO) and stop on the first error. Close hooks run in reverse registration order (LIFO) so that dependencies are torn down correctly.</p>
+<p>In each engine-construction failure that occurs after bootstrap begins, Ferret runs the engine close hooks registered so far in reverse registration order. Close-hook errors are aggregated with the construction error, so cleanup failures are not discarded.</p>
+<p>Always check the error returned by <code>ferret.New</code>. When construction fails, it returns no usable engine.</p>
+<h2 id="module-lifecycle">Module lifecycle</h2>
+<p>A module participates in the engine lifecycle through registration and hooks:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Stage</th>
+          <th>Behavior</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Construction</td>
+          <td>The host application creates and configures the module</td>
+      </tr>
+      <tr>
+          <td>Registration</td>
+          <td><code>ferret.New</code> calls each module&rsquo;s <code>Register</code> method in order</td>
+      </tr>
+      <tr>
+          <td>Host build</td>
+          <td>Ferret finalizes functions, parameters, codecs, and host services</td>
+      </tr>
+      <tr>
+          <td>Initialization</td>
+          <td>Engine initialization hooks run in registration order and stop on the first error</td>
+      </tr>
+      <tr>
+          <td>Shutdown</td>
+          <td><code>engine.Close()</code> runs engine close hooks in reverse registration order and aggregates their errors</td>
+      </tr>
+  </tbody>
+</table>
+<p>The <code>module.Module</code> interface does not define a <code>Close</code> method. A module that owns engine-scoped resources registers an engine close hook and releases them there. Plan- and session-scoped resources belong in their corresponding close hooks and are released when the host application closes those plans and sessions.</p>
+<h2 id="writing-a-custom-module">Writing a custom module</h2>
+<p>Applications can implement the module contract to expose their own functions, namespaces, host values, codecs, parameters, and lifecycle behavior:</p>
 
 
 
@@ -1312,16 +1392,10 @@ type ctxStartKey struct{}</div>
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-5-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithEngineInitHook(func() error {
-        log.Println(&#34;engine initialized&#34;)
-        return nil
-    }),
-    ferret.WithEngineCloseHook(func() error {
-        log.Println(&#34;engine closing&#34;)
-        return nil
-    }),
-)</div>
+            <div id="code-5-text" class="code-editor-text" data-auto-height="true">type Module interface {
+    Name() string
+    Register(Bootstrap) error
+}</div>
         </div>
     </div>
 
@@ -1393,6 +1467,244 @@ type ctxStartKey struct{}</div>
     </script>
 </div>
 
+<p><code>Register</code> receives a <code>module.Bootstrap</code> with access to host registries and the engine, plan, and session hook registrars. Keep registration focused on wiring the module into the host; construct and validate module-specific configuration before registration when practical.</p>
+<p>For a complete implementation walkthrough, see <a href="https://ferretlang.org/docs/guides/writing-plugins/">Writing plugins</a>.</p>
+<h2 id="lifecycle-hooks">Lifecycle hooks</h2>
+<p>Lifecycle hooks let modules and host applications react to engine, compilation, execution, and cleanup events. Host applications can register them through <code>ferret</code> option functions. Modules register the same hooks through <code>module.Bootstrap</code>.</p>
+<h3 id="engine-hooks">Engine hooks</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Hook</th>
+          <th>When it runs</th>
+          <th>Signature</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>WithEngineInitHook</code></td>
+          <td>During <code>ferret.New</code>, after registration and host construction</td>
+          <td><code>func() error</code></td>
+      </tr>
+      <tr>
+          <td><code>WithEngineCloseHook</code></td>
+          <td>When construction fails or <code>engine.Close()</code> is called</td>
+          <td><code>func() error</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>Initialization hooks run in registration order (FIFO) and stop on the first error. Close hooks run in reverse registration order (LIFO), continue after errors, and aggregate those errors.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-6-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-6-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-6-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithEngineInitHook(func() error {
+        log.Println(&#34;engine initialized&#34;)
+        return nil
+    }),
+    ferret.WithEngineCloseHook(func() error {
+        log.Println(&#34;engine closing&#34;)
+        return nil
+    }),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-6-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-6-copy-button');
+            const copyClipboardEl = document.querySelector('#code-6-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Modules use the engine hook registrar:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-7-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-7-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-7-text" class="code-editor-text" data-auto-height="true">func (m *Module) Register(boot module.Bootstrap) error {
+    boot.Hooks().Engine().OnInit(func() error {
+        return m.initialize()
+    })
+    boot.Hooks().Engine().OnClose(func() error {
+        return m.close()
+    })
+
+    return nil
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-7-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-7-copy-button');
+            const copyClipboardEl = document.querySelector('#code-7-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
 <h3 id="compilation-hooks">Compilation hooks</h3>
 <table>
   <thead>
@@ -1405,17 +1717,18 @@ type ctxStartKey struct{}</div>
   <tbody>
       <tr>
           <td><code>WithBeforeCompileHook</code></td>
-          <td>Before each <code>Compile</code> call</td>
+          <td>Before compilation begins</td>
           <td><code>func(ctx context.Context) error</code></td>
       </tr>
       <tr>
           <td><code>WithAfterCompileHook</code></td>
-          <td>After each <code>Compile</code> call</td>
+          <td>After a compilation attempt</td>
           <td><code>func(ctx context.Context, compileErr error) error</code></td>
       </tr>
   </tbody>
 </table>
-<p>Before-compile hooks run FIFO and stop on the first error. After-compile hooks run LIFO and always execute, even if compilation failed — the compile error is passed as the second argument.</p>
+<p>Before-compile hooks run FIFO and stop on the first error. Once compilation is attempted, after-compile hooks run LIFO and receive the compilation error, if any. They continue after hook errors and aggregate them.</p>
+<p>Modules register these hooks with <code>boot.Hooks().Plan().BeforeCompile(...)</code> and <code>boot.Hooks().Plan().AfterCompile(...)</code>.</p>
 <h3 id="execution-hooks">Execution hooks</h3>
 <table>
   <thead>
@@ -1428,44 +1741,42 @@ type ctxStartKey struct{}</div>
   <tbody>
       <tr>
           <td><code>WithBeforeRunHook</code></td>
-          <td>Before <code>session.Run</code></td>
+          <td>Before <code>session.Run</code> begins</td>
           <td><code>func(ctx context.Context) (context.Context, error)</code></td>
       </tr>
       <tr>
           <td><code>WithAfterRunHook</code></td>
-          <td>After <code>session.Run</code></td>
+          <td>After a run attempt</td>
           <td><code>func(ctx context.Context, runErr error) error</code></td>
       </tr>
   </tbody>
 </table>
-<p>Before-run hooks can return a modified context that is passed to subsequent hooks and the VM. This is useful for injecting request-scoped values like tracing spans or deadlines.</p>
-<p>After-run hooks always execute, receiving the run error if one occurred.</p>
+<p>Before-run hooks run FIFO and can return a derived context for subsequent hooks and VM execution. They stop on the first error. Once execution is attempted, after-run hooks run LIFO, receive the run error, and aggregate hook errors.</p>
+<p>Modules register these hooks with <code>boot.Hooks().Session().BeforeRun(...)</code> and <code>boot.Hooks().Session().AfterRun(...)</code>.</p>
 <h3 id="cleanup-hooks">Cleanup hooks</h3>
 <table>
   <thead>
       <tr>
           <th>Hook</th>
           <th>When it runs</th>
-          <th>Signature</th>
+          <th>Module registrar</th>
       </tr>
   </thead>
   <tbody>
       <tr>
           <td><code>WithPlanCloseHook</code></td>
           <td>When <code>plan.Close()</code> is called</td>
-          <td><code>func() error</code></td>
+          <td><code>boot.Hooks().Plan().OnClose(...)</code></td>
       </tr>
       <tr>
           <td><code>WithSessionCloseHook</code></td>
           <td>When <code>session.Close()</code> is called</td>
-          <td><code>func() error</code></td>
+          <td><code>boot.Hooks().Session().OnClose(...)</code></td>
       </tr>
   </tbody>
 </table>
-<p>Both run in LIFO order.</p>
-<h2 id="hook-execution-order">Hook execution order</h2>
-<p>All &ldquo;before&rdquo; hooks run in registration order (FIFO) — first registered, first executed. If any before hook returns an error, the remaining hooks are skipped and the operation fails.</p>
-<p>All &ldquo;after&rdquo; and &ldquo;close&rdquo; hooks run in reverse registration order (LIFO) — last registered, first executed. This ensures that resources are cleaned up in the correct dependency order. After and close hooks continue executing even if an earlier hook fails; errors are aggregated.</p>
+<p>Plan and session close hooks run in LIFO order, continue after errors, and aggregate those errors.</p>
+<h3 id="hook-execution-order">Hook execution order</h3>
 <table>
   <thead>
       <tr>
@@ -1483,30 +1794,28 @@ type ctxStartKey struct{}</div>
       <tr>
           <td>After, Close</td>
           <td>LIFO</td>
-          <td>No (aggregated)</td>
+          <td>No; errors are aggregated</td>
       </tr>
   </tbody>
 </table>
-<h2 id="hooks-via-options-vs-modules">Hooks via options vs. modules</h2>
-<p>The same hooks are available through both paths:</p>
-<ul>
-<li><strong>Engine options</strong> (<code>WithBeforeRunHook</code>, etc.) — for hooks that belong to the host application</li>
-<li><strong>Module Bootstrap</strong> (<code>boot.Hooks().BeforeRun(...)</code>) — for hooks that belong to a self-contained extension</li>
-</ul>
-<p>Both register into the same hook chain. Module hooks are registered during engine construction in the order modules are listed.</p>
+<p>Hooks registered through engine options and modules join the same hook chains. Engine-option hooks are registered while options are processed; module hooks are added later as modules register in the order passed to <code>WithModules</code>.</p>
 <h2 id="next-steps">Next steps</h2>
-<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/custom-functions/">
+<div class="docs-card-grid" data-pagefind-ignore="all"><a class="docs-card" href="/docs/embedding/getting-started/">
+        <span class="docs-card-kicker">First steps</span>
+        <strong>Getting Started</strong>
+        <span>Install the library, run your first query from Go, and handle the result.</span>
+    </a><a class="docs-card" href="/docs/embedding/custom-functions/">
         <span class="docs-card-kicker">Host functions</span>
         <strong>Custom Functions</strong>
         <span>Register host-defined functions and namespaces that scripts can call.</span>
-    </a><a class="docs-card" href="/docs/embedding/host-values/">
-        <span class="docs-card-kicker">Go types</span>
-        <strong>Host Values</strong>
-        <span>Implement Go types that FQL scripts can hold, access, iterate, query, and dispatch to.</span>
-    </a><a class="docs-card" href="/docs/embedding/value-encoders/">
-        <span class="docs-card-kicker">Encoding</span>
-        <strong>Value Encoders</strong>
-        <span>Understand how output values are encoded and implement custom codecs.</span>
+    </a><a class="docs-card" href="/docs/embedding/configuration/">
+        <span class="docs-card-kicker">Runtime setup</span>
+        <strong>Configuration</strong>
+        <span>Control the standard library, logging, encoding, concurrency, and file system access.</span>
+    </a><a class="docs-card" href="/docs/guides/writing-plugins/">
+        <span class="docs-card-kicker">Guide</span>
+        <strong>Write a Ferret plugin</strong>
+        <span>Build a module with functions, host values, and lifecycle hooks.</span>
     </a>
 </div>
 
@@ -1519,25 +1828,23 @@ type ctxStartKey struct{}</div>
     <div class="docs-toc-title">On this page</div>
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#the-module-interface">The Module interface</a></li>
-    <li><a href="#bootstrap-context">Bootstrap context</a>
-      <ul>
-        <li><a href="#host-context">Host context</a></li>
-        <li><a href="#hook-registrar">Hook registrar</a></li>
-      </ul>
-    </li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#installing-a-module">Installing a module</a></li>
+    <li><a href="#creating-and-configuring-a-module">Creating and configuring a module</a></li>
     <li><a href="#registering-modules">Registering modules</a></li>
-    <li><a href="#writing-a-module">Writing a module</a></li>
+    <li><a href="#registering-multiple-modules">Registering multiple modules</a></li>
+    <li><a href="#registration-errors">Registration errors</a></li>
+    <li><a href="#module-lifecycle">Module lifecycle</a></li>
+    <li><a href="#writing-a-custom-module">Writing a custom module</a></li>
     <li><a href="#lifecycle-hooks">Lifecycle hooks</a>
       <ul>
         <li><a href="#engine-hooks">Engine hooks</a></li>
         <li><a href="#compilation-hooks">Compilation hooks</a></li>
         <li><a href="#execution-hooks">Execution hooks</a></li>
         <li><a href="#cleanup-hooks">Cleanup hooks</a></li>
+        <li><a href="#hook-execution-order">Hook execution order</a></li>
       </ul>
     </li>
-    <li><a href="#hook-execution-order">Hook execution order</a></li>
-    <li><a href="#hooks-via-options-vs-modules">Hooks via options vs. modules</a></li>
     <li><a href="#next-steps">Next steps</a></li>
   </ul>
 </nav>
