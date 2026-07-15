@@ -227,8 +227,6 @@ Scripts that use network functions (from the `NET` stdlib group) make outbound r
 httpClient := ferrethttp.New(
     ferrethttp.WithAllowedSchemes("https"),
     ferrethttp.WithAllowedHosts("api.example.com"),
-    ferrethttp.WithAllowLocalhost(false),
-    ferrethttp.WithAllowPrivateNetworks(false),
     ferrethttp.WithTimeout(10*time.Second),
     ferrethttp.WithMaxRequestSize(1<<20),  // 1 MiB
     ferrethttp.WithMaxResponseSize(4<<20), // 4 MiB
@@ -248,12 +246,35 @@ The HTTP client supports these policy controls:
 | Control | Options |
 |---------|---------|
 | URL schemes and destinations | `WithAllowedSchemes`, `WithAllowedHosts`, `WithBlockedHosts` |
-| Local and private addresses | `WithAllowLocalhost`, `WithAllowPrivateNetworks` |
+| Local, private, and link-local addresses | `WithAllowLocalhost`, `WithAllowPrivateNetworks`, `WithAllowLinkLocal` |
 | Redirects | `WithFollowRedirects`, `WithMaxRedirects` |
 | Request headers | `WithDefaultHeader`, `WithDefaultHeaders`, `WithBlockedRequestHeaders` |
 | Time and payload limits | `WithTimeout`, `WithMaxRequestSize`, `WithMaxResponseSize` |
 
-By default, the client allows HTTP and HTTPS, permits localhost and private IP addresses, and follows redirects. Timeout and payload-size limits are disabled until configured. For untrusted scripts, prefer an explicit host allowlist; URL policies are checked for the initial request and each redirect destination.
+By default, the client allows HTTP and HTTPS and follows up to 10 redirects, but denies localhost, private networks, carrier-grade NAT, and link-local destinations. Unspecified, multicast, reserved, and invalid destinations are always denied. This includes cloud metadata endpoints on link-local addresses. Timeout and payload-size limits are disabled until configured.
+
+{{< notification type="warning" >}}
+The secure destination defaults are intentionally backward-incompatible. Applications that previously used the built-in client to reach development servers, containers, cluster-local services, or private APIs must opt in to the required address classes or inject a custom HTTP client.
+{{</ notification >}}
+
+The built-in client resolves hostnames and checks every returned address before the initial request and each followed redirect. It also checks the concrete numeric address immediately before connecting, so a DNS change between validation and connection cannot redirect the dial to a forbidden address. Redirects are checked before their requests are sent. An allowed-host list restricts names but never overrides these address-class checks.
+
+For production, use the narrowest practical host allowlist, as in the example above. If an application deliberately needs internal destinations, enable each class separately:
+
+{{< code lang="go" >}}
+internalHTTPClient := ferrethttp.New(
+    ferrethttp.WithAllowedHosts("localhost", "api.internal.example"),
+    ferrethttp.WithAllowLocalhost(true),
+    ferrethttp.WithAllowPrivateNetworks(true),
+    ferrethttp.WithAllowLinkLocal(true),
+)
+{{</ code >}}
+
+`WithAllowLocalhost` enables only localhost names and loopback addresses. `WithAllowPrivateNetworks` enables RFC 1918, IPv6 unique-local, and carrier-grade NAT addresses; it does not enable link-local addresses. Enable `WithAllowLinkLocal` only when link-local access, including access to potential cloud metadata services, is explicitly required.
+
+The built-in client does not inherit `HTTP_PROXY`, `HTTPS_PROXY`, or `NO_PROXY`. A proxy may resolve or connect to a different destination than the client validated. Applications that require a proxy or an exceptional destination class can inject their own `ferrethttp.Client` with `ferretnet.WithHTTPClient`; that client is responsible for equivalent destination and redirect controls.
+
+HTTP policy is defense in depth, not a complete sandbox for arbitrary untrusted FQL. Combine it with production allowlists, execution limits, restricted module sets, and infrastructure-level egress controls.
 
 #### Accessing HTTP from a function
 
