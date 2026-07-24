@@ -28,10 +28,11 @@
                     <div id="hero-tabs" class="docs-tabs landing-hero-tabs" data-tabs>
                         <div class="docs-tabs-list" role="tablist">
                             <button id="hero-tabs-tab-0" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="hero-tabs-panel-0" tabindex="0">Browser</button>
-                            <button id="hero-tabs-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-1" tabindex="-1">API</button>
-                            <button id="hero-tabs-tab-2" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-2" tabindex="-1">Database</button>
-                            <button id="hero-tabs-tab-3" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-3" tabindex="-1">Document</button>
-                            <button id="hero-tabs-tab-4" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-4" tabindex="-1">File</button>
+                            <button id="hero-tabs-tab-1" class="docs-tabs-tab" type="button" role="tab" aria-selected="true" aria-controls="hero-tabs-panel-0" tabindex="0">AI</button>
+                            <button id="hero-tabs-tab-2" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-1" tabindex="-1">API</button>
+                            <button id="hero-tabs-tab-3" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-2" tabindex="-1">Database</button>
+                            <button id="hero-tabs-tab-4" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-3" tabindex="-1">Document</button>
+                            <button id="hero-tabs-tab-5" class="docs-tabs-tab" type="button" role="tab" aria-selected="false" aria-controls="hero-tabs-panel-4" tabindex="-1">File</button>
                         </div>
 
                         <div id="hero-tabs-panel-0" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-0">
@@ -78,10 +79,39 @@ FOR product IN products
                                     </div>
 
                                     <div class="code-editor-pane">
+                                        <div id="hero-query-ai" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
+LET page = WEB::HTML::OPEN(@page)
+
+LET model = AI::LLM::MODEL(@provider, {
+    model: @model,
+    apiKey: @apiKey
+})
+
+RETURN AI::LLM::EXTRACT(model, page.innerHTML, @schema, {
+    instructions: "Use the advertised price."
+})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="hero-tabs-panel-2" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-1" hidden>
+                            <div class="code-editor landing-hero-editor is-readonly">
+                                <div class="code-editor-shell">
+                                    <div class="code-editor-header">
+                                        <div class="code-editor-title">
+                                            <span class="code-editor-dot" aria-hidden="true"></span>
+                                            <span>api.fql</span>
+                                        </div>
+                                        <span class="code-editor-meta">read-only script</span>
+                                    </div>
+
+                                    <div class="code-editor-pane">
                                         <div id="hero-query-api" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET api = NET::REST::CLIENT( "https://api.example.com")
+LET api = NET::REST::CLIENT(@endpoint)
                                             
-FOR order IN QUERY "/orders" IN api WITH {
+FOR order IN QUERY @path IN api WITH {
     query: {
         status: "open",
         limit: 20
@@ -99,7 +129,7 @@ FOR order IN QUERY "/orders" IN api WITH {
                             </div>
                         </div>
 
-                        <div id="hero-tabs-panel-2" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-2" hidden>
+                        <div id="hero-tabs-panel-3" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-2" hidden>
                             <div class="code-editor landing-hero-editor is-readonly">
                                 <div class="code-editor-shell">
                                     <div class="code-editor-header">
@@ -112,7 +142,7 @@ FOR order IN QUERY "/orders" IN api WITH {
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-database" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET db = DB::SQLITE::OPEN({ path: "./data.db" })
+LET db = DB::SQLITE::OPEN({ path: @db })
 
 FOR invoice IN QUERY `
     SELECT id, customer, total
@@ -131,7 +161,7 @@ FOR invoice IN QUERY `
                             </div>
                         </div>
 
-                        <div id="hero-tabs-panel-3" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-3" hidden>
+                        <div id="hero-tabs-panel-4" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-3" hidden>
                             <div class="code-editor landing-hero-editor is-readonly">
                                 <div class="code-editor-shell">
                                     <div class="code-editor-header">
@@ -144,8 +174,8 @@ FOR invoice IN QUERY `
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-document" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET workbook = DOCUMENT::XLSX::OPEN("./sales.xlsx")
-LET sales = DOCUMENT::XLSX::SHEET(workbook, "Sales")
+LET workbook = DOCUMENT::XLSX::OPEN(@file)
+LET sales = DOCUMENT::XLSX::SHEET(workbook, @sheet)
 
 FOR row IN QUERY "A1:D100" IN sales WITH { headers: true }
     FILTER row.Active
@@ -160,7 +190,7 @@ FOR row IN QUERY "A1:D100" IN sales WITH { headers: true }
                             </div>
                         </div>
 
-                        <div id="hero-tabs-panel-4" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-4" hidden>
+                        <div id="hero-tabs-panel-5" class="docs-tabs-panel" role="tabpanel" aria-labelledby="hero-tabs-tab-4" hidden>
                             <div class="code-editor landing-hero-editor is-readonly">
                                 <div class="code-editor-shell">
                                     <div class="code-editor-header">
@@ -173,10 +203,10 @@ FOR row IN QUERY "A1:D100" IN sales WITH { headers: true }
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-file" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET file = IO::FS::READ("./orders.csv")
+LET file = IO::FS::READ(@file)
 
 FOR row IN CSV::DECODE_ROWS(file)
-    FILTER row.status == "failed"
+    FILTER row.status == @status
     RETURN {
         orderId: row.order_id,
         customer: row.customer,
