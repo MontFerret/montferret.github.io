@@ -224,20 +224,26 @@ For public modules, these context helpers are the recommended way to access file
 Scripts that use network functions (from the `NET` stdlib group) make outbound requests through the engine's network service. Supply a policy-configured HTTP client to restrict which destinations scripts can reach and how much data they can send or receive.
 
 {{< code lang="go" >}}
-httpClient := ferrethttp.New(
+httpClient, err := ferrethttp.New(
     ferrethttp.WithAllowedSchemes("https"),
     ferrethttp.WithAllowedHosts("api.example.com"),
     ferrethttp.WithTimeout(10*time.Second),
     ferrethttp.WithMaxRequestSize(1<<20),  // 1 MiB
     ferrethttp.WithMaxResponseSize(4<<20), // 4 MiB
 )
+if err != nil {
+    return err
+}
+
+network, err := ferretnet.New(
+    ferretnet.WithHTTPClient(httpClient),
+)
+if err != nil {
+    return err
+}
 
 engine, err := ferret.New(
-    ferret.WithNetwork(
-        ferretnet.New(
-            ferretnet.WithHTTPClient(httpClient),
-        ),
-    ),
+    ferret.WithNetwork(network),
 )
 {{</ code >}}
 
@@ -249,9 +255,61 @@ The HTTP client supports these policy controls:
 | Local, private, and link-local addresses | `WithAllowLocalhost`, `WithAllowPrivateNetworks`, `WithAllowLinkLocal` |
 | Redirects | `WithFollowRedirects`, `WithMaxRedirects` |
 | Request headers | `WithDefaultHeader`, `WithDefaultHeaders`, `WithBlockedRequestHeaders` |
-| Time and payload limits | `WithTimeout`, `WithMaxRequestSize`, `WithMaxResponseSize` |
+| Time and payload limits | `WithTimeout`, `WithNoTimeout`, `WithMaxRequestSize`, `WithUnlimitedRequestSize`, `WithMaxResponseSize`, `WithUnlimitedResponseSize`, `WithMaxResponseHeaderSize` |
 
-By default, the client allows HTTP and HTTPS and follows up to 10 redirects, but denies localhost, private networks, carrier-grade NAT, and link-local destinations. Unspecified, multicast, reserved, and invalid destinations are always denied. This includes cloud metadata endpoints on link-local addresses. Timeout and payload-size limits are disabled until configured.
+By default, the client allows HTTP and HTTPS and follows up to 10 redirects, but denies localhost, private networks, carrier-grade NAT, and link-local destinations. Unspecified, multicast, reserved, and invalid destinations are always denied. This includes cloud metadata endpoints on link-local addresses. Requests have a 30-second timeout, request and response bodies are limited to 16 MiB, and response headers are limited to 1 MiB.
+
+Policy construction is fallible. A zero value passed to a numeric option restores that option's secure default, while a negative value returns `ferrethttp.ErrInvalidPolicyConfiguration`. Disabling the timeout or a body-size limit requires `WithNoTimeout`, `WithUnlimitedRequestSize`, or `WithUnlimitedResponseSize`. Response headers always retain a finite limit. The zero value of `ferrethttp.Policy` is deny-all; call `ferrethttp.NewPolicy` to obtain the standard defaults when reusing a policy with another client.
+
+Configuration errors support both `errors.Is` and `errors.As`:
+
+{{< code lang="go" >}}
+policy, err := ferrethttp.NewPolicy(
+    ferrethttp.WithAllowedHosts("api.example.com"),
+)
+if err != nil {
+    if errors.Is(err, ferrethttp.ErrInvalidPolicyConfiguration) {
+        var configurationErr *ferrethttp.PolicyConfigurationError
+        if errors.As(err, &configurationErr) {
+            log.Printf("invalid HTTP option %s: %s", configurationErr.Option, configurationErr.Reason)
+        }
+    }
+    return err
+}
+{{</ code >}}
+
+`Policy.Eval` and `Policy.Prepare` accept a standard `*net/http.Request`. This is an intentional source break from the earlier `Policy.Eval(*ferrethttp.Request)` API: construct a standard outbound request, use `Prepare` when policy default headers should be added, or use `Eval` when the request is already complete. `Eval` does not mutate the request. `Prepare` adds missing defaults to `Request.Header` and then evaluates it; defaults added before a later validation failure remain on the request.
+
+Neither method takes a separate context. Put cancellation and deadlines on the standard request with `net/http.NewRequestWithContext` or its `WithContext` method before sending it. Both methods require client-side outbound request state: server-side `RequestURI` and explicit transport-control state are rejected, as are Host overrides that target a different authority. With a finite request-body limit, every non-empty body must have a positive, known `ContentLength`; unknown-length streaming bodies return `RequestBodyLengthError` before transport. Buffer the body so `net/http` can determine its length, set a trustworthy length, or explicitly choose `WithUnlimitedRequestSize`.
+
+{{< code lang="go" >}}
+request, err := http.NewRequestWithContext(ctx, http.MethodGet, targetURL, nil)
+if err != nil {
+    return err
+}
+
+if err := policy.Prepare(request); err != nil {
+    return err
+}
+
+response, err := customHTTPClient.Do(request)
+{{</ code >}}
+
+Runtime denials can be inspected without parsing their messages:
+
+{{< code lang="go" >}}
+var policyErr *ferrethttp.PolicyError
+if errors.As(err, &policyErr) {
+    log.Printf(
+        "HTTP policy denied %s %q: %s",
+        policyErr.Target,
+        policyErr.Subject,
+        policyErr.Reason,
+    )
+}
+{{</ code >}}
+
+Request header names and values are validated before transport. `Connection`, `Content-Length`, `Host`, `Keep-Alive`, `Proxy-Authenticate`, `Proxy-Authorization`, `Proxy-Connection`, `TE`, `Trailer`, `Transfer-Encoding`, and `Upgrade` are transport-controlled and cannot be supplied through `Request.Header` or configured as defaults.
 
 {{< notification type="warning" >}}
 The secure destination defaults are intentionally backward-incompatible. Applications that previously used the built-in client to reach development servers, containers, cluster-local services, or private APIs must opt in to the required address classes or inject a custom HTTP client.
@@ -262,17 +320,22 @@ The built-in client resolves hostnames and checks every returned address before 
 For production, use the narrowest practical host allowlist, as in the example above. If an application deliberately needs internal destinations, enable each class separately:
 
 {{< code lang="go" >}}
-internalHTTPClient := ferrethttp.New(
+internalHTTPClient, err := ferrethttp.New(
     ferrethttp.WithAllowedHosts("localhost", "api.internal.example"),
     ferrethttp.WithAllowLocalhost(true),
     ferrethttp.WithAllowPrivateNetworks(true),
     ferrethttp.WithAllowLinkLocal(true),
 )
+if err != nil {
+    return err
+}
 {{</ code >}}
 
 `WithAllowLocalhost` enables only localhost names and loopback addresses. `WithAllowPrivateNetworks` enables RFC 1918, IPv6 unique-local, and carrier-grade NAT addresses; it does not enable link-local addresses. Enable `WithAllowLinkLocal` only when link-local access, including access to potential cloud metadata services, is explicitly required.
 
 The built-in client does not inherit `HTTP_PROXY`, `HTTPS_PROXY`, or `NO_PROXY`. A proxy may resolve or connect to a different destination than the client validated. Applications that require a proxy or an exceptional destination class can inject their own `ferrethttp.Client` with `ferretnet.WithHTTPClient`; that client is responsible for equivalent destination and redirect controls.
+
+`Policy.Eval` and `Policy.Prepare` are initial-request preflight checks, not replacements for the built-in secure transport. When a policy is reused with `net/http` or another custom transport, that integration is responsible for checking every redirect, validating all DNS results and the concrete dial address, applying the configured timeout, enforcing response-header and response-body limits, and cleaning up connections. A successful preflight does not make later redirect or resolution targets safe.
 
 HTTP policy is defense in depth, not a complete sandbox for arbitrary untrusted FQL. Combine it with production allowlists, execution limits, restricted module sets, and infrastructure-level egress controls.
 
