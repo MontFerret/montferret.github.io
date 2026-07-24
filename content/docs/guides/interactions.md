@@ -108,16 +108,16 @@ RETURN result.textContent
 
 The `WAITFOR EVENT ... TRIGGER` pattern is the safest way to combine an interaction with waiting for its result. It subscribes to the event *before* triggering the action, avoiding a race condition where the event fires before listening begins:
 
-{{< code lang="fql" >}}
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/", { driver: "cdp" })
-LET button = QUERY ONE "button.submit" IN page USING css
+LET next = QUERY ONE '[data-testid="page-next"]' IN page USING css
 
 WAITFOR EVENT "navigation" IN page
-    TRIGGER ( button <- "click" )
+    TRIGGER DISPATCH "click" IN next
     TIMEOUT 10s
 
-RETURN page[~ css`.result`]
-{{</ code >}}
+RETURN QUERY ".product-grid" IN page USING css
+{{</ editor >}}
 
 This reads as: start listening for a `navigation` event, then click the button, then wait until the event arrives or the timeout is reached.
 
