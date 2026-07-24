@@ -1877,20 +1877,26 @@ func ReadFile(ctx context.Context, pathArg runtime.Value) (runtime.Value, error)
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-10-text" class="code-editor-text" data-auto-height="true">httpClient := ferrethttp.New(
+            <div id="code-10-text" class="code-editor-text" data-auto-height="true">httpClient, err := ferrethttp.New(
     ferrethttp.WithAllowedSchemes(&#34;https&#34;),
     ferrethttp.WithAllowedHosts(&#34;api.example.com&#34;),
     ferrethttp.WithTimeout(10*time.Second),
     ferrethttp.WithMaxRequestSize(1&lt;&lt;20),  // 1 MiB
     ferrethttp.WithMaxResponseSize(4&lt;&lt;20), // 4 MiB
 )
+if err != nil {
+    return err
+}
+
+network, err := ferretnet.New(
+    ferretnet.WithHTTPClient(httpClient),
+)
+if err != nil {
+    return err
+}
 
 engine, err := ferret.New(
-    ferret.WithNetwork(
-        ferretnet.New(
-            ferretnet.WithHTTPClient(httpClient),
-        ),
-    ),
+    ferret.WithNetwork(network),
 )</div>
         </div>
     </div>
@@ -1990,20 +1996,13 @@ engine, err := ferret.New(
       </tr>
       <tr>
           <td>Time and payload limits</td>
-          <td><code>WithTimeout</code>, <code>WithMaxRequestSize</code>, <code>WithMaxResponseSize</code></td>
+          <td><code>WithTimeout</code>, <code>WithNoTimeout</code>, <code>WithMaxRequestSize</code>, <code>WithUnlimitedRequestSize</code>, <code>WithMaxResponseSize</code>, <code>WithUnlimitedResponseSize</code>, <code>WithMaxResponseHeaderSize</code></td>
       </tr>
   </tbody>
 </table>
-<p>By default, the client allows HTTP and HTTPS and follows up to 10 redirects, but denies localhost, private networks, carrier-grade NAT, and link-local destinations. Unspecified, multicast, reserved, and invalid destinations are always denied. This includes cloud metadata endpoints on link-local addresses. Timeout and payload-size limits are disabled until configured.</p>
-
-
-<div class="notification is-warning">
-    
-The secure destination defaults are intentionally backward-incompatible. Applications that previously used the built-in client to reach development servers, containers, cluster-local services, or private APIs must opt in to the required address classes or inject a custom HTTP client.
-
-</div>
-<p>The built-in client resolves hostnames and checks every returned address before the initial request and each followed redirect. It also checks the concrete numeric address immediately before connecting, so a DNS change between validation and connection cannot redirect the dial to a forbidden address. Redirects are checked before their requests are sent. An allowed-host list restricts names but never overrides these address-class checks.</p>
-<p>For production, use the narrowest practical host allowlist, as in the example above. If an application deliberately needs internal destinations, enable each class separately:</p>
+<p>By default, the client allows HTTP and HTTPS and follows up to 10 redirects, but denies localhost, private networks, carrier-grade NAT, and link-local destinations. Unspecified, multicast, reserved, and invalid destinations are always denied. This includes cloud metadata endpoints on link-local addresses. Requests have a 30-second timeout, request and response bodies are limited to 16 MiB, and response headers are limited to 1 MiB.</p>
+<p>Policy construction is fallible. A zero value passed to a numeric option restores that option&rsquo;s secure default, while a negative value returns <code>ferrethttp.ErrInvalidPolicyConfiguration</code>. Disabling the timeout or a body-size limit requires <code>WithNoTimeout</code>, <code>WithUnlimitedRequestSize</code>, or <code>WithUnlimitedResponseSize</code>. Response headers always retain a finite limit. The zero value of <code>ferrethttp.Policy</code> is deny-all; call <code>ferrethttp.NewPolicy</code> to obtain the standard defaults when reusing a policy with another client.</p>
+<p>Configuration errors support both <code>errors.Is</code> and <code>errors.As</code>:</p>
 
 
 
@@ -2028,12 +2027,18 @@ The secure destination defaults are intentionally backward-incompatible. Applica
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-11-text" class="code-editor-text" data-auto-height="true">internalHTTPClient := ferrethttp.New(
-    ferrethttp.WithAllowedHosts(&#34;localhost&#34;, &#34;api.internal.example&#34;),
-    ferrethttp.WithAllowLocalhost(true),
-    ferrethttp.WithAllowPrivateNetworks(true),
-    ferrethttp.WithAllowLinkLocal(true),
-)</div>
+            <div id="code-11-text" class="code-editor-text" data-auto-height="true">policy, err := ferrethttp.NewPolicy(
+    ferrethttp.WithAllowedHosts(&#34;api.example.com&#34;),
+)
+if err != nil {
+    if errors.Is(err, ferrethttp.ErrInvalidPolicyConfiguration) {
+        var configurationErr *ferrethttp.PolicyConfigurationError
+        if errors.As(err, &amp;configurationErr) {
+            log.Printf(&#34;invalid HTTP option %s: %s&#34;, configurationErr.Option, configurationErr.Reason)
+        }
+    }
+    return err
+}</div>
         </div>
     </div>
 
@@ -2105,11 +2110,8 @@ The secure destination defaults are intentionally backward-incompatible. Applica
     </script>
 </div>
 
-<p><code>WithAllowLocalhost</code> enables only localhost names and loopback addresses. <code>WithAllowPrivateNetworks</code> enables RFC 1918, IPv6 unique-local, and carrier-grade NAT addresses; it does not enable link-local addresses. Enable <code>WithAllowLinkLocal</code> only when link-local access, including access to potential cloud metadata services, is explicitly required.</p>
-<p>The built-in client does not inherit <code>HTTP_PROXY</code>, <code>HTTPS_PROXY</code>, or <code>NO_PROXY</code>. A proxy may resolve or connect to a different destination than the client validated. Applications that require a proxy or an exceptional destination class can inject their own <code>ferrethttp.Client</code> with <code>ferretnet.WithHTTPClient</code>; that client is responsible for equivalent destination and redirect controls.</p>
-<p>HTTP policy is defense in depth, not a complete sandbox for arbitrary untrusted FQL. Combine it with production allowlists, execution limits, restricted module sets, and infrastructure-level egress controls.</p>
-<h4 id="accessing-http-from-a-function">Accessing HTTP from a function</h4>
-<p>Retrieve the configured HTTP client from the function context and pass the same context to the request:</p>
+<p><code>Policy.Eval</code> and <code>Policy.Prepare</code> accept a standard <code>*net/http.Request</code>. This is an intentional source break from the earlier <code>Policy.Eval(*ferrethttp.Request)</code> API: construct a standard outbound request, use <code>Prepare</code> when policy default headers should be added, or use <code>Eval</code> when the request is already complete. <code>Eval</code> does not mutate the request. <code>Prepare</code> adds missing defaults to <code>Request.Header</code> and then evaluates it; defaults added before a later validation failure remain on the request.</p>
+<p>Neither method takes a separate context. Put cancellation and deadlines on the standard request with <code>net/http.NewRequestWithContext</code> or its <code>WithContext</code> method before sending it. Both methods require client-side outbound request state: server-side <code>RequestURI</code> and explicit transport-control state are rejected, as are Host overrides that target a different authority. With a finite request-body limit, every non-empty body must have a positive, known <code>ContentLength</code>; unknown-length streaming bodies return <code>RequestBodyLengthError</code> before transport. Buffer the body so <code>net/http</code> can determine its length, set a trustworthy length, or explicitly choose <code>WithUnlimitedRequestSize</code>.</p>
 
 
 
@@ -2134,40 +2136,16 @@ The secure destination defaults are intentionally backward-incompatible. Applica
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-12-text" class="code-editor-text" data-auto-height="true">package request
+            <div id="code-12-text" class="code-editor-text" data-auto-height="true">request, err := http.NewRequestWithContext(ctx, http.MethodGet, targetURL, nil)
+if err != nil {
+    return err
+}
 
-import (
-    &#34;context&#34;
+if err := policy.Prepare(request); err != nil {
+    return err
+}
 
-    ferretnet &#34;github.com/MontFerret/ferret/v2/pkg/net&#34;
-    ferrethttp &#34;github.com/MontFerret/ferret/v2/pkg/net/http&#34;
-    &#34;github.com/MontFerret/ferret/v2/pkg/runtime&#34;
-)
-
-func FetchStatus(ctx context.Context, urlArg runtime.Value) (runtime.Value, error) {
-    url, err := runtime.CastArg[runtime.String](urlArg, 0)
-    if err != nil {
-        return runtime.None, err
-    }
-
-    client, err := ferretnet.HTTPClientFrom(ctx)
-    if err != nil {
-        return runtime.None, err
-    }
-
-    response, err := client.Do(ctx, &amp;ferrethttp.Request{
-        Method: &#34;GET&#34;,
-        URL:    url.String(),
-    })
-    if err != nil {
-        return runtime.None, err
-    }
-    if response == nil {
-        return runtime.None, runtime.Error(runtime.ErrUnexpected, &#34;HTTP response is nil&#34;)
-    }
-
-    return runtime.NewInt(response.StatusCode), nil
-}</div>
+response, err := customHTTPClient.Do(request)</div>
         </div>
     </div>
 
@@ -2239,10 +2217,7 @@ func FetchStatus(ctx context.Context, urlArg runtime.Value) (runtime.Value, erro
     </script>
 </div>
 
-<p>For public modules, use <code>HTTPClientFrom</code> instead of <code>net/http</code> or a separately constructed client. Requests then follow the host&rsquo;s destination, redirect, header, timeout, and payload-size policies, while the execution context continues to carry cancellation and deadlines. Use <code>NetworkFrom</code> only when a function needs the complete network service.</p>
-<p>Both examples have valid Ferret function signatures and can be registered with <code>sdk.Func</code>. See <a href="https://ferretlang.org/docs/guides/writing-plugins/">Writing plugins</a> for the complete registration pattern.</p>
-<h2 id="compiler-options">Compiler options</h2>
-<p>The compiler can be configured through <code>WithCompilerOptions</code>:</p>
+<p>Runtime denials can be inspected without parsing their messages:</p>
 
 
 
@@ -2267,11 +2242,15 @@ func FetchStatus(ctx context.Context, urlArg runtime.Value) (runtime.Value, erro
         </div>
 
         <div class="code-editor-pane">
-            <div id="code-13-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
-    ferret.WithCompilerOptions(
-        compiler.WithOptimizationLevel(compiler.O1),
-    ),
-)</div>
+            <div id="code-13-text" class="code-editor-text" data-auto-height="true">var policyErr *ferrethttp.PolicyError
+if errors.As(err, &amp;policyErr) {
+    log.Printf(
+        &#34;HTTP policy denied %s %q: %s&#34;,
+        policyErr.Target,
+        policyErr.Subject,
+        policyErr.Reason,
+    )
+}</div>
         </div>
     </div>
 
@@ -2291,6 +2270,359 @@ func FetchStatus(ctx context.Context, urlArg runtime.Value) (runtime.Value, erro
             editor.renderer.$cursorLayer.element.style.display = "none"
             const copyBtn = document.querySelector('#code-13-copy-button');
             const copyClipboardEl = document.querySelector('#code-13-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>Request header names and values are validated before transport. <code>Connection</code>, <code>Content-Length</code>, <code>Host</code>, <code>Keep-Alive</code>, <code>Proxy-Authenticate</code>, <code>Proxy-Authorization</code>, <code>Proxy-Connection</code>, <code>TE</code>, <code>Trailer</code>, <code>Transfer-Encoding</code>, and <code>Upgrade</code> are transport-controlled and cannot be supplied through <code>Request.Header</code> or configured as defaults.</p>
+
+
+<div class="notification is-warning">
+    
+The secure destination defaults are intentionally backward-incompatible. Applications that previously used the built-in client to reach development servers, containers, cluster-local services, or private APIs must opt in to the required address classes or inject a custom HTTP client.
+
+</div>
+<p>The built-in client resolves hostnames and checks every returned address before the initial request and each followed redirect. It also checks the concrete numeric address immediately before connecting, so a DNS change between validation and connection cannot redirect the dial to a forbidden address. Redirects are checked before their requests are sent. An allowed-host list restricts names but never overrides these address-class checks.</p>
+<p>For production, use the narrowest practical host allowlist, as in the example above. If an application deliberately needs internal destinations, enable each class separately:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-14-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-14-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-14-text" class="code-editor-text" data-auto-height="true">internalHTTPClient, err := ferrethttp.New(
+    ferrethttp.WithAllowedHosts(&#34;localhost&#34;, &#34;api.internal.example&#34;),
+    ferrethttp.WithAllowLocalhost(true),
+    ferrethttp.WithAllowPrivateNetworks(true),
+    ferrethttp.WithAllowLinkLocal(true),
+)
+if err != nil {
+    return err
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-14-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-14-copy-button');
+            const copyClipboardEl = document.querySelector('#code-14-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p><code>WithAllowLocalhost</code> enables only localhost names and loopback addresses. <code>WithAllowPrivateNetworks</code> enables RFC 1918, IPv6 unique-local, and carrier-grade NAT addresses; it does not enable link-local addresses. Enable <code>WithAllowLinkLocal</code> only when link-local access, including access to potential cloud metadata services, is explicitly required.</p>
+<p>The built-in client does not inherit <code>HTTP_PROXY</code>, <code>HTTPS_PROXY</code>, or <code>NO_PROXY</code>. A proxy may resolve or connect to a different destination than the client validated. Applications that require a proxy or an exceptional destination class can inject their own <code>ferrethttp.Client</code> with <code>ferretnet.WithHTTPClient</code>; that client is responsible for equivalent destination and redirect controls.</p>
+<p><code>Policy.Eval</code> and <code>Policy.Prepare</code> are initial-request preflight checks, not replacements for the built-in secure transport. When a policy is reused with <code>net/http</code> or another custom transport, that integration is responsible for checking every redirect, validating all DNS results and the concrete dial address, applying the configured timeout, enforcing response-header and response-body limits, and cleaning up connections. A successful preflight does not make later redirect or resolution targets safe.</p>
+<p>HTTP policy is defense in depth, not a complete sandbox for arbitrary untrusted FQL. Combine it with production allowlists, execution limits, restricted module sets, and infrastructure-level egress controls.</p>
+<h4 id="accessing-http-from-a-function">Accessing HTTP from a function</h4>
+<p>Retrieve the configured HTTP client from the function context and pass the same context to the request:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-15-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-15-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-15-text" class="code-editor-text" data-auto-height="true">package request
+
+import (
+    &#34;context&#34;
+
+    ferretnet &#34;github.com/MontFerret/ferret/v2/pkg/net&#34;
+    ferrethttp &#34;github.com/MontFerret/ferret/v2/pkg/net/http&#34;
+    &#34;github.com/MontFerret/ferret/v2/pkg/runtime&#34;
+)
+
+func FetchStatus(ctx context.Context, urlArg runtime.Value) (runtime.Value, error) {
+    url, err := runtime.CastArg[runtime.String](urlArg, 0)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    client, err := ferretnet.HTTPClientFrom(ctx)
+    if err != nil {
+        return runtime.None, err
+    }
+
+    response, err := client.Do(ctx, &amp;ferrethttp.Request{
+        Method: &#34;GET&#34;,
+        URL:    url.String(),
+    })
+    if err != nil {
+        return runtime.None, err
+    }
+    if response == nil {
+        return runtime.None, runtime.Error(runtime.ErrUnexpected, &#34;HTTP response is nil&#34;)
+    }
+
+    return runtime.NewInt(response.StatusCode), nil
+}</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-15-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-15-copy-button');
+            const copyClipboardEl = document.querySelector('#code-15-copy-clipboard');
+
+            function copyTextWithFallback(content) {
+                copyClipboardEl.value = content;
+                copyClipboardEl.focus();
+                copyClipboardEl.select();
+
+                if (!document.execCommand('copy')) {
+                    throw new Error('Could not copy source to the clipboard');
+                }
+            }
+
+            function copyTextToClipboard(content) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    return navigator.clipboard.writeText(content).catch(() => {
+                        copyTextWithFallback(content);
+                    });
+                }
+
+                copyTextWithFallback(content);
+
+                return Promise.resolve();
+            }
+
+            copyBtn.addEventListener('click', () => {
+                copyTextToClipboard(editor.getValue())
+                    .then(() => {
+                        copyBtn.textContent = 'Copied';
+                        window.setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                        }, 1200);
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy source');
+                        console.error(err);
+                    });
+            });
+            function resizeAutoHeightEditor() {
+                const lineHeight = editor.renderer.lineHeight || 21;
+                const screenLines = Math.max(editor.session.getScreenLength(), 1);
+                const nextHeight = Math.max(screenLines * lineHeight, 48);
+
+                editor.container.style.height = `${nextHeight}px`;
+                editor.resize();
+            }
+
+            editor.session.on('change', resizeAutoHeightEditor);
+            window.addEventListener('resize', resizeAutoHeightEditor);
+            resizeAutoHeightEditor();
+        }, false);
+    </script>
+</div>
+
+<p>For public modules, use <code>HTTPClientFrom</code> instead of <code>net/http</code> or a separately constructed client. Requests then follow the host&rsquo;s destination, redirect, header, timeout, and payload-size policies, while the execution context continues to carry cancellation and deadlines. Use <code>NetworkFrom</code> only when a function needs the complete network service.</p>
+<p>Both examples have valid Ferret function signatures and can be registered with <code>sdk.Func</code>. See <a href="https://ferretlang.org/docs/guides/writing-plugins/">Writing plugins</a> for the complete registration pattern.</p>
+<h2 id="compiler-options">Compiler options</h2>
+<p>The compiler can be configured through <code>WithCompilerOptions</code>:</p>
+
+
+
+
+
+
+
+
+
+
+<div class="code-editor is-readonly is-auto-height">
+    <textarea id="code-16-copy-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></textarea><div class="code-editor-shell">
+        <div class="code-editor-header">
+            <div class="code-editor-title">
+                <span class="code-editor-dot" aria-hidden="true"></span>
+                <span>example.go</span>
+            </div>
+            <div class="code-editor-actions">
+                <span class="code-editor-meta">read-only</span>
+                <button id="code-16-copy-button" class="copy button is-outlined is-light code-editor-button" type="button">Copy</button>
+            </div>
+        </div>
+
+        <div class="code-editor-pane">
+            <div id="code-16-text" class="code-editor-text" data-auto-height="true">engine, err := ferret.New(
+    ferret.WithCompilerOptions(
+        compiler.WithOptimizationLevel(compiler.O1),
+    ),
+)</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = ace.edit('code-16-text');
+            editor.setTheme("ace\/theme\/tomorrow_night");
+            editor.session.setUseWorker(false);
+            editor.session.setMode("ace/mode/" + 'golang');
+            editor.setOptions({
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+                displayIndentGuides: false,
+                printMargin: false
+            });
+            editor.renderer.$cursorLayer.element.style.display = "none"
+            const copyBtn = document.querySelector('#code-16-copy-button');
+            const copyClipboardEl = document.querySelector('#code-16-copy-clipboard');
 
             function copyTextWithFallback(content) {
                 copyClipboardEl.value = content;
