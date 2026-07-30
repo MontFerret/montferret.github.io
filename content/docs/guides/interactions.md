@@ -121,17 +121,44 @@ RETURN QUERY ".product-grid" IN page USING css
 
 This reads as: start listening for a `navigation` event, then click the button, then wait until the event arrives or the timeout is reached.
 
-## Focus and hover
+## Focus
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/forms/", { driver: "cdp" })
 
-LET input = QUERY ONE "input[name='email']" IN page USING css
-input <- "focus"
+LET input = QUERY ONE '#query' IN page USING css
+DISPATCH "focus" IN input
+LET test = QUERY ONE '[data-testid="form-event-status"]' IN page USING css
 
-LET menu = QUERY ONE ".dropdown-trigger" IN page USING css
-DISPATCH "hover" IN menu
-{{</ code >}}
+RETURN test.textContent
+{{</ editor >}}
+
+## Hover
+
+Use `mouseover` and `mouseout` to trigger hover effects. Some pages may require a `mousemove` event instead:
+
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/mouse/", { driver: "cdp" })
+
+LET target = QUERY ONE '#mouse-hover-target' IN page USING css
+DISPATCH "mouseover" IN target
+DISPATCH "mouseout" IN target
+
+LET test = QUERY ONE '#mouse-hover-status' IN page USING css
+
+RETURN test.textContent
+{{</ editor >}}
+
+Or, helper functions `HOVER` and `UNHOVER` can be used:
+
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/mouse/", { driver: "cdp" })
+LET target = QUERY ONE '#mouse-hover-target' IN page USING css
+WEB::HTML::HOVER(target)
+LET test = QUERY ONE '#mouse-hover-status' IN page USING css
+
+RETURN test.textContent
+{{</ editor >}}
 
 ## Scroll the page
 
