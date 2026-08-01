@@ -74,6 +74,12 @@ Consulting is independent from sponsorship and follows its own engagement proces
 
 [→ Learn about Consulting](https://tvoronov.com)
 
+## Questions about sponsorship?
+
+For questions about company sponsorships or larger contributions, contact:
+
+[sponsorship@ferretlang.org](mailto:sponsorship@ferretlang.org)
+
 ## Frequently Asked Questions
 
 ### Why should my company sponsor Ferret?
