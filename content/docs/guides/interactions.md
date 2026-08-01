@@ -162,52 +162,64 @@ RETURN test.textContent
 
 ## Scroll the page
 
-Use `SCROLL_BOTTOM` or `SCROLL_TOP` to scroll the page, or `SCROLL_ELEMENT` for a specific element:
+Use `SCROLL_BOTTOM` or `SCROLL_TOP` to scroll the page, or `SCROLL_ELEMENT` for a specific element.
+Here is a simple example of scrolling to the bottom of a page to load more products:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/infinite-scroll/", { driver: "cdp" })
+LET pageSize = 8
 
-SCROLL_BOTTOM(page)
-SCROLL_TOP(page)
-
-LET container = QUERY ONE ".scroll-container" IN page USING css
-SCROLL_ELEMENT(container, { y: 500 })
-{{</ code >}}
+FOR i WHILE SCROLL_BOTTOM(page)
+    WAIT(500)
+    FOR product IN QUERY `:skip(${i * pageSize}, .product-card)` IN page USING css
+        RETURN {
+            name: QUERY ONE '[data-testid="product-title"]' IN product USING css,
+            price: QUERY ONE '[data-testid="product-price"]' IN product USING css,
+        }
+{{</ editor >}}
 
 ## Multi-step interaction
 
 Complex workflows chain several interactions together. Each step waits for the previous one to complete before proceeding:
 
-{{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+{{< editor lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", { driver: "cdp" })
 
-// Step 1: fill and submit a search form
-INPUT(page, "input[name='search']", "ferret")
+FUNC PARSE_PRICE(product) (
+    LET priceNode = QUERY ONE ".product-price" IN product USING css
+    LET priceText = priceNode.attributes["data-price"]
+    LET price = TO_FLOAT(SUBSTITUTE(priceText, "$", ""))
+    RETURN price
+)
 
-LET submit = QUERY ONE "button[type='submit']" IN page USING css
-submit <- "click"
+// Step 1a: fill and submit a search form
+DISPATCH "input" IN (QUERY ONE "#search-query" IN page USING css) WITH { value: "laptop" }
 
-WAITFOR EXISTS QUERY ONE ".search-results" IN page USING css
+// Step 1b: submit the form
+DISPATCH "click" IN (QUERY ONE '[data-testid="search-submit"]' IN page USING css)
+
+// Step 2a: wait for the results to load by checking for the loader to disappear
+WAITFOR EXISTS QUERY ONE "#search-loader" IN page USING css
+    WHEN TO_BOOL(.attributes.disabled) == true
     TIMEOUT 10s
 
-// Step 2: click the first result
-LET firstResult = QUERY ONE ".search-results a" IN page USING css
-firstResult <- "click"
+// Step 2b: collect product cards
+LET products = QUERY ".product-card" IN page USING css
 
-WAITFOR EVENT "navigation" IN page TIMEOUT 10s
-
-// Step 3: extract data from the detail page
-RETURN {
-    title: page.title,
-    content: QUERY ONE ".content" IN page USING css
-}
-{{</ code >}}
+// Step 3: extract data from each product card
+FOR product IN products
+    RETURN {
+        brand: QUERY ONE ".product-brand" IN product USING css,
+        name: QUERY ONE ".product-title" IN product USING css,
+        price: PARSE_PRICE(product),
+    }
+{{</ editor >}}
 
 ## Error recovery for interactions
 
 Interactions can fail — an element might not be clickable, or the page might not respond. Attach `ON ERROR RETURN` to handle failures gracefully:
 
-{{< code lang="fql" >}}
+{{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 
 LET button = QUERY ONE ".optional-popup-close" IN page USING css
@@ -217,8 +229,8 @@ LET dismissed = button != NONE
     ? (DISPATCH "click" IN button ON ERROR RETURN NONE)
     : NONE
 
-RETURN page[~ css`article`]
-{{</ code >}}
+RETURN QUERY "article" IN page USING css
+{{</ editor >}}
 
 ## Next steps
 
