@@ -379,20 +379,20 @@ RETURN {
 }
 {{</ editor >}}
 
-DateTime values support comparison and arithmetic through standard library functions like `DATE_ADD`, `DATE_SUBTRACT`, `DATE_DIFF`, and `DATE_COMPARE`.
+DateTime values support native instant comparison and checked arithmetic with durations. Adding or subtracting a duration produces another DateTime; subtracting two DateTime values produces the elapsed Duration between their canonical instants.
 
 {{< editor lang="fql" >}}
-LET start = DATE(2024, 1, 1)
-LET end = DATE_ADD(start, 30, "day")
+LET start = TO_DATETIME("2024-01-01T00:00:00Z")
+LET end = start + 30d
 
 RETURN {
     start: start,
     end: end,
-    days: DATE_DIFF(start, end, "day")
+    elapsed: end - start
 }
 {{</ editor >}}
 
-Use `IS_DATETIME` to check whether a value is a datetime, and `TO_DATETIME` to convert a string or number into one.
+Use `IS_DATETIME` to check whether a value is a DateTime. `TO_DATETIME` accepts an existing DateTime or an RFC3339 string. It also accepts an Int or finite Float Unix epoch offset when the unit is explicit: `TO_DATETIME(value, "s")`, `TO_DATETIME(value, "ms")`, `TO_DATETIME(value, "us")`, or `TO_DATETIME(value, "ns")`. Ferret does not infer an epoch unit from numeric magnitude, and numeric strings are not treated as epoch values.
 
 See [the DateTime standard library functions]({{% ref "docs/standard-library/datetime" %}}) for the full list of available operations.
 
@@ -435,7 +435,7 @@ Durations are native FQL values backed by signed nanoseconds. A duration literal
 2.5e-1s     // 250 milliseconds
 {{</ code >}}
 
-Duration literals work anywhere an ordinary expression is accepted. Compound literals such as `1h30m` are not supported; compose durations with arithmetic instead:
+Duration literals work anywhere an ordinary expression is accepted. Compound source literals such as `1h30m` are not supported; compose literals with arithmetic instead. Duration strings do support compound forms, so `TO_DURATION("1h30m")` produces the same value as `1h + 30m`.
 
 {{< code lang="fql" >}}
 LET interval = 1h + 30m
@@ -448,7 +448,23 @@ RETURN {
 }
 {{</ code >}}
 
-Durations support addition and subtraction with other durations, multiplication by a number in either order, division by a number, and division by another duration. An exact duration ratio produces an integer; a fractional ratio produces a float. Durations do not implicitly convert to or from numbers or strings. Use `TO_STRING` when text is required.
+Duration conversion is shared by `TO_DURATION`, temporal operators, and scheduling expressions:
+
+| Source value | Duration result |
+| --- | --- |
+| Duration | unchanged |
+| Int or Float | milliseconds; fractional nanoseconds are truncated toward zero |
+| Duration string | parsed using duration syntax, including compound forms such as `"1h30m"` |
+| `NONE` or `false` | `0ms` |
+| `true` | `1ms` |
+| empty list | `0ms` |
+| singleton list | recursively converts its only element |
+| list with multiple elements | runtime error |
+| object or unsupported value | runtime error |
+
+Duration `+`, `-`, and comparison operators apply this conversion to the other operand. Multiplication by a number or numeric string scales the duration in either operand order. Division by a number or numeric string scales the duration, while division by another Duration or a duration-form string returns a ratio. An exact ratio produces an integer; a fractional ratio produces a float.
+
+Conversion, parsing, scaling, and division truncate fractional nanoseconds toward zero. Values outside the signed Duration range raise a range error instead of wrapping. Use `TO_STRING` when text is required.
 
 Equivalent values have the same normalized string form. For example, `5000ms` renders as `5s`, and days may render as hours. A zero duration is false in boolean contexts; any non-zero duration is true. Negative durations are valid values and arithmetic results, but scheduling operations reject them.
 

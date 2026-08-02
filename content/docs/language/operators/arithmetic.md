@@ -8,7 +8,7 @@ description: "Addition, subtraction, multiplication, division, modulus, and type
 
 # Arithmetic operators
 
-Arithmetic operators perform an arithmetic operation on two numeric operands. The result of an arithmetic operation is again a numeric value.
+Arithmetic operators work with numbers and also provide checked Duration and DateTime operations. The result type depends on the operand pair.
 
 FQL supports the following arithmetic operators:
 
@@ -46,7 +46,7 @@ Arithmetic operators accept operands of any type. The conversion rules depend on
 
 ### Addition
 
-The ``+`` operator performs numeric addition when both operands are numbers. When either operand is a string, it performs string concatenation instead. All other types are converted to their string representation before concatenation.
+The ``+`` operator performs numeric addition when both operands are numbers. When either operand is a string, it normally performs string concatenation instead. Temporal operands take precedence: a Duration or DateTime uses the temporal rules below before string concatenation is considered.
 
 {{< editor lang="fql" >}}
 RETURN [
@@ -83,6 +83,51 @@ RETURN [
     0 / 1
 ]
 {{</ editor >}}
+
+## Temporal arithmetic
+
+Duration arithmetic converts operands only where the table below says “coercible Duration.” Numeric Duration inputs are milliseconds, duration strings may be compound, and fractional nanoseconds are truncated toward zero. See [Basic Types]({{< ref "/docs/language/types/basic#durations" >}}) for the complete conversion table.
+
+| Expression | Result |
+| --- | --- |
+| `Duration + coercible Duration` | Duration |
+| `coercible Duration + Duration` | Duration |
+| `Duration - coercible Duration` | Duration |
+| `Duration * number or numeric string` | scaled Duration |
+| `number or numeric string * Duration` | scaled Duration |
+| `Duration / number` or numeric string | scaled Duration |
+| `Duration / Duration` or duration string | Int for an exact ratio, otherwise Float |
+| `DateTime + coercible Duration` | DateTime |
+| `coercible Duration + DateTime` | DateTime |
+| `DateTime - coercible Duration` | DateTime |
+| `DateTime - DateTime` | elapsed Duration |
+| `DateTime - RFC3339 string` | elapsed Duration |
+
+{{< editor lang="fql" >}}
+LET start = TO_DATETIME("2024-03-10T06:30:00Z")
+
+RETURN {
+    numericMilliseconds: 1s + 250,
+    compoundString: 30m + "1h30m",
+    multiplied: "2.5" * 5s,
+    scaled: 5s / "2",
+    ratio: 5s / "250ms",
+    later: start + "90m"
+}
+{{</ editor >}}
+
+For `DateTime - String`, Ferret first tries to parse the string as an RFC3339 DateTime, then as a Duration. If neither conversion succeeds, the expression raises a runtime error.
+
+The following pairs are unsupported and raise an invalid-operation error:
+
+- `DateTime + DateTime`
+- `Duration - DateTime`
+- DateTime multiplication, division, or modulus
+- Duration multiplication by another Duration or a duration-form string
+- reverse division such as `2 / 1s`
+- Duration modulus
+
+All Duration and DateTime arithmetic is checked for overflow. DateTime arithmetic uses canonical instants and does not retain monotonic clock metadata.
 
 ## Next steps
 

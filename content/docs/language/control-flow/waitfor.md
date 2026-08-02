@@ -45,8 +45,8 @@ RETURN WAITFOR FALSE TIMEOUT 50ms EVERY 10ms
 
 Several clauses control how the wait behaves:
 
-- `TIMEOUT <duration>` — the maximum time to wait, provided as a duration value such as `50ms`, `0.5s`, or `5s`.
-- `EVERY <interval>` — how often to re-check. A second duration, `EVERY <interval>, <cap>`, caps how large the interval can grow. Without this clause, polling defaults to `100ms`.
+- `TIMEOUT <duration>` — the maximum time to wait, provided as a value coercible to Duration.
+- `EVERY <interval>` — how often to re-check. A second coercible Duration, `EVERY <interval>, <cap>`, caps how large the interval can grow. Without this clause, polling defaults to `100ms`.
 - `BACKOFF LINEAR | EXPONENTIAL | NONE` — how the interval between checks grows over time.
 - `JITTER <0..1>` — randomizes the interval to avoid synchronized retries.
 - `WHEN <condition>` — an additional condition that must also hold; the candidate value is available as `.`.
@@ -69,7 +69,17 @@ RETURN WAITFOR VALUE loadStatus()
     EVERY base, base * 4
 {{</ code >}}
 
-These scheduling expressions must evaluate to non-negative durations. Numbers are not interpreted as milliseconds and produce a runtime type error.
+`TIMEOUT`, `EVERY`, and its cap use the canonical Duration conversion rules. Numbers are milliseconds, duration strings may be compound, and singleton lists are converted recursively:
+
+{{< code lang="fql" >}}
+LET timeout = "1s500ms"
+
+RETURN WAITFOR FALSE
+    TIMEOUT timeout
+    EVERY 25, [100]
+{{</ code >}}
+
+All scheduling results must be non-negative. Conversion failures, overflow, and negative values raise runtime errors.
 
 ### Recovering from a timeout
 
@@ -88,6 +98,8 @@ In event mode, `WAITFOR` subscribes to an event source and waits for a matching 
 {{< code lang="fql" >}}
 LET event = WAITFOR EVENT "navigation" IN page TIMEOUT 5s
 {{</ code >}}
+
+Event timeouts use the same Duration conversion and non-negative scheduling policy as condition waits.
 
 A `WHEN` filter accepts only events that match a condition. Inside the filter, the incoming event is available as `.`. Multiple `WHEN` clauses must all pass.
 

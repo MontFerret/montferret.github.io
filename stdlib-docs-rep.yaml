@@ -5799,16 +5799,32 @@ modules:
           desc: The appropriate boolean value.
     - token: TO_DATETIME
       file_name: types/to_date_time.go
-      line_number: 12
+      line_number: 20
       doc:
-        desc: TO_DATETIME takes an input value of any type and converts it into the
-          appropriate date time value.
+        desc: TO_DATETIME returns an existing DateTime or parses an RFC3339 string.
+          With an explicit unit, it converts an Int or finite Float offset from the
+          Unix epoch. Numeric values require a unit and are never interpreted by magnitude.
+          Supported canonical units are s, ms, us, and ns. Aliases include sec, second,
+          seconds, millisecond, milliseconds, µs, μs, microsecond, microseconds,
+          nanosecond, and nanoseconds. Unit matching is case-insensitive. Negative
+          and fractional epochs are supported, with sub-nanosecond fractions truncated
+          toward zero.
         params:
         - name: value
           type:
-          - Any
-          desc: Input value of arbitrary type.
+          - DateTime
+          - String
+          - Int
+          - Float
+          desc: Existing DateTime, RFC3339 string, or numeric Unix epoch offset.
           optional: false
+          default_value:
+        - name: unit
+          type:
+          - String
+          desc: Optional epoch unit for numeric values; use s, ms, us, or ns, or a
+            documented alias.
+          optional: true
           default_value:
         returns:
           name:

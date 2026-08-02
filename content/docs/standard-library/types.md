@@ -6,7 +6,7 @@ description: "Type-checking and conversion functions in the Ferret standard libr
 aliases:
   - /docs/stdlib/types/
 menuTitle: 
-menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_DURATION,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_LIST,IS_MAP,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BINARY,TO_BOOL,TO_DATETIME,TO_FLOAT,TO_INT,TO_OBJECT,TO_STRING,TYPENAME,]
+menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_DURATION,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_LIST,IS_MAP,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BINARY,TO_BOOL,TO_DATETIME,TO_DURATION,TO_FLOAT,TO_INT,TO_OBJECT,TO_STRING,TYPENAME,]
 ---
 
 
@@ -358,17 +358,49 @@ Argument   | Type     | Default value  | Description
 TO_DATETIME
 
 {{</ header >}}
-[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_date_time.go#L12)
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_date_time.go#L20)
 
-TO_DATETIME takes an input value of any type and converts it into the appropriate date time value.
+TO_DATETIME returns an existing DateTime or parses an RFC3339 string. With an explicit unit, it also converts an Int or finite Float offset from the Unix epoch. Supported units are `s`, `ms`, `us`, and `ns`; aliases include `sec`, `second`, `seconds`, `millisecond`, `milliseconds`, `µs`, `μs`, `microsecond`, `microseconds`, `nanosecond`, and `nanoseconds`. Unit matching is case-insensitive.
+
+Numeric values always require a unit; Ferret never guesses from their magnitude. Negative epochs and fractional values are supported, and fractions smaller than one nanosecond are truncated toward zero. Numeric strings are not epoch values. Unknown units, non-finite numbers, and values outside the DateTime range raise runtime errors. A unit supplied with a DateTime or RFC3339 string is also an error.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
 Argument   | Type     | Default value  | Description
-`value` | `Any`  |  | Input value of arbitrary type.
+`value` | `DateTime, String, Int, Float`  |  | Existing DateTime, RFC3339 string, or numeric Unix epoch offset.
+`unit` | `String`  |  | Optional epoch unit for numeric values: `s`, `ms`, `us`, or `ns`.
 
 
 **Returns** `DateTime` Parsed date time.
+- - - -
+
+{{< editor lang="fql" >}}
+RETURN {
+    parsed: TO_DATETIME("2026-08-02T12:00:00Z"),
+    seconds: TO_DATETIME(1690992000, "s"),
+    milliseconds: TO_DATETIME(1690992000000, "ms"),
+    fractional: TO_DATETIME(1.5, "s"),
+    beforeEpoch: TO_DATETIME(-1, "s")
+}
+{{</ editor >}}
+
+
+{{< header href="to_duration" >}}
+
+TO_DURATION
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_duration.go#L13)
+
+TO_DURATION converts a value to a native Duration. Numeric values are milliseconds, duration strings may use compound syntax, and fractional nanoseconds are truncated toward zero.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `Any`  |  | Value supported by the canonical Duration conversion rules.
+
+
+**Returns** `Duration` Converted duration value.
 - - - -
 
 

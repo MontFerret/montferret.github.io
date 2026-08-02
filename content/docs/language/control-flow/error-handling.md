@@ -67,10 +67,12 @@ RETURN fetchData() ON ERROR RETRY 3 DELAY 100ms BACKOFF EXPONENTIAL
 
 `BACKOFF` requires `DELAY`. Without `BACKOFF`, the delay is constant.
 
-`DELAY` accepts a non-negative duration expression. Numbers are not interpreted as milliseconds. Because the unparenthesized `OR` token begins the retry fallback, wrap a logical `OR` used inside the delay expression in parentheses:
+`DELAY` accepts any value supported by the canonical Duration conversion. Numbers are milliseconds, duration strings may be compound, and singleton lists are converted recursively. The converted delay must be non-negative; conversion failures, overflow, and negative values raise runtime errors.
+
+Because the unparenthesized `OR` token begins the retry fallback, wrap a logical `OR` used inside the delay expression in parentheses:
 
 {{< code lang="fql" >}}
-LET base = 100ms
+LET base = 100
 LET preferredDelay = NONE
 
 RETURN fetchData()

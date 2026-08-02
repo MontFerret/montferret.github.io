@@ -9,6 +9,8 @@ menuTitle:
 menu: [DATE,DATE_ADD,DATE_COMPARE,DATE_DAY,DATE_DAYOFWEEK,DATE_DAYOFYEAR,DATE_DAYS_IN_MONTH,DATE_DIFF,DATE_FORMAT,DATE_HOUR,DATE_LEAPYEAR,DATE_MILLISECOND,DATE_MINUTE,DATE_MONTH,DATE_QUARTER,DATE_SECOND,DATE_SUBTRACT,DATE_YEAR,NOW,]
 ---
 
+DateTime values also support checked `+` and `-` operators with coercible Duration values. Subtracting two DateTime values returns a Duration. These operators use canonical instants and raise range errors on overflow; the functions below remain available for calendar-unit operations.
+
 
 
 {{< header href="date" >}}

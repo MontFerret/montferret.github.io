@@ -10,7 +10,7 @@ aliases:
 
 # Type ordering
 
-FQL comparisons are deterministic. Any two values can be compared, even when they do not have the same type.
+FQL's strict value ordering is deterministic. It is used by sorting, grouping, membership, deduplication, and structural value comparison. Any two values can be ordered, even when they do not have the same type.
 
 When two values are compared, FQL first looks at their types. If the types are different, the result is decided by the global type order. The actual values are only compared when both operands have the same type.
 
@@ -22,7 +22,7 @@ NONE < bool < number < duration < string < datetime < binary < array < object
 
 This means that `NONE` sorts before every other value, while objects sort after every other built-in value type.
 
-For example, a boolean value always sorts before a number, duration, string, array, or object. A duration always sorts after numbers and before strings, regardless of its nanosecond value.
+For example, a boolean value always sorts before a number, duration, string, array, or object. A duration sorts after numbers and before strings, regardless of its nanosecond value.
 
 {{< code lang="fql" >}}
 NONE < false
@@ -39,9 +39,6 @@ true < 0
 0 < "abc"
 0 < []
 
-0 < 1ms
-1ms < ""
-
 "" < "abc"
 "abc" < []
 
@@ -57,7 +54,7 @@ Primitive values are ordered as follows:
 - `NONE` is only equal to `NONE`.
 - Booleans are ordered as false < true.
 - Numbers are ordered by numeric value.
-- Durations are ordered by their signed nanosecond value and are never equal to numbers.
+- Durations are ordered by their signed nanosecond value. In strict ordering they are distinct from numbers.
 - Strings are ordered using FQL's string comparison rules.
 
 {{< code lang="fql" >}}
@@ -70,10 +67,15 @@ false < true
 
 500ms < 1s
 1000ms == 1s
-1 != 1ms
 
 "a" < "b"
 {{</ code >}}
+
+<div class="notification is-info">
+  Language comparison operators apply contextual conversion when a Duration is compared with a non-DateTime scalar. For example, <code>1ms == 1</code> is true because the number is interpreted as milliseconds. Strict consumers do not apply that conversion: <code>DISTINCT [1, 1ms]</code> keeps both values, and membership, sorting, and grouping preserve their different types.
+</div>
+
+DateTime comparison operators remain native-only. Two DateTime values compare by canonical instant; strings and numbers are not converted to DateTime for comparison.
 
 <div class="notification is-info">
   NONE is a regular comparable value in FQL. Comparing a value with NONE does not produce an unknown result.

@@ -29,7 +29,7 @@ The following comparison operators are available:
 
 Each comparison operator evaluates its operands and returns true when the comparison condition is satisfied. Otherwise, it returns false.
 
-FQL does not implicitly convert values before comparing them. For example, the number `65` and the string `"65"` are different values. They are not converted to a common type before the comparison is evaluated.
+FQL normally does not implicitly convert values before comparing them. For example, the number `65` and the string `"65"` are different values. They are not converted to a common type before the comparison is evaluated.
 
 This behavior is important when comparing values of different types. Equality comparisons only return true when the compared values are equal according to FQL value semantics. Ordering comparisons between different types are evaluated according to FQL type ordering, not by converting one operand into the type of the other operand.
 
@@ -44,6 +44,41 @@ true != NONE
 "abc" == "abc"
 "abc" == "ABC"
 {{</ code >}}
+
+### Duration comparisons
+
+Duration operands are the contextual exception to the general no-conversion rule. When either operand is a Duration, and neither operand is a DateTime, the other value is converted using the Duration conversion rules. Numbers represent milliseconds and duration strings may use compound syntax.
+
+{{< editor lang="fql" >}}
+RETURN {
+    numericMilliseconds: 1s == 1000,
+    durationString: 90m == "1h30m",
+    ordered: 5s > 4999
+}
+{{</ editor >}}
+
+If Duration conversion fails, equality remains error-free: `==` returns `false` and `!=` returns `true`. Ordering operators propagate the conversion error because they cannot produce a meaningful temporal order.
+
+{{< code lang="fql" >}}
+1s == "tomorrow"  // false
+1s != "tomorrow"  // true
+1s < "tomorrow"   // runtime error
+{{</ code >}}
+
+DateTime comparisons remain native-only. Two DateTime values compare their canonical instants; an RFC3339 string is not converted by comparison operators. Mixed DateTime comparisons continue to use normal strict type ordering, even when the string is valid RFC3339 text.
+
+{{< code lang="fql" >}}
+LET instant = TO_DATETIME("2026-08-02T12:00:00Z")
+
+RETURN {
+    equivalentString: instant == "2026-08-02T12:00:00Z", // false
+    differentString: instant == "2026-08-02T13:00:00Z",  // false
+    inequality: instant != "2026-08-02T12:00:00Z",       // true
+    strictOrdering: instant > "not-a-date"                // true by type ordering
+}
+{{</ code >}}
+
+The same Duration rules apply to element-wise `ANY`, `ALL`, and `NONE` comparisons. Sorting, grouping, membership, and deduplication remain strict and do not use contextual Duration conversion.
 
 ## Containment
 
