@@ -67,6 +67,19 @@ RETURN fetchData() ON ERROR RETRY 3 DELAY 100ms BACKOFF EXPONENTIAL
 
 `BACKOFF` requires `DELAY`. Without `BACKOFF`, the delay is constant.
 
+`DELAY` accepts a non-negative duration expression. Numbers are not interpreted as milliseconds. Because the unparenthesized `OR` token begins the retry fallback, wrap a logical `OR` used inside the delay expression in parentheses:
+
+{{< code lang="fql" >}}
+LET base = 100ms
+LET preferredDelay = NONE
+
+RETURN fetchData()
+    ON ERROR RETRY 3 DELAY base * 2 OR RETURN NONE
+
+RETURN fetchData()
+    ON ERROR RETRY 3 DELAY (preferredDelay OR base) OR RETURN NONE
+{{</ code >}}
+
 ### Fallback after retries
 
 When all retries are exhausted, `OR RETURN` provides a fallback value instead of propagating the final error. `OR FAIL` makes propagation explicit.

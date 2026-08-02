@@ -53,6 +53,7 @@ Basic FQL values have well-defined serialized representations. The exact encodin
 | `true`, `false` | `true`, `false` |
 | integer | number |
 | float | number |
+| duration | normalized duration string |
 | string | string |
 | array | array |
 | object | object |
@@ -112,6 +113,19 @@ Date and time values are serialized as strings. In JSON, date/time values are en
 {{< editor lang="fql" >}}
 RETURN NOW()
 {{</ editor >}}
+
+## Duration values
+
+Duration values are serialized as normalized strings in JSON and MessagePack, including when nested in arrays or objects.
+
+{{< editor lang="fql" >}}
+RETURN {
+  timeout: 5000ms,
+  intervals: [100ms, 1s]
+}
+{{</ editor >}}
+
+The result uses strings such as `"5s"`, `"100ms"`, and `"1s"`. Ordinary JSON or MessagePack deserialization produces FQL strings; it does not reconstruct duration values automatically.
 
 ## Host values
 

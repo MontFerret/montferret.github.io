@@ -45,8 +45,8 @@ RETURN WAITFOR FALSE TIMEOUT 50ms EVERY 10ms
 
 Several clauses control how the wait behaves:
 
-- `TIMEOUT <duration>` — the maximum time to wait, written with a duration literal such as `50ms`, `0.5s`, or `5s`.
-- `EVERY <interval>` — how often to re-check. A second value, `EVERY <interval>, <cap>`, caps how large the interval can grow.
+- `TIMEOUT <duration>` — the maximum time to wait, provided as a duration value such as `50ms`, `0.5s`, or `5s`.
+- `EVERY <interval>` — how often to re-check. A second duration, `EVERY <interval>, <cap>`, caps how large the interval can grow. Without this clause, polling defaults to `100ms`.
 - `BACKOFF LINEAR | EXPONENTIAL | NONE` — how the interval between checks grows over time.
 - `JITTER <0..1>` — randomizes the interval to avoid synchronized retries.
 - `WHEN <condition>` — an additional condition that must also hold; the candidate value is available as `.`.
@@ -58,6 +58,18 @@ WAITFOR VALUE loadStatus()
     BACKOFF EXPONENTIAL
     JITTER 0.2
 {{</ code >}}
+
+`TIMEOUT`, `EVERY`, and its cap accept ordinary expressions, so values can be stored or computed:
+
+{{< code lang="fql" >}}
+LET base = 50ms
+
+RETURN WAITFOR VALUE loadStatus()
+    TIMEOUT base * 20
+    EVERY base, base * 4
+{{</ code >}}
+
+These scheduling expressions must evaluate to non-negative durations. Numbers are not interpreted as milliseconds and produce a runtime type error.
 
 ### Recovering from a timeout
 

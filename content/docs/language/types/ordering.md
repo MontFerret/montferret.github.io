@@ -17,12 +17,12 @@ When two values are compared, FQL first looks at their types. If the types are d
 FQL uses the following type order:
 
 {{< code >}}
-NONE < bool < number < string < array < object
+NONE < bool < number < duration < string < datetime < binary < array < object
 {{</ code >}}
 
 This means that `NONE` sorts before every other value, while objects sort after every other built-in value type.
 
-For example, a boolean value always sorts before a number, a string, an array, or an object. A string always sorts after a number, even if the string is empty or contains numeric-looking text.
+For example, a boolean value always sorts before a number, duration, string, array, or object. A duration always sorts after numbers and before strings, regardless of its nanosecond value.
 
 {{< code lang="fql" >}}
 NONE < false
@@ -39,6 +39,9 @@ true < 0
 0 < "abc"
 0 < []
 
+0 < 1ms
+1ms < ""
+
 "" < "abc"
 "abc" < []
 
@@ -54,6 +57,7 @@ Primitive values are ordered as follows:
 - `NONE` is only equal to `NONE`.
 - Booleans are ordered as false < true.
 - Numbers are ordered by numeric value.
+- Durations are ordered by their signed nanosecond value and are never equal to numbers.
 - Strings are ordered using FQL's string comparison rules.
 
 {{< code lang="fql" >}}
@@ -63,6 +67,10 @@ false < true
 
 1 < 2
 10 > 2
+
+500ms < 1s
+1000ms == 1s
+1 != 1ms
 
 "a" < "b"
 {{</ code >}}

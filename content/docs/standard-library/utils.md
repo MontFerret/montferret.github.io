@@ -42,7 +42,7 @@ WAIT pauses the execution for a given period.
 |          |          |                |
 ---------- | -------- | -------------- | ----------
 Argument   | Type     | Default value  | Description
-`timeout` | `Int` `Float`  |  | Number value which indicates for how long to stop an execution.
+`timeout` | `Duration`  |  | Non-negative duration indicating how long to pause execution.
 
 
 **Returns** `None`

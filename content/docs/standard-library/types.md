@@ -6,7 +6,7 @@ description: "Type-checking and conversion functions in the Ferret standard libr
 aliases:
   - /docs/stdlib/types/
 menuTitle: 
-menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_LIST,IS_MAP,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BINARY,TO_BOOL,TO_DATETIME,TO_FLOAT,TO_INT,TO_OBJECT,TO_STRING,TYPENAME,]
+menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_DURATION,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_LIST,IS_MAP,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BINARY,TO_BOOL,TO_DATETIME,TO_FLOAT,TO_INT,TO_OBJECT,TO_STRING,TYPENAME,]
 ---
 
 
@@ -84,6 +84,25 @@ Argument   | Type     | Default value  | Description
 
 
 **Returns** `Boolean` Returns true if value is date time, otherwise false.
+- - - -
+
+
+{{< header href="is_duration" >}}
+
+IS_DURATION
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/is_duration.go#L9)
+
+IS_DURATION checks whether value is a native duration value.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `Any`  |  | Input value of arbitrary type.
+
+
+**Returns** `Boolean` Returns true if value is a duration, otherwise false.
 - - - -
 
 
@@ -443,7 +462,7 @@ Argument   | Type     | Default value  | Description
 `value` | `Any`  |  | Input value of arbitrary type.
 
 
-**Returns** `String` Returns string representation of a type (e.g. `"Int"`, `"Float"`, `"String"`, `"Array"`, `"Object"`, `"DateTime"`, `"Boolean"`, `"Binary"`, `"None"`).
+**Returns** `String` Returns string representation of a type (e.g. `"Int"`, `"Float"`, `"Duration"`, `"String"`, `"Array"`, `"Object"`, `"DateTime"`, `"Boolean"`, `"Binary"`, `"None"`).
 - - - -
 
 ## Next steps

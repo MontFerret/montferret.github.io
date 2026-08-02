@@ -10,13 +10,14 @@ aliases:
 
 # Basic types
 
-FQL has eight built-in value types:
+FQL has nine built-in value types:
 
 | Type | Example | Description |
 | --- | --- | --- |
 | `NONE` | `NONE` | Represents an absent or undefined value. |
 | `bool` | `true`, `false` | Represents a truth value. |
 | `number` | `42`, `3.14` | Represents numeric values, both integer and floating-point. |
+| `duration` | `250ms`, `1.5s` | Represents a signed length of time with nanosecond precision. |
 | `string` | `"hello"` | Represents text. |
 | `datetime` | `NOW()` | Represents a point in time. |
 | `array` | `[1, 2, 3]` | Represents an ordered sequence of values. |
@@ -413,36 +414,43 @@ RETURN file
   Ferret’s default serializer encodes binary values as Base64 strings, so byte-oriented data can be represented safely in text-based output formats.
 </div>  
 
-## Duration literals
+## Durations
 
-Duration literals represent a length of time. They are written as a number followed by a unit suffix:
+Durations are native FQL values backed by signed nanoseconds. A duration literal is a number immediately followed by a unit suffix. Suffixes are case-insensitive:
 
 | Suffix | Unit |
 | --- | --- |
-| `MS` | milliseconds |
-| `S` | seconds |
-| `M` | minutes |
-| `H` | hours |
-| `D` | days |
+| `ms` | milliseconds |
+| `s` | seconds |
+| `m` | minutes |
+| `h` | hours |
+| `d` | days (exactly 24 hours) |
 
 {{< code lang="fql" >}}
-100MS    // 100 milliseconds
-5S       // 5 seconds
-10M      // 10 minutes
-2H       // 2 hours
-1D       // 1 day
-0.5S     // 500 milliseconds
+100ms       // 100 milliseconds
+5s          // 5 seconds
+1.5m        // 90 seconds
+2H          // suffixes are case-insensitive
+1d          // exactly 24 hours
+2.5e-1s     // 250 milliseconds
 {{</ code >}}
 
-Duration literals are used with `TIMEOUT`, `EVERY`, and `DELAY` clauses in `WAITFOR` expressions and error recovery statements.
+Duration literals work anywhere an ordinary expression is accepted. Compound literals such as `1h30m` are not supported; compose durations with arithmetic instead:
 
 {{< code lang="fql" >}}
-WAITFOR VALUE loadStatus()
-    TIMEOUT 10S
-    EVERY 100MS
+LET interval = 1h + 30m
+
+RETURN {
+    doubled: interval * 2,
+    ratio: 1s / 250ms,
+    isDuration: IS_DURATION(interval),
+    type: TYPENAME(interval)
+}
 {{</ code >}}
 
-Duration values are not a separate type — they are converted to a numeric representation at parse time. The unit suffix controls the scale of the value.
+Durations support addition and subtraction with other durations, multiplication by a number in either order, division by a number, and division by another duration. An exact duration ratio produces an integer; a fractional ratio produces a float. Durations do not implicitly convert to or from numbers or strings. Use `TO_STRING` when text is required.
+
+Equivalent values have the same normalized string form. For example, `5000ms` renders as `5s`, and days may render as hours. A zero duration is false in boolean contexts; any non-zero duration is true. Negative durations are valid values and arithmetic results, but scheduling operations reject them.
 
 ## Type checks
 
