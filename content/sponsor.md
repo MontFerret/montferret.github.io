@@ -75,16 +75,19 @@ Every contribution helps make the project more reliable and easier to use.
 
 ## What sponsorship does not include
 
-To keep expectations clear, sponsorship does not include:
+Ferret is developed in the best interests of the project and its community.
 
-- Influence over technical decisions or the project’s direction
+Sponsors are always welcome to share feedback, discuss their use cases, and suggest ideas for future development. Those conversations are valuable and help shape how Ferret evolves.
+
+To preserve the project’s independence, sponsorship does not provide:
+
+- Ownership of the project or influence over technical governance
 - Guaranteed implementation of requested features
-- Priority access to unreleased functionality
-- Sponsored articles or promotional content
-- Selling backlinks or SEO placements
-- Product endorsements
+- Exclusive access to unreleased functionality
+- Sponsored articles, product endorsements, or promotional content
+- Backlinks or search engine optimization (SEO) placements
 
-Feedback, ideas, and feature requests are always welcome, but technical decisions are made based on what is best for the project and its community.
+Technical decisions continue to be made based on what is best for the project and its users.
 
 ---
 
