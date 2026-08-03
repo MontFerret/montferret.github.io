@@ -1,20 +1,64 @@
 ---
 title: "Contact"
 layout: "support"
-description: "Contact the Ferret project for support, sponsorship, security, or consulting."
+description: "Find documentation, community help, issue reporting, private contact, sponsorship, and professional support for Ferret."
 ---
 
-Have a question about Ferret? Choose the channel that best matches what you need.
+Need help using Ferret or want to get in touch? Choose the channel that best matches what you need.
 
-## Technical support
+{{% notification type="info" %}}
+**Before opening an issue:** Make sure you’re using the [latest release](https://github.com/MontFerret/ferret/releases/latest) and check whether your question is already answered in the [documentation](/docs/) or [existing discussions](https://github.com/MontFerret/ferret/discussions).
+{{% /notification %}}
 
-For questions about using Ferret, installation, configuration, documentation, or unexpected behavior:
+## Documentation
+
+The documentation is the best place to start. It covers the language, standard library, embedding, guides, and examples.
+
+[→ Browse the Documentation](/docs/)
+
+## GitHub Discussions
+
+Have a question about using Ferret? Looking for advice on language features or best practices?
+
+GitHub Discussions is the preferred place for general questions and community conversations.
+
+[→ Ask a Question](https://github.com/MontFerret/ferret/discussions/categories/q-a)
+
+## Report a Bug
+
+If you’ve found a bug, unexpected behavior, or a regression, please open an issue on GitHub.
+
+When possible, include:
+
+- Ferret version
+- Operating system
+- Minimal reproducible example
+- Expected behavior
+- Actual behavior
+
+[→ Report an Issue](https://github.com/MontFerret/ferret/issues/new?template=bug_report.md)
+
+## Feature Requests
+
+Ideas and suggestions are always welcome.
+
+Before opening a new request, please search existing issues and discussions to see whether someone has already proposed it.
+
+[→ Request a Feature](https://github.com/MontFerret/ferret/issues/new?template=feature_request.md)
+
+## Security Issues
+
+If you’ve discovered a security vulnerability, please do not open a public issue.
+
+Instead, report it privately by email.
+
+[security@ferretlang.org](mailto:security@ferretlang.org)
+
+## Private Inquiries
+
+If you’re unsure where your question belongs, or need to discuss something privately, feel free to get in touch.
 
 [support@ferretlang.org](mailto:support@ferretlang.org)
-
-For reproducible bugs and feature requests, prefer opening an issue on GitHub.
-
-[→ Open a GitHub issue](https://github.com/MontFerret/ferret/issues)
 
 ## Sponsorship
 
@@ -22,16 +66,32 @@ For questions about GitHub Sponsors, OpenCollective, company sponsorships, or la
 
 [sponsorship@ferretlang.org](mailto:sponsorship@ferretlang.org)
 
-[→ Learn about sponsorship](/support/)
+[→ Learn about Sponsorship](/sponsor/)
 
-## Security
+## Professional Support
 
-To report a security vulnerability privately:
+If your organization needs help adopting Ferret, integrating it into existing systems, developing custom extensions, or would like consulting services, professional support is available separately.
 
-[security@ferretlang.org](mailto:security@ferretlang.org)
+[→ Learn about Consulting](https://tvoronov.com)
 
-## Consulting
+## Frequently Asked Questions
 
-For commercial help adopting Ferret, integrating it into existing systems, or building custom solutions:
+### Where should I ask usage questions?
 
-[→ Learn about consulting](https://tvoronov.com)
+GitHub Discussions.
+
+### Where should I report bugs?
+
+GitHub Issues.
+
+### Where should I request new features?
+
+GitHub Issues or Discussions.
+
+### Can I get commercial support?
+
+Yes. Consulting and professional services are available separately.
+
+### Is there a response time guarantee?
+
+No. Ferret is an open source project maintained in available time. Commercial consulting engagements include separate response expectations.
