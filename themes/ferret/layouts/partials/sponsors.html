@@ -1,0 +1,53 @@
+{{- $data := .data -}}
+{{- $tiers := .tiers -}}
+{{- $variant := default "full" .variant -}}
+{{- $tierMetadata := dict
+    "platinum" (dict "title" "Platinum Sponsors")
+    "gold" (dict "title" "Gold Sponsors")
+    "silver" (dict "title" "Silver Sponsors")
+    "bronze" (dict "title" "Bronze Sponsors")
+    "sponsor" (dict "title" "Sponsors")
+    "community" (dict "title" "Community Backers")
+-}}
+{{- $groups := slice -}}
+
+{{- range $key := $tiers -}}
+    {{- with index $data $key -}}
+        {{- $groups = $groups | append (dict "key" $key "entries" . "metadata" (index $tierMetadata $key)) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $groups }}
+<div class="sponsors sponsors--{{ $variant }}">
+    {{- range . }}
+    {{- $key := .key -}}
+    <section class="sponsors-tier sponsors-tier--{{ $key }}" aria-labelledby="sponsors-{{ $variant }}-{{ $key }}">
+        <h3 class="sponsors-tier__title" id="sponsors-{{ $variant }}-{{ $key }}">{{ .metadata.title }}</h3>
+
+        <div class="sponsors-grid">
+            {{- range $entry := .entries }}
+            <a class="sponsors-card" href="{{ $entry.url }}">
+                {{- if eq $key "community" }}
+                    {{- with $entry.avatar }}
+                    <span class="sponsors-card__media sponsors-card__media--avatar">
+                        <img src="{{ . }}" alt="{{ $entry.name }}" width="48" height="48" loading="lazy" decoding="async">
+                    </span>
+                    {{- else }}
+                    <span class="sponsors-card__name">{{ $entry.name }}</span>
+                    {{- end }}
+                {{- else }}
+                    {{- with $entry.logo }}
+                    <span class="sponsors-card__media">
+                        <img src="{{ . }}" alt="{{ printf "%s logo" $entry.name }}" loading="lazy" decoding="async">
+                    </span>
+                    {{- else }}
+                    <span class="sponsors-card__name">{{ $entry.name }}</span>
+                    {{- end }}
+                {{- end }}
+            </a>
+            {{- end }}
+        </div>
+    </section>
+    {{- end }}
+</div>
+{{- end }}

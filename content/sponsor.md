@@ -1,7 +1,7 @@
 ---
-title: "Support Ferret"
-layout: "support"
-description: "Support the continued development and maintenance of Ferret."
+title: Sponsor Ferret
+description: Support the continued development of Ferret.
+layout: support
 ---
 
 Ferret is an independent open source project focused on making data automation simpler, more expressive, and easier to maintain.
@@ -12,31 +12,51 @@ Sponsorship helps fund the work that often goes unnoticed: implementing new feat
 
 While sponsorship is never expected, it makes it easier to dedicate more time to the project and keep Ferret moving forward.
 
-## Ways to support
+## How to sponsor
 
-### GitHub Sponsors
+You can support Ferret through [GitHub Sponsors](https://github.com/sponsors/MontFerret) or [OpenCollective](https://opencollective.com/ferret). Both platforms support recurring sponsorships and one-time contributions.
 
-GitHub Sponsors is the easiest option for individual developers and teams already using GitHub. It supports recurring monthly sponsorships as well as one-time contributions.
+For questions about sponsorship tiers, payment logistics, or custom arrangements, contact [sponsorship@ferretlang.org](mailto:sponsorship@ferretlang.org).
 
-**Best for:** individuals, developers, and small teams.
+## Sponsoring Ferret as a business
 
-[→ Sponsor on GitHub](https://github.com/sponsors/MontFerret)
+If your organization relies on Ferret, sponsorship helps keep the project healthy and actively maintained while giving your company visibility within the Ferret community.
 
-### OpenCollective
+Organization sponsors may receive recognition on the Ferret website, project README, release notes, and other project materials according to their sponsorship tier.
 
-OpenCollective provides transparent funding and expense tracking, making it a good choice for companies and organizations that prefer an open financial model.
+## Sponsoring Ferret as an individual
 
-**Best for:** companies, organizations, and recurring sponsorships.
+If Ferret has made your work easier, consider supporting the project as a sign of appreciation. Even a small recurring contribution helps sustain long-term development and maintenance.
 
-[→ Sponsor through OpenCollective](https://opencollective.com/ferret)
+## Sponsorship tiers
 
-## Recognition
+### Individual Backer
 
-Sponsors help make Ferret sustainable, and that support deserves recognition.
+Recognition as a community backer.
 
-Depending on the sponsorship platform and preferences, sponsors may be acknowledged on the website, GitHub, release notes, or other project materials.
+### Sponsor
 
-If you prefer to remain anonymous, that’s perfectly fine too.
+Recognition as a project sponsor.
+
+### Bronze Sponsor
+
+Logo placement on the Sponsors page.
+
+### Silver Sponsor
+
+Prominent placement on the Sponsors page, homepage recognition, and acknowledgement in project announcements.
+
+### Gold Sponsor
+
+Featured placement on the Sponsors page and homepage, together with acknowledgement in the project README.
+
+### Platinum Sponsor
+
+Premium recognition and opportunities for a customized partnership.
+
+## Current supporters
+
+{{< sponsors >}}
 
 ## What sponsorship means
 
@@ -65,48 +85,6 @@ To keep expectations clear, sponsorship does not include:
 - Product endorsements
 
 Feedback, ideas, and feature requests are always welcome, but technical decisions are made based on what is best for the project and its community.
-
-## Consulting
-
-If your organization needs help adopting Ferret, integrating it into existing systems, building custom extensions, or delivering project-specific solutions, consulting services are available separately.
-
-Consulting is independent from sponsorship and follows its own engagement process.
-
-[→ Learn about Consulting](https://tvoronov.com)
-
-## Questions about sponsorship?
-
-For questions about company sponsorships or larger contributions, contact:
-
-[sponsorship@ferretlang.org](mailto:sponsorship@ferretlang.org)
-
-## Frequently Asked Questions
-
-### Why should my company sponsor Ferret?
-
-If Ferret saves your engineering team time, sponsorship helps ensure the project continues to improve and remain actively maintained. Supporting the tools your organization depends on is often one of the simplest ways to contribute back to the ecosystem that makes your work possible.
-
-### Can we request features?
-
-Absolutely.
-
-Feature requests and ideas are always welcome. Sponsors are encouraged to discuss their use cases, but sponsorship does not guarantee that a particular feature will be implemented.
-
-### Can we sponsor Ferret in exchange for a backlink or promotional article?
-
-No.
-
-Ferret does not sell backlinks, sponsored articles, or search engine optimization placements. Sponsorship exists to support the project’s development rather than provide advertising opportunities.
-
-### Is sponsorship tax-deductible?
-
-This depends on your country, organization, and the sponsorship platform you choose. Please consult your financial or legal advisor if you have questions about tax treatment.
-
-### Can I make a one-time contribution?
-
-Yes.
-
-Both GitHub Sponsors and OpenCollective support one-time contributions in addition to recurring sponsorships.
 
 ---
 

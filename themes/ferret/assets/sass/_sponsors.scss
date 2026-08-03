@@ -1,0 +1,217 @@
+.sponsors {
+    display: grid;
+    gap: 2.25rem;
+    margin: 1.75rem 0;
+}
+
+.sponsors-tier {
+    --sponsors-card-min: 170px;
+    --sponsors-media-height: 96px;
+    --sponsors-logo-max-height: 64px;
+}
+
+.sponsors-tier--platinum {
+    --sponsors-card-min: 260px;
+    --sponsors-media-height: 144px;
+    --sponsors-logo-max-height: 112px;
+}
+
+.sponsors-tier--gold {
+    --sponsors-card-min: 220px;
+    --sponsors-media-height: 128px;
+    --sponsors-logo-max-height: 96px;
+}
+
+.sponsors-tier--silver {
+    --sponsors-card-min: 190px;
+    --sponsors-media-height: 112px;
+    --sponsors-logo-max-height: 80px;
+}
+
+.sponsors-tier--bronze {
+    --sponsors-media-height: 96px;
+    --sponsors-logo-max-height: 64px;
+}
+
+.sponsors-tier--sponsor {
+    --sponsors-card-min: 150px;
+    --sponsors-media-height: 80px;
+    --sponsors-logo-max-height: 48px;
+}
+
+.sponsors-tier--community {
+    --sponsors-card-min: 120px;
+    --sponsors-media-height: 48px;
+}
+
+.sponsors-tier__title {
+    color: $site-heading;
+    font-family: $family-monospace;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    line-height: 1.3;
+    margin: 0 0 1rem;
+}
+
+.sponsors-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(var(--sponsors-card-min), 1fr));
+}
+
+.sponsors .sponsors-card {
+    align-items: center;
+    background: $site-surface;
+    border: 1px solid $site-border;
+    border-radius: 8px;
+    color: $site-heading;
+    display: flex;
+    justify-content: center;
+    min-height: calc(var(--sponsors-media-height) + 32px);
+    min-width: 0;
+    padding: 1rem;
+    text-align: center;
+    text-decoration: none;
+
+    &:hover {
+        border-color: rgba($site-accent, .42);
+        box-shadow: 0 12px 28px rgba($site-heading, .09);
+        color: $site-heading;
+        text-decoration: none;
+    }
+
+    &:focus-visible {
+        border-color: $site-accent;
+        outline: 3px solid rgba($site-accent, .42);
+        outline-offset: 3px;
+    }
+}
+
+.sponsors-card__media {
+    align-items: center;
+    display: flex;
+    height: var(--sponsors-media-height);
+    justify-content: center;
+    width: 100%;
+
+    img {
+        display: block;
+        height: auto;
+        max-height: var(--sponsors-logo-max-height);
+        max-width: 100%;
+        object-fit: contain;
+        width: auto;
+    }
+}
+
+.sponsors-card__media--avatar {
+    flex: 0 0 48px;
+    height: 48px;
+    width: 48px;
+
+    img {
+        border-radius: 50%;
+        height: 48px;
+        max-height: 48px;
+        object-fit: cover;
+        width: 48px;
+    }
+}
+
+.sponsors-card__name {
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.sponsors-tier--community .sponsors-card {
+    min-height: 80px;
+    padding: 1rem;
+}
+
+.sponsors--compact {
+    margin-bottom: 0;
+
+    .sponsors-tier--platinum {
+        --sponsors-media-height: 104px;
+        --sponsors-logo-max-height: 80px;
+    }
+
+    .sponsors-tier--gold {
+        --sponsors-media-height: 88px;
+        --sponsors-logo-max-height: 64px;
+    }
+
+    .sponsors-tier--silver {
+        --sponsors-media-height: 76px;
+        --sponsors-logo-max-height: 52px;
+    }
+}
+
+.landing-sponsors-section {
+    background: $landing-section-bg-alt;
+    padding-block: 4.5rem;
+}
+
+.landing-sponsors-panel {
+    background: $site-surface;
+    border: 1px solid $site-border;
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.landing-sponsors-header {
+    align-items: end;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    .landing-section-heading {
+        margin: 0;
+    }
+}
+
+.landing-sponsors-link {
+    color: $site-accent;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: .18em;
+
+    &:hover,
+    &:focus {
+        color: $site-heading;
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        border-radius: 4px;
+        outline: 3px solid rgba($site-accent, .42);
+        outline-offset: 3px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .sponsors {
+        gap: 1.75rem;
+    }
+
+    .landing-sponsors-section {
+        padding: 2.75rem 1rem;
+    }
+
+    .landing-sponsors-panel {
+        padding: 1.25rem;
+    }
+
+    .landing-sponsors-header {
+        align-items: start;
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .sponsors-grid {
+        grid-template-columns: 1fr;
+    }
+}

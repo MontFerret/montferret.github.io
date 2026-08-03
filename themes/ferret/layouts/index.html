@@ -359,6 +359,32 @@ FOR row IN CSV::DECODE_ROWS(file)
             </div>
         </section>
 
+        {{ $sponsors := hugo.Data.sponsors }}
+        {{ if or $sponsors.platinum $sponsors.gold $sponsors.silver }}
+        <section class="landing-section landing-sponsors-section" aria-labelledby="landing-sponsors-title">
+            <div class="container">
+                <div class="landing-sponsors-panel">
+                    <div class="landing-sponsors-header">
+                        <div class="landing-section-heading landing-section-heading-left">
+                            <h2 id="landing-sponsors-title">Supported by</h2>
+                            <p>Ferret is supported by organizations and community members who help fund its continued development.</p>
+                        </div>
+
+                        <a class="landing-sponsors-link" href="/sponsor/">
+                            View all supporters <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
+
+                    {{ partial "sponsors.html" (dict
+                        "data" $sponsors
+                        "tiers" (slice "platinum" "gold" "silver")
+                        "variant" "compact"
+                    ) }}
+                </div>
+            </div>
+        </section>
+        {{ end }}
+
         <section class="landing-section landing-resource-section" id="learn-more" aria-labelledby="learn-more-title">
             <div class="container">
                 <div class="landing-resource-strip">
