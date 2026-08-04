@@ -36,23 +36,23 @@ Recognition as a community backer.
 
 ### Sponsor
 
-Recognition as a project sponsor.
+Become a Ferret Sponsor and receive recognition on the Sponsors page, including your organization name, logo, and website link.
 
 ### Bronze Sponsor
 
-Logo placement on the Sponsors page.
+Increase your organization’s visibility with enhanced placement on the Sponsors page.
 
 ### Silver Sponsor
 
-Prominent placement on the Sponsors page, homepage recognition, and acknowledgement in project announcements.
+Receive recognition on both the Sponsors page and the Ferret homepage.
 
 ### Gold Sponsor
 
-Featured placement on the Sponsors page and homepage, together with acknowledgement in the project README.
+Premium recognition across the Ferret website, homepage, and project README.
 
 ### Platinum Sponsor
 
-Premium recognition and opportunities for a customized partnership.
+The highest level of recognition across the Ferret project, including featured placement on the website, homepage, and project README.
 
 ## Current supporters
 
