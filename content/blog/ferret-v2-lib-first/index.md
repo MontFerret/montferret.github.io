@@ -67,8 +67,8 @@ Instead of hundreds of lines of imperative code describing how to retrieve data,
 ## Your application remains in control
 
 One consequence of building Ferret as a library is that it never tries to become your framework. 
-Your application continues to own its architecture, networking, configuration, logging, authentication, and everything else that makes it your application. 
 
+Your application continues to own its architecture, networking, configuration, logging, authentication, and everything else that makes it your application. 
 Ferret simply does the one thing it was designed to do: evaluate queries.
 
 In practice, that means your application decides:
@@ -133,7 +133,9 @@ RETURN products
 {{</ code >}}
 
 `INVENTORY` isn’t built into Ferret at all; it’s simply a namespace provided by your application. 
-To someone writing queries, though, that distinction is almost invisible—it feels like a natural part of the language. The same approach works equally well for CRMs, ERPs, internal APIs, cloud platforms, AI services, or any other domain your application exposes.
+To someone writing queries, though, that distinction is almost invisible - it feels like a natural part of the language. 
+
+The same approach works equally well for CRMs, ERPs, internal APIs, cloud platforms, AI services, or any other domain your application exposes.
 
 ## One runtime, many kinds of data
 
