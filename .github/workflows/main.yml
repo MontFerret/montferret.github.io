@@ -1,56 +1,95 @@
-# This is a basic workflow to help you get started with Actions
+name: Website
 
-name: main
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+  workflow_dispatch:
 
-# Controls when the workflow will run
-on: [push, pull_request]
+permissions:
+  contents: read
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
+    name: Build and test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      
-      - name: Set up Go ${{ matrix.goVer }}
-        uses: actions/setup-go@v2
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
         with:
-          stable: true
-          go-version: '^1.7'
-        
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+          go-version-file: go.mod
+          cache: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          hugo-version: '0.159.1'
+          node-version: 24
+          cache: npm
+          cache-dependency-path: themes/ferret/package-lock.json
+
+      - name: Set up Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.159.1"
           extended: true
 
-      # Runs a single command using the runners shell
-      - name: Install Go dependencies
-        run: |
-          go get
-          
-      - name: Install theme
+      - name: Set up Pages
+        if: github.ref == 'refs/heads/dev'
+        uses: actions/configure-pages@v6
+
+      - name: Download Go dependencies
+        run: go mod download
+
+      - name: Install theme dependencies
         uses: magefile/mage-action@v4
         with:
-          version: latest
+          version: 1.14.0
           args: install
 
-      - name: Build
+      - name: Test Go packages
+        run: go test ./...
+
+      - name: Test theme
+        run: npm --prefix themes/ferret test
+
+      - name: Build website
         uses: magefile/mage-action@v4
         with:
-          version: latest
+          version: 1.14.0
           args: build
-          
-      - name: Deploy 🚀
-        if: ${{ github.ref == 'refs/heads/dev' }}
-        uses: JamesIves/github-pages-deploy-action@4.1.5
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/dev'
+        uses: actions/upload-pages-artifact@v5
         with:
-          branch: master # The branch the action should deploy to.
-          folder: public # The folder the action should deploy.
-          target-folder: .
-          clean: true
+          path: public
+
+  deploy:
+    name: Deploy
+    if: github.ref == 'refs/heads/dev'
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

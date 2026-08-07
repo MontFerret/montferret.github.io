@@ -139,7 +139,6 @@ mage build
 mage clean
 mage install
 mage generate
-mage publish
 ```
 
 Available Mage targets include:
@@ -150,7 +149,10 @@ Available Mage targets include:
 * mage clean — removes the generated public directory.
 * mage install — installs dependencies for the Ferret theme.
 * mage generate — generates stdlib documentation from stdlib-docs-rep.yaml.
-* mage publish — publishes the website using publish.sh.
+
+The website is built, tested, and deployed to GitHub Pages by GitHub Actions
+when changes are pushed to `dev`. Pull requests targeting `dev` build and test
+without deploying. The workflow can also be started manually from `dev`.
 
 Only run commands that exist in the repository. Check `Magefile.go` before assuming a command is available.
 
@@ -160,8 +162,9 @@ When validating changes:
 * Use mage serve for local visual checks.
 * Use mage generate only when stdlib docs or templates are affected.
 * Use mage install only when theme dependencies need to be installed or refreshed.
-* Do not call hugo, npm, or publish.sh directly unless there is a specific reason.
-* Do not run mage publish unless the task explicitly asks to publish.
+* Do not call hugo or npm directly unless there is a specific reason.
+* Do not publish generated output to a branch; deployment uses a Pages artifact.
+* Do not delete the legacy publication branch until an Actions deployment has been verified.
 
 ## Git and change discipline
 

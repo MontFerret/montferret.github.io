@@ -22,7 +22,6 @@ import (
 const OUTPUT_DIR = "public"
 const OUTPUT_FILES = "public/*"
 const THEME_DIR = "themes/ferret"
-const WORKTREE_DIR = ".git/worktrees/public"
 const CONTENT_DIR = "content"
 const STDLIB_DOCS_DIR = "content/docs/stdlib"
 const STDLIB_AST = "stdlib-docs-rep.yaml"
@@ -49,41 +48,6 @@ func removeFiles() error {
 		err = os.RemoveAll(item)
 
 		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func ensureCleanWorkingTree() error {
-	out, err := sh.Output("git", "status", "--porcelain")
-
-	if err != nil {
-		return err
-	}
-
-	if strings.TrimSpace(out) != "" {
-		return fmt.Errorf("working directory is dirty; please commit or stash pending changes before publishing")
-	}
-
-	return nil
-}
-
-func cleanWorktreeContents(dir string) error {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-
-	for _, entry := range entries {
-		name := entry.Name()
-
-		if name == ".git" {
-			continue
-		}
-
-		if err := os.RemoveAll(filepath.Join(dir, name)); err != nil {
 			return err
 		}
 	}
@@ -187,7 +151,7 @@ func Install() error {
 
 	defer os.Chdir("../..")
 
-	return sh.RunV("npm", "install")
+	return sh.RunV("npm", "ci")
 }
 
 // Generates documentation
@@ -225,60 +189,4 @@ func Generate() error {
 	}
 
 	return nil
-}
-
-// Publishes website to GitHub Pages
-func Publish() error {
-	if err := ensureCleanWorkingTree(); err != nil {
-		return err
-	}
-
-	fmt.Println("Deleting old publication")
-	if err := Clean(); err != nil {
-		return err
-	}
-
-	if err := sh.RunV("git", "worktree", "prune"); err != nil {
-		return err
-	}
-
-	if err := os.RemoveAll(WORKTREE_DIR); err != nil {
-		return err
-	}
-
-	fmt.Println("Checking out master branch into public")
-	if err := sh.RunV("git", "worktree", "add", "-B", "master", OUTPUT_DIR, "origin/master"); err != nil {
-		return err
-	}
-
-	fmt.Println("Removing existing files")
-	if err := cleanWorktreeContents(OUTPUT_DIR); err != nil {
-		return err
-	}
-
-	fmt.Println("Generating site")
-	if err := generateSite(); err != nil {
-		return err
-	}
-
-	fmt.Println("Updating master branch")
-	if err := sh.RunV("git", "-C", OUTPUT_DIR, "add", "--all"); err != nil {
-		return err
-	}
-
-	status, err := sh.Output("git", "-C", OUTPUT_DIR, "status", "--porcelain")
-	if err != nil {
-		return err
-	}
-
-	if strings.TrimSpace(status) == "" {
-		fmt.Println("No changes to publish")
-		return nil
-	}
-
-	if err := sh.RunV("git", "-C", OUTPUT_DIR, "commit", "-m", "Publishing to master"); err != nil {
-		return err
-	}
-
-	return sh.RunV("git", "-C", OUTPUT_DIR, "push", "origin", "master")
 }

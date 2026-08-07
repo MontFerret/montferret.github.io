@@ -45,7 +45,13 @@ Generating `stdlib` documentation requires doc rep YAML.
 mage generate
 ```
 
-### Publishing
-```bash
-mage publish
-```
+### Deployment
+
+GitHub Actions builds, tests, and deploys the site to GitHub Pages when changes
+are pushed to `dev`. Pull requests targeting `dev` run the same checks without
+deploying, and maintainers can also start the workflow manually from `dev` in
+the Actions tab.
+
+The Pages source must be set to **GitHub Actions** in the repository settings.
+The custom domain remains `ferretlang.org`; configure it and HTTPS in the Pages
+settings rather than relying on the generated `CNAME` file alone.
