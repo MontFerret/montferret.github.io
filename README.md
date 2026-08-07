@@ -48,8 +48,8 @@ mage generate
 ### Deployment
 
 GitHub Actions builds, tests, and deploys the site to GitHub Pages when changes
-are pushed to `dev`. Pull requests targeting `dev` run the same checks without
-deploying, and maintainers can also start the workflow manually from `dev` in
+are pushed to `main`. Pull requests targeting `main` run the same checks without
+deploying, and maintainers can also start the workflow manually from `main` in
 the Actions tab.
 
 The Pages source must be set to **GitHub Actions** in the repository settings.

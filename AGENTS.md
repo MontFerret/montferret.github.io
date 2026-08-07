@@ -151,8 +151,8 @@ Available Mage targets include:
 * mage generate — generates stdlib documentation from stdlib-docs-rep.yaml.
 
 The website is built, tested, and deployed to GitHub Pages by GitHub Actions
-when changes are pushed to `dev`. Pull requests targeting `dev` build and test
-without deploying. The workflow can also be started manually from `dev`.
+when changes are pushed to `main`. Pull requests targeting `main` build and test
+without deploying. The workflow can also be started manually from `main`.
 
 Only run commands that exist in the repository. Check `Magefile.go` before assuming a command is available.
 
