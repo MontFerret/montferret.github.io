@@ -1,0 +1,38 @@
+{{ define "main" }}
+<main class="registry-page" data-pagefind-body>
+    <header class="registry-hero">
+        <div class="container registry-container">
+            <p class="registry-eyebrow">Ferret modules</p>
+            <h1>Registry</h1>
+            <p>Expand Ferret with community and official modules.</p>
+        </div>
+    </header>
+
+    <div class="container registry-container registry-main">
+        <div
+            id="registry-app"
+            class="registry-app"
+            data-registry-base="https://registry.ferretlang.org/"
+            aria-busy="true"
+        >
+            <section class="registry-state" role="status">
+                <span class="registry-spinner" aria-hidden="true"></span>
+                <div>
+                    <h2>Loading Registry</h2>
+                    <p>Discovering the current module catalog…</p>
+                </div>
+            </section>
+        </div>
+
+        <noscript>
+            <section class="registry-state registry-state-warning">
+                <h2>JavaScript is required</h2>
+                <p>The Registry follows live, versioned artifact links and needs JavaScript to display them.</p>
+            </section>
+        </noscript>
+    </div>
+</main>
+
+{{ $registryScript := resources.Get "js/registry.mjs" | resources.Minify | resources.Fingerprint }}
+<script type="module" src="{{ $registryScript.Permalink }}"></script>
+{{ end }}

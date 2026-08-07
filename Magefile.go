@@ -4,11 +4,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
+	"github.com/MontFerret/montferret.github.io/internal/registryroutes"
 	"gopkg.in/yaml.v2"
 
 	"github.com/magefile/mage/mg"
@@ -23,6 +27,7 @@ const CONTENT_DIR = "content"
 const STDLIB_DOCS_DIR = "content/docs/stdlib"
 const STDLIB_AST = "stdlib-docs-rep.yaml"
 const STDLIB_TEMPLATE = "templates/docs/stdlib.template"
+const REGISTRY_BASE_URL = "https://registry.ferretlang.org/"
 
 type ASTModule struct {
 	Name      string `yaml:"name"`
@@ -53,7 +58,7 @@ func removeFiles() error {
 
 func ensureCleanWorkingTree() error {
 	out, err := sh.Output("git", "status", "--porcelain")
-	
+
 	if err != nil {
 		return err
 	}
@@ -73,11 +78,11 @@ func cleanWorktreeContents(dir string) error {
 
 	for _, entry := range entries {
 		name := entry.Name()
-		
+
 		if name == ".git" {
 			continue
 		}
-		
+
 		if err := os.RemoveAll(filepath.Join(dir, name)); err != nil {
 			return err
 		}
@@ -90,17 +95,41 @@ func generateSite() error {
 	if err := sh.RunV("hugo"); err != nil {
 		return err
 	}
-	
+
 	if err := sh.RunV("npm", "--prefix", THEME_DIR, "run", "build:search"); err != nil {
 		return err
 	}
-	
-	return verifySearchIndex()
+
+	if err := verifySearchIndex(); err != nil {
+		return err
+	}
+
+	return generateRegistryRoutes()
+}
+
+func generateRegistryRoutes() error {
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+		CheckRedirect: func(request *http.Request, via []*http.Request) error {
+			if len(via) > 0 && (!strings.EqualFold(request.URL.Scheme, via[0].URL.Scheme) || !strings.EqualFold(request.URL.Host, via[0].URL.Host)) {
+				return fmt.Errorf("Registry redirect changed origin")
+			}
+			return nil
+		},
+	}
+
+	return registryroutes.Generate(
+		context.Background(),
+		client,
+		REGISTRY_BASE_URL,
+		filepath.Join(OUTPUT_DIR, "registry", "index.html"),
+		OUTPUT_DIR,
+	)
 }
 
 func verifySearchIndex() error {
 	pagefindDir := filepath.Join(OUTPUT_DIR, "pagefind")
-	
+
 	if _, err := os.Stat(pagefindDir); err != nil {
 		return fmt.Errorf("missing Pagefind output: %s", pagefindDir)
 	}
@@ -134,6 +163,18 @@ func ServeSearch() error {
 	mg.Deps(Clean)
 
 	if err := sh.RunV("hugo", "--baseURL", "http://localhost:1414/"); err != nil {
+		return err
+	}
+
+	if err := sh.RunV("npm", "--prefix", THEME_DIR, "run", "build:search"); err != nil {
+		return err
+	}
+
+	if err := verifySearchIndex(); err != nil {
+		return err
+	}
+
+	if err := generateRegistryRoutes(); err != nil {
 		return err
 	}
 
