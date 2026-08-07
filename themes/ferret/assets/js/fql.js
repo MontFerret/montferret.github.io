@@ -4,15 +4,20 @@ Category: common, scripting
 */
 function registerFQL(hljs) {
     var IDENT_RE = '[A-Za-z_][0-9A-Za-z_]*';
+    
+    var lowerCase = function(words) {
+      return `${words} ${words.toLowerCase()}`;
+    };
+    
     var KEYWORDS = {
       keyword:
-        'USE AS FOR IN RETURN LET VAR AND OR LIMIT FILTER DISTINCT SORT COLLECT ASC DESC ' +
+      lowerCase('USE AS FOR IN RETURN LET VAR AND OR LIMIT FILTER DISTINCT SORT COLLECT ASC DESC ' +
         'INTO KEEP WITH COUNT ALL ANY AGGREGATE LIKE NOT WHILE DO ' +
         'MATCH WHEN FUNC QUERY USING WAITFOR DISPATCH OPTIONS TIMEOUT EVERY BACKOFF JITTER ' +
-        'EXISTS VALUE ONE AT LEAST EVENT ON ERROR FAIL RETRY DELAY'
+        'EXISTS VALUE ONE AT LEAST EVENT ON ERROR FAIL RETRY DELAY')
       ,
       literal:
-        'TRUE FALSE NONE NULL',
+        lowerCase('TRUE FALSE NONE NULL'),
     };
     var PARAM = {
       className: 'variable',

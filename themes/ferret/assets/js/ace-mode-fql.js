@@ -12,10 +12,13 @@ ace.define(
 
     var oop = require("../lib/oop");
     var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
-
+    
+    var lowerCase = (arr) => {
+      return arr.map((x) => x.toLowerCase()).concat(arr);
+    }
     var FqlHighlightRules = function() {
       var identifier = "[A-Za-z_][0-9A-Za-z_]*";
-      var keywords = [
+      var keywords = lowerCase([
         "USE", "AS", "MATCH", "WHEN", "FUNC", "FOR", "RETURN", "QUERY",
         "USING", "WAITFOR", "DISPATCH", "OPTIONS", "TIMEOUT", "EVERY",
         "BACKOFF", "JITTER", "EXISTS", "COUNT", "ONE",
@@ -24,10 +27,10 @@ ace.define(
         "ANY", "AGGREGATE", "EVENT", "LIKE", "NOT", "IN", "DO", "WHILE",
         "AND", "OR", "ON", "ERROR", "FAIL", "RETRY", "DELAY", "DELETE", "VALUE",
         "TRIGGER"
-      ].join("|");
-      var literals = [
+      ]).join("|");
+      var literals = lowerCase([
         "TRUE", "FALSE", "NONE", "NULL"
-      ].join("|");
+      ]).join("|");
       var keywordMapper = this.createKeywordMapper({
         "keyword": keywords,
         "constant.language": literals
