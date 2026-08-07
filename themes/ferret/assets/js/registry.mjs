@@ -25,6 +25,11 @@ export function parseRegistryRoute(pathname) {
     if (parts.length === 1) {
         return { kind: "catalog" };
     }
+    if (parts.length === 2) {
+        return ROUTE_SEGMENT.test(parts[1])
+            ? { kind: "owner", owner: parts[1] }
+            : { kind: "invalid" };
+    }
     if ((parts.length !== 3 && parts.length !== 4) || parts.slice(1).some((part) => !ROUTE_SEGMENT.test(part))) {
         return { kind: "invalid" };
     }
@@ -109,6 +114,15 @@ export function modulePath(id, version = "") {
     return `/registry/${id}${version ? `/${version}` : ""}/`;
 }
 
+export function ownerPath(owner) {
+    return `/registry/${owner}/`;
+}
+
+export function modulesForOwner(modules, owner) {
+    if (!ROUTE_SEGMENT.test(owner)) return [];
+    return modules.filter((module) => validModuleID(module?.id) && module.id.split("/")[0] === owner);
+}
+
 class RegistryApp {
     constructor(root) {
         this.root = root;
@@ -171,7 +185,7 @@ class RegistryApp {
         return this.discovery;
     }
 
-    async catalogs(signal) {
+    async catalogs(signal, includeCategories = true) {
         const discovery = await this.discover(signal);
         if (!this.moduleCatalog) {
             this.moduleCatalog = assertV1(await this.fetchJSON(discovery.modules, signal), "The module catalog");
@@ -179,7 +193,7 @@ class RegistryApp {
                 throw new RegistryPayloadError("The module catalog has no module list.");
             }
         }
-        if (!this.categoryCatalog && discovery.categories) {
+        if (includeCategories && !this.categoryCatalog && discovery.categories) {
             try {
                 const categories = assertV1(await this.fetchJSON(discovery.categories, signal), "The category catalog");
                 this.categoryCatalog = Array.isArray(categories.categories) ? categories : { schemaVersion: 1, categories: [] };
@@ -190,9 +204,25 @@ class RegistryApp {
         }
         return {
             modules: this.moduleCatalog,
-            categories: this.categoryCatalog || { schemaVersion: 1, categories: [] },
+            categories: includeCategories ? this.categoryCatalog || { schemaVersion: 1, categories: [] } : { schemaVersion: 1, categories: [] },
             moduleCatalogURL: discovery.modules,
             categoryCatalogURL: discovery.categories
+        };
+    }
+
+    async loadModuleRecords(entries, moduleCatalogURL, signal) {
+        const results = await Promise.allSettled(entries.map(async (entry) => {
+            if (!validModuleID(entry?.id) || !entry?.href) throw new RegistryPayloadError("A module catalog entry is incomplete.");
+            const endpoint = resolveArtifactURL(moduleCatalogURL, entry.href);
+            const module = assertV1(await this.fetchJSON(endpoint, signal), `Module ${entry.id}`);
+            if (module.id !== entry.id) throw new RegistryPayloadError(`Module ${entry.id} has mismatched metadata.`);
+            return { ...module, categories: [] };
+        }));
+        if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+
+        return {
+            modules: results.filter((result) => result.status === "fulfilled").map((result) => result.value),
+            failed: results.filter((result) => result.status === "rejected").length
         };
     }
 
@@ -235,6 +265,8 @@ class RegistryApp {
         try {
             if (route.kind === "catalog") {
                 await this.renderCatalog(signal);
+            } else if (route.kind === "owner") {
+                await this.renderOwner(route, signal);
             } else if (route.kind === "module") {
                 await this.renderModule(route, signal);
             } else {
@@ -249,18 +281,7 @@ class RegistryApp {
     async renderCatalog(signal) {
         this.loading("Loading modules", "Following the Registry's published catalog links…");
         const { modules: catalog, categories, moduleCatalogURL, categoryCatalogURL } = await this.catalogs(signal);
-
-        const moduleResults = await Promise.allSettled(catalog.modules.map(async (entry) => {
-            if (!validModuleID(entry?.id) || !entry?.href) throw new RegistryPayloadError("A module catalog entry is incomplete.");
-            const endpoint = resolveArtifactURL(moduleCatalogURL, entry.href);
-            const module = assertV1(await this.fetchJSON(endpoint, signal), `Module ${entry.id}`);
-            if (module.id !== entry.id) throw new RegistryPayloadError(`Module ${entry.id} has mismatched metadata.`);
-            return { ...module, categories: [] };
-        }));
-        if (signal.aborted) throw new DOMException("Aborted", "AbortError");
-
-        const loadedModules = moduleResults.filter((result) => result.status === "fulfilled").map((result) => result.value);
-        const failedModules = moduleResults.length - loadedModules.length;
+        const { modules: loadedModules, failed: failedModules } = await this.loadModuleRecords(catalog.modules, moduleCatalogURL, signal);
         if (loadedModules.length === 0 && catalog.modules.length > 0) {
             throw new Error("No module records could be loaded.");
         }
@@ -315,20 +336,57 @@ class RegistryApp {
                 results.innerHTML = `<section class="registry-state registry-state-inline"><h3>No modules found</h3><p>Try another search or category.</p></section>`;
                 return;
             }
-            results.innerHTML = filtered.map((module) => {
-                const selected = selectVersion(module);
-                const status = selected ? versionStatus(module, selected.version) : null;
-                return `<a class="registry-card" href="${escapeHTML(modulePath(module.id))}">
-                    <span class="registry-card-arrow" aria-hidden="true">→</span>
-                    <h3>${escapeHTML(module.id)}</h3>
-                    <p>${escapeHTML(module.description || "No description is available for this module.")}</p>
-                    <span class="registry-card-meta">${selected ? `<span>${escapeHTML(selected.version)}</span><span class="registry-status registry-status-${status.tone}">${escapeHTML(status.label)}</span>` : "No releases"}</span>
-                </a>`;
-            }).join("");
+            results.innerHTML = this.renderModuleCards(filtered);
         };
         search.addEventListener("input", update);
         category.addEventListener("change", update);
         update();
+    }
+
+    async renderOwner(route, signal) {
+        this.loading("Loading owner", `Resolving modules published by ${route.owner}…`);
+        const { modules: catalog, moduleCatalogURL } = await this.catalogs(signal, false);
+        const entries = modulesForOwner(catalog.modules, route.owner);
+        if (entries.length === 0) {
+            this.unavailable("Owner not found", "This owner does not have any modules in the current Registry catalog.", false);
+            return;
+        }
+
+        const { modules, failed } = await this.loadModuleRecords(entries, moduleCatalogURL, signal);
+        if (modules.length === 0) {
+            throw new Error("No module records could be loaded.");
+        }
+
+        this.renderOwnerView(route.owner, modules, failed);
+    }
+
+    renderOwnerView(owner, modules, failedModules) {
+        this.setBusy(false);
+        this.root.innerHTML = `
+            <section class="registry-catalog" aria-labelledby="registry-owner-title">
+                <nav class="registry-breadcrumbs" aria-label="Breadcrumb">
+                    <a href="/registry/">Registry</a><span aria-hidden="true">/</span><span aria-current="page">${escapeHTML(owner)}</span>
+                </nav>
+                <div class="registry-catalog-heading">
+                    <div><p class="registry-section-label">Module owner</p><h2 id="registry-owner-title">Modules by ${escapeHTML(owner)}</h2></div>
+                    <p class="registry-result-count" role="status">${modules.length} ${modules.length === 1 ? "module" : "modules"}</p>
+                </div>
+                ${failedModules ? `<div class="registry-notice" role="status">Some module metadata could not be loaded. Available modules are shown below.</div>` : ""}
+                <div class="registry-grid">${this.renderModuleCards(modules)}</div>
+            </section>`;
+    }
+
+    renderModuleCards(modules) {
+        return modules.map((module) => {
+            const selected = selectVersion(module);
+            const status = selected ? versionStatus(module, selected.version) : null;
+            return `<a class="registry-card" href="${escapeHTML(modulePath(module.id))}">
+                <span class="registry-card-arrow" aria-hidden="true">→</span>
+                <h3>${escapeHTML(module.id)}</h3>
+                <p>${escapeHTML(module.description || "No description is available for this module.")}</p>
+                <span class="registry-card-meta">${selected ? `<span>${escapeHTML(selected.version)}</span><span class="registry-status registry-status-${status.tone}">${escapeHTML(status.label)}</span>` : "No releases"}</span>
+            </a>`;
+        }).join("");
     }
 
     async renderModule(route, signal) {
@@ -396,11 +454,11 @@ class RegistryApp {
         this.root.innerHTML = `
             <article class="registry-module">
                 <nav class="registry-breadcrumbs" aria-label="Breadcrumb">
-                    <a href="/registry/">Registry</a><span aria-hidden="true">/</span><span aria-current="page">${escapeHTML(module.id)}</span>
+                    <a href="/registry/">Registry</a><span aria-hidden="true">/</span><a href="${escapeHTML(ownerPath(route.owner))}">${escapeHTML(route.owner)}</a><span aria-hidden="true">/</span><span aria-current="page">${escapeHTML(route.name)}</span>
                 </nav>
                 <header class="registry-module-header">
                     <div>
-                        <p class="registry-section-label">${escapeHTML(module.owner || route.owner)} / module</p>
+                        <p class="registry-section-label"><a href="${escapeHTML(ownerPath(route.owner))}">${escapeHTML(route.owner)}</a> / module</p>
                         <h2>${escapeHTML(module.id)}</h2>
                         <p>${escapeHTML(version.description || module.description || "No description is available.")}</p>
                     </div>

@@ -10,11 +10,13 @@ import (
 	"testing"
 )
 
-func TestGenerateCreatesModuleAndVersionShells(t *testing.T) {
+func TestGenerateCreatesOwnerModuleAndVersionShells(t *testing.T) {
 	client := registryFixtureClient{
 		"/":                                   `{"schemaVersion":1,"artifacts":{"modules":"./modules/index.json"}}`,
-		"/modules/index.json":                 `{"schemaVersion":1,"modules":[{"id":"montferret/html","href":"./montferret/html/index.json"}]}`,
+		"/modules/index.json":                 `{"schemaVersion":1,"modules":[{"id":"montferret/html","href":"./montferret/html/index.json"},{"id":"montferret/csv","href":"./montferret/csv/index.json"},{"id":"acme/browser","href":"./acme/browser/index.json"}]}`,
 		"/modules/montferret/html/index.json": `{"schemaVersion":1,"id":"montferret/html","description":"kept additive","versions":[{"version":"1.0.0-rc.21","href":"./versions/1.0.0-rc.21/index.json"}]}`,
+		"/modules/montferret/csv/index.json":  `{"schemaVersion":1,"id":"montferret/csv","versions":[]}`,
+		"/modules/acme/browser/index.json":    `{"schemaVersion":1,"id":"acme/browser","versions":[]}`,
 	}
 
 	output := t.TempDir()
@@ -26,8 +28,12 @@ func TestGenerateCreatesModuleAndVersionShells(t *testing.T) {
 	}
 
 	for _, relative := range []string{
+		"registry/montferret/index.html",
+		"registry/acme/index.html",
 		"registry/montferret/html/index.html",
 		"registry/montferret/html/1.0.0-rc.21/index.html",
+		"registry/montferret/csv/index.html",
+		"registry/acme/browser/index.html",
 	} {
 		contents, err := os.ReadFile(filepath.Join(output, relative))
 		if err != nil {

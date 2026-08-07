@@ -49,8 +49,8 @@ type moduleDocumentVersion struct {
 }
 
 // Generate enumerates the live Registry and copies the built Registry shell to
-// every published module and version route. Call it after Pagefind so duplicate
-// shells are not added to global search.
+// every published owner, module, and version route. Call it after Pagefind so
+// duplicate shells are not added to global search.
 func Generate(ctx context.Context, client httpClient, baseURL, shellPath, outputRoot string) error {
 	base, err := url.Parse(baseURL)
 	if err != nil || base.Scheme != "https" && base.Scheme != "http" || base.Host == "" {
@@ -87,6 +87,7 @@ func Generate(ctx context.Context, client httpClient, baseURL, shellPath, output
 		return fmt.Errorf("enumerate Registry modules: unsupported schema version %d", catalog.SchemaVersion)
 	}
 
+	owners := make(map[string]struct{})
 	for _, entry := range catalog.Modules {
 		owner, name, err := parseModuleID(entry.ID)
 		if err != nil {
@@ -106,6 +107,12 @@ func Generate(ctx context.Context, client httpClient, baseURL, shellPath, output
 			return fmt.Errorf("enumerate Registry module %q: document identity or schema version does not match", entry.ID)
 		}
 
+		if _, exists := owners[owner]; !exists {
+			if err := writeShell(outputRoot, deepRouteShell, owner); err != nil {
+				return err
+			}
+			owners[owner] = struct{}{}
+		}
 		if err := writeShell(outputRoot, deepRouteShell, owner, name); err != nil {
 			return err
 		}

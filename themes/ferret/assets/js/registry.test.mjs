@@ -5,6 +5,8 @@ import {
     RegistryPayloadError,
     filterModules,
     modulePath,
+    modulesForOwner,
+    ownerPath,
     packageInstallCommand,
     parseRegistryRoute,
     resolveArtifactURL,
@@ -37,6 +39,10 @@ test("artifact URLs remain on the discovered Registry origin", () => {
 
 test("Registry routes round-trip through history paths", () => {
     assert.deepEqual(parseRegistryRoute("/registry/"), { kind: "catalog" });
+    assert.deepEqual(parseRegistryRoute(ownerPath("montferret")), {
+        kind: "owner",
+        owner: "montferret"
+    });
     assert.deepEqual(parseRegistryRoute(modulePath("montferret/html")), {
         kind: "module",
         id: "montferret/html",
@@ -49,7 +55,26 @@ test("Registry routes round-trip through history paths", () => {
         "1.2.0"
     );
     assert.deepEqual(parseRegistryRoute("/registry/montferret/html/1.2.0/extra/"), { kind: "invalid" });
+    assert.deepEqual(parseRegistryRoute("/registry/../"), { kind: "invalid" });
     assert.deepEqual(parseRegistryRoute("/registry/../html/"), { kind: "invalid" });
+});
+
+test("owner filtering matches the exact validated owner segment", () => {
+    const modules = [
+        { id: "montferret/html" },
+        { id: "montferret/csv" },
+        { id: "mont/browser" },
+        { id: "MontFerret/archive" },
+        { id: "montferret/../escape" }
+    ];
+
+    assert.deepEqual(modulesForOwner(modules, "montferret").map((item) => item.id), [
+        "montferret/html",
+        "montferret/csv"
+    ]);
+    assert.deepEqual(modulesForOwner(modules, "MontFerret").map((item) => item.id), ["MontFerret/archive"]);
+    assert.deepEqual(modulesForOwner(modules, "missing"), []);
+    assert.deepEqual(modulesForOwner(modules, "../montferret"), []);
 });
 
 test("stable latest wins and explicitly requested history is preserved", () => {
