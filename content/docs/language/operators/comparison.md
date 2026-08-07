@@ -3,133 +3,123 @@ title: "Comparison Operators"
 sidebarTitle: "Comparison"
 weight: 10
 draft: false
-description: "Equality, ordering, containment, pattern matching, and regular expression comparison operators."
+description: "Equality, relational comparison, containment, pattern matching, and regular expression operators."
 ---
 
 # Comparison operators
 
-Comparison operators compare two operands and return a boolean result.
+Comparison operators test two values. A valid comparison returns a Boolean; a relational operator raises a runtime error when the operand pair has no defined comparison.
 
-FQL supports comparison between values of any type. The result of a comparison is always either true or false. Equality and inequality comparisons can be used to determine whether two values are the same or different. Ordering comparisons can be used to determine whether one value sorts before or after another value according to FQL type ordering rules.
+FQL provides:
 
-The following comparison operators are available:
+- `==` and `!=` for equality
+- `<`, `<=`, `>`, and `>=` for relational comparison
+- `IN` and `NOT IN` for containment
+- `LIKE` and `NOT LIKE` for wildcard matching
+- `=~` and `!~` for regular expression matching
 
-- `==` - equality
-- `!=` - inequality
-- `<` - less than
-- `<=` - less than or equal to
-- `>` - greater than
-- `>=` - greater than or equal to
-- `IN` - tests whether a value is contained in an array
-- `NOT IN` - tests whether a value is not contained in an array
-- `LIKE` - tests whether a string matches a wildcard pattern
-- `NOT LIKE` - tests whether a string does not match a wildcard pattern
-- `=~` - tests whether a string matches a regular expression
-- `!~` - tests whether a string does not match a regular expression
+## Equality
 
-Each comparison operator evaluates its operands and returns true when the comparison condition is satisfied. Otherwise, it returns false.
-
-FQL normally does not implicitly convert values before comparing them. For example, the number `65` and the string `"65"` are different values. They are not converted to a common type before the comparison is evaluated.
-
-This behavior is important when comparing values of different types. Equality comparisons only return true when the compared values are equal according to FQL value semantics. Ordering comparisons between different types are evaluated according to FQL type ordering, not by converting one operand into the type of the other operand.
-
-{{< code lang="fql" >}}
-0 == NONE
-1 > 0
-true != NONE
-45 <= "yikes!"
-65 != "65"
-65 == 65
-1.23 > 1.32
-"abc" == "abc"
-"abc" == "ABC"
-{{</ code >}}
-
-### Duration comparisons
-
-Duration operands are the contextual exception to the general no-conversion rule. When either operand is a Duration, and neither operand is a DateTime, the other value is converted using the Duration conversion rules. Numbers represent milliseconds and duration strings may use compound syntax.
+Equality and inequality are valid across all operand types. Incompatible values are unequal: `==` returns false and `!=` returns true. FQL does not implicitly convert strings, numbers, DateTime values, or Duration values before testing equality.
 
 {{< editor lang="fql" >}}
 RETURN {
-    numericMilliseconds: 1s == 1000,
-    durationString: 90m == "1h30m",
-    ordered: 5s > 4999
+    mixedNumeric: 1 == 1.0,
+    numericString: 65 == "65",
+    noneAndZero: NONE == 0,
+    sameText: "abc" == "abc",
+    incompatible: 1s != "1s"
 }
 {{</ editor >}}
 
-If Duration conversion fails, equality remains error-free: `==` returns `false` and `!=` returns `true`. Ordering operators propagate the conversion error because they cannot produce a meaningful temporal order.
+`Int` and `Float` are the numeric exception: they compare by numeric value. Arrays and objects compare recursively, so nested values follow these same rules. Object property declaration order does not affect equality.
+
+`MATCH`, membership, grouping, set operations, and deduplication use the same canonical equality semantics.
+
+## Relational comparison
+
+Values of the same built-in type compare according to that type. Mixed `Int`/`Float` pairs compare numerically. Non-Duration built-in types use FQL's deterministic cross-type order instead of implicit conversion.
 
 {{< code lang="fql" >}}
-1s == "tomorrow"  // false
-1s != "tomorrow"  // true
-1s < "tomorrow"   // runtime error
+1 < 2.5
+"abc" < "abd"
+false < 0
+TO_DATETIME("2026-08-02T12:00:00Z") > "not-a-date"
 {{</ code >}}
 
-DateTime comparisons remain native-only. Two DateTime values compare their canonical instants; an RFC3339 string is not converted by comparison operators. Mixed DateTime comparisons continue to use normal strict type ordering, even when the string is valid RFC3339 text.
+See [Type Ordering]({{< ref "../types/ordering" >}}) for structural and cross-type details.
 
-{{< code lang="fql" >}}
-LET instant = TO_DATETIME("2026-08-02T12:00:00Z")
+### Duration comparisons
 
+Native Duration values compare only with other native Duration values. Equivalent units normalize to the same value.
+
+{{< editor lang="fql" >}}
 RETURN {
-    equivalentString: instant == "2026-08-02T12:00:00Z", // false
-    differentString: instant == "2026-08-02T13:00:00Z",  // false
-    inequality: instant != "2026-08-02T12:00:00Z",       // true
-    strictOrdering: instant > "not-a-date"                // true by type ordering
+    equivalent: 1s == 1000ms,
+    greater: 5s > 4999ms,
+    stringIsDifferent: 1s == "1s",
+    numberIsDifferent: 1s != 1000,
+    explicitConversion: 1s == TO_DURATION("1s")
 }
+{{</ editor >}}
+
+Equality remains non-failing for incompatible types. Relational Duration/non-Duration pairs have no defined result and report the actual source operator with operands in source order:
+
+{{< code lang="text" >}}
+operator '>' cannot be applied to String and Duration
+operator '<=' cannot be applied to Duration and String
 {{</ code >}}
 
-The same Duration rules apply to element-wise `ANY`, `ALL`, and `NONE` comparisons. Sorting, grouping, membership, and deduplication remain strict and do not use contextual Duration conversion.
+The same rule applies recursively. For example, `[1s] == ["1s"]` is false, while `[1s] < ["1s"]` raises an invalid-operation error. Element-wise `ANY`, `ALL`, and `NONE` comparisons also use this strict behavior.
+
+{{< notification type="info" >}}
+Duration comparison no longer converts numbers or strings implicitly. Use <code>TO_DURATION(value)</code> before comparison when conversion is intended.
+{{</ notification >}}
+
+DateTime values compare by canonical instant when both operands are DateTime. A string is never parsed implicitly; mixed DateTime/non-Duration relational comparisons continue to use the normal cross-type order.
 
 ## Containment
 
-The `IN` operator tests whether the value on the left side appears in the array on the right side.
+`IN` tests the left value against the container on the right:
 
-{{< code lang="fql" >}}
-1 IN [2, 3, 1.5]
-"foo" IN NONE
-{{</ code >}}
+- an Array or other runtime List tests whether an equal element exists;
+- an Object or other runtime Map tests whether an equal value exists;
+- a String tests whether it contains the left operand's String representation;
+- any other right operand returns false.
 
-The `NOT IN` operator is the negated form of `IN`. It returns true when the left-hand value is not contained in the right-hand array.
+{{< editor lang="fql" >}}
+RETURN {
+    arrayValue: 1 IN [2, 3, 1],
+    objectValue: "Ada" IN { name: "Ada" },
+    substring: "err" IN "runtime error",
+    unsupported: "foo" IN NONE
+}
+{{</ editor >}}
 
-{{< code lang="fql" >}}
-1 NOT IN [2, 3, 1.5]
-"foo" NOT IN NONE
-{{</ code >}}
+Object containment checks values, not property names. Use the appropriate property-access or existence operation when testing a key.
 
-`IN` and `NOT IN` are only meaningful when the right-hand operand is an array. If the right-hand operand is not an array, the value cannot be found in it, and the result is false for `IN`.
+`NOT IN` negates the `IN` result. Consequently, it returns true for an unsupported right operand.
 
 ## Pattern matching
 
-The `LIKE` operator compares a string value against a wildcard pattern.
+`LIKE` compares a String against a case-sensitive wildcard pattern. `*` matches any sequence and `?` matches one character. `NOT LIKE` returns the opposite result.
 
 {{< code lang="fql" >}}
 "foo" LIKE "f*"
-"abc" LIKE "a*"
 "abc" LIKE "?bc"
-{{</ code >}}
-
-The pattern is specified by the right-hand operand. The left-hand operand is the value being tested. Pattern matching performed by `LIKE` is case-sensitive.
-
-The `NOT LIKE` operator has the same matching rules as `LIKE`, but returns the opposite result.
-
-{{< code lang="fql" >}}
-"foo" NOT LIKE "f*"
 "abc" NOT LIKE "a*"
-"abc" NOT LIKE "?bc"
 {{</ code >}}
 
 ## Regular expressions
 
-Regular expression comparisons use the `=~` and `!~` operators.
-
-The `=~` operator returns true when the string on the left side matches the regular expression on the right side.
+`=~` returns true when the String on the left matches the regular expression on the right. `!~` returns the opposite result.
 
 {{< code lang="fql" >}}
 "foo" =~ "^f[o].$"
 "foo" !~ "[a-z]+bar$"
 {{</ code >}}
 
-Pattern and regular expression operators are intended for string values. They do not perform implicit conversion from other value types to strings.
+Pattern and regular expression operators require String operands; they do not implicitly stringify other values.
 
 ## Next steps
 

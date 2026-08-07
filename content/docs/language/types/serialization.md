@@ -34,8 +34,9 @@ Temporary values that are created and discarded during execution are not seriali
 LET items = [1, 2, 3, 4, 5]
 
 LET doubled = (
-    FOR item IN items
+    FOR item IN items {
         RETURN item * 2
+    }
 )
 
 RETURN doubled[0]

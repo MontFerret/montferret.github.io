@@ -50,12 +50,13 @@ LET users = [
     { name: "Linus", age: 31, active: true }
 ]
 
-FOR user IN users
+FOR user IN users {
     FILTER user.active && user.age >= 35
     RETURN {
         name: user.name,
         label: CONCAT(user.name, " is active")
     }
+}
 {{</ editor >}}
 
 The query uses expressions in several different positions:
@@ -233,9 +234,10 @@ LET users = [
 ]
 
 LET activeUsers = (
-    FOR user IN users
+    FOR user IN users {
         FILTER user.active
         RETURN user.name
+    }
 )
 
 RETURN activeUsers
@@ -245,9 +247,11 @@ Nested query blocks can also be used this way:
 
 {{< editor lang="fql" >}}
 LET products = (
-    FOR i IN 1..5
-        FOR x IN 1..5
+    FOR i IN 1..5 {
+        FOR x IN 1..5 {
             RETURN i * x
+        }
+    }
 )
 
 RETURN products
@@ -287,11 +291,12 @@ LET users = [
     { name: "Grace", active: false }
 ]
 
-FOR user IN users
+FOR user IN users {
     RETURN {
         name: user.name,
         active: user.active
     }
+}
 {{</ editor >}}
 
 In this query, the object expression after `RETURN` is evaluated once for each item produced by the loop.

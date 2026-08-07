@@ -120,16 +120,18 @@ A timeout is not retried by `ON ERROR RETRY`. The two handlers apply to differen
 Any expression can be wrapped in parentheses to attach a recovery tail. This is how you add error recovery to constructs that do not accept recovery tails directly, such as `FOR` loops.
 
 {{< code lang="fql" >}}
-LET results = (FOR item IN items
+LET results = (FOR item IN items {
     RETURN process(item)
+}
 ) ON ERROR RETURN []
 {{</ code >}}
 
 Retry works on grouped expressions too. When a grouped `FOR` is retried, the loop restarts from the beginning — partial results from a failed attempt are discarded.
 
 {{< code lang="fql" >}}
-LET results = (FOR item IN items
+LET results = (FOR item IN items {
     RETURN process(item)
+}
 ) ON ERROR RETRY 1 OR RETURN []
 {{</ code >}}
 

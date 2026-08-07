@@ -316,12 +316,29 @@ if err != nil {
 }
 {{</ code >}}
 
+Runtime error identities remain available through diagnostic wrapping. Use the public runtime sentinels with `errors.Is` when the host needs to distinguish zero-divisor failures:
+
+{{< code lang="go" >}}
+switch {
+case errors.Is(err, runtime.ErrDivisionByZero):
+    // Int, Float, or Duration division by zero
+case errors.Is(err, runtime.ErrModuloByZero):
+    // Int or Float modulo by zero
+case errors.Is(err, runtime.ErrInvalidOperation):
+    // another unsupported runtime operation
+}
+{{</ code >}}
+
+`runtime.ErrDivisionByZero` and `runtime.ErrModuloByZero` are the canonical identities. The existing `vm.ErrDivisionByZero` and `vm.ErrModuloByZero` names remain aliases for source compatibility, but embedding code should prefer the runtime package.
+
 Always set a timeout on the context to prevent runaway queries:
 
 {{< code lang="go" >}}
 ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 defer cancel()
 {{</ code >}}
+
+The VM checks cancellation at structural execution boundaries. Native work between those boundaries completes atomically. Any blocking or remote host operation receives the execution context and is responsible for observing cancellation while it retains control. A returned `context.Canceled` or `context.DeadlineExceeded`, including a wrapped error, bypasses FQL recovery and propagates from `Session.Run`.
 
 ## Control concurrency
 

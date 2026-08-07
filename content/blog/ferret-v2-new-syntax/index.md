@@ -373,23 +373,23 @@ Guard-style matching can express condition-based branching:
 
 {{< editor lang="fql" height="160px" apiVersion="2" >}}
 LET status = 501
-RETURN MATCH (
+RETURN MATCH {
     WHEN status == 404 => "not_found",
     WHEN status == 403 => "forbidden",
     WHEN status >= 500 => "server_error",
     _ => "ok"
-)
+}
 {{</ editor >}}
 
 Scrutinee-style matching can inspect a value directly:
 
 {{< editor lang="fql" height="160px" apiVersion="2" >}}
 LET status = 404
-RETURN MATCH status (
+RETURN MATCH status {
     200 => "ok",
     404 => "not_found",
     _ => "unknown"
-)
+}
 {{</ editor >}}
 
 Ferret v2 also supports object pattern matching. This is useful when a script needs to branch based on the shape or selected fields of a value:
@@ -400,12 +400,12 @@ LET response = {
     body: "Internal Server Error"
 }
 
-RETURN MATCH response (
+RETURN MATCH response {
     { status: 200, body: body } => body,
     { status: 404 } => NONE,
     { status: status } WHEN status >= 500 => "server_error",
     _ => "unknown"
-)
+}
 {{</ editor >}}
 
 This makes common extraction and normalization logic easier to express. Instead of pulling fields out first and then writing a chain of conditions, the match arm can describe the shape it expects and bind the values it needs.
@@ -666,7 +666,7 @@ LET response = WAITFOR EVENT "network.response_received" IN doc
     TIMEOUT 10s
     ON TIMEOUT RETURN NONE
 
-RETURN MATCH response (
+RETURN MATCH response {
     NONE => {
         ok: false,
         reason: "products_api_not_seen"
@@ -676,7 +676,7 @@ RETURN MATCH response (
         url: response.url,
         status: response.status
     }
-)
+}
 {{</ editor >}}
 
 The important part is that network activity becomes observable through the same language-level waiting model. Ferret does not need a separate `WAITFOR NETWORK` construct. The CDP driver can expose network activity as events, and `WAITFOR EVENT` can observe them.
@@ -725,11 +725,11 @@ Functions are especially useful for normalization logic: parsing prices, cleanin
 For larger functions, the block form gives enough structure without relying on indentation-sensitive syntax or `END` markers.
 
 {{< editor lang="fql" height="192px" apiVersion="2" >}}
-FUNC normalizePrice(input) (
+FUNC normalizePrice(input) {
     LET cleaned = TRIM(input)
     LET numeric = SUBSTITUTE(cleaned, "$", "")
     RETURN TO_FLOAT(numeric)
-)
+}
 
 RETURN normalizePrice("$19.99")
 {{</ editor >}}
@@ -750,13 +750,13 @@ With user-defined functions and pattern matching, Ferret can express more comple
 This is an important step toward making Ferret a more self-contained language for data extraction and processing.
 
 {{< editor lang="fql" height="196px" apiVersion="2" >}}
-FUNC fib(n) (
-    RETURN MATCH n (
+FUNC fib(n) {
+    RETURN MATCH n {
         0 => 0,
         1 => 1,
         _ => fib(n - 1) + fib(n - 2)
-    )
-)
+    }
+}
 
 RETURN fib(10)
 {{</ editor >}}

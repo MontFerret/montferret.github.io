@@ -162,9 +162,10 @@ LET users = [
     { name: "Linus", active: true }
 ]
 
-FOR user IN users
+FOR user IN users {
     FILTER user.active == true AND LENGTH(user.name) >= 4
     RETURN user.name
+}
 {{</ editor >}}
 
 They can also be used in array inline expressions:

@@ -25,9 +25,10 @@ LET users = [
     { name: "Linus", active: true }
 ]
 
-FOR user IN users
+FOR user IN users {
     FILTER user.active == @active
     RETURN user.name
+}
 {{</ editor >}}
 
 In this example, `@active` is not a boolean literal written in the query. It is a parameter whose value is provided when the query is executed.
@@ -70,9 +71,10 @@ LET users = [
     { name: "Linus" }
 ]
 
-FOR user IN users
+FOR user IN users {
     FILTER user.name == @name
     RETURN user.name
+}
 {{</ editor >}}
 
 Quoted text is always treated as a string literal. An unquoted @name expression refers to the parameter value.

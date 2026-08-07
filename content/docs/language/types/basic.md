@@ -144,7 +144,7 @@ RETURN {
 }
 {{</ editor >}}
 
-Use explicit conversion functions when a script needs to turn text into a number or a number into text.
+Use explicit conversion functions when a script needs to turn text into a number or a number into text. For example, `TO_NUMBER("10") - 2` returns `8`, while `"10" - 2` raises an invalid-operation error. A malformed explicit conversion raises a conversion error.
 
 FQL internally distinguishes integers and floats. Most arithmetic and comparison operations work the same for both, but the distinction matters when type-checking functions are used. `IS_INT` returns true only for integer values, and `IS_FLOAT` returns true only for floating-point values. Use `TO_INT` or `TO_FLOAT` to convert between the two when needed.
 
@@ -195,6 +195,12 @@ String comparisons are always case-sensitive.
 
 {{< editor lang="fql" >}}
 RETURN "Ferret" == "ferret"
+{{</ editor >}}
+
+When either `+` operand is a String, Ferret concatenates the String representations of both operands. This is the only arithmetic rule that stringifies otherwise unsupported operand types.
+
+{{< editor lang="fql" >}}
+RETURN ["items: " + 3, 1s + " elapsed"]
 {{</ editor >}}
 
 ### Template literals
@@ -274,8 +280,9 @@ Arrays are commonly produced by FOR loops and collection operations.
 
 {{< editor lang="fql" >}}
 LET numbers = (
-    FOR value IN [1, 2, 3]
+    FOR value IN [1, 2, 3] {
         RETURN value * 2
+    }
 )
 
 RETURN numbers
@@ -379,7 +386,7 @@ RETURN {
 }
 {{</ editor >}}
 
-DateTime values support native instant comparison and checked arithmetic with durations. Adding or subtracting a duration produces another DateTime; subtracting two DateTime values produces the elapsed Duration between their canonical instants.
+DateTime values support native instant comparison and checked arithmetic with native Duration values. Adding a Duration in either operand order produces another DateTime. Subtracting a Duration from a DateTime produces another DateTime, and subtracting two DateTime values produces the elapsed Duration between their canonical instants.
 
 {{< editor lang="fql" >}}
 LET start = TO_DATETIME("2024-01-01T00:00:00Z")
@@ -448,7 +455,7 @@ RETURN {
 }
 {{</ code >}}
 
-Duration conversion is shared by `TO_DURATION`, temporal operators, and scheduling expressions:
+`TO_DURATION` and scheduling expressions use the broad Duration conversion rules:
 
 | Source value | Duration result |
 | --- | --- |
@@ -462,11 +469,15 @@ Duration conversion is shared by `TO_DURATION`, temporal operators, and scheduli
 | list with multiple elements | runtime error |
 | object or unsupported value | runtime error |
 
-Duration `+`, `-`, and comparison operators apply this conversion to the other operand. Multiplication by a number or numeric string scales the duration in either operand order. Division by a number or numeric string scales the duration, while division by another Duration or a duration-form string returns a ratio. An exact ratio produces an integer; a fractional ratio produces a float.
+Arithmetic and comparison operators do not apply this conversion implicitly. Duration addition and subtraction require two native Durations. Multiplication accepts a native `Int` or `Float` in either operand order. Division accepts a native number for scaling or another Duration for a ratio. An exact Duration ratio produces an integer; a fractional ratio produces a float.
+
+Duration equality is also strict: `1s == 1000ms` is true, while `1s == 1000` and `1s == "1s"` are false. Relational comparison between Duration and a non-Duration value raises an invalid-operation error. Use `TO_DURATION(value)` explicitly when conversion is intended.
+
+String-triggered `+` remains concatenation. For example, `1s + "1s"` returns `"1s1s"`, while `1s + TO_DURATION("1s")` returns `2s`.
 
 Conversion, parsing, scaling, and division truncate fractional nanoseconds toward zero. Values outside the signed Duration range raise a range error instead of wrapping. Use `TO_STRING` when text is required.
 
-Equivalent values have the same normalized string form. For example, `5000ms` renders as `5s`, and days may render as hours. A zero duration is false in boolean contexts; any non-zero duration is true. Negative durations are valid values and arithmetic results, but scheduling operations reject them.
+Equivalent values have the same normalized string form. For example, `5000ms` renders as `5s`, and days may render as hours. A zero Duration is false when evaluated by binary `AND` or `OR`; any non-zero Duration is true. Unary `!` and `NOT` accept only Boolean values. Negative durations are valid values and arithmetic results, but scheduling operations reject them.
 
 ## Type checks
 

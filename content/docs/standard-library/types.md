@@ -6,7 +6,7 @@ description: "Type-checking and conversion functions in the Ferret standard libr
 aliases:
   - /docs/stdlib/types/
 menuTitle: 
-menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_DURATION,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_LIST,IS_MAP,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BINARY,TO_BOOL,TO_DATETIME,TO_DURATION,TO_FLOAT,TO_INT,TO_OBJECT,TO_STRING,TYPENAME,]
+menu: [IS_ARRAY,IS_BINARY,IS_BOOL,IS_DATETIME,IS_DURATION,IS_FLOAT,IS_HTML_DOCUMENT,IS_HTML_ELEMENT,IS_INT,IS_LIST,IS_MAP,IS_NAN,IS_NONE,IS_OBJECT,IS_STRING,TO_ARRAY,TO_BINARY,TO_BOOL,TO_DATETIME,TO_DURATION,TO_FLOAT,TO_INT,TO_NUMBER,TO_OBJECT,TO_STRING,TYPENAME,]
 ---
 
 
@@ -411,7 +411,7 @@ TO_FLOAT
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_float.go#L20)
 
-TO_FLOAT takes an input value of any type and convert it into a float value. None and false are converted to the value 0 true is converted to 1 Numbers keep their original value Strings are converted to their numeric equivalent if the string contains a valid representation of a number. String values that do not contain any valid representation of a number will be converted to the number 0. An empty array is converted to 0, an array with one member is converted into the result of TO_NUMBER() for its sole member. An array with two or more members is converted to the number 0. An object / HTML node is converted to the number 0.
+TO_FLOAT converts a supported value to a Float. Int values are converted to Float, numeric strings are parsed, Booleans become `0` or `1`, DateTime values become Unix seconds, and list values are converted recursively and summed. Malformed strings and unsupported types raise conversion errors.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -430,7 +430,7 @@ TO_INT
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_int.go#L20)
 
-TO_INT takes an input value of any type and convert it into an integer value. None and false are converted to the value 0 true is converted to 1 Numbers keep their original value Strings are converted to their numeric equivalent if the string contains a valid representation of a number. String values that do not contain any valid representation of a number will be converted to the number 0. An empty array is converted to 0, an array with one member is converted into the result of TO_NUMBER() for its sole member. An array with two or more members is converted to the number 0. An object / HTML node is converted to the number 0.
+TO_INT converts a supported value to an Int. Float values are truncated toward zero, integer strings are parsed, Booleans become `0` or `1`, DateTime values become Unix seconds, and list values are converted recursively and summed. Malformed strings and unsupported types raise conversion errors.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -439,6 +439,35 @@ Argument   | Type     | Default value  | Description
 
 
 **Returns** `Int` An integer value.
+- - - -
+
+
+{{< header href="to_number" >}}
+
+TO_NUMBER
+
+{{</ header >}}
+[Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/types/to_number.go#L20)
+
+TO_NUMBER converts a supported value to a native number. Existing Int and Float values keep their type; other supported values use Float conversion. Numeric strings are parsed explicitly, while malformed strings and unsupported types raise conversion errors.
+
+|          |          |                |
+---------- | -------- | -------------- | ----------
+Argument   | Type     | Default value  | Description
+`value` | `Any`  |  | Value to convert to a number.
+
+
+**Returns** `Int, Float` Converted numeric value.
+
+{{< editor lang="fql" >}}
+RETURN {
+    integer: TO_NUMBER(10),
+    parsed: TO_NUMBER("10"),
+    fractional: TO_NUMBER("2.5"),
+    arithmetic: TO_NUMBER("10") - 2
+}
+{{</ editor >}}
+
 - - - -
 
 

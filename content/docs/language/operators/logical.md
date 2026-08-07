@@ -3,26 +3,18 @@ title: "Logical Operators"
 sidebarTitle: "Logical"
 weight: 20
 draft: false
-description: "Logical AND, OR, NOT operators, short-circuit evaluation, boolean conversion, and result values."
+description: "Logical AND, OR, and strict Boolean negation, including short-circuit evaluation and result values."
 ---
 
 # Logical operators
 
-Logical operators evaluate expressions according to their truth value. They are commonly used in filter conditions, conditional expressions, and any other context where a query needs to combine or negate conditions.
+FQL supports symbolic and keyword forms of the logical operators:
 
-FQL supports the following symbolic logical operators:
+- `&&` or `AND`
+- `||` or `OR`
+- `!` or `NOT`
 
-- `&&` logical AND
-- `||` logical OR
-- `!` logical NOT
-
-FQL also supports keyword-based forms of the same operators:
-
-- `AND` logical AND
-- `OR` logical OR
-- `NOT` logical NOT
-
-The keyword forms are aliases for the symbolic forms. They have the same behavior and may be used interchangeably. For example, `a && b` and `a AND b` are equivalent, as are `!value` and `NOT value`.
+The paired forms have the same behavior.
 
 {{< code lang="fql" >}}
 RETURN true && false
@@ -30,52 +22,23 @@ RETURN true OR false
 RETURN NOT false
 {{</ code >}}
 
-## Boolean conversion
+## Truth values for AND and OR
 
-Logical operators may be applied to values that are not booleans. When a value is used in a logical operation, FQL evaluates the value according to its boolean representation.
+Binary `AND` and `OR` evaluate each operand according to its Boolean representation:
 
-The conversion rules are:
+- `NONE` is false.
+- Booleans keep their value.
+- Numeric zero is false; other numbers are true.
+- A zero Duration or DateTime is false; other temporal values are true.
+- An empty String is false; other strings are true.
+- Arrays and objects are true, even when empty.
+- Binary and host values are true.
 
-- `NONE` evaluates as `false`.
-- Boolean values keep their original value.
-- Numeric values evaluate as false when they are `0`; all other numeric values evaluate as `true`.
-- Strings evaluate as `false` when they are empty; all non-empty strings evaluate as `true`.
-- Arrays evaluate as `true`, regardless of whether they contain any elements.
-- Objects evaluate as `true`, regardless of whether they contain any properties.
-- Binary values and custom runtime-backed values evaluate as `true`.
-
-These conversions are applied implicitly by logical operators. Passing a non-boolean value to a logical operator does not cause the query to fail.
-
-{{< code lang="fql" >}}
-RETURN !!0
-RETURN !!1
-RETURN !!""
-RETURN !!"ferret"
-RETURN !![]
-RETURN !!{}
-{{</ code >}}
+The conversion is used only to decide control flow. `AND` and `OR` return one of their original operands rather than an automatically converted Boolean.
 
 ## Logical AND
 
-The logical `AND` operator evaluates the left-hand operand first.
-
-If the left-hand operand evaluates as false, the operation returns the original left-hand value. In this case, the right-hand operand is not evaluated unless the query plan requires it to be evaluated earlier.
-
-If the left-hand operand evaluates as true, the operation returns the original right-hand value.
-
-This means that `&&` and `AND` do not always return a boolean value. They return one of their operands.
-
-{{< code lang="fql" >}}
-RETURN false && "value"
-RETURN NONE && true
-RETURN 0 && "fallback"
-RETURN true && 23
-RETURN "user" && "active"
-{{</ code >}}
-
-In the examples above, the result is the first operand that prevents the `AND` expression from continuing, or the right-hand operand when the left-hand operand is truthy.
-
-This behavior is useful when logical expressions are used to guard access to values or to return a value only when a preceding condition is satisfied.
+`AND` evaluates the left operand first. If it is false, the expression returns that operand without evaluating the right operand. Otherwise, it evaluates and returns the right operand.
 
 {{< editor lang="fql" height="150px" >}}
 LET user = {
@@ -86,29 +49,18 @@ LET user = {
 RETURN user.active && user.name
 {{</ editor >}}
 
-The query returns "Ada" because user.active evaluates as true, so the result of the `AND` expression is the right-hand operand.
+This returns `"Ada"` because the left operand is true.
+
+{{< code lang="fql" >}}
+false && "value"  // false
+NONE AND true      // NONE
+0 && "fallback"   // 0
+true && 23         // 23
+{{</ code >}}
 
 ## Logical OR
 
-The logical `OR` operator also evaluates the left-hand operand first.
-
-If the left-hand operand evaluates as true, the operation returns the original left-hand value. In this case, the right-hand operand is not evaluated unless the query plan requires it to be evaluated earlier.
-
-If the left-hand operand evaluates as false, the operation returns the original right-hand value.
-
-Like logical `AND`, logical `OR` does not necessarily return a boolean value. It returns one of its operands.
-
-{{< code lang="fql" >}}
-RETURN true || "value"
-RETURN 1 || 7
-RETURN "ferret" OR "fallback"
-RETURN NONE || "fallback"
-RETURN "" || "fallback"
-{{</ code >}}
-
-In the examples above, the `OR` expression returns the first truthy operand, or the right-hand operand when the left-hand operand is falsy.
-
-This behavior is commonly used to provide fallback values.
+`OR` evaluates the left operand first. If it is true, the expression returns that operand without evaluating the right operand. Otherwise, it evaluates and returns the right operand.
 
 {{< editor lang="fql" height="150px" >}}
 LET user = {
@@ -118,40 +70,40 @@ LET user = {
 RETURN user.displayName || "Anonymous"
 {{</ editor >}}
 
-The query returns "Anonymous" because user.displayName is an empty string and therefore evaluates as false.
+{{< code lang="fql" >}}
+true || "value"       // true
+1 OR 7                 // 1
+NONE || "fallback"    // "fallback"
+"" || "fallback"      // "fallback"
+{{</ code >}}
 
 ## Logical NOT
 
-The logical `NOT` operator converts its operand to a boolean value and returns the negated boolean result.
+Unary `!` and `NOT` accept only Boolean operands and always return a Boolean.
 
-Unlike `&&` and `||`, the `NOT` operator always returns a boolean.
+{{< editor lang="fql" >}}
+RETURN {
+    notTrue: !true,
+    notFalse: NOT false
+}
+{{</ editor >}}
 
-{{< code lang="fql" >}}
-RETURN !true
-RETURN !false
-RETURN !NONE
-RETURN !0
-RETURN !""
-RETURN !"ferret"
+Other types produce an operator-oriented runtime error:
+
+{{< code lang="text" >}}
+operator '!' cannot be applied to String
+operator '!' cannot be applied to Int
 {{</ code >}}
 
-The keyword form `NOT` has the same behavior:
+Use `TO_BOOL(value)` when explicit Boolean conversion is intended.
 
-{{< code lang="fql" >}}
-RETURN NOT true
-RETURN NOT NONE
-RETURN NOT "ferret"
-{{</ code >}}
+{{< notification type="info" >}}
+Double negation is no longer an implicit conversion mechanism. Replace expressions such as <code>!!value</code> with <code>TO_BOOL(value)</code>.
+{{</ notification >}}
 
 ## Short-circuit evaluation
 
-The binary logical operators use short-circuit evaluation.
-
-The left-hand operand is evaluated first. The right-hand operand is evaluated only when it is needed to determine the result of the expression.
-
-For logical `AND`, the right-hand operand is evaluated only if the left-hand operand evaluates as true. If the left-hand operand evaluates as false, the expression returns the left-hand value immediately.
-
-For logical `OR`, the right-hand operand is evaluated only if the left-hand operand evaluates as false. If the left-hand operand evaluates as true, the expression returns the left-hand value immediately.
+The right side of `AND` is evaluated only when the left side is true. The right side of `OR` is evaluated only when the left side is false.
 
 {{< editor lang="fql" >}}
 LET user = {
@@ -162,56 +114,20 @@ LET user = {
 RETURN user.active && user.name
 {{</ editor >}}
 
-In this example, user.name does not need to determine the result of the expression because user.active already evaluates as false.
-
-Similarly, the right-hand side of an OR expression is skipped when the left-hand side already evaluates as true:
-
-{{< editor lang="fql" >}}
-LET user = {
-    active: false,
-    name: "Ada"
-}
-
-RETURN user.name || "Anonymous"
-{{</ editor >}}
-
-The expression returns "Ada" without needing the fallback value to determine the result.
-
-Subqueries are an exception to the normal short-circuit model. When an operand contains a subquery, the subquery may be evaluated before the logical operator itself as part of query execution. For this reason, logical short-circuiting should not be used to assume that a subquery operand is never evaluated.
+Subqueries are an exception to this source-level model. Query planning may evaluate a subquery operand before the logical operator, so short-circuiting should not be used to suppress a subquery's execution.
 
 ## Result values
 
-The result type of a logical expression depends on the operator.
-
-The ! and NOT operators always return a boolean value.
-
-The `&&`, `AND`, `||`, and `OR` operators return one of their operands. As a result, the returned value may have any FQL type.
-
-Expressions that use comparison operators typically produce boolean results:
-
-{{< code lang="fql">}}
-RETURN 25 > 1 && 42 != 7
-RETURN 22 IN [23, 42] || 23 NOT IN [22, 7]
-RETURN 25 != 25
-{{</ code >}}
-
-However, logical operators can also return non-boolean values:
+`!` and `NOT` always return a Boolean. `AND` and `OR` return an operand, so their result may have any FQL type.
 
 {{< code lang="fql" >}}
-RETURN 1 || 7
-RETURN NONE || "foo"
-RETURN NONE && true
+RETURN 25 > 1 && 42 != 7
+RETURN 22 IN [23, 42] || 23 NOT IN [22, 7]
+RETURN NONE || "fallback"
 RETURN true && 23
 {{</ code >}}
 
-These expressions return `1`, `"foo"`, `NONE`, and `23`, respectively.
-
-When a strict boolean result is required, convert the final value to a boolean by applying logical NOT twice:
-
-{{< code lang="fql" >}}
-RETURN !!"ferret"
-RETURN !!NONE
-{{</ code >}}
+When a strict Boolean result is required from a binary logical expression, pass the result to `TO_BOOL`.
 
 ## Next steps
 

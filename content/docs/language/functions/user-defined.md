@@ -36,19 +36,35 @@ Use the arrow form when the function body is a single expression.
 
 ### Block form
 
-Unlike many C-like languages, FQL uses parentheses for block function bodies.
+The block form encloses the function body in braces. Use it when the function needs intermediate bindings or multiple steps.
 
 {{< editor lang="fql" >}}
-FUNC normalizePrice(input) (
+FUNC normalizePrice(input) {
     LET cleaned = TRIM(input)
     LET numeric = SUBSTITUTE(cleaned, "$", "")
     RETURN TO_FLOAT(numeric)
-)
+}
 
 RETURN normalizePrice("  $19.99  ")
 {{</ editor >}}
 
-Use the block form when the function body requires intermediate variables or multiple steps.
+Every block function must end with an explicit `RETURN` or a result-producing `FOR`. Arbitrary final expressions are not returned implicitly; use the arrow form for a single expression.
+
+### Returning a terminal FOR result
+
+A block function may end directly with a `FOR`. The array produced by the loop becomes the function result.
+
+{{< editor lang="fql" >}}
+FUNC doubleAll(items) {
+    FOR item IN items {
+        RETURN item * 2
+    }
+}
+
+RETURN doubleAll([1, 2, 3])
+{{</ editor >}}
+
+This uses the same loop result as a top-level or parenthesized `FOR`; it does not add another wrapper or implicitly return unrelated trailing expressions. For example, `FUNC value() { 42 }` is invalid. Write `FUNC value() => 42` or `FUNC value() { RETURN 42 }` instead.
 
 ## Parameters
 
@@ -87,10 +103,10 @@ If the outer variable is declared with `VAR`, the function can also modify it:
 {{< editor lang="fql" >}}
 VAR counter = 0
 
-FUNC inc() (
+FUNC inc() {
     counter = counter + 1
     RETURN counter
-)
+}
 
 RETURN [inc(), inc(), inc()]
 {{</ editor >}}
@@ -102,14 +118,15 @@ Variables declared with `LET` are immutable and cannot be reassigned inside a fu
 Functions can be declared inside other functions.
 
 {{< editor lang="fql" >}}
-FUNC process(items) (
+FUNC process(items) {
     FUNC transform(item) => item * 2
 
     RETURN (
-        FOR item IN items
+        FOR item IN items {
             RETURN transform(item)
+        }
     )
-)
+}
 
 RETURN process([1, 2, 3])
 {{</ editor >}}
@@ -121,12 +138,12 @@ A nested function can access variables from all enclosing scopes, not just the i
 User-defined functions work naturally with `FOR` loops and other query constructs.
 
 {{< editor lang="fql" >}}
-FUNC formatUser(user) (
+FUNC formatUser(user) {
     RETURN {
         label: CONCAT(user.name, " (", user.role, ")"),
         active: user.active
     }
-)
+}
 
 LET users = [
     { name: "Ada", role: "admin", active: true },
@@ -134,9 +151,10 @@ LET users = [
     { name: "Linus", role: "viewer", active: true }
 ]
 
-FOR user IN users
+FOR user IN users {
     FILTER user.active
     RETURN formatUser(user)
+}
 {{</ editor >}}
 
 ## Function names

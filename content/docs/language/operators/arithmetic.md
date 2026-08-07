@@ -3,132 +3,138 @@ title: "Arithmetic Operators"
 sidebarTitle: "Arithmetic"
 weight: 30
 draft: false
-description: "Addition, subtraction, multiplication, division, modulus, and type conversion rules for arithmetic."
+description: "Addition, subtraction, multiplication, division, modulus, and the operand types accepted by arithmetic operators."
 ---
 
 # Arithmetic operators
 
-Arithmetic operators work with numbers and also provide checked Duration and DateTime operations. The result type depends on the operand pair.
+FQL arithmetic is defined directly over native numbers and temporal values. Operators do not implicitly route arbitrary values through `TO_NUMBER`, `TO_DURATION`, or `TO_DATETIME`.
 
-FQL supports the following arithmetic operators:
+FQL supports:
 
-- ``+`` addition
-- ``-`` subtraction
-- ``*`` multiplication
-- ``/`` division
-- ``%`` modulus
+- `+` addition or String-triggered concatenation
+- `-` subtraction
+- `*` multiplication
+- `/` division
+- `%` modulus
+- unary `+` and `-`
 
-Unary plus and unary minus are supported as well:
+For exponentiation, use `POW()`. The syntax `base ** exponent` is not supported.
+
+## Native numeric arithmetic
+
+Numeric arithmetic accepts only `Int` and `Float` values.
 
 {{< editor lang="fql" >}}
-LET x = -5
-LET y = 1
-RETURN [-x, +y]
+RETURN {
+    integer: 1 + 2,
+    mixed: 1 + 2.5,
+    product: 2.5 * 3,
+    exactDivision: 6 / 3,
+    fractionalDivision: 5 / 2,
+    floatRemainder: 5.5 % 2
+}
 {{</ editor >}}
 
-For exponentiation, there is a numeric function `POW()`. The syntax base ** exp is not supported.
+`Int + Int`, `Int - Int`, `Int * Int`, and `Int % Int` return an `Int`. Exact division of two integers also returns an `Int`; division with a remainder returns a `Float`. Any numeric pair containing a `Float` returns a `Float`, and floating-point modulus uses the ordinary remainder operation.
 
-Some example arithmetic operations:
+Arithmetic checks integer overflow, division and modulus by zero, and non-finite floating-point results. These conditions raise runtime errors instead of wrapping or producing `NaN` or infinity.
+
+Zero divisors produce the specific diagnostics `division by zero` and `modulo by zero`.
+
+Numeric-looking strings are not numbers. Convert them explicitly:
+
+{{< editor lang="fql" >}}
+LET input = "10"
+
+RETURN TO_NUMBER(input) - 2
+{{</ editor >}}
+
+{{< notification type="info" >}}
+Implicit numeric-string, Boolean, <code>NONE</code>, collection, Binary, and opaque host-value arithmetic is no longer supported. Use an explicit <code>TO_*</code> function when conversion is intended.
+{{</ notification >}}
+
+## String concatenation
+
+If either `+` operand is an actual String, Ferret concatenates both operands' String representations. The String may appear on either side and may be combined with any runtime value.
+
+{{< editor lang="fql" >}}
+RETURN [
+    "a" + 1,
+    1 + "a",
+    "enabled=" + true,
+    NONE + " value",
+    [1, 2] + " items",
+    1s + " elapsed"
+]
+{{</ editor >}}
+
+Expressions are evaluated from left to right. A later String does not rescue an earlier invalid pair:
 
 {{< code lang="fql" >}}
-1 + 1
-33 - 99
-12.4 * 4.5
-13.0 / 0.1
-23 % 7
--15
-+9.99
+true + 1 + " items" // fails at true + 1
 {{</ code >}}
-
-## Type conversion
-
-Arithmetic operators accept operands of any type. The conversion rules depend on the operator.
-
-### Addition
-
-The ``+`` operator performs numeric addition when both operands are numbers. When either operand is a string, it normally performs string concatenation instead. Temporal operands take precedence: a Duration or DateTime uses the temporal rules below before string concatenation is considered.
-
-{{< editor lang="fql" >}}
-RETURN [
-    1 + 2,
-    1 + "99",
-    1 + "a",
-    1 + NONE,
-    NONE + 1,
-    3 + [ ],
-    24 + [ 2 ],
-    "hello" + " " + "world"
-]
-{{</ editor >}}
-
-### Subtraction, multiplication, division, and modulus
-
-The ``-``, ``*``, ``/``, and ``%`` operators always convert their operands to numbers. The conversion rules are:
-
-- ``NONE`` is converted to ``0``.
-- ``false`` is converted to ``0``, ``true`` is converted to ``1``.
-- A valid numeric value remains unchanged.
-- String values are converted to a number if they contain a valid numeric representation. Strings with non-numeric contents are converted to ``0``.
-- An empty array is converted to ``0``. A non-empty array is converted by summing the numeric values of all its elements.
-- Objects, binary, and custom types are converted to ``0``.
-
-{{< editor lang="fql" >}}
-RETURN [
-    25 - NONE,
-    17 - true,
-    23 * { },
-    5 * [ 7 ],
-    10 - [ 2, 3 ],
-    24 / "12",
-    0 / 1
-]
-{{</ editor >}}
 
 ## Temporal arithmetic
 
-Duration arithmetic converts operands only where the table below says “coercible Duration.” Numeric Duration inputs are milliseconds, duration strings may be compound, and fractional nanoseconds are truncated toward zero. See [Basic Types]({{< ref "/docs/language/types/basic#durations" >}}) for the complete conversion table.
+DateTime and Duration arithmetic accepts only the native operand pairs below. Convert text or other values before applying an operator.
 
 | Expression | Result |
 | --- | --- |
-| `Duration + coercible Duration` | Duration |
-| `coercible Duration + Duration` | Duration |
-| `Duration - coercible Duration` | Duration |
-| `Duration * number or numeric string` | scaled Duration |
-| `number or numeric string * Duration` | scaled Duration |
-| `Duration / number` or numeric string | scaled Duration |
-| `Duration / Duration` or duration string | Int for an exact ratio, otherwise Float |
-| `DateTime + coercible Duration` | DateTime |
-| `coercible Duration + DateTime` | DateTime |
-| `DateTime - coercible Duration` | DateTime |
+| `Duration + Duration` | Duration |
+| `Duration - Duration` | Duration |
+| `Duration * Number` | scaled Duration |
+| `Number * Duration` | scaled Duration |
+| `Duration / Number` | scaled Duration |
+| `Duration / Duration` | Int for an exact ratio, otherwise Float |
+| `DateTime + Duration` | DateTime |
+| `Duration + DateTime` | DateTime |
+| `DateTime - Duration` | DateTime |
 | `DateTime - DateTime` | elapsed Duration |
-| `DateTime - RFC3339 string` | elapsed Duration |
+| unary `+Duration` or `-Duration` | Duration |
 
 {{< editor lang="fql" >}}
 LET start = TO_DATETIME("2024-03-10T06:30:00Z")
 
 RETURN {
-    numericMilliseconds: 1s + 250,
-    compoundString: 30m + "1h30m",
-    multiplied: "2.5" * 5s,
-    scaled: 5s / "2",
-    ratio: 5s / "250ms",
-    later: start + "90m"
+    combined: 1s + 250ms,
+    multiplied: 2.5 * 5s,
+    scaled: 5s / 2,
+    ratio: 5s / 250ms,
+    later: start + TO_DURATION("90m"),
+    elapsed: (start + 90m) - start
 }
 {{</ editor >}}
 
-For `DateTime - String`, Ferret first tries to parse the string as an RFC3339 DateTime, then as a Duration. If neither conversion succeeds, the expression raises a runtime error.
+All Duration scaling truncates fractional nanoseconds toward zero. Duration and DateTime range overflow raises an error.
 
-The following pairs are unsupported and raise an invalid-operation error:
+String concatenation still takes precedence for `+`. For example, `1s + "1s"` returns the String `"1s1s"`; use `1s + TO_DURATION("1s")` for temporal addition.
 
-- `DateTime + DateTime`
-- `Duration - DateTime`
-- DateTime multiplication, division, or modulus
-- Duration multiplication by another Duration or a duration-form string
-- reverse division such as `2 / 1s`
-- Duration modulus
+Unsupported temporal pairs include `DateTime + DateTime`, `Duration - DateTime`, reverse division such as `2 / 1s`, Duration modulus, and DateTime multiplication, division, or modulus.
 
-All Duration and DateTime arithmetic is checked for overflow. DateTime arithmetic uses canonical instants and does not retain monotonic clock metadata.
+## Unary operators
+
+Unary `+` and `-` accept only `Int`, `Float`, and `Duration`. Other operand types raise an invalid-operation error.
+
+{{< editor lang="fql" >}}
+LET x = -5
+LET interval = 500ms
+
+RETURN [-x, +interval, -interval]
+{{</ editor >}}
+
+## Invalid operations
+
+An unsupported operand pair reports the source operator and preserves operand order:
+
+{{< code lang="text" >}}
+operator '-' cannot be applied to String and Int
+operator '+' cannot be applied to Boolean and Int
+operator '/' cannot be applied to Duration and String
+{{</ code >}}
+
+Equality remains valid across incompatible types; these errors apply only to operators that require a supported arithmetic pair.
 
 ## Next steps
 
-{{< docs-related tiles="language-operators,language-operators-range,language-operators-precedence" >}}
+{{< docs-related tiles="language-operators,language-operators-comparison,language-types-basic" >}}

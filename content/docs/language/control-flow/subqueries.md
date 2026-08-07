@@ -18,9 +18,10 @@ LET users = [
 ]
 
 LET activeUsers = (
-    FOR u IN users
+    FOR u IN users {
         FILTER u.active
         RETURN u.name
+    }
 )
 
 RETURN activeUsers
@@ -34,14 +35,14 @@ Because a subquery is just a value, it can be used anywhere a value is expected 
 
 {{< editor lang="fql" >}}
 RETURN LENGTH(
-    (FOR n IN 1..10 FILTER n % 2 == 0 RETURN n)
+    (FOR n IN 1..10 { FILTER n % 2 == 0 RETURN n })
 )
 {{</ editor >}}
 
 A subquery can also be indexed like any other array.
 
 {{< editor lang="fql" >}}
-RETURN (FOR n IN 1..5 RETURN n * n)[2]
+RETURN (FOR n IN 1..5 { RETURN n * n })[2]
 {{</ editor >}}
 
 ## Nesting
@@ -50,11 +51,13 @@ The `RETURN` of one loop can be another subquery, which produces nested arrays.
 
 {{< editor lang="fql" >}}
 RETURN (
-    FOR i IN 1..3
+    FOR i IN 1..3 {
         RETURN (
-            FOR j IN 1..3
+            FOR j IN 1..3 {
                 RETURN i * j
+            }
         )
+    }
 )
 {{</ editor >}}
 

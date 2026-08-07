@@ -63,9 +63,10 @@ LET users = [
     { name: "Linus", active: true }
 ]
 
-FOR user IN users
+FOR user IN users {
     FILTER user.active
     RETURN user.name
+}
 {{< /editor >}}
 
 This script starts with an array of users and returns only the names of active ones. The shape of the data changes; the logic remains declarative. `FOR` expressions can appear inline too, assigned via `LET` and composed with the rest of the script:
@@ -73,12 +74,13 @@ This script starts with an array of users and returns only the names of active o
 {{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 
-FOR item IN page[~ css`.product-card`]
+FOR item IN page[~ css`.product-card`] {
     FILTER item.attributes["data-in-stock"] == "true"
     RETURN {
         title: item[~? css`.product-title`].textContent,
         url: item[~? css`a`].attributes.href
     }
+}
 {{< /editor >}}
 
 Even when the source is messy, the final result can be structured and clean.

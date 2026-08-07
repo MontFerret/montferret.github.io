@@ -54,10 +54,11 @@ RETURN name
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
 VAR total = 0
 
-FOR price IN [10, 20, 30]
+FOR price IN [10, 20, 30] {
     total = total + price
     
     RETURN total
+}
 {{< /editor >}}
 
 Only `VAR` bindings can be reassigned. `LET` bindings cannot be changed after they are created, and no binding can be declared twice in the same scope. Prefer `LET` unless mutation is actually needed.
@@ -126,8 +127,9 @@ RETURN "Hello, world!"
 {{< /editor >}}
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-FOR i IN 1..10
+FOR i IN 1..10 {
     RETURN i * i
+}
 {{< /editor >}}
 
 The loop body is the same in both cases. The difference is what happens to the produced collection: a top-level `FOR` makes it the script result; a parenthesized `FOR` stores it for further use.
@@ -139,9 +141,10 @@ Some statements introduce a nested scope. Names declared inside that scope are n
 `FOR` is the most common block-producing statement:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-LET values = (FOR i IN 1..5
+LET values = (FOR i IN 1..5 {
     LET square = i * i
     RETURN square
+}
 )
 
 RETURN values
@@ -152,11 +155,11 @@ RETURN values
 Other statements have block-like shapes as well. A `MATCH` expression describes branching logic:
 
 {{< editor lang="fql" params=`{"status": "active"}` >}}
-RETURN MATCH @status (
+RETURN MATCH @status {
     "active" => "Account is active",
     "paused" => "Account is paused",
     _ => "Unknown status"
-)
+}
 {{< /editor >}}
 
 A `WAITFOR` block describes event-oriented runtime logic:

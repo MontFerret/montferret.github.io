@@ -157,6 +157,8 @@ if err != nil {
 }
 {{</ code >}}
 
+The VM observes cancellation at structural execution boundaries rather than polling every native operation. Blocking host functions, iterators, queries, streams, and other context-aware capabilities receive this same context and must observe it while they retain control. Cancellation and deadline errors propagate to the caller and cannot be suppressed by FQL error recovery.
+
 ## Next steps
 
 {{< docs-related tiles="embedding-modules,embedding-custom-functions,embedding-configuration,guide-writing-plugins" >}}

@@ -30,21 +30,21 @@ LET itemSelector = ".product-card"
 // Find the "next" link, click it, and wait for the resulting navigation.
 // The TRIGGER block ensures the navigation listener is active before the
 // click is dispatched, avoiding race conditions.
-FUNC CLICK_NEXT() (
+FUNC CLICK_NEXT() {
     RETURN WAITFOR EVENT "navigation" IN page
         TRIGGER (DISPATCH "click" IN (QUERY ONE nextSelector IN page USING css))
         TIMEOUT 10s
-)
+}
 
 // Skip navigation during the first iteration because the first page
 // has already been loaded. Starting with the second iteration,
 // move to the next page before extracting its products.
-FUNC NEXT_PAGE(pageNum) (
-    RETURN MATCH (
+FUNC NEXT_PAGE(pageNum) {
+    RETURN MATCH {
         WHEN pageNum > 0 => CLICK_NEXT(),
         _ => NONE
-    )
-)
+    }
+}
 
 // Process the current page, then continue while a “next” link exists.
 FOR i DO WHILE QUERY EXISTS nextSelector IN page USING css

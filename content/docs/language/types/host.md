@@ -134,19 +134,19 @@ A host value may be serialized using a descriptive representation, converted usi
 
 See [Serialization]({{< ref "serialization" >}}) for more information about how FQL values are converted to external formats.
 
-## Equality and ordering
+## Equality and comparison
 
 Host values may define their own comparison behavior.
 
-FQL does not compare host values by inspecting their internal implementation. Instead, comparison is delegated to the host value when it supports comparison.
+FQL does not inspect a host value's internal implementation or convert it through its String representation. Instead, equality and relational comparison are delegated through separate host capabilities.
 
-A comparable host value defines how it is ordered relative to other values, including values of other types. That ordering may be based on identity, an internal key, a normalized representation, or another rule chosen by the runtime or module.
+An equatable host value defines `==` and `!=` within its compatible comparison domain. A comparable host value defines `<`, `<=`, `>`, and `>=` and may participate in sorting. Either rule may be based on identity, an internal key, a normalized representation, or another stable key chosen by the runtime or module.
 
-If a host value does not support comparison, it should not be used with ordering operations such as sorting or range comparison.
+If a host value supports neither capability, incompatible equality returns false and inequality returns true, while relational comparison fails. When both capabilities are present, they must agree about equality.
 
-This keeps host values opaque while still allowing modules and runtimes to make specific host values participate in FQL's ordering model.
+This keeps host values opaque while still allowing modules and runtimes to make specific host values participate in FQL comparisons.
 
-See [Type Ordering]({{< ref "ordering" >}}) and [Capability Types]({{< ref "capabilities" >}}) for more information about value ordering.
+See [Type Ordering]({{< ref "ordering" >}}) and [Capability Types]({{< ref "capabilities" >}}) for the complete comparison contracts.
 
 ## Next steps
 

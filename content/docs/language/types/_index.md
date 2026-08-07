@@ -82,12 +82,13 @@ Capability-specific behavior is documented in [Capabilities]({{< ref "capabiliti
 Inside a script, values may be basic values or host values. At the boundary of a script, plain arrays, objects, strings, numbers, booleans, binary values, and `NONE` are the most portable results:
 
 {{< code lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-FOR product IN products
+FOR product IN products {
     RETURN {
         name: product.name,
         price: product.price,
         available: product.stock > 0
     }
+}
 {{< /code >}}
 
 Host values are usually most useful while the script is running. When a script returns a host value, the embedding application or runtime decides whether it can be serialized and what representation to use.

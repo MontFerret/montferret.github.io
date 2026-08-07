@@ -216,11 +216,18 @@ type Query struct {
 
 | Interface | Method | Purpose |
 |-----------|--------|---------|
-| `Comparable` | `Compare(other Value) int` | Enables `==`, `<`, `>`, and `SORT` |
+| `Equatable` | `Equal(ctx, other Value) (bool, error)` | Enables host-defined `==`, `!=`, membership, grouping, and deduplication |
+| `Comparable` | `Compare(ctx, other Value) (Ordering, error)` | Enables relational comparison and sorting |
 | `Sortable` | `SortAsc(ctx) error`, `SortDesc(ctx) error` | In-place sort |
 | `Cloneable` | `Clone(ctx) (Cloneable, error)` | Deep copy |
 | `Unwrappable` | `Unwrap() any` | Extract the inner Go value |
 | `DebugInspectable` | `DebugInfo() DebugInfo` | Presentation hints for the debugger |
+
+`Equatable` and `Comparable` are independent. `Equal` must be reflexive, symmetric, and transitive within the value's compatible comparison domain, and must return false without an error for an incompatible value. `Compare` must provide a reflexive, antisymmetric, and transitive order within that domain and return an error compatible with `runtime.ErrInvalidOperation` for an incompatible value. If both interfaces are implemented, `Equal` must return true exactly when `Compare` returns `runtime.Equal`.
+
+Semantically equal values must return the same `Hash()`. A hash is only a candidate selector; Ferret verifies `Equal` before grouping or deduplicating host values.
+
+Both methods receive the execution context unchanged and may return operational errors. Any negative or positive `Ordering` is normalized to `runtime.Less` or `runtime.Greater` by runtime dispatch.
 
 `Unwrappable` is useful when other Go code (custom functions, modules) needs to access the underlying Go object. The `runtime.UnwrapAs` generic helper simplifies extraction:
 
@@ -402,9 +409,30 @@ type Resource interface {
 
 Values stored in engine-level parameters are **not** tracked by the result's closer set. The host owns their lifecycle and must close them explicitly when the engine shuts down.
 
+## Context and cancellation
+
+The VM observes query cancellation at structural execution boundaries, such as loop backedges, calls, debugger observations, and top-level completion. Native arithmetic, comparison, property access, and collection work between those boundaries is atomic from the VM's perspective.
+
+Context-aware host functions and capabilities receive the original execution context. An implementation that waits, performs network or database I/O, advances a remote iterator, or otherwise retains control must observe that context itself:
+
+{{< code lang="go" >}}
+func (s *Store) Query(ctx context.Context, q runtime.Query) (runtime.List, error) {
+    select {
+    case result := <-s.query(q):
+        return result, nil
+    case <-ctx.Done():
+        return nil, ctx.Err()
+    }
+}
+{{</ code >}}
+
+Return cancellation with `%w` when adding context. Errors compatible with `context.Canceled` or `context.DeadlineExceeded` terminate execution directly and cannot be caught by `ON ERROR`, retry recovery, or another protected FQL operation.
+
+`io.Closer` has no context parameter. Its `Close` call is treated as one atomic operation.
+
 ## Error behavior
 
-When a capability method returns a non-nil error, the VM raises an FQL runtime error at the point of the operation. The error message includes the value's type and the Go error text. FQL scripts can recover from these errors with `ON ERROR ...`. See [Error Handling]({{< ref "docs/language/control-flow/error-handling" >}}).
+When a capability method returns a non-cancellation error, the VM raises an FQL runtime error at the point of the operation. The error message includes the value's type and the Go error text. FQL scripts can recover from eligible errors with `ON ERROR ...`. Cancellation and deadline errors always propagate to the embedding caller. See [Error Handling]({{< ref "docs/language/control-flow/error-handling" >}}).
 
 When the script attempts an operation that requires a capability the value does not implement (for example, `FOR x IN val` on a non-`Iterable` value), the VM raises a type error listing the expected capability.
 
@@ -425,7 +453,7 @@ import "github.com/MontFerret/ferret/v2/pkg/sdk"
 proxy := sdk.NewProxy[*MyDB](myDB)
 {{</ code >}}
 
-If `*MyDB` implements `Queryable`, calls to `proxy.Query` delegate to `myDB.Query`. If it does not implement `Iterable`, `proxy.Iterate` returns a typed error. The proxy also handles `Value` methods (`String`, `Hash`, `Copy`), `Typed`, `Unwrappable`, `json.Marshaler`, and `Comparable` delegation automatically.
+If `*MyDB` implements `Queryable`, calls to `proxy.Query` delegate to `myDB.Query`. If it does not implement `Iterable`, `proxy.Iterate` returns a typed error. The proxy also handles `Value` methods (`String`, `Hash`, `Copy`), `Typed`, `Unwrappable`, `json.Marshaler`, and equality delegation automatically.
 
 For Go maps and slices, use the specialized variants:
 

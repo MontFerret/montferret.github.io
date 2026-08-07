@@ -19,11 +19,11 @@ FQL is expression-oriented, so most control-flow constructs produce values. Thei
 A `MATCH` expression selects one branch from a set of alternatives. Only the selected branch is evaluated.
 
 {{< code lang="fql" >}}
-MATCH status (
+MATCH status {
     "active"   => "online",
     "inactive" => "offline",
     _          => "unknown",
-)
+}
 {{</ code >}}
 
 Use `MATCH` when a value should be derived from a known set of cases or conditions.
@@ -35,8 +35,9 @@ See [Match Expressions]({{< ref "match" >}}).
 A `FOR` expression evaluates its body once for each item in a source collection. It is the primary construct for iterating over arrays, query results, and other iterable values.
 
 {{< code lang="fql" >}}
-FOR n IN [1, 2, 3]
+FOR n IN [1, 2, 3] {
     RETURN n * 2
+}
 {{</ code >}}
 
 The result of a `FOR` expression is the collection of values returned by its body.
@@ -48,7 +49,7 @@ See [For Loops]({{< ref "for" >}}).
 A subquery wraps a `FOR` expression in parentheses, allowing its result to be used as a regular value.
 
 {{< code lang="fql" >}}
-LET doubled = (FOR n IN [1, 2, 3] RETURN n * 2)
+LET doubled = (FOR n IN [1, 2, 3] { RETURN n * 2 })
 {{</ code >}}
 
 Subqueries are useful when an intermediate collection needs to be assigned, returned, passed to a function, or embedded inside another expression.

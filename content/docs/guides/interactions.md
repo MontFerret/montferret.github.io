@@ -185,12 +185,12 @@ Complex workflows chain several interactions together. Each step waits for the p
 {{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", { driver: "cdp" })
 
-FUNC PARSE_PRICE(product) (
+FUNC PARSE_PRICE(product) {
     LET priceNode = QUERY ONE ".product-price" IN product USING css
     LET priceText = priceNode.attributes["data-price"]
     LET price = TO_FLOAT(SUBSTITUTE(priceText, "$", ""))
     RETURN price
-)
+}
 
 // Step 1a: fill and submit a search form
 DISPATCH "input" IN (QUERY ONE "#search-query" IN page USING css) WITH { value: "laptop" }

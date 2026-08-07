@@ -3,139 +3,130 @@ title: "Type Ordering"
 sidebarTitle: "Type Ordering"
 weight: 40
 draft: false
-description: "How Ferret compares and orders values of different types."
+description: "How Ferret compares native values, including cross-type order and strict Duration behavior."
 aliases:
     - /docs/fql/type-value-order/
 ---
 
 # Type ordering
 
-FQL's strict value ordering is deterministic. It is used by sorting, grouping, membership, deduplication, and structural value comparison. Any two values can be ordered, even when they do not have the same type.
+FQL defines a deterministic relational order for non-Duration built-in values. It is used by `<`, `<=`, `>`, and `>=`, sorting, and recursive array and object comparison.
 
-When two values are compared, FQL first looks at their types. If the types are different, the result is decided by the global type order. The actual values are only compared when both operands have the same type.
-
-FQL uses the following type order:
+When two non-Duration built-ins have different types, their type decides the result:
 
 {{< code >}}
-NONE < bool < number < duration < string < datetime < binary < array < object
+NONE < bool < number < string < datetime < binary < array < object
 {{</ code >}}
 
-This means that `NONE` sorts before every other value, while objects sort after every other built-in value type.
-
-For example, a boolean value always sorts before a number, duration, string, array, or object. A duration sorts after numbers and before strings, regardless of its nanosecond value.
+Values are compared within their type only after the types match. `Int` and `Float` share the numeric comparison domain and compare by numeric value.
 
 {{< code lang="fql" >}}
 NONE < false
-NONE < 0
-NONE < ""
-NONE < []
-NONE < {}
-
 false < true
 true < 0
-
-0 < ""
+1 < 2.5
 0 < "0"
-0 < "abc"
-0 < []
-
-"" < "abc"
 "abc" < []
-
 [] < {}
 {{</ code >}}
 
-Once the types are the same, FQL compares the values according to the rules for that type.
+## Duration values
+
+Duration is intentionally separate from the cross-type chain. Two Durations compare by signed nanosecond value, and equivalent units compare equal.
+
+{{< editor lang="fql" >}}
+RETURN {
+    less: 500ms < 1s,
+    equal: 1000ms == 1s
+}
+{{</ editor >}}
+
+A native Duration and any non-Duration value are unequal. Relational comparison between them is invalid in either operand order.
+
+{{< code lang="fql" >}}
+1s == 1000                 // false
+1s != "1s"                 // true
+1s < 1000                  // runtime error
+"1s" >= 1s                // runtime error
+{{</ code >}}
+
+Use `TO_DURATION` explicitly when the other value should be interpreted as a Duration.
+
+Sorting uses the same relational contract, so a collection that mixes Duration with another type cannot be sorted without first normalizing its values.
+
+{{< code lang="fql" >}}
+SORTED([1s, "2s"]) // runtime error
+{{</ code >}}
+
+## Equality, membership, and uniqueness
+
+Equality does not use the cross-type order to make different types equal. Membership, `MATCH`, grouping, set operations, and deduplication all verify canonical equality recursively.
+
+Equivalent native Durations collapse to the first representative, while strings and numbers remain distinct from Duration:
+
+{{< code lang="fql" >}}
+DISTINCT ["1s", 1000, 1s] // keeps all three values
+DISTINCT [1s, 1000ms]      // keeps the first Duration
+{{</ code >}}
+
+Hashes may select candidate buckets internally, but equality determines whether values are actually the same.
 
 ## Primitive values
 
-Primitive values are ordered as follows:
+Within a built-in type:
 
-- `NONE` is only equal to `NONE`.
-- Booleans are ordered as false < true.
-- Numbers are ordered by numeric value.
-- Durations are ordered by their signed nanosecond value. In strict ordering they are distinct from numbers.
-- Strings are ordered using FQL's string comparison rules.
+- `NONE` is equal only to `NONE`.
+- Booleans use `false < true`.
+- Numbers compare by numeric value across `Int` and `Float`.
+- Durations compare by signed nanoseconds, only with Duration.
+- Strings compare lexically and case-sensitively.
+- DateTime values compare by canonical instant.
+- Binary values compare by their byte contents.
 
-{{< code lang="fql" >}}
-NONE == NONE
-
-false < true
-
-1 < 2
-10 > 2
-
-500ms < 1s
-1000ms == 1s
-
-"a" < "b"
-{{</ code >}}
-
-<div class="notification is-info">
-  Language comparison operators apply contextual conversion when a Duration is compared with a non-DateTime scalar. For example, <code>1ms == 1</code> is true because the number is interpreted as milliseconds. Strict consumers do not apply that conversion: <code>DISTINCT [1, 1ms]</code> keeps both values, and membership, sorting, and grouping preserve their different types.
-</div>
-
-DateTime comparison operators remain native-only. Two DateTime values compare by canonical instant; strings and numbers are not converted to DateTime for comparison.
-
-<div class="notification is-info">
-  NONE is a regular comparable value in FQL. Comparing a value with NONE does not produce an unknown result.
-</div>
+DateTime comparison does not parse strings or convert numeric epoch values. Use `TO_DATETIME` before comparison when conversion is intended.
 
 ## Arrays
 
-Arrays are compared element by element from left to right.
+Arrays compare element by element from left to right. The first unequal element decides the result; if every shared element is equal, the shorter array comes first.
 
-At each position, FQL compares the two elements using the same comparison rules described on this page. If the elements are different, that result decides the array comparison. If the elements are equal, FQL moves to the next position.
-
-If all compared elements are equal, the shorter array sorts first.
-
-{{< code >}}
+{{< code lang="fql" >}}
 [] < [0]
-
 [1] < [2]
-
-[false] < [true]
-
 [1, 2] < [1, 3]
-
 [1] < [1, 0]
 {{</ code >}}
 
-Array comparison is recursive. If an element is another array or an object, that nested value is compared using the same rules.
+Array comparison is recursive. A nested Duration/non-Duration pair remains unequal for equality and invalid for relational comparison.
 
-{{< code >}}
-[[1]] < [[2]]
-
-[{ "score": 1 }] < [{ "score": 2 }]
+{{< code lang="fql" >}}
+[1s] == ["1s"] // false
+[1s] < ["1s"]  // runtime error
 {{</ code >}}
 
 ## Objects
 
-Objects are compared by their attributes, not by the order in which those attributes were written.
+Objects compare their attributes rather than declaration order. Attribute names are considered in sorted order, and corresponding values use the same recursive comparison rules.
 
-Before two objects are compared, FQL considers their attribute names in sorted order. For each attribute name, FQL compares the corresponding values from both objects.
+If one object lacks an attribute present in the other, the missing value is treated as `NONE` for comparison.
 
-If one object has an attribute that the other object does not have, the missing value is treated as `NONE` for comparison purposes.
-
-{{< code >}}
+{{< code lang="fql" >}}
 {} < { "a": 1 }
-
 {} == { "a": NONE }
-
 { "a": 1 } < { "a": 2 }
-
 { "a": true } < { "a": 0 }
-
-{ "a": { "score": 1 } } < { "a": { "score": 2 } }
 {{</ code >}}
 
-Attribute declaration order does not affect equality:
+Declaration order does not affect equality:
 
-{{< code lang="fql" height="110px" >}}
-{ "a": 1, "b": 2 } == { "b": 2, "a": 1 }
-{{</ code >}}
+{{< editor lang="fql" height="110px" >}}
+RETURN { "a": 1, "b": 2 } == { "b": 2, "a": 1 }
+{{</ editor >}}
 
-If all attributes compare as equal, the objects are considered equal.
+## Host values
+
+Host values participate only through compatible comparison capabilities supplied by the embedding application. Equality and relational comparison are separate capabilities; an opaque host value does not become comparable through its String representation or a generic numeric conversion.
+
+See [Capability Types]({{< ref "capabilities" >}}) and [Host Values]({{< ref "host" >}}) for the host contracts.
 
 ## Next steps
 

@@ -70,7 +70,7 @@ LET users = [
     }
 ]
 
-FOR u IN users
+FOR u IN users {
     LET numProducts = LENGTH(u.cart)
 
     RETURN {
@@ -78,6 +78,7 @@ FOR u IN users
         "numProducts": numProducts,
         "discount": numProducts >= 3
     }
+}
 {{< /editor >}}
 
 In this example, `numProducts` stores the number of items in the user's cart. The value can then be reused in the returned object without calling `LENGTH(u.cart)` more than once.
@@ -105,14 +106,16 @@ LET friends = [
     { "id": 10, "name": "Babette Brassill", "userId": 1 }
 ]
 
-FOR u IN users
+FOR u IN users {
     LET friends = (
-        FOR f IN friends
+        FOR f IN friends {
             FILTER u.id == f.userId
             RETURN f
+        }
     )
 
     RETURN { "user": u, "friends": friends, "numFriends": LENGTH(friends) }
+}
 {{< /editor >}}
 
 Here, the inner `FOR` query finds the friends that belong to the current user. Assigning the result to friends makes the `RETURN` statement easier to read and allows the same value to be used more than once.
@@ -144,10 +147,11 @@ RETURN count
 LET numbers = [1, 2, 3, 4, 5]
 VAR total = 0
 
-FOR n IN numbers
+FOR n IN numbers {
     total = total + n
     
     RETURN total
+}
 {{< /editor >}}
 
 In this example, `total` starts at 0 and is updated for each value in numbers.

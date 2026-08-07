@@ -88,21 +88,26 @@ The query literal, any parameters supplied with `WITH`, and any options supplied
 An iterable value can produce a sequence of values, which allows it to be used with `FOR ... IN`.
 
 {{< code lang="fql" >}}
-FOR item IN collection
+FOR item IN collection {
     RETURN item
+}
 {{</ code >}}
 
 Built-in arrays and objects are iterable. Host values such as cursors, result sets, or streams may also be iterable.
 
 When iterating, each step produces both a value and a key. For arrays, the key is the index. For objects, the key is the property name. For host values, the key depends on the value's implementation.
 
+### Equatable
+
+An equatable host value defines equality for `==`, `!=`, membership, grouping, set operations, and deduplication. Equality is independent from relational comparison: a value may support equality without supporting `<`, `>`, `<=`, or `>=`.
+
+Equal values must produce equal hashes. A hash only selects possible matches; Ferret still verifies equality before treating two values as the same.
+
 ### Comparable
 
-A comparable value can define equality and ordering behavior.
+A comparable host value defines relational comparison for `<`, `>`, `<=`, `>=`, and sorting within a compatible comparison domain.
 
-Comparison is used by equality operators (`==`, `!=`), ordering operators (`<`, `>`, `<=`, `>=`), and sorting. When a value supports comparison, it controls how it is ordered relative to other values.
-
-Built-in types define comparison behavior directly. Host values may define their own comparison rules based on identity, an internal key, a normalized representation, or another rule chosen by the runtime or module.
+Built-in types define comparison behavior directly. Host values may compare by identity, an internal key, a normalized representation, or another stable rule chosen by the runtime or module. If a host value implements both Equatable and Comparable, the two contracts must agree about which values are equal.
 
 See [Type Ordering]({{< ref "ordering" >}}) for the full ordering model.
 
@@ -225,14 +230,15 @@ This check happens at runtime, not at parse time. FQL does not statically verify
 | `SORT value` | Sortable |
 | `WAITFOR EVENT ... IN value` | Observable |
 | `DISPATCH ... IN value` | Dispatchable |
-| `value == other` | Comparable (when custom ordering is needed) |
+| `value == other` / `value != other` | Equatable |
+| `value < other` and other relational comparisons | Comparable |
 | `value[index]` | Readable (by index) |
 | `value.key` / `value["key"]` | Readable (by key) |
 | `value[index] = x` | Writable (by index) |
 | `value.key = x` | Writable (by key) |
 | `DELETE value.key` | Removable |
 
-A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, comparable, and readable by index. An object is iterable, measurable, comparable, readable by key, writable by key, and removable by key. A host cursor might be iterable and closable but not queryable or sortable.
+A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, equatable, comparable, and readable by index. An object is iterable, measurable, equatable, comparable, readable by key, writable by key, and removable by key. A host cursor might be iterable and closable but not queryable or sortable.
 
 ## Runtime-defined behavior
 
@@ -240,9 +246,11 @@ Capability behavior is runtime-defined.
 
 For built-in values, Ferret defines the capability behavior directly. For host values, the embedding runtime defines which capabilities are supported and how they behave. Two different host values may support the same capability but implement it differently.
 
-A host value may support equality, ordering, querying, iteration, cleanup, or serialization differently from another host value. As long as the behavioral contract is satisfied, the runtime and the language operations work correctly.
+A host value may support equality, relational comparison, querying, iteration, cleanup, or serialization differently from another host value. As long as the behavioral contract is satisfied, the runtime and the language operations work correctly.
 
 The exact implementation mechanism depends on the host runtime. In the Go runtime, capabilities are represented by interfaces implemented by runtime values.
+
+Context-aware capabilities receive the execution context unchanged. Ferret does not poll cancellation inside a capability method; an implementation that may block or perform remote work must observe cancellation while it retains control.
 
 ## Error behavior
 
@@ -250,20 +258,21 @@ Using an operation with a value that does not support the required capability re
 
 {{< editor lang="fql" >}}
 RETURN QUERY `SELECT * FROM users` IN "not a database" USING sql
-{{</ code >}}
+{{</ editor >}}
 
 This fails because a string does not support query execution.
 
 {{< editor lang="fql" >}}
-FOR item IN 42
+FOR item IN 42 {
     RETURN item
-{{</ code >}}
+}
+{{</ editor >}}
 
 This fails because a number is not iterable.
 
 {{< editor lang="fql" >}}
 RETURN DISPATCH "click" IN "not an element"
-{{</ code >}}
+{{</ editor >}}
 
 This fails because a string does not support dispatch.
 

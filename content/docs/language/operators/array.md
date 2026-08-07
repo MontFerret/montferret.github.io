@@ -504,6 +504,14 @@ The general form is:
 
 The comparison operator can be any [supported comparison operator]({{< ref "comparison" >}}).
 
+Each element uses the same strict comparison rules as a scalar expression. In particular, Duration values compare only with Duration values: incompatible equality simply does not match, while an incompatible relational comparison raises an error.
+
+{{< code lang="fql" >}}
+[1s, 2s] ANY == "2s"               // false
+[1s, 2s] ANY == TO_DURATION("2s")  // true
+[1s, 2s] ALL > 999                  // runtime error
+{{</ code >}}
+
 ### ANY
 
 `ANY` returns true when at least one element in the array satisfies the comparison.
@@ -632,9 +640,10 @@ LET products = [
     { name: "Enterprise plan", features: ["docs", "search", "sharing", "sso"] }
 ]
 
-FOR product IN products
+FOR product IN products {
     FILTER product.features ANY == "sso"
     RETURN product.name
+}
 {{</ editor >}}
 
 The same idea can be used to exclude records:
@@ -646,9 +655,10 @@ LET products = [
     { name: "Stable release", tags: ["public", "stable"] }
 ]
 
-FOR product IN products
+FOR product IN products {
     FILTER product.tags NONE == "internal"
     RETURN product.name
+}
 {{</ editor >}}
 
 ### Difference from direct array comparison
