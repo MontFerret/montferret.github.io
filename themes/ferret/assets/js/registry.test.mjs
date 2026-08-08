@@ -9,6 +9,7 @@ import {
     ownerPath,
     packageInstallCommand,
     parseRegistryRoute,
+    registryRouteKey,
     resolveArtifactURL,
     selectVersion,
     versionStatus
@@ -57,6 +58,17 @@ test("Registry routes round-trip through history paths", () => {
     assert.deepEqual(parseRegistryRoute("/registry/montferret/html/1.2.0/extra/"), { kind: "invalid" });
     assert.deepEqual(parseRegistryRoute("/registry/../"), { kind: "invalid" });
     assert.deepEqual(parseRegistryRoute("/registry/../html/"), { kind: "invalid" });
+});
+
+test("Registry route identity ignores fragments but preserves path and query changes", () => {
+    const modulePage = new URL("https://ferret.example/registry/montferret/html/#parse");
+    const anotherFragment = new URL("https://ferret.example/registry/montferret/html/#load");
+    const requestedVersion = new URL("https://ferret.example/registry/montferret/html/1.2.0/#parse");
+    const query = new URL("https://ferret.example/registry/montferret/html/?view=compact#parse");
+
+    assert.equal(registryRouteKey(modulePage), registryRouteKey(anotherFragment));
+    assert.notEqual(registryRouteKey(modulePage), registryRouteKey(requestedVersion));
+    assert.notEqual(registryRouteKey(modulePage), registryRouteKey(query));
 });
 
 test("owner filtering matches the exact validated owner segment", () => {

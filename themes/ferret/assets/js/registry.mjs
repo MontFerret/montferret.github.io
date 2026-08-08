@@ -118,9 +118,25 @@ export function ownerPath(owner) {
     return `/registry/${owner}/`;
 }
 
+export function registryRouteKey(location) {
+    return `${location.pathname}${location.search}`;
+}
+
 export function modulesForOwner(modules, owner) {
     if (!ROUTE_SEGMENT.test(owner)) return [];
     return modules.filter((module) => validModuleID(module?.id) && module.id.split("/")[0] === owner);
+}
+
+function fragmentID(hash) {
+    if (typeof hash !== "string" || !hash.startsWith("#") || hash.length === 1) {
+        return "";
+    }
+
+    try {
+        return decodeURIComponent(hash.slice(1));
+    } catch {
+        return "";
+    }
 }
 
 class RegistryApp {
@@ -131,6 +147,7 @@ class RegistryApp {
         this.moduleCatalog = null;
         this.categoryCatalog = null;
         this.renderController = null;
+        this.renderedRouteKey = "";
     }
 
     start() {
@@ -152,7 +169,14 @@ class RegistryApp {
             window.history.pushState({}, "", `${destination.pathname}${destination.search}${destination.hash}`);
             this.render();
         });
-        window.addEventListener("popstate", () => this.render());
+        window.addEventListener("popstate", () => {
+            if (registryRouteKey(window.location) === this.renderedRouteKey) {
+                this.scrollToFragment();
+                return;
+            }
+
+            this.render();
+        });
         this.render();
     }
 
@@ -260,6 +284,7 @@ class RegistryApp {
         this.renderController?.abort();
         this.renderController = new AbortController();
         const { signal } = this.renderController;
+        this.renderedRouteKey = registryRouteKey(window.location);
         const route = parseRegistryRoute(window.location.pathname);
 
         try {
@@ -519,6 +544,7 @@ class RegistryApp {
         });
 
         this.buildTOC();
+        this.scrollToFragment();
     }
 
     buildTOC() {
@@ -529,6 +555,17 @@ class RegistryApp {
         if (headings.length < 2) return;
         toc.innerHTML = `<p>On this page</p><ol>${headings.map((heading) => `<li class="registry-toc-${heading.tagName.toLowerCase()}"><a href="#${escapeHTML(heading.id)}">${escapeHTML(heading.textContent.trim())}</a></li>`).join("")}</ol>`;
         toc.hidden = false;
+    }
+
+    scrollToFragment() {
+        const id = fragmentID(window.location.hash);
+        if (!id) return;
+
+        const documentation = this.root.querySelector("#registry-documentation");
+        const target = document.getElementById(id);
+        if (!documentation || !target || !documentation.contains(target)) return;
+
+        target.scrollIntoView({ block: "start" });
     }
 }
 
