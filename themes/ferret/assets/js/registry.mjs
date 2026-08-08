@@ -543,8 +543,26 @@ class RegistryApp {
             }, 2000);
         });
 
+        this.wrapTables();
         this.buildTOC();
         this.scrollToFragment();
+    }
+
+    wrapTables() {
+        const documentation = this.root.querySelector("#registry-documentation");
+        if (!documentation) return;
+
+        for (const table of documentation.querySelectorAll("table")) {
+            if (table.parentElement?.classList.contains("table-scroll")) continue;
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "table-scroll";
+            wrapper.setAttribute("aria-label", "Scrollable table");
+            wrapper.setAttribute("role", "region");
+            wrapper.tabIndex = 0;
+            table.before(wrapper);
+            wrapper.append(table);
+        }
     }
 
     buildTOC() {
