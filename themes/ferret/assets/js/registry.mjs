@@ -516,7 +516,7 @@ class RegistryApp {
                         </div>
                         <section class="registry-install" aria-labelledby="registry-install-title">
                             <h3 id="registry-install-title">Install</h3>
-                            ${installCommand ? `<div class="registry-command"><code>${escapeHTML(installCommand)}</code><button id="registry-copy" type="button" aria-describedby="registry-copy-feedback">Copy</button></div><p id="registry-copy-feedback" class="registry-copy-feedback" role="status"></p>` : `<p>Installation metadata is unavailable for this release.</p>`}
+                            ${installCommand ? `<div class="registry-command"><code role="region" aria-label="Scrollable install command" tabindex="0">${escapeHTML(installCommand)}</code><button id="registry-copy" type="button" aria-describedby="registry-copy-feedback">Copy</button></div><p id="registry-copy-feedback" class="registry-copy-feedback" role="status"></p>` : `<p>Installation metadata is unavailable for this release.</p>`}
                         </section>
                     </aside>
                 </div>
@@ -526,6 +526,30 @@ class RegistryApp {
             const nextPath = modulePath(module.id, event.target.value);
             window.history.pushState({}, "", nextPath);
             this.render();
+        });
+
+        const installCommandElement = this.root.querySelector(".registry-command code");
+        installCommandElement?.addEventListener("keydown", (event) => {
+            if (installCommandElement.scrollWidth <= installCommandElement.clientWidth) return;
+
+            switch (event.key) {
+                case "ArrowLeft":
+                    installCommandElement.scrollLeft -= 40;
+                    break;
+                case "ArrowRight":
+                    installCommandElement.scrollLeft += 40;
+                    break;
+                case "Home":
+                    installCommandElement.scrollLeft = 0;
+                    break;
+                case "End":
+                    installCommandElement.scrollLeft = installCommandElement.scrollWidth;
+                    break;
+                default:
+                    return;
+            }
+
+            event.preventDefault();
         });
 
         const copyButton = this.root.querySelector("#registry-copy");
