@@ -46,26 +46,82 @@ cd kvplugin
 go mod tidy
 {{</ terminal >}}
 
-The initializer creates the module manifest, Go module, starter registration, documentation, and package directories. Add `cache.go` as you follow the guide, and replace the starter `module.go` with the implementation below:
+The initializer creates the module manifest, Go module, starter registration, documentation, and package directories. Replace the starter registration and add the implementation and test files as you follow the guide:
 
 ```text
 kvplugin/
 ├── ferret.yaml
 ├── go.mod
 ├── module.go
-├── cache.go
+├── module_test.go
+├── options.go
 ├── README.md
 ├── core/
+│   ├── cache.go
 │   └── doc.go
 └── lib/
-    └── doc.go
+    ├── doc.go
+    └── lib.go
 ```
+
+This structure keeps three responsibilities separate:
+
+- the root package composes configuration, registration, and lifecycle hooks
+- `core` implements the cache without knowing how FQL functions are registered
+- `lib` owns the Ferret-facing function boundary
 
 The generated `ferret.yaml` is schema-valid but contains TODO release metadata. See [Develop a module project]({{< ref "/docs/modules/develop" >}}) for the scaffold contract.
 
-## Implement the Module interface
+## Define configuration options
 
-A module implements `Name()` and `Register(Bootstrap)`:
+The constructor will accept functional options and validate them when Ferret registers the module. Start with a default capacity of 1,000 entries:
+
+{{< code lang="go" title="options.go" >}}
+package kvplugin
+
+import "fmt"
+
+const defaultMaxSize = 1000
+
+type config struct {
+    maxSize int
+}
+
+type Option func(*config) error
+
+func WithMaxSize(maxSize int) Option {
+    return func(config *config) error {
+        if maxSize <= 0 {
+            return fmt.Errorf("max size must be greater than zero")
+        }
+
+        config.maxSize = maxSize
+        return nil
+    }
+}
+
+func resolveConfig(setters []Option) (config, error) {
+    config := config{maxSize: defaultMaxSize}
+
+    for _, set := range setters {
+        if set == nil {
+            continue
+        }
+
+        if err := set(&config); err != nil {
+            return config, err
+        }
+    }
+
+    return config, nil
+}
+{{</ code >}}
+
+`New` returns `module.Module`, so configuration errors surface when the host builds its Ferret engine. This keeps the constructor compatible with `ferret.WithModules(...)` while still rejecting invalid options before any functions are registered.
+
+## Define the module with the SDK
+
+Use `sdk.NewModule` to define the module name and registration callback. The callback resolves configuration, registers the `KV` library, and attaches lifecycle hooks:
 
 {{< code lang="go" title="module.go" >}}
 package kvplugin
@@ -75,81 +131,113 @@ import (
     "log"
     "time"
 
+    "github.com/acme/ferret-kvplugin/lib"
+
     "github.com/MontFerret/ferret/v2/pkg/module"
-    "github.com/MontFerret/ferret/v2/pkg/runtime"
+    "github.com/MontFerret/ferret/v2/pkg/sdk"
 )
 
-type Module struct{}
+func New(setters ...Option) module.Module {
+    options := append([]Option(nil), setters...)
 
-func New() *Module {
-    return &Module{}
+    return sdk.NewModule("acme/kvplugin", func(bootstrap module.Bootstrap) error {
+        config, err := resolveConfig(options)
+        if err != nil {
+            return err
+        }
+
+        namespace := bootstrap.Host().Library().Namespace("KV")
+        if err := lib.RegisterLib(namespace, config.maxSize); err != nil {
+            return err
+        }
+
+        registerHooks(bootstrap)
+        return nil
+    })
 }
 
-func (m *Module) Name() string {
-    return "acme/kvplugin"
-}
+type runStartKey struct{}
 
-func (m *Module) Register(boot module.Bootstrap) error {
-    ns := boot.Host().Library().Namespace("KV")
+func registerHooks(bootstrap module.Bootstrap) {
+    bootstrap.Hooks().Session().BeforeRun(func(ctx context.Context) (context.Context, error) {
+        return context.WithValue(ctx, runStartKey{}, time.Now()), nil
+    })
 
-    m.registerFunctions(ns)
-    m.registerHooks(boot)
-
-    return nil
+    bootstrap.Hooks().Session().AfterRun(func(ctx context.Context, runErr error) error {
+        start, _ := ctx.Value(runStartKey{}).(time.Time)
+        log.Printf("[kv] query took %s (err=%v)", time.Since(start), runErr)
+        return nil
+    })
 }
 {{</ code >}}
+
+`sdk.NewModule` supplies the `module.Module` implementation and adds the module name to registration errors. Keep registration itself in the callback so an invalid configuration or library definition prevents the host engine from starting with a partially registered module.
+
+The hook functions remain normal Ferret lifecycle hooks. A context returned by `BeforeRun` flows into the VM and the matching `AfterRun` hook, which makes it suitable for request-scoped state such as tracing spans.
 
 ## Register namespaced functions
 
-Add `KV::OPEN`, `KV::SET`, and `KV::GET` to the namespace:
+Add `KV::OPEN`, `KV::SET`, and `KV::GET` with the SDK's declarative registration helpers:
 
-{{< code lang="go" title="module.go (continued)" >}}
-func (m *Module) registerFunctions(ns runtime.Namespace) {
-    // KV::OPEN() — returns a new cache host value
-    ns.Function().A0().Add("OPEN", func(ctx context.Context) (runtime.Value, error) {
-        return NewCache(), nil
+{{< code lang="go" title="lib/lib.go" >}}
+package lib
+
+import (
+    "context"
+
+    "github.com/acme/ferret-kvplugin/core"
+
+    "github.com/MontFerret/ferret/v2/pkg/runtime"
+    "github.com/MontFerret/ferret/v2/pkg/sdk"
+)
+
+func RegisterLib(namespace runtime.Namespace, maxSize int) error {
+    return sdk.RegisterFunctions(
+        namespace,
+        sdk.Func("OPEN", openWithMaxSize(maxSize)),
+        sdk.Func("SET", sdk.Bind3(Set)),
+        sdk.Func("GET", sdk.Bind2(Get)),
+    )
+}
+
+func openWithMaxSize(maxSize int) runtime.Function0 {
+    return sdk.Bind0(func(context.Context) (*core.Cache, error) {
+        return core.NewCache(maxSize), nil
     })
+}
 
-    // KV::SET(cache, key, value) — stores a value
-    ns.Function().A3().Add("SET", func(ctx context.Context, cacheArg, keyArg, valArg runtime.Value) (runtime.Value, error) {
-        cache, err := runtime.CastArg[*Cache](cacheArg, 0)
-        if err != nil {
-            return nil, err
-        }
+func Set(
+    _ context.Context,
+    cache *core.Cache,
+    key runtime.String,
+    value runtime.Value,
+) (runtime.Value, error) {
+    if err := cache.SetValue(string(key), value); err != nil {
+        return runtime.None, err
+    }
 
-        key, err := runtime.CastArg[runtime.String](keyArg, 1)
-        if err != nil {
-            return nil, err
-        }
+    return runtime.None, nil
+}
 
-        cache.SetValue(string(key), valArg)
-
+func Get(
+    _ context.Context,
+    cache *core.Cache,
+    key runtime.String,
+) (runtime.Value, error) {
+    value, found := cache.GetValue(string(key))
+    if !found {
         return runtime.None, nil
-    })
+    }
 
-    // KV::GET(cache, key) — retrieves a value
-    ns.Function().A2().Add("GET", func(ctx context.Context, cacheArg, keyArg runtime.Value) (runtime.Value, error) {
-        cache, err := runtime.CastArg[*Cache](cacheArg, 0)
-        if err != nil {
-            return nil, err
-        }
-
-        key, err := runtime.CastArg[runtime.String](keyArg, 1)
-        if err != nil {
-            return nil, err
-        }
-
-        val, found := cache.GetValue(string(key))
-        if !found {
-            return runtime.None, nil
-        }
-
-        return val, nil
-    })
+    return value, nil
 }
 {{</ code >}}
 
-`runtime.CastArg[T]` validates the argument type and returns a clear error message if the cast fails. The second argument is the parameter index for the error message.
+`sdk.RegisterFunctions` validates the complete definition set before changing the namespace. A duplicate name and arity, nil handler, or invalid definition therefore cannot leave a partially registered library.
+
+`sdk.Bind0` through `sdk.Bind4` adapt fixed-arity functions whose arguments and results already implement `runtime.Value`. Here the binders validate `*core.Cache` and `runtime.String` arguments and attach the correct argument position to type errors.
+
+For a variadic function, validate its arity with `runtime.ValidateArgs`, then use `sdk.DecodeArg` for required arguments and `sdk.DecodeArgOr` for optional arguments. Those decoding helpers also support native Go values and structured options, but they are unnecessary for these fixed-arity handlers.
 
 ## Implement the cache host value
 
@@ -164,8 +252,8 @@ The cache implements several capability interfaces so FQL scripts can interact w
 | `runtime.Measurable` | `LENGTH(cache)` |
 | `io.Closer` | Automatic cleanup when the session ends |
 
-{{< code lang="go" title="cache.go" >}}
-package kvplugin
+{{< code lang="go" title="core/cache.go" >}}
+package core
 
 import (
     "context"
@@ -181,13 +269,15 @@ import (
 var CacheType = runtime.NewTypeFor[*Cache]()
 
 type Cache struct {
-    mu    sync.RWMutex
-    items map[string]runtime.Value
+    mu      sync.RWMutex
+    items   map[string]runtime.Value
+    maxSize int
 }
 
-func NewCache() *Cache {
+func NewCache(maxSize int) *Cache {
     return &Cache{
-        items: make(map[string]runtime.Value),
+        items:   make(map[string]runtime.Value),
+        maxSize: maxSize,
     }
 }
 
@@ -203,7 +293,7 @@ func (c *Cache) String() string {
 
 func (c *Cache) Hash() uint64 {
     h := fnv.New64a()
-    h.Write([]byte("kv-cache"))
+    _, _ = h.Write([]byte("kv-cache"))
     return h.Sum64()
 }
 
@@ -213,31 +303,34 @@ func (c *Cache) Copy() runtime.Value {
 
 // --- Cache operations ---
 
-func (c *Cache) SetValue(key string, val runtime.Value) {
+func (c *Cache) SetValue(key string, value runtime.Value) error {
     c.mu.Lock()
     defer c.mu.Unlock()
-    c.items[key] = val
+
+    if _, exists := c.items[key]; !exists && len(c.items) >= c.maxSize {
+        return fmt.Errorf("cache has reached its limit of %d entries", c.maxSize)
+    }
+
+    c.items[key] = value
+    return nil
 }
 
 func (c *Cache) GetValue(key string) (runtime.Value, bool) {
     c.mu.RLock()
     defer c.mu.RUnlock()
-    val, ok := c.items[key]
-    return val, ok
+    value, found := c.items[key]
+    return value, found
 }
 
 // --- KeyReadable: cache.key ---
 
-func (c *Cache) Get(ctx context.Context, key runtime.Value) (runtime.Value, error) {
-    c.mu.RLock()
-    defer c.mu.RUnlock()
-
-    val, ok := c.items[key.String()]
-    if !ok {
+func (c *Cache) Get(_ context.Context, key runtime.Value) (runtime.Value, error) {
+    value, found := c.GetValue(key.String())
+    if !found {
         return runtime.None, nil
     }
 
-    return val, nil
+    return value, nil
 }
 
 // --- Measurable: LENGTH(cache) ---
@@ -253,13 +346,12 @@ func (c *Cache) Length(_ context.Context) (runtime.Int, error) {
 func (c *Cache) Iterate(_ context.Context) (runtime.Iterator, error) {
     c.mu.RLock()
     keys := make([]string, 0, len(c.items))
-    for k := range c.items {
-        keys = append(keys, k)
+    for key := range c.items {
+        keys = append(keys, key)
     }
     c.mu.RUnlock()
 
     sort.Strings(keys)
-
     return sdk.NewSliceIterator(keys), nil
 }
 
@@ -273,31 +365,11 @@ func (c *Cache) Close() error {
 }
 {{</ code >}}
 
-## Add lifecycle hooks
-
-Hooks let the module react to engine events. Add timing and cleanup:
-
-{{< code lang="go" title="module.go (continued)" >}}
-type ctxStartKey struct{}
-
-func (m *Module) registerHooks(boot module.Bootstrap) {
-    boot.Hooks().Session().BeforeRun(func(ctx context.Context) (context.Context, error) {
-        return context.WithValue(ctx, ctxStartKey{}, time.Now()), nil
-    })
-
-    boot.Hooks().Session().AfterRun(func(ctx context.Context, runErr error) error {
-        start, _ := ctx.Value(ctxStartKey{}).(time.Time)
-        log.Printf("[kv] query took %s (err=%v)", time.Since(start), runErr)
-        return nil
-    })
-}
-{{</ code >}}
-
-`BeforeRun` hooks can return a modified context that flows through to `AfterRun` and into the VM. This is useful for injecting request-scoped values like tracing spans.
+The limit applies only when adding a new key. Updating an existing key is allowed when the cache is full, which makes capacity predictable without preventing normal replacement.
 
 ## Register and use the module
 
-In the host application:
+The host imports only the root package. It does not need to know about `core` or `lib`:
 
 {{< code lang="go" >}}
 package main
@@ -315,7 +387,9 @@ import (
 
 func main() {
     engine, err := ferret.New(
-        ferret.WithModules(kvplugin.New()),
+        ferret.WithModules(kvplugin.New(
+            kvplugin.WithMaxSize(500),
+        )),
     )
     if err != nil {
         log.Fatal(err)
@@ -345,84 +419,41 @@ func main() {
 }
 {{</ code >}}
 
-## Accept configuration
+## Test through the SDK harness
 
-Use the functional options pattern to make the module configurable:
-
-{{< code lang="go" >}}
-type Option func(*Module)
-
-func WithMaxSize(n int) Option {
-    return func(m *Module) {
-        m.maxSize = n
-    }
-}
-
-type Module struct {
-    maxSize int
-}
-
-func New(opts ...Option) *Module {
-    m := &Module{
-        maxSize: 1000,
-    }
-    for _, opt := range opts {
-        opt(m)
-    }
-    return m
-}
-{{</ code >}}
-
-Then in the host:
-
-{{< code lang="go" >}}
-engine, err := ferret.New(
-    ferret.WithModules(kvplugin.New(
-        kvplugin.WithMaxSize(500),
-    )),
-)
-{{</ code >}}
-
-## Test the module
-
-Write a Go test that creates an engine with the module, runs a query, and asserts on the output:
+Use `sdktest` for black-box tests that exercise registration, compilation, runtime argument checks, lifecycle hooks, and result encoding together:
 
 {{< code lang="go" title="module_test.go" >}}
 package kvplugin_test
 
 import (
-    "context"
     "encoding/json"
     "testing"
 
     kvplugin "github.com/acme/ferret-kvplugin"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
+    "github.com/MontFerret/ferret/v2/pkg/sdk/sdktest"
 )
 
-func TestCache(t *testing.T) {
-    engine, err := ferret.New(
-        ferret.WithModules(kvplugin.New()),
-    )
-    if err != nil {
-        t.Fatal(err)
-    }
-    defer engine.Close()
+func newHarness(t *testing.T, options ...kvplugin.Option) *sdktest.Harness {
+    t.Helper()
+    return sdktest.New(t, ferret.WithModules(kvplugin.New(options...)))
+}
 
-    output, err := engine.Run(
-        context.Background(),
-        source.NewAnonymous(`
-            LET c = KV::OPEN()
-            KV::SET(c, "a", 1)
-            KV::SET(c, "b", 2)
-            RETURN {
-                size: LENGTH(c),
-                a: KV::GET(c, "a"),
-                keys: (FOR k IN c RETURN k)
-            }
-        `),
-    )
+func TestCache(t *testing.T) {
+    harness := newHarness(t)
+
+    output, err := harness.Run(t.Context(), `
+        LET cache = KV::OPEN()
+        KV::SET(cache, "a", 1)
+        KV::SET(cache, "b", 2)
+        RETURN {
+            size: LENGTH(cache),
+            a: KV::GET(cache, "a"),
+            keys: (FOR key IN cache RETURN key)
+        }
+    `)
     if err != nil {
         t.Fatal(err)
     }
@@ -437,19 +468,59 @@ func TestCache(t *testing.T) {
         t.Fatal(err)
     }
 
-    if result.Size != 2 {
-        t.Errorf("expected size 2, got %d", result.Size)
+    if result.Size != 2 || result.A != 1 || len(result.Keys) != 2 {
+        t.Fatalf("unexpected result: %+v", result)
+    }
+}
+
+func TestCacheRejectsWrongArgumentType(t *testing.T) {
+    harness := newHarness(t)
+
+    if _, err := harness.Run(t.Context(), `RETURN KV::GET("not a cache", "key")`); err == nil {
+        t.Fatal("expected a cache argument error")
+    }
+}
+
+func TestCacheCapacity(t *testing.T) {
+    harness := newHarness(t, kvplugin.WithMaxSize(1))
+
+    output, err := harness.Run(t.Context(), `
+        LET cache = KV::OPEN()
+        KV::SET(cache, "key", 1)
+        KV::SET(cache, "key", 2)
+        RETURN KV::GET(cache, "key")
+    `)
+    if err != nil {
+        t.Fatal(err)
+    }
+    if string(output.Content) != "2" {
+        t.Fatalf("expected overwrite result 2, got %s", output.Content)
     }
 
-    if result.A != 1 {
-        t.Errorf("expected a=1, got %d", result.A)
+    if _, err := harness.Run(t.Context(), `
+        LET cache = KV::OPEN()
+        KV::SET(cache, "first", 1)
+        KV::SET(cache, "second", 2)
+        RETURN true
+    `); err == nil {
+        t.Fatal("expected the second key to exceed capacity")
     }
+}
 
-    if len(result.Keys) != 2 {
-        t.Errorf("expected 2 keys, got %d", len(result.Keys))
+func TestWithMaxSizeRejectsNonPositiveValue(t *testing.T) {
+    engine, err := ferret.New(
+        ferret.WithModules(kvplugin.New(kvplugin.WithMaxSize(0))),
+    )
+    if engine != nil {
+        _ = engine.Close()
+    }
+    if err == nil {
+        t.Fatal("expected module configuration to fail")
     }
 }
 {{</ code >}}
+
+Run the complete module test suite:
 
 {{< terminal command="true" >}}
 go test ./...

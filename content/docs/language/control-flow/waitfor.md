@@ -8,7 +8,7 @@ description: "Suspend evaluation until a condition becomes true or an event arri
 
 # Waitfor Expressions
 
-A `WAITFOR` expression pauses a query until something happens, then resumes and produces a value. It has two modes: waiting for a **condition** to become true, and waiting for an **event** to arrive.
+A `WAITFOR` expression pauses a query until something happens, then resumes and produces a value. It can wait for one condition or event, or synchronize a group with `ANY { ... }` or `ALL { ... }`.
 
 ## Waiting for a condition
 
@@ -40,6 +40,53 @@ The expression is re-evaluated on each attempt, so it can reflect state that cha
 {{< editor lang="fql" >}}
 RETURN WAITFOR FALSE TIMEOUT 50ms EVERY 10ms
 {{</ editor >}}
+
+### Synchronizing condition groups
+
+Add `ANY` or `ALL` before a block to evaluate several conditions as one polling operation. The mode before `ANY` or `ALL` applies to every entry:
+
+{{< code lang="fql" >}}
+LET firstReady = WAITFOR ANY {
+    queue.ready
+    worker.ready
+}
+TIMEOUT 5s
+
+LET bothValues = WAITFOR VALUE ALL {
+    queue.value
+    worker.value
+}
+TIMEOUT 5s
+{{</ code >}}
+
+The grouped forms return:
+
+| Form | Success condition | Result |
+| --- | --- | --- |
+| `WAITFOR ANY { ... }` | at least one expression is true | `true` |
+| `WAITFOR ALL { ... }` | every expression is true in the same polling cycle | `true` |
+| `WAITFOR EXISTS ANY/ALL { ... }` | one/all expressions satisfy `EXISTS` | `true` |
+| `WAITFOR NOT EXISTS ANY/ALL { ... }` | one/all expressions satisfy `NOT EXISTS` | `true` |
+| `WAITFOR VALUE ANY { ... }` | at least one expression is not `NONE` | the first qualifying value in declaration order |
+| `WAITFOR VALUE ALL { ... }` | every expression is not `NONE` in the same polling cycle | an array of values in declaration order |
+
+Polling groups synchronize **state**. `ALL` does not remember an entry that passed in an earlier cycle: every entry must pass together during one cycle. `ANY` and `ALL` evaluate entries in declaration order and stop evaluating the current cycle as soon as the outcome is known.
+
+Each entry may have its own repeated `WHEN` conditions. Inside them, `.` is that entry's candidate:
+
+{{< code lang="fql" >}}
+RETURN WAITFOR VALUE ANY {
+    primaryStatus()
+        WHEN .ready
+        WHEN .healthy
+    fallbackStatus()
+        WHEN .ready
+}
+TIMEOUT 10s
+EVERY 100ms
+{{</ code >}}
+
+`TIMEOUT`, `EVERY`, `BACKOFF`, `JITTER`, `ON TIMEOUT`, and `ON ERROR` belong to the whole group. A group has one timeout and one polling schedule; entries cannot define separate policies.
 
 ### Tuning the wait
 
@@ -109,9 +156,48 @@ WAITFOR EVENT "message" IN socket
     TIMEOUT 5s
 {{</ code >}}
 
+### Synchronizing event occurrences
+
+Event groups use the existing event entry syntax and may subscribe to different sources:
+
+{{< code lang="fql" >}}
+LET event = WAITFOR EVENT ANY {
+    "navigation" IN page
+    "download" IN browser
+    "disconnect" IN socket
+}
+TIMEOUT 10s
+{{</ code >}}
+
+`EVENT ANY` returns the first qualifying event that occurs and closes the other subscriptions. Concurrent events have no declaration-order tie-break.
+
+`EVENT ALL` waits until every subscription has produced one qualifying event. Each arm remains satisfied after its event occurs, and the result is an array in declaration order even when the events arrive in another order:
+
+{{< code lang="fql" >}}
+LET events = WAITFOR EVENT ALL {
+    "domcontentloaded" IN page
+    "networkidle" IN page
+}
+TIMEOUT 10s
+{{</ code >}}
+
+Event groups synchronize **occurrences**, unlike polling groups, which synchronize state in one cycle. Event filters are per entry:
+
+{{< code lang="fql" >}}
+RETURN WAITFOR EVENT ANY {
+    "response" IN page
+        WHEN .status >= 500
+    "dialog" IN page
+        WHEN .type == "confirm"
+}
+TIMEOUT 10s
+{{</ code >}}
+
+All subscriptions are established concurrently. A timeout, cancellation, setup failure, trigger failure, stream error, or completed wait closes every remaining subscription. `TIMEOUT`, `TRIGGER`, `ON TIMEOUT`, and `ON ERROR` apply once to the whole group.
+
 ### Triggering the event
 
-A `TRIGGER` clause runs statements *after* the subscription is set up but *before* waiting begins. This is how you cause the event you are waiting for without risking a race where it fires before you start listening.
+A `TRIGGER` clause runs statements *after* the subscription is set up but *before* waiting begins. For an event group, every subscription is established before the one shared trigger runs. This is how you cause the event you are waiting for without risking a race where it fires before you start listening.
 
 {{< code lang="fql" >}}
 WAITFOR EVENT "response" IN page
