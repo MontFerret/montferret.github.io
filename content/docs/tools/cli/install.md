@@ -13,23 +13,13 @@ This page covers CLI-specific setup.
 
 ## From a prebuilt binary
 
-Download the latest release for your platform from the GitHub releases page:
-
-https://github.com/MontFerret/cli/releases
+Download `v{{< data "versions.cli.v2" >}}` for your platform from the [CLI release page](https://github.com/MontFerret/cli/releases/tag/v{{< data "versions.cli.v2" >}}).
 
 After downloading, make sure the binary is available in your `PATH`.
 
-## Using the install script
-
-{{< terminal >}}
-curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh
-{{< /terminal >}}
-
-The script detects your platform, downloads the matching binary, and installs it into your PATH.
-
 ## From source
 
-Requires `Go {{< data "versions.go" >}}` or later:
+Requires `Go {{< data "versions.cli.go" >}}` or later:
 
 {{< terminal >}}
 go install github.com/MontFerret/cli/v2/ferret@v{{< data "versions.cli.v2" >}}
@@ -63,4 +53,4 @@ rm -rf ~/.ferret
 
 ## Next steps
 
-{{< docs-related tiles="tools-cli-run,tools-cli-repl,getting-started-quick-start" >}}
+{{< docs-related tiles="tools-cli-run,tools-cli-mod,tools-cli-repl,getting-started-quick-start" >}}

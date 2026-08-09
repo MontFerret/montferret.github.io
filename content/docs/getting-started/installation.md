@@ -37,9 +37,7 @@ The Ferret CLI is the easiest way to run Ferret from your terminal.
 
 ### From a prebuilt binary
 
-Download the latest release for your platform from the GitHub releases page:
-
-https://github.com/MontFerret/cli/releases
+Download `v{{< data "versions.cli.v2" >}}` for your platform from the [CLI release page](https://github.com/MontFerret/cli/releases/tag/v{{< data "versions.cli.v2" >}}).
 
 After downloading the binary, make sure it is available in your `PATH`.
 
@@ -49,29 +47,11 @@ You can verify the installation with:
 ferret version
 {{< /terminal >}}
 
-### Using the install script
-
-You can also install the CLI with the provided shell script:
-
-{{< terminal >}}
-curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh | sh
-{{< /terminal >}}
-
-The script detects your platform, downloads the matching binary, and installs it into your PATH.
-
-If you prefer to inspect the script before running it:
-
-{{< terminal >}}
-curl -fsSL https://raw.githubusercontent.com/MontFerret/cli/master/install.sh -o install.sh
-less install.sh
-sh install.sh
-{{< /terminal >}}
-
 ### From source
 
 If you already have Go installed, you can build and install a specific Ferret CLI version from source.
 
-This requires `Go {{< data "versions.go" >}}` or later.
+This requires `Go {{< data "versions.cli.go" >}}` or later.
 
 {{< terminal >}}
 go install github.com/MontFerret/cli/v2/ferret@v{{< data "versions.cli.v2" >}}
@@ -104,6 +84,8 @@ Ferret’s core runtime is intentionally small. HTML querying, browser automatio
 The official CLI distribution includes the standard web/HTML modules, so common web extraction workflows work out of the box when using the CLI.
 
 If you embed Ferret as a Go library, you decide which modules to register in your runtime. This lets applications keep their Ferret environment small and capability-oriented, while still enabling HTML, browser, or other integrations when needed.
+
+Use [`ferret mod install`]({{< ref "/docs/modules/install" >}}) to add a registered module to an embedded Go application.
 
 | Use case | Available in core? | Available in CLI? | Notes |
 | --- | --- | --- | --- |

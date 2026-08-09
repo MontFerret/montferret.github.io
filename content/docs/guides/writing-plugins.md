@@ -1,20 +1,20 @@
 ---
-title: "Write a Ferret plugin"
-sidebarTitle: "Writing plugins"
+title: "Develop a Ferret module"
+sidebarTitle: "Developing modules"
 weight: 120
 draft: false
 description: "Build a self-contained module with namespaced functions, host values, and lifecycle hooks."
 ---
 
-# Write a Ferret plugin
+# Develop a Ferret module
 
-A Ferret plugin is a Go module that bundles namespaced functions, host values, and lifecycle hooks into a single registerable unit. This guide builds a complete plugin from scratch — a key-value cache that FQL scripts can create, populate, read, and iterate.
+A Ferret module bundles namespaced functions, host values, and lifecycle hooks into a single registerable Go package. This guide builds a complete module — a key-value cache that FQL scripts can create, populate, read, and iterate.
 
 For the registration and lifecycle model, see [Modules]({{< ref "/docs/embedding/modules" >}}). For the underlying extension APIs, see [Custom Functions]({{< ref "/docs/embedding/custom-functions" >}}) and [Host Values]({{< ref "/docs/embedding/host-values" >}}).
 
-## What the plugin will do
+## What the module will do
 
-The `KV` plugin exposes three functions and a host value:
+The `KV` module exposes three functions and a host value:
 
 {{< code lang="fql" >}}
 LET cache = KV::OPEN()
@@ -38,18 +38,30 @@ Expected output:
 ## Scaffold the module
 
 {{< terminal command="true" >}}
-mkdir kvplugin && cd kvplugin
-go mod init kvplugin
-go get github.com/MontFerret/ferret/v2
+ferret mod init acme/kvplugin \
+  --go-module github.com/acme/ferret-kvplugin \
+  --dir kvplugin \
+  --namespace KV
+cd kvplugin
+go mod tidy
 {{</ terminal >}}
 
-Create two files:
+The initializer creates the module manifest, Go module, starter registration, documentation, and package directories. Add `cache.go` as you follow the guide, and replace the starter `module.go` with the implementation below:
 
-```
+```text
 kvplugin/
-    module.go    # Module interface + function registration
-    cache.go     # Cache host value
+├── ferret.yaml
+├── go.mod
+├── module.go
+├── cache.go
+├── README.md
+├── core/
+│   └── doc.go
+└── lib/
+    └── doc.go
 ```
+
+The generated `ferret.yaml` is schema-valid but contains TODO release metadata. See [Develop a module project]({{< ref "/docs/modules/develop" >}}) for the scaffold contract.
 
 ## Implement the Module interface
 
@@ -74,7 +86,7 @@ func New() *Module {
 }
 
 func (m *Module) Name() string {
-    return "kv"
+    return "acme/kvplugin"
 }
 
 func (m *Module) Register(boot module.Bootstrap) error {
@@ -263,7 +275,7 @@ func (c *Cache) Close() error {
 
 ## Add lifecycle hooks
 
-Hooks let the plugin react to engine events. Add timing and cleanup:
+Hooks let the module react to engine events. Add timing and cleanup:
 
 {{< code lang="go" title="module.go (continued)" >}}
 type ctxStartKey struct{}
@@ -283,7 +295,7 @@ func (m *Module) registerHooks(boot module.Bootstrap) {
 
 `BeforeRun` hooks can return a modified context that flows through to `AfterRun` and into the VM. This is useful for injecting request-scoped values like tracing spans.
 
-## Register and use the plugin
+## Register and use the module
 
 In the host application:
 
@@ -295,7 +307,7 @@ import (
     "fmt"
     "log"
 
-    "ferret-service/kvplugin"
+    kvplugin "github.com/acme/ferret-kvplugin"
 
     "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/source"
@@ -335,7 +347,7 @@ func main() {
 
 ## Accept configuration
 
-Use the functional options pattern to make the plugin configurable:
+Use the functional options pattern to make the module configurable:
 
 {{< code lang="go" >}}
 type Option func(*Module)
@@ -371,9 +383,9 @@ engine, err := ferret.New(
 )
 {{</ code >}}
 
-## Test the plugin
+## Test the module
 
-Write a Go test that creates an engine with the plugin, runs a query, and asserts on the output:
+Write a Go test that creates an engine with the module, runs a query, and asserts on the output:
 
 {{< code lang="go" title="module_test.go" >}}
 package kvplugin_test
@@ -383,7 +395,7 @@ import (
     "encoding/json"
     "testing"
 
-    "ferret-service/kvplugin"
+    kvplugin "github.com/acme/ferret-kvplugin"
 
     "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/source"
@@ -440,9 +452,9 @@ func TestCache(t *testing.T) {
 {{</ code >}}
 
 {{< terminal command="true" >}}
-go test ./kvplugin/
+go test ./...
 {{</ terminal >}}
 
 ## Next steps
 
-{{< docs-related tiles="embedding-modules,embedding-custom-functions,embedding-host-values,guide-embedding-runtime" >}}
+{{< docs-related tiles="runtime-modules-develop,runtime-modules-publish,embedding-modules,embedding-custom-functions" >}}

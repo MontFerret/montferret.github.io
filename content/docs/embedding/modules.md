@@ -22,7 +22,15 @@ The host application chooses which modules are available. Importing a package al
 
 ## Installing a module
 
-Install a module with `go get`. For example, the HTML module is published from the Ferret `contrib` repository:
+For a module published in the Ferret Registry, run `ferret mod install` from the host application's Go module. The CLI resolves a compatible release, adds its Go package, and registers its zero-argument constructor in the application's `ferret.New(...)` composition:
+
+{{< terminal command="true" >}}
+ferret mod install montferret/archive
+{{</ terminal >}}
+
+See [Install a module]({{< ref "/docs/modules/install" >}}) for project prerequisites, exact versions, non-interactive setup, and validation behavior.
+
+You can also add a Go package manually when it is not registered or when its constructor needs host-specific setup. For example, the HTML module is published from the Ferret `contrib` repository:
 
 {{< terminal command="true" >}}
 go get github.com/MontFerret/contrib/modules/web/html
@@ -156,7 +164,7 @@ type Module interface {
 
 `Register` receives a `module.Bootstrap` with access to host registries and the engine, plan, and session hook registrars. Keep registration focused on wiring the module into the host; construct and validate module-specific configuration before registration when practical.
 
-For a complete implementation walkthrough, see [Writing plugins]({{< ref "/docs/guides/writing-plugins" >}}).
+For a complete implementation walkthrough, see [Develop a Ferret module]({{< ref "/docs/guides/writing-plugins" >}}).
 
 ## Lifecycle hooks
 
@@ -241,4 +249,4 @@ Hooks registered through engine options and modules join the same hook chains. E
 
 ## Next steps
 
-{{< docs-related tiles="embedding-getting-started,embedding-custom-functions,embedding-configuration,guide-writing-plugins" >}}
+{{< docs-related tiles="runtime-modules-install,runtime-modules-develop,embedding-custom-functions,embedding-configuration" >}}

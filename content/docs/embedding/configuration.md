@@ -382,7 +382,7 @@ func FetchStatus(ctx context.Context, urlArg runtime.Value) (runtime.Value, erro
 
 For public modules, use `HTTPClientFrom` instead of `net/http` or a separately constructed client. Requests then follow the host's destination, redirect, header, timeout, and payload-size policies, while the execution context continues to carry cancellation and deadlines. Use `NetworkFrom` only when a function needs the complete network service.
 
-Both examples have valid Ferret function signatures and can be registered with `sdk.Func`. See [Writing plugins]({{< ref "/docs/guides/writing-plugins" >}}) for the complete registration pattern.
+Both examples have valid Ferret function signatures and can be registered with `sdk.Func`. See [Develop a Ferret module]({{< ref "/docs/guides/writing-plugins" >}}) for the complete registration pattern.
 
 ## Compiler options
 
