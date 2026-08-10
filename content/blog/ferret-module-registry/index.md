@@ -111,13 +111,13 @@ categories:
 
 Module Manifest v1 is strict. Unknown fields, duplicate keys, malformed versions, mixed-case Registry identities, invalid URLs, and invalid SPDX license expressions are rejected.
 
-The adjacent `go.mod` supplies the installable package path. The README supplies the versioned documentation Barn will snapshot and publish as Markdown and sanitized HTML. A module README typically includes Overview, Installation, Quick Start, and API Reference sections.
+The adjacent `go.mod` supplies the installable package path. The `README.md` supplies the versioned documentation Barn will snapshot and publish as `Markdown` and sanitized `HTML`. A module `README.md` typically includes `Overview`, `Installation`, `Quick Start`, and `API Reference` sections.
 
 `compatibility.ferret` is optional in the schema, but Registry releases should declare it. The installer needs a usable compatibility range to select a release for a host application.
 
 ### Tag and push the release
 
-Commit the manifest, module implementation, tests, `go.mod`, and README before creating the release tag. For a standalone module, the default tag is `v<version>`:
+Commit the manifest, module implementation, tests, `go.mod`, and `README.md` before creating the release tag. For a standalone module, the default tag is `v<version>`:
 
 {{< terminal command="true" >}}
 git tag v1.0.0
@@ -176,7 +176,7 @@ The Registry's publication process is deliberately Git-backed and review-based.
 
 Specs owns the strict portable contracts for module manifests and Registry records. Barn owns repository inspection, cross-document checks, publication history, and generation of the public catalog. The CLI consumes the resulting versioned artifacts and applies compatibility rules when installing a module.
 
-Before submitting, authenticate with GitHub using GH_TOKEN, GITHUB_TOKEN, or the GitHub CLI. See the publication guide for authentication and permission details.
+Before submitting, authenticate with GitHub using `GH_TOKEN`, `GITHUB_TOKEN`, or the GitHub CLI. See the publication guide for authentication and permission details.
 
 ## Available during the v2 alpha
 
