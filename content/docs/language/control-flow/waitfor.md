@@ -169,7 +169,7 @@ LET event = WAITFOR EVENT ANY {
 TIMEOUT 10s
 {{</ code >}}
 
-`EVENT ANY` returns the first qualifying event that occurs and closes the other subscriptions. Concurrent events have no declaration-order tie-break.
+`EVENT ANY` returns the first qualifying event that occurs and closes the other subscriptions. Concurrent events have no declaration-order tie-break. If one source ends without a qualifying event, the other arms keep waiting; if every source ends without a match, the result is `NONE`, as with a singular event wait.
 
 `EVENT ALL` waits until every subscription has produced one qualifying event. Each arm remains satisfied after its event occurs, and the result is an array in declaration order even when the events arrive in another order:
 
@@ -180,6 +180,8 @@ LET events = WAITFOR EVENT ALL {
 }
 TIMEOUT 10s
 {{</ code >}}
+
+Every `EVENT ALL` arm must produce an event that passes its `WHEN` filters. If an unmatched source ends, the wait fails immediately because the group can no longer be satisfied. A source ending after its arm has matched does not affect the result.
 
 Event groups synchronize **occurrences**, unlike polling groups, which synchronize state in one cycle. Event filters are per entry:
 
