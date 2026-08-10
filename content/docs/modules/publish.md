@@ -8,22 +8,22 @@ description: "Prepare and submit a Ferret module release to the Registry through
 
 # Publish a module
 
-Publishing registers a tagged module release in [Barn](https://github.com/MontFerret/barn), the Git-backed source of the Ferret Registry. The CLI validates the release and prints the canonical records; publication completes when a human-reviewed Barn pull request is merged.
+Publishing registers a tagged module release in [Barn](https://github.com/MontFerret/barn), the Git-backed source of the Ferret Registry. The CLI validates the public release, prepares its immutable records, and uses the GitHub API to open the Barn pull request. Publication completes after that pull request passes review and is merged.
 
 ## Complete the module manifest
 
-Replace the scaffold placeholders with release metadata before tagging the repository. A standalone `acme/kvplugin` module can use:
+Replace the scaffold placeholders with release metadata before tagging the repository. A standalone `ziflex/kvplugin` module can use:
 
 ```yaml
 $schema: https://schemas.ferretlang.org/module/v1.json
-name: acme/kvplugin
+name: ziflex/kvplugin
 namespace: KV
 version: 1.0.0
 description: Provides an in-memory key-value cache for Ferret queries.
 license: Apache-2.0
-documentation: https://github.com/acme/ferret-kvplugin#readme
+documentation: https://github.com/ziflex/ferret-kvplugin#readme
 repository:
-  url: https://github.com/acme/ferret-kvplugin
+  url: https://github.com/ziflex/ferret-kvplugin
 compatibility:
   ferret: ">=2.0.0-alpha.44 <3.0.0"
 keywords:
@@ -40,7 +40,7 @@ For a monorepo module, add its normalized repository-relative directory:
 
 ```yaml
 repository:
-  url: https://github.com/acme/ferret-modules
+  url: https://github.com/ziflex/ferret-modules
   directory: modules/kvplugin
 ```
 
@@ -75,52 +75,90 @@ git tag modules/kvplugin/v1.0.0
 git push origin modules/kvplugin/v1.0.0
 {{< /terminal >}}
 
-The repository must be public and support anonymous HTTPS Git access. Barn inspects the pushed tag without checking out or executing module code.
+The repository must be public and support anonymous HTTPS Git access. Publication inspects the pushed tag without checking out or executing module code.
 
-## Prepare the Registry records
-
-Run the command from the module root after the tag is available remotely:
+For a non-standard release tag, pass the same `--tag` value whenever you validate, submit, or print the release records. For example:
 
 {{< terminal command="true" >}}
-ferret mod publish
+ferret mod publish --tag release-1.0.0 --dry-run
 {{< /terminal >}}
 
-Use `--tag` only when the release follows a different tag convention:
+## Validate without submitting
+
+Run a dry run from the module root after the tag is available remotely:
 
 {{< terminal command="true" >}}
-ferret mod publish --tag release-1.0.0
+ferret mod publish --dry-run
 {{< /terminal >}}
 
 The command:
 
 1. validates the local `ferret.yaml`
 2. checks the public Registry for the module and version
-3. resolves the pushed tag through anonymous HTTPS Git
-4. reads and checks the manifest, README, `go.mod`, identity, version, and commit at that tag
-5. prints the deterministic Barn-relative records and pull-request guidance
+3. resolves the pushed tag and pins its exact commit through anonymous HTTPS Git
+4. reads and checks `ferret.yaml`, `README.md`, and `go.mod` at that commit
+5. verifies the identity, version, package path, documentation, and immutable Barn records needed for the release
 
-It does not write to either repository, upload a package, authenticate with GitHub or another provider, or open a pull request.
+`--dry-run` performs the complete release validation without resolving a GitHub credential or changing anything on GitHub. It still reads the public Registry and the module's public Git repository.
 
-## Submit the Barn pull request
+## Authenticate with GitHub
 
-For the first `acme/kvplugin` release, the output contains two records:
+The submitting command resolves a GitHub token in this order:
 
-```text
-registry/modules/acme/kvplugin/manifest.json
-registry/modules/acme/kvplugin/versions/v1.0.0.json
-```
+1. `GH_TOKEN`
+2. `GITHUB_TOKEN`
+3. `gh auth token --hostname github.com`
 
-Add those exact paths and contents to a Barn branch. For later releases, add only the new version record. Do not edit the module manifest or any earlier version record.
-
-From the Barn checkout, validate the registration:
+Set one of the environment variables before publishing, or authenticate the GitHub CLI when needed:
 
 {{< terminal command="true" >}}
-make check
+gh auth login --hostname github.com
 {{< /terminal >}}
 
-Commit only the records under `registry/modules/` and open a pull request. Do not add `publishedAt`; Barn assigns it after the version first reaches `main`. Do not create or commit `dist/`; CI generates and verifies the public Registry distribution.
+The credential must be able to write to your personal Barn fork and open a pull request against the public `MontFerret/barn` repository. Ferret does not print the token or add it to the prepared records.
 
-After merge, Barn stamps the canonical version record and deploys only a fully stamped Registry. Published sources, version identities, and assigned timestamps are immutable.
+## Submit the release
+
+Run the default command after validation and authentication:
+
+{{< terminal command="true" >}}
+ferret mod publish
+{{< /terminal >}}
+
+After preparing the release, the CLI:
+
+1. creates or reuses your personal Barn fork
+2. creates a focused publication branch containing only the required source records
+3. opens a pull request against `MontFerret/barn`
+4. prints the new or existing pull request URL
+
+The first `ziflex/kvplugin` release prepares its module record and its `1.0.0` version record. Later releases prepare only the new version record. You do not need a local Barn checkout, a manual `make check`, or knowledge of the Registry record layout.
+
+The CLI does not upload module code. Barn continues to reference the exact public tag and pinned commit, and the pull request remains subject to Barn's review and CI validation.
+
+## Inspect the prepared records
+
+Use `--print` to emit the deterministic Barn-relative records as a versioned JSON document:
+
+{{< terminal command="true" >}}
+ferret mod publish --print
+{{< /terminal >}}
+
+This mode is intended for inspection or unusual manual automation. It does not resolve a GitHub credential or submit the records. `--dry-run` and `--print` cannot be combined.
+
+## Retry safely
+
+Publication is safe to retry:
+
+- an already-published version exits successfully without changing GitHub
+- an exact open pull request is returned instead of creating a duplicate
+- an exact publication branch is reused
+
+Ferret refuses to overwrite an immutable Registry record, reuse a pull request with different records, or replace a publication branch whose base or contents differ. If a stale publication branch in your personal fork conflicts with the prepared release, delete that branch before retrying.
+
+## After merge
+
+Barn assigns `publishedAt` after the version first reaches `main`; contributors and the CLI do not supply that value. Barn then generates and verifies `dist/` in CI and deploys only a fully stamped Registry. Published sources, version identities, records, and assigned timestamps are immutable.
 
 ## Next steps
 

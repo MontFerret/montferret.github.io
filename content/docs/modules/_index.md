@@ -13,7 +13,7 @@ The CLI covers the complete module workflow:
 
 - install a registered module into a Go application
 - initialize a module project for development
-- prepare a release for publication through Barn
+- publish a tagged release through Barn
 
 ## How module identities fit together
 
@@ -21,9 +21,9 @@ A module has several related identifiers. They are not interchangeable.
 
 | Concept | Example | Used by |
 | --- | --- | --- |
-| Registry identity | `acme/kvplugin` | `ferret.yaml`, the Registry, and `ferret mod` commands |
+| Registry identity | `ziflex/kvplugin` | `ferret.yaml`, the Registry, and `ferret mod` commands |
 | Runtime namespace | `KV` | FQL functions such as `KV::GET` |
-| Go package path | `github.com/acme/ferret-kvplugin` | Go imports and dependency resolution |
+| Go package path | `github.com/ziflex/ferret-kvplugin` | Go imports and dependency resolution |
 | Runtime registration | `ferret.WithModules(kvplugin.New())` | The host application's Ferret engine |
 
 The Registry identity is a canonical lowercase `owner/name` value. The runtime namespace is an independent, case-sensitive FQL namespace. Barn obtains the installable Go package path from the `go.mod` beside the module manifest instead of deriving it from either identity.

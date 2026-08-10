@@ -8,14 +8,14 @@ description: "Discover, install, initialize, and publish Ferret modules from the
 
 # Mod
 
-The `ferret mod` command groups Registry discovery, project installation, module initialization, and publication preparation.
+The `ferret mod` command groups Registry discovery, project installation, module initialization, and publication.
 
 ```text
 ferret mod search [query]
 ferret mod info <name>
 ferret mod install <module>[@version]
 ferret mod init [name]
-ferret mod publish
+ferret mod publish [--tag <tag>] [--dry-run | --print]
 ```
 
 ## Search and inspect
@@ -71,7 +71,7 @@ See [Develop a module]({{< ref "/docs/modules/develop" >}}) for the generated pr
 
 ## Publish
 
-Validate the current tagged release and print its Barn registration records:
+Validate and submit the current tagged release through Barn:
 
 {{< terminal command="true" >}}
 ferret mod publish
@@ -80,8 +80,12 @@ ferret mod publish
 | Flag | Purpose |
 | --- | --- |
 | `--tag` | Override the default standalone or monorepo release tag |
+| `--dry-run` | Validate and prepare the release without authenticating or submitting to GitHub |
+| `--print` | Print the prepared Barn records as versioned JSON without submitting |
 
-The command prepares a manual Registry submission; it does not write the records or open a pull request. See [Publish a module]({{< ref "/docs/modules/publish" >}}) for the release checklist and Barn workflow.
+Without a non-submitting flag, the command creates or reuses a personal Barn fork and focused publication branch, then opens or reuses a pull request against `MontFerret/barn`. It reads `GH_TOKEN`, then `GITHUB_TOKEN`, and otherwise uses the current `gh` CLI credential. `--dry-run` and `--print` cannot be combined; neither mode resolves a GitHub credential or submits records.
+
+The command does not upload module code. Publication remains tied to the public tag and pinned commit, and an already-published version is a successful no-op. See [Publish a module]({{< ref "/docs/modules/publish" >}}) for authentication, validation, and retry behavior.
 
 ## Next steps
 
