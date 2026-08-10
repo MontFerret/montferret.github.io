@@ -4,7 +4,7 @@ subtitle: "Discover, install, and publish Ferret modules"
 draft: false
 author: "Tim Voronov"
 authorLink: "https://github.com/ziflex"
-date: "2026-08-09"
+date: "2026-08-10"
 ---
 
 Ferret now has a module Registry.
