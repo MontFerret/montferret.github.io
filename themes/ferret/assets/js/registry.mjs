@@ -1,5 +1,8 @@
 const SCHEMA_VERSION = 1;
 const ROUTE_SEGMENT = /^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$/;
+const API_NAMESPACE = /^(?:[A-Za-z][A-Za-z0-9_]*)(?:::[A-Za-z][A-Za-z0-9_]*)*$/;
+const API_IDENTIFIER = /^[A-Za-z][A-Za-z0-9_]*$/;
+const API_PARAMETER = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 export class RegistryPayloadError extends Error {}
 
@@ -15,6 +18,107 @@ export function resolveArtifactURL(baseURL, href) {
     }
 
     return resolved;
+}
+
+function objectHas(object, key) {
+    return object !== null && typeof object === "object" && !Array.isArray(object) && Object.prototype.hasOwnProperty.call(object, key);
+}
+
+export function hasAPIReference(versionDocument) {
+    return objectHas(versionDocument?.content, "api");
+}
+
+export function apiArtifactURL(versionURL, versionDocument) {
+    if (!hasAPIReference(versionDocument)) return null;
+    return resolveArtifactURL(versionURL, versionDocument.content.api);
+}
+
+function invalidAPIReference(message) {
+    throw new RegistryPayloadError(`The API Reference ${message}.`);
+}
+
+export function validateAPIReference(document, expectedID, expectedVersion) {
+    if (!document || typeof document !== "object" || Array.isArray(document) || document.schemaVersion !== SCHEMA_VERSION) {
+        invalidAPIReference("is not a Registry v1 document");
+    }
+    if (document.id !== expectedID || document.version !== expectedVersion) {
+        invalidAPIReference("does not match the selected module version");
+    }
+    if (!Array.isArray(document.namespaces)) {
+        invalidAPIReference("does not contain a namespace list");
+    }
+
+    const namespaces = new Set();
+    for (const namespace of document.namespaces) {
+        if (!namespace || typeof namespace !== "object" || Array.isArray(namespace) || typeof namespace.name !== "string" || (namespace.name !== "" && !API_NAMESPACE.test(namespace.name))) {
+            invalidAPIReference("contains an invalid namespace");
+        }
+        if (namespaces.has(namespace.name)) {
+            invalidAPIReference("contains a duplicate namespace");
+        }
+        namespaces.add(namespace.name);
+        if (!Array.isArray(namespace.functions) || namespace.functions.length === 0) {
+            invalidAPIReference("contains a namespace without functions");
+        }
+
+        const functions = new Set();
+        for (const apiFunction of namespace.functions) {
+            if (!apiFunction || typeof apiFunction !== "object" || Array.isArray(apiFunction) || typeof apiFunction.name !== "string" || !API_IDENTIFIER.test(apiFunction.name)) {
+                invalidAPIReference("contains an invalid function");
+            }
+            if (functions.has(apiFunction.name)) {
+                invalidAPIReference("contains a duplicate function");
+            }
+            functions.add(apiFunction.name);
+            if (!Array.isArray(apiFunction.signatures) || apiFunction.signatures.length === 0) {
+                invalidAPIReference("contains a function without signatures");
+            }
+
+            const signatures = new Set();
+            for (const signature of apiFunction.signatures) {
+                if (!signature || typeof signature !== "object" || Array.isArray(signature) || !Array.isArray(signature.parameters) || signature.parameters.length > 4) {
+                    invalidAPIReference("contains an invalid signature");
+                }
+                if (signature.parameters.some((parameter) => typeof parameter !== "string" || parameter === "_" || !API_PARAMETER.test(parameter))) {
+                    invalidAPIReference("contains an invalid parameter name");
+                }
+                if (objectHas(signature, "variadic") && signature.variadic !== true) {
+                    invalidAPIReference("contains an invalid variadic marker");
+                }
+                if (signature.variadic === true && signature.parameters.length !== 1) {
+                    invalidAPIReference("contains a variadic signature without exactly one parameter");
+                }
+                if (objectHas(signature, "documentation") && (typeof signature.documentation !== "string" || signature.documentation.length === 0)) {
+                    invalidAPIReference("contains invalid documentation");
+                }
+
+                const signatureKey = signature.variadic === true ? "variadic" : String(signature.parameters.length);
+                if (signatures.has(signatureKey)) {
+                    invalidAPIReference("contains duplicate function signatures");
+                }
+                signatures.add(signatureKey);
+            }
+        }
+    }
+
+    return document;
+}
+
+export async function loadAPIReference(versionURL, versionDocument, fetchJSON, signal) {
+    if (!hasAPIReference(versionDocument)) return { status: "absent" };
+
+    try {
+        const endpoint = apiArtifactURL(versionURL, versionDocument);
+        const reference = validateAPIReference(
+            await fetchJSON(endpoint, signal),
+            versionDocument.id,
+            versionDocument.version
+        );
+        return { status: "ready", reference };
+    } catch (error) {
+        if (error?.name === "AbortError") throw error;
+        return { status: "error" };
+    }
 }
 
 export function parseRegistryRoute(pathname) {
@@ -101,6 +205,110 @@ function escapeHTML(value) {
         .replaceAll("'", "&#39;");
 }
 
+export function apiNamespaceID(namespaceName) {
+    return namespaceName === ""
+        ? "api-namespace-global"
+        : `api-namespace-named-${namespaceName.replaceAll("::", "-")}`;
+}
+
+export function apiFunctionID(namespaceName, functionName) {
+    return namespaceName === ""
+        ? `api-function-global-${functionName}`
+        : `api-function-named-${namespaceName.replaceAll("::", "-")}-${functionName}`;
+}
+
+export function apiReferenceAnchorIDs(reference) {
+    const ids = ["api-reference"];
+    for (const namespace of reference?.namespaces || []) {
+        ids.push(apiNamespaceID(namespace.name));
+        for (const apiFunction of namespace.functions) {
+            ids.push(apiFunctionID(namespace.name, apiFunction.name));
+        }
+    }
+    return ids;
+}
+
+function qualifiedAPIName(namespaceName, functionName) {
+    return namespaceName === "" ? functionName : `${namespaceName}::${functionName}`;
+}
+
+export function apiSignature(namespaceName, functionName, signature) {
+    const parameters = signature.parameters.map((parameter) => signature.variadic === true ? `...${parameter}` : parameter);
+    return `${qualifiedAPIName(namespaceName, functionName)}(${parameters.join(", ")})`;
+}
+
+function renderAPIProse(documentation) {
+    if (!documentation) return "";
+
+    return documentation.trim().split(/\r?\n\s*\r?\n/).map((paragraph) => {
+        const text = paragraph.replace(/\s*\r?\n\s*/g, " ");
+        return `<p>${escapeHTML(text)}</p>`;
+    }).join("");
+}
+
+function renderAPIParameters(signature) {
+    if (signature.parameters.length === 0) return "<span>None</span>";
+
+    return `<ul>${signature.parameters.map((parameter) => `<li><code>${escapeHTML(parameter)}</code>${signature.variadic === true ? '<span class="registry-api-parameter-kind">Variadic</span>' : ""}</li>`).join("")}</ul>`;
+}
+
+export function renderAPIReference(reference) {
+    if (reference.namespaces.length === 0) {
+        return '<p class="registry-api-empty">This release does not publish any statically registered Ferret functions.</p>';
+    }
+
+    return reference.namespaces.map((namespace) => {
+        const namespaceID = apiNamespaceID(namespace.name);
+        const namespaceLabel = namespace.name || "Global namespace";
+        const functions = namespace.functions.map((apiFunction) => {
+            const functionID = apiFunctionID(namespace.name, apiFunction.name);
+            const qualifiedName = qualifiedAPIName(namespace.name, apiFunction.name);
+            const signatures = apiFunction.signatures.map((signature) => `
+                <div class="registry-api-signature">
+                    <p class="registry-api-signature-code"><code>${escapeHTML(apiSignature(namespace.name, apiFunction.name, signature))}</code></p>
+                    ${renderAPIProse(signature.documentation)}
+                    <dl class="registry-api-parameters">
+                        <div><dt>Parameters</dt><dd>${renderAPIParameters(signature)}</dd></div>
+                    </dl>
+                </div>`).join("");
+
+            return `
+                <article class="registry-api-function" aria-labelledby="${escapeHTML(functionID)}">
+                    <h4 id="${escapeHTML(functionID)}">
+                        <a class="registry-api-entity-link" href="#${escapeHTML(functionID)}" aria-label="${escapeHTML(qualifiedName)}" title="Link to ${escapeHTML(qualifiedName)}">
+                            <code>${escapeHTML(qualifiedName)}</code><span aria-hidden="true">#</span>
+                        </a>
+                    </h4>
+                    ${signatures}
+                </article>`;
+        }).join("");
+
+        return `
+            <section class="registry-api-namespace" aria-labelledby="${escapeHTML(namespaceID)}">
+                <h3 id="${escapeHTML(namespaceID)}" data-registry-api-navigation>${escapeHTML(namespaceLabel)}</h3>
+                <div class="registry-api-functions">${functions}</div>
+            </section>`;
+    }).join("");
+}
+
+function renderAPIStateBody(state) {
+    if (state.status === "ready") return renderAPIReference(state.reference);
+    if (state.status === "error") {
+        return '<section class="registry-state registry-state-inline registry-state-warning registry-api-state" role="alert"><h3>API Reference unavailable</h3><p>The generated API artifact could not be loaded for this release.</p></section>';
+    }
+    return '<section class="registry-state registry-state-inline registry-api-state" role="status"><span class="registry-spinner" aria-hidden="true"></span><div><h3>Loading API Reference</h3><p>Loading the generated API for this release…</p></div></section>';
+}
+
+function renderAPISection(state) {
+    if (state.status === "absent") return "";
+
+    return `
+        <section id="api-reference" class="registry-api-reference" aria-labelledby="api-reference-title" aria-busy="${state.status === "loading"}">
+            <h2 id="api-reference-title">API Reference</h2>
+            <div id="registry-api-reference-body">${renderAPIStateBody(state)}</div>
+        </section>`;
+}
+
 function externalHTTPSURL(value) {
     try {
         const parsed = new URL(value);
@@ -139,7 +347,7 @@ function fragmentID(hash) {
     }
 }
 
-class RegistryApp {
+export class RegistryApp {
     constructor(root) {
         this.root = root;
         this.baseURL = new URL(root.dataset.registryBase);
@@ -464,10 +672,21 @@ class RegistryApp {
             documentationError = "This release does not publish browser-ready documentation.";
         }
 
-        this.renderModuleView(route, module, version, documentation, documentationError);
+        const apiState = hasAPIReference(version) ? { status: "loading" } : { status: "absent" };
+        this.renderModuleView(route, module, version, documentation, documentationError, apiState);
+        if (apiState.status === "absent") return;
+
+        const loadedAPIState = await loadAPIReference(
+            versionEndpoint,
+            version,
+            (endpoint, requestSignal) => this.fetchJSON(endpoint, requestSignal),
+            signal
+        );
+        if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+        this.renderAPIReferenceState(loadedAPIState);
     }
 
-    renderModuleView(route, module, version, documentation, documentationError) {
+    renderModuleView(route, module, version, documentation, documentationError, apiState = { status: "absent" }) {
         this.setBusy(false);
         const status = versionStatus(module, version.version, route.requestedVersion);
         const installCommand = packageInstallCommand(version);
@@ -497,9 +716,10 @@ class RegistryApp {
 
                 <div class="registry-module-layout">
                     <div class="registry-documentation-column">
+                        <nav id="registry-toc" class="registry-toc" aria-label="On this page" hidden></nav>
                         ${documentationError ? `<section class="registry-state registry-state-inline registry-state-warning"><h3>Documentation unavailable</h3><p>${escapeHTML(documentationError)}</p></section>` : `
-                            <nav id="registry-toc" class="registry-toc" aria-label="On this page" hidden></nav>
                             <section id="registry-documentation" class="content registry-documentation">${documentation}</section>`}
+                        ${renderAPISection(apiState)}
                     </div>
                     <aside class="registry-metadata" aria-label="Module metadata">
                         <div class="registry-status registry-status-${status.tone}">${escapeHTML(status.label)}</div>
@@ -521,6 +741,10 @@ class RegistryApp {
                     </aside>
                 </div>
             </article>`;
+
+        if (apiState.status !== "absent") {
+            this.reserveAPIAnchorIDs(apiState.status === "ready" ? apiState.reference : null);
+        }
 
         this.root.querySelector("#registry-version")?.addEventListener("change", (event) => {
             const nextPath = modulePath(module.id, event.target.value);
@@ -572,6 +796,41 @@ class RegistryApp {
         this.scrollToFragment();
     }
 
+    renderAPIReferenceState(state) {
+        if (state.status === "ready") this.reserveAPIAnchorIDs(state.reference);
+        const section = this.root.querySelector("#api-reference");
+        const body = this.root.querySelector("#registry-api-reference-body");
+        if (!section || !body || state.status === "absent") return;
+
+        section.setAttribute("aria-busy", String(state.status === "loading"));
+        body.innerHTML = renderAPIStateBody(state);
+        this.buildTOC();
+        this.scrollToFragment();
+    }
+
+    reserveAPIAnchorIDs(reference) {
+        const documentation = this.root.querySelector("#registry-documentation");
+        if (!documentation) return;
+
+        const existingIDs = new Set([...this.root.querySelectorAll("[id]")].map((element) => element.id));
+        for (const reservedID of apiReferenceAnchorIDs(reference)) {
+            const conflict = [...documentation.querySelectorAll("[id]")].find((element) => element.id === reservedID);
+            if (!conflict) continue;
+
+            let documentationID = `documentation-${reservedID}`;
+            let suffix = 2;
+            while (existingIDs.has(documentationID)) {
+                documentationID = `documentation-${reservedID}-${suffix}`;
+                suffix += 1;
+            }
+            for (const link of documentation.querySelectorAll("a[href]")) {
+                if (link.getAttribute("href") === `#${reservedID}`) link.setAttribute("href", `#${documentationID}`);
+            }
+            conflict.id = documentationID;
+            existingIDs.add(documentationID);
+        }
+    }
+
     wrapTables() {
         const documentation = this.root.querySelector("#registry-documentation");
         if (!documentation) return;
@@ -591,21 +850,41 @@ class RegistryApp {
 
     buildTOC() {
         const documentation = this.root.querySelector("#registry-documentation");
+        const apiReference = this.root.querySelector("#api-reference");
         const toc = this.root.querySelector("#registry-toc");
-        if (!documentation || !toc) return;
-        const headings = [...documentation.querySelectorAll("h2[id], h3[id]")].filter((heading) => heading.textContent.trim());
-        if (headings.length < 2) return;
-        toc.innerHTML = `<p>On this page</p><ol>${headings.map((heading) => `<li class="registry-toc-${heading.tagName.toLowerCase()}"><a href="#${escapeHTML(heading.id)}">${escapeHTML(heading.textContent.trim())}</a></li>`).join("")}</ol>`;
+        if (!toc) return;
+
+        const entries = [];
+        if (documentation) {
+            entries.push({ id: documentation.id, label: "Documentation", level: "h2" });
+            entries.push(...[...documentation.querySelectorAll("h2[id], h3[id]")]
+                .filter((heading) => heading.textContent.trim())
+                .map((heading) => ({ id: heading.id, label: heading.textContent.trim(), level: heading.tagName.toLowerCase() })));
+        }
+        if (apiReference) {
+            entries.push({ id: apiReference.id, label: "API Reference", level: "h2" });
+            entries.push(...[...apiReference.querySelectorAll("h3[data-registry-api-navigation]")]
+                .filter((heading) => heading.textContent.trim())
+                .map((heading) => ({ id: heading.id, label: heading.textContent.trim(), level: "h3" })));
+        }
+
+        if (entries.length === 0 || (entries.length === 1 && !apiReference)) {
+            toc.hidden = true;
+            toc.innerHTML = "";
+            return;
+        }
+        toc.innerHTML = `<p>On this page</p><ol>${entries.map((entry) => `<li class="registry-toc-${entry.level}"><a href="#${escapeHTML(entry.id)}">${escapeHTML(entry.label)}</a></li>`).join("")}</ol>`;
         toc.hidden = false;
     }
 
     scrollToFragment() {
+        if (typeof window === "undefined" || typeof document === "undefined") return;
         const id = fragmentID(window.location.hash);
         if (!id) return;
 
-        const documentation = this.root.querySelector("#registry-documentation");
+        const referenceColumn = this.root.querySelector(".registry-documentation-column");
         const target = document.getElementById(id);
-        if (!documentation || !target || !documentation.contains(target)) return;
+        if (!referenceColumn || !target || !referenceColumn.contains(target)) return;
 
         target.scrollIntoView({ block: "start" });
     }

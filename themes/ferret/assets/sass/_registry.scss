@@ -456,6 +456,184 @@
     th { background: rgba($site-heading, .04); color: $site-heading; }
 }
 
+.registry-api-reference {
+    background: $site-surface;
+    border: 1px solid $site-border;
+    border-radius: 12px;
+    color: $site-text;
+    line-height: 1.7;
+    margin-top: 2rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    padding: clamp(1.3rem, 4vw, 2.5rem);
+    scroll-margin-top: 1.5rem;
+
+    > h2 {
+        color: $site-heading;
+        font-family: $family-code;
+        font-size: 1.55rem;
+        font-weight: 600;
+        line-height: 1.3;
+        margin: 0 0 1.5rem;
+    }
+}
+
+.registry-api-state {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    margin: 0;
+    max-width: none;
+    min-height: 7rem;
+    padding: 1rem 0;
+    text-align: left;
+}
+
+.registry-api-namespace {
+    > h3 {
+        color: $site-heading;
+        font-family: $family-code;
+        font-size: 1.15rem;
+        font-weight: 600;
+        line-height: 1.3;
+        margin: 0 0 .75rem;
+        scroll-margin-top: 1.5rem;
+    }
+
+    + .registry-api-namespace {
+        border-top: 1px solid $site-border;
+        margin-top: 2.25rem;
+        padding-top: 1.9rem;
+    }
+}
+
+.registry-api-function {
+    border-top: 1px solid $site-border;
+    padding: 1.4rem 0;
+
+    &:last-child { padding-bottom: 0; }
+
+    h4 {
+        font-family: $family-code;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.35;
+        margin: 0 0 .8rem;
+        scroll-margin-top: 1.5rem;
+    }
+}
+
+.registry-api-entity-link {
+    align-items: baseline;
+    color: $accent-text;
+    display: inline-flex;
+    gap: .45rem;
+    max-width: 100%;
+    text-decoration: none;
+
+    code {
+        background: transparent;
+        color: inherit;
+        overflow-wrap: anywhere;
+        padding: 0;
+    }
+
+    span { opacity: .45; }
+
+    &:hover span { opacity: 1; }
+
+    &:focus-visible {
+        border-radius: 3px;
+        outline: 3px solid rgba($accent, .42);
+        outline-offset: 3px;
+    }
+}
+
+.registry-api-signature {
+    > p:not(.registry-api-signature-code) {
+        color: $site-text;
+        margin: .8rem 0;
+        max-width: 54rem;
+    }
+
+    + .registry-api-signature {
+        border-top: 1px dashed $site-border;
+        margin-top: 1.1rem;
+        padding-top: 1.1rem;
+    }
+}
+
+.registry-api-signature-code {
+    max-width: 100%;
+    margin: 0;
+    overflow-x: auto;
+    padding: .15rem 0;
+    scrollbar-width: thin;
+
+    code {
+        background: rgba($site-heading, .07);
+        border-radius: 5px;
+        color: $site-heading;
+        display: inline-block;
+        font-size: .86rem;
+        padding: .32rem .48rem;
+        white-space: nowrap;
+    }
+}
+
+.registry-api-parameters {
+    margin: .9rem 0 0;
+
+    > div {
+        align-items: baseline;
+        display: grid;
+        gap: .8rem;
+        grid-template-columns: 6.5rem minmax(0, 1fr);
+    }
+
+    dt {
+        color: $site-muted;
+        font-family: $family-code;
+        font-size: .7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    dd { margin: 0; }
+
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .35rem .9rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        align-items: baseline;
+        display: inline-flex;
+        gap: .35rem;
+    }
+
+    code {
+        background: transparent;
+        color: $site-heading;
+        padding: 0;
+    }
+}
+
+.registry-api-parameter-kind,
+.registry-api-empty {
+    color: $site-muted;
+}
+
+.registry-api-parameter-kind {
+    font-size: .76rem;
+}
+
+.registry-api-empty { margin: 0; }
+
 .registry-metadata {
     background: $site-surface;
     border: 1px solid $site-border;
@@ -578,6 +756,7 @@
     .registry-catalog-heading { align-items: flex-start; flex-direction: column; gap: .7rem; }
     .registry-card { min-height: 11rem; }
     .registry-toc ol { columns: 1; }
+    .registry-api-parameters > div { gap: .3rem; grid-template-columns: minmax(0, 1fr); }
     .registry-state { align-items: flex-start; }
 }
 
