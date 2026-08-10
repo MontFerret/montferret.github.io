@@ -41,7 +41,7 @@ The Registry identity is how users search for and install the module. The namesp
 
 ## Find a module
 
-The website Registry is the most direct way to browse the catalog. Each module page shows its description, namespace, versions, compatibility, source, and published documentation.
+The Registry is the easiest way to browse the catalog from the web. Each module page shows its description, namespace, versions, compatibility, source, and published documentation.
 
 The CLI provides the same discovery workflow from a terminal. Search by identity or description:
 
@@ -67,7 +67,7 @@ ferret mod install montferret/archive
 
 Without an explicit version, the CLI selects the newest registered release compatible with the Ferret version already used by the project. It does not silently move the application to a different Ferret release to make a module fit.
 
-You can also request one exact release:
+You can also request a specific release:
 
 {{< terminal command="true" >}}
 ferret mod install montferret/archive@1.0.0-rc.3
@@ -75,7 +75,7 @@ ferret mod install montferret/archive@1.0.0-rc.3
 
 An exact release still has to declare compatibility with the project's Ferret version.
 
-The installer resolves the Registry record, adds the published Go package, updates the application's `ferret.New(...)` composition, and builds the owning package before applying the staged changes. If the application is missing a safe Ferret dependency or composition helper, interactive use can show and request approval for those prerequisite changes.
+The installer resolves the Registry record, adds the published Go package, updates the application’s ferret.New(...) composition, and verifies that the affected package builds before applying the staged changes. If the application is missing a safe Ferret dependency or composition helper, interactive use can show and request approval for those prerequisite changes.
 
 There is one important boundary: this command installs a module into an existing Go host application. It does not extend the standalone Ferret CLI runtime. The module is compiled into the application and runs with that process's permissions; the official CLI continues to ship with its own selected module set.
 
@@ -83,7 +83,7 @@ For project prerequisites, non-interactive setup, and configuration after instal
 
 ## Publish a module
 
-Registry publication starts from a tagged Go module in a public Git repository. The Registry does not accept an uploaded package archive. Instead, Ferret resolves the public tag, checks the files at its exact commit, and prepares the immutable Barn records that identify the release.
+Publishing starts from a tagged Go module in a public Git repository. The Registry does not accept uploaded package archives. Instead, Ferret resolves the public tag, inspects the files at its exact commit, and prepares the immutable Barn records that identify the release.
 
 The example below publishes `ziflex/kvplugin` at version `1.0.0`.
 
@@ -111,7 +111,7 @@ categories:
 
 Module Manifest v1 is strict. Unknown fields, duplicate keys, malformed versions, mixed-case Registry identities, invalid URLs, and invalid SPDX license expressions are rejected.
 
-The adjacent `go.mod` supplies the installable package path. The README supplies the versioned documentation Barn will snapshot and publish as Markdown and sanitized HTML. Canonical module documentation should contain Overview, Installation, Quick Start, and API Reference sections.
+The adjacent `go.mod` supplies the installable package path. The README supplies the versioned documentation Barn will snapshot and publish as Markdown and sanitized HTML. A module README typically includes Overview, Installation, Quick Start, and API Reference sections.
 
 `compatibility.ferret` is optional in the schema, but Registry releases should declare it. The installer needs a usable compatibility range to select a release for a host application.
 
@@ -134,7 +134,7 @@ After the tag is public, validate the complete release without authenticating or
 ferret mod publish --dry-run
 {{< /terminal >}}
 
-The command validates the local manifest, consults the current Registry, resolves the public tag and pinned commit, and verifies the adjacent `README.md` and `go.mod`. It also checks the module identity, version, package path, and exact records needed for publication. The preparation step uses anonymous HTTPS Git and does not check out or execute module code.
+The command checks the local manifest against the current Registry, resolves the public tag to its exact commit, and verifies the README.md, go.mod, module identity, version, and package path. Nothing is submitted, and no module code is checked out or executed.
 
 ### Authenticate with GitHub
 
@@ -176,9 +176,7 @@ The Registry's publication process is deliberately Git-backed and review-based.
 
 Specs owns the strict portable contracts for module manifests and Registry records. Barn owns repository inspection, cross-document checks, publication history, and generation of the public catalog. The CLI consumes the resulting versioned artifacts and applies compatibility rules when installing a module.
 
-During publication, Ferret resolves a tag through anonymous HTTPS Git, pins it to its full commit, and reads the manifest, `go.mod`, and README directly from that commit. It does not check out or execute module code. The GitHub API is used only after those checks prepare the exact Barn records. The pull request keeps additions reviewable, while immutable version records ensure an existing release cannot later point somewhere else.
-
-The CLI handles the repository mechanics without removing that review boundary: source remains in the module's public repository, registration remains human-reviewed, and consumers can trace a Registry release back to the exact code and documentation that were published.
+Before submitting, authenticate with GitHub using GH_TOKEN, GITHUB_TOKEN, or the GitHub CLI. See the publication guide for authentication and permission details.
 
 ## Available during the v2 alpha
 
