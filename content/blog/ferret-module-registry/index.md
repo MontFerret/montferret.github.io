@@ -75,9 +75,7 @@ ferret mod install montferret/archive@1.0.0-rc.3
 
 An exact release still has to declare compatibility with the project's Ferret version.
 
-The installer resolves the Registry record, adds the published Go package, updates the application’s ferret.New(...) composition, and verifies that the affected package builds before applying the staged changes. If the application is missing a safe Ferret dependency or composition helper, interactive use can show and request approval for those prerequisite changes.
-
-There is one important boundary: this command installs a module into an existing Go host application. It does not extend the standalone Ferret CLI runtime. The module is compiled into the application and runs with that process's permissions; the official CLI continues to ship with its own selected module set.
+The installer resolves the Registry record, adds the published Go package, updates the application’s `ferret.New(...)` composition, and verifies that the affected package builds before applying the staged changes. If the application is missing a safe Ferret dependency or composition helper, interactive use can show and request approval for those prerequisite changes.
 
 For project prerequisites, non-interactive setup, and configuration after installation, see [Install a module]({{< ref "/docs/modules/install" >}}).
 
