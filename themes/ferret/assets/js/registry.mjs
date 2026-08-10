@@ -24,6 +24,19 @@ function objectHas(object, key) {
     return object !== null && typeof object === "object" && !Array.isArray(object) && Object.prototype.hasOwnProperty.call(object, key);
 }
 
+function objectHasOnly(object, keys) {
+    const allowed = new Set(keys);
+    return Object.keys(object).every((key) => allowed.has(key));
+}
+
+function nonBlankString(value) {
+    return typeof value === "string" && value.trim().length > 0;
+}
+
+function nonBlankSingleLine(value) {
+    return nonBlankString(value) && !/[\r\n]/.test(value);
+}
+
 export function hasAPIReference(versionDocument) {
     return objectHas(versionDocument?.content, "api");
 }
@@ -38,7 +51,7 @@ function invalidAPIReference(message) {
 }
 
 export function validateAPIReference(document, expectedID, expectedVersion) {
-    if (!document || typeof document !== "object" || Array.isArray(document) || document.schemaVersion !== SCHEMA_VERSION) {
+    if (!document || typeof document !== "object" || Array.isArray(document) || !objectHasOnly(document, ["schemaVersion", "id", "version", "namespaces"]) || document.schemaVersion !== SCHEMA_VERSION) {
         invalidAPIReference("is not a Registry v1 document");
     }
     if (document.id !== expectedID || document.version !== expectedVersion) {
@@ -50,7 +63,7 @@ export function validateAPIReference(document, expectedID, expectedVersion) {
 
     const namespaces = new Set();
     for (const namespace of document.namespaces) {
-        if (!namespace || typeof namespace !== "object" || Array.isArray(namespace) || typeof namespace.name !== "string" || (namespace.name !== "" && !API_NAMESPACE.test(namespace.name))) {
+        if (!namespace || typeof namespace !== "object" || Array.isArray(namespace) || !objectHasOnly(namespace, ["name", "functions"]) || typeof namespace.name !== "string" || (namespace.name !== "" && !API_NAMESPACE.test(namespace.name))) {
             invalidAPIReference("contains an invalid namespace");
         }
         if (namespaces.has(namespace.name)) {
@@ -63,7 +76,7 @@ export function validateAPIReference(document, expectedID, expectedVersion) {
 
         const functions = new Set();
         for (const apiFunction of namespace.functions) {
-            if (!apiFunction || typeof apiFunction !== "object" || Array.isArray(apiFunction) || typeof apiFunction.name !== "string" || !API_IDENTIFIER.test(apiFunction.name)) {
+            if (!apiFunction || typeof apiFunction !== "object" || Array.isArray(apiFunction) || !objectHasOnly(apiFunction, ["name", "signatures"]) || typeof apiFunction.name !== "string" || !API_IDENTIFIER.test(apiFunction.name)) {
                 invalidAPIReference("contains an invalid function");
             }
             if (functions.has(apiFunction.name)) {
@@ -76,20 +89,57 @@ export function validateAPIReference(document, expectedID, expectedVersion) {
 
             const signatures = new Set();
             for (const signature of apiFunction.signatures) {
-                if (!signature || typeof signature !== "object" || Array.isArray(signature) || !Array.isArray(signature.parameters) || signature.parameters.length > 4) {
+                if (!signature || typeof signature !== "object" || Array.isArray(signature) || !objectHasOnly(signature, ["parameters", "variadic", "description", "return", "throws", "deprecated"]) || !Array.isArray(signature.parameters)) {
                     invalidAPIReference("contains an invalid signature");
-                }
-                if (signature.parameters.some((parameter) => typeof parameter !== "string" || parameter === "_" || !API_PARAMETER.test(parameter))) {
-                    invalidAPIReference("contains an invalid parameter name");
                 }
                 if (objectHas(signature, "variadic") && signature.variadic !== true) {
                     invalidAPIReference("contains an invalid variadic marker");
                 }
-                if (signature.variadic === true && signature.parameters.length !== 1) {
-                    invalidAPIReference("contains a variadic signature without exactly one parameter");
+                if (signature.variadic === true ? signature.parameters.length === 0 : signature.parameters.length > 4) {
+                    invalidAPIReference("contains an invalid parameter count");
                 }
-                if (objectHas(signature, "documentation") && (typeof signature.documentation !== "string" || signature.documentation.length === 0)) {
-                    invalidAPIReference("contains invalid documentation");
+
+                const parameters = new Set();
+                for (const parameter of signature.parameters) {
+                    if (!parameter || typeof parameter !== "object" || Array.isArray(parameter) || !objectHasOnly(parameter, ["name", "type", "description"]) || typeof parameter.name !== "string" || parameter.name === "_" || !API_PARAMETER.test(parameter.name)) {
+                        invalidAPIReference("contains an invalid parameter");
+                    }
+                    if (parameters.has(parameter.name)) {
+                        invalidAPIReference("contains a duplicate parameter");
+                    }
+                    parameters.add(parameter.name);
+
+                    const hasType = objectHas(parameter, "type");
+                    const hasDescription = objectHas(parameter, "description");
+                    if (hasType !== hasDescription || (hasType && (!nonBlankSingleLine(parameter.type) || !nonBlankString(parameter.description)))) {
+                        invalidAPIReference("contains incomplete parameter documentation");
+                    }
+                }
+
+                if (objectHas(signature, "description") && !nonBlankString(signature.description)) {
+                    invalidAPIReference("contains an invalid description");
+                }
+
+                if (objectHas(signature, "return")) {
+                    const result = signature.return;
+                    if (!result || typeof result !== "object" || Array.isArray(result) || !objectHasOnly(result, ["type", "description"]) || !nonBlankSingleLine(result.type) || !nonBlankString(result.description)) {
+                        invalidAPIReference("contains an invalid return value");
+                    }
+                }
+
+                if (objectHas(signature, "throws")) {
+                    if (!Array.isArray(signature.throws) || signature.throws.length === 0) {
+                        invalidAPIReference("contains an invalid throws list");
+                    }
+                    for (const thrown of signature.throws) {
+                        if (!thrown || typeof thrown !== "object" || Array.isArray(thrown) || !objectHasOnly(thrown, ["error", "description"]) || !nonBlankSingleLine(thrown.error) || !nonBlankString(thrown.description)) {
+                            invalidAPIReference("contains an invalid thrown error");
+                        }
+                    }
+                }
+
+                if (objectHas(signature, "deprecated") && !nonBlankString(signature.deprecated)) {
+                    invalidAPIReference("contains an invalid deprecation message");
                 }
 
                 const signatureKey = signature.variadic === true ? "variadic" : String(signature.parameters.length);
@@ -233,7 +283,7 @@ function qualifiedAPIName(namespaceName, functionName) {
 }
 
 export function apiSignature(namespaceName, functionName, signature) {
-    const parameters = signature.parameters.map((parameter) => signature.variadic === true ? `...${parameter}` : parameter);
+    const parameters = signature.parameters.map((parameter) => parameter.name);
     return `${qualifiedAPIName(namespaceName, functionName)}(${parameters.join(", ")})`;
 }
 
@@ -249,7 +299,35 @@ function renderAPIProse(documentation) {
 function renderAPIParameters(signature) {
     if (signature.parameters.length === 0) return "<span>None</span>";
 
-    return `<ul>${signature.parameters.map((parameter) => `<li><code>${escapeHTML(parameter)}</code>${signature.variadic === true ? '<span class="registry-api-parameter-kind">Variadic</span>' : ""}</li>`).join("")}</ul>`;
+    return `<ul>${signature.parameters.map((parameter) => `
+        <li>
+            <span class="registry-api-value-heading"><code>${escapeHTML(parameter.name)}</code>${parameter.type ? `<code class="registry-api-value-type">${escapeHTML(parameter.type)}</code>` : ""}</span>
+            ${parameter.description ? `<span>${escapeHTML(parameter.description)}</span>` : ""}
+        </li>`).join("")}</ul>`;
+}
+
+function renderAPIValue(value, key) {
+    return `<span class="registry-api-value-heading"><code>${escapeHTML(value[key])}</code></span><span>${escapeHTML(value.description)}</span>`;
+}
+
+function renderAPIDetails(signature) {
+    const rows = [
+        `<div><dt>Parameters</dt><dd>${renderAPIParameters(signature)}</dd></div>`
+    ];
+
+    if (signature.variadic === true) {
+        rows.push('<div><dt>Signature</dt><dd><span class="registry-api-parameter-kind">Variadic</span></dd></div>');
+    }
+
+    if (signature.return) {
+        rows.push(`<div><dt>Returns</dt><dd class="registry-api-value">${renderAPIValue(signature.return, "type")}</dd></div>`);
+    }
+
+    if (signature.throws) {
+        rows.push(`<div><dt>Throws</dt><dd><ul>${signature.throws.map((thrown) => `<li class="registry-api-value">${renderAPIValue(thrown, "error")}</li>`).join("")}</ul></dd></div>`);
+    }
+
+    return `<dl class="registry-api-details">${rows.join("")}</dl>`;
 }
 
 export function renderAPIReference(reference) {
@@ -266,10 +344,9 @@ export function renderAPIReference(reference) {
             const signatures = apiFunction.signatures.map((signature) => `
                 <div class="registry-api-signature">
                     <p class="registry-api-signature-code"><code>${escapeHTML(apiSignature(namespace.name, apiFunction.name, signature))}</code></p>
-                    ${renderAPIProse(signature.documentation)}
-                    <dl class="registry-api-parameters">
-                        <div><dt>Parameters</dt><dd>${renderAPIParameters(signature)}</dd></div>
-                    </dl>
+                    ${signature.deprecated ? `<p class="registry-api-deprecated"><strong>Deprecated.</strong> ${escapeHTML(signature.deprecated)}</p>` : ""}
+                    ${renderAPIProse(signature.description)}
+                    ${renderAPIDetails(signature)}
                 </div>`).join("");
 
             return `

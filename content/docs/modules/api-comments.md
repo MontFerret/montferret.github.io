@@ -2,13 +2,11 @@
 title: "Document module APIs"
 sidebarTitle: "API comments"
 weight: 25
-draft: true
+draft: false
 description: "Describe Ferret-facing module functions with Go documentation comments and structured API tags."
 ---
 
 # Document module APIs
-
-> This page documents the planned module API-comment contract. Barn does not extract these structured annotations yet. Keep this page as a draft until extraction and Registry support for this metadata are available.
 
 Ferret modules implemented in Go can expose APIs whose FQL signatures are not clear from their Go declarations. A variadic Go function such as:
 
@@ -67,7 +65,7 @@ Optionality belongs to the type. Use `?` instead of brackets around the paramete
 // @param options {Object?} Decode options.
 ```
 
-Use `|` for unions, `Array<T>` for collections, and a trailing `...` for a variadic Ferret parameter:
+Use `|` for unions, `Array<T>` for collections, and a trailing `...` when documenting a variadic Ferret value:
 
 ```go
 // @param data {String|Binary} XML content.
@@ -75,7 +73,9 @@ Use `|` for unions, `Array<T>` for collections, and a trailing `...` for a varia
 // @param values {Any...} Values to concatenate.
 ```
 
-The trailing `...` marks the parameter as variadic. It is not part of a type named `Any...`.
+Barn preserves the complete type expression as authored; it does not parse or
+canonicalize this notation. Whether the registered function signature is
+variadic still comes from the Ferret SDK registration and Go function type.
 
 Do not use JSDoc-style parameter names or separators:
 
@@ -99,7 +99,7 @@ For example:
 // @return {Object} Normalized XML document.
 ```
 
-A Ferret function may have at most one `@return` tag. Omit the tag when the function's meaningful result is `None`. Under this contract, an absent `@return` means its documented result type is `None`.
+A Ferret function may have at most one `@return` tag. Omit the tag when there is no useful Ferret-facing result metadata to publish.
 
 ## Document visible failures
 
@@ -184,7 +184,7 @@ Returns
 Object    Normalized XML document.
 ```
 
-Unknown ordinary `@...` text outside the structured-tag block remains prose. Do not use supported tag names in prose when they could be mistaken for API metadata.
+Unknown ordinary `@...` text remains prose. Do not use supported tag names in prose when they could be mistaken for API metadata.
 
 The format is intentionally small. It describes only information that cannot be recovered reliably from Go types and registration. It is not a replacement for Go documentation and does not recreate JSDoc or JavaDoc inside Go comments.
 

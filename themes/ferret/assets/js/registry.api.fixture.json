@@ -11,10 +11,34 @@
           "signatures": [
             {
               "parameters": [
-                "args"
+                {
+                  "name": "source",
+                  "type": "String|Binary",
+                  "description": "Archive content."
+                },
+                {
+                  "name": "options",
+                  "type": "Object?",
+                  "description": "Extraction options."
+                }
               ],
               "variadic": true,
-              "documentation": "Extract writes eligible archive entries through the configured filesystem."
+              "description": "Extract writes eligible archive entries through the configured filesystem.",
+              "return": {
+                "type": "Array<String>",
+                "description": "Extracted archive paths."
+              },
+              "throws": [
+                {
+                  "error": "ArchiveError",
+                  "description": "The archive cannot be read."
+                },
+                {
+                  "error": "PathError",
+                  "description": "An entry path is unsafe."
+                }
+              ],
+              "deprecated": "Use UNPACK instead."
             }
           ]
         },
@@ -23,10 +47,12 @@
           "signatures": [
             {
               "parameters": [
-                "args"
+                {
+                  "name": "args"
+                }
               ],
               "variadic": true,
-              "documentation": "List returns archive entry metadata."
+              "description": "List returns archive entry metadata."
             }
           ]
         },
@@ -35,10 +61,12 @@
           "signatures": [
             {
               "parameters": [
-                "args"
+                {
+                  "name": "args"
+                }
               ],
               "variadic": true,
-              "documentation": "Read returns one regular archive entry."
+              "description": "Read returns one regular archive entry."
             }
           ]
         }

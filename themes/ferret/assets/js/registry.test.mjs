@@ -201,7 +201,7 @@ test("optional API artifacts resolve from the selected version without assuming 
     );
 });
 
-test("Barn API Reference v1 renders functions, variadic signatures, parameters, and documentation", () => {
+test("Barn API Reference v1 renders structured Ferret metadata", () => {
     const reference = validateAPIReference(
         clone(archiveAPIReference),
         archiveAPIReference.id,
@@ -211,11 +211,17 @@ test("Barn API Reference v1 renders functions, variadic signatures, parameters, 
 
     assert.match(html, /id="api-namespace-named-ARCHIVE"/);
     assert.match(html, /id="api-function-named-ARCHIVE-EXTRACT"/);
-    assert.match(html, /ARCHIVE::EXTRACT\(\.\.\.args\)/);
+    assert.match(html, /ARCHIVE::EXTRACT\(source, options\)/);
     assert.match(html, /Extract writes eligible archive entries/);
+    assert.match(html, /String\|Binary/);
+    assert.match(html, /Archive content/);
     assert.match(html, />Parameters</);
     assert.match(html, />Variadic</);
-    assert.doesNotMatch(html, />Returns</);
+    assert.match(html, />Returns</);
+    assert.match(html, /Array&lt;String&gt;/);
+    assert.match(html, />Throws</);
+    assert.ok(html.indexOf("ArchiveError") < html.indexOf("PathError"));
+    assert.match(html, /<strong>Deprecated\.<\/strong> Use UNPACK instead\./);
 });
 
 test("API rendering supports global and nested namespaces, overloads, and escaped prose", () => {
@@ -228,7 +234,7 @@ test("API rendering supports global and nested namespaces, overloads, and escape
                 name: "",
                 functions: [{
                     name: "RUN",
-                    signatures: [{ parameters: [], documentation: "Global <script> text.\n\nSecond paragraph & details." }]
+                    signatures: [{ parameters: [], description: "Global <script> text.\n\nSecond paragraph & details." }]
                 }]
             },
             {
@@ -236,8 +242,17 @@ test("API rendering supports global and nested namespaces, overloads, and escape
                 functions: [{
                     name: "RUN",
                     signatures: [
-                        { parameters: ["input"] },
-                        { parameters: ["input", "optionsValue"], documentation: "Runs with options." }
+                        { parameters: [{ name: "input" }] },
+                        {
+                            parameters: [
+                                { name: "input", type: "String<script>", description: "Input <value>." },
+                                { name: "optionsValue", type: "Object?", description: "Options & flags." }
+                            ],
+                            description: "Runs with options.",
+                            return: { type: "String", description: "Output <value>." },
+                            throws: [{ error: "Run<script>", description: "Execution & validation fails." }],
+                            deprecated: "Use EXECUTE <now>."
+                        }
                     ]
                 }]
             }
@@ -251,6 +266,10 @@ test("API rendering supports global and nested namespaces, overloads, and escape
     assert.match(html, /AI::LLM::RUN\(input, optionsValue\)/);
     assert.match(html, /Global &lt;script&gt; text/);
     assert.match(html, /Second paragraph &amp; details/);
+    assert.match(html, /String&lt;script&gt;/);
+    assert.match(html, /Input &lt;value&gt;/);
+    assert.match(html, /Run&lt;script&gt;/);
+    assert.match(html, /Use EXECUTE &lt;now&gt;/);
     assert.doesNotMatch(html, /<script>/);
 });
 
@@ -261,7 +280,7 @@ test("API anchors are deterministic and collision-safe across namespaces and cas
     assert.equal(apiFunctionID("AI::LLM", "RUN"), "api-function-named-AI-LLM-RUN");
     assert.notEqual(apiFunctionID("AI::LLM", "RUN"), apiFunctionID("AI::LLM", "Run"));
     assert.notEqual(apiFunctionID("", "RUN"), apiFunctionID("global", "RUN"));
-    assert.equal(apiSignature("AI::LLM", "GENERATE", { parameters: ["args"], variadic: true }), "AI::LLM::GENERATE(...args)");
+    assert.equal(apiSignature("AI::LLM", "GENERATE", { parameters: [{ name: "prompt" }, { name: "options" }], variadic: true }), "AI::LLM::GENERATE(prompt, options)");
     assert.deepEqual(apiReferenceAnchorIDs(archiveAPIReference), [
         "api-reference",
         "api-namespace-named-ARCHIVE",
@@ -314,9 +333,24 @@ test("malformed and mismatched API Reference artifacts are rejected", () => {
         (reference) => { reference.schemaVersion = 2; },
         (reference) => { reference.id = "montferret/other"; },
         (reference) => { reference.namespaces = null; },
+        (reference) => { reference.extra = true; },
+        (reference) => { reference.namespaces[0].extra = true; },
+        (reference) => { reference.namespaces[0].functions[0].extra = true; },
         (reference) => { reference.namespaces.push(clone(reference.namespaces[0])); },
         (reference) => { reference.namespaces[0].functions.push(clone(reference.namespaces[0].functions[0])); },
-        (reference) => { reference.namespaces[0].functions[0].signatures[0].parameters = ["first", "rest"]; }
+        (reference) => { reference.namespaces[0].functions[0].signatures[0].parameters = ["first", "rest"]; },
+        (reference) => { reference.namespaces[0].functions[0].signatures[0].documentation = "Legacy prose."; },
+        (reference) => { reference.namespaces[0].functions[0].signatures[0].parameters[1].name = "source"; },
+        (reference) => { delete reference.namespaces[0].functions[0].signatures[0].parameters[0].description; },
+        (reference) => { reference.namespaces[0].functions[0].signatures[0].return.type = " "; },
+        (reference) => { reference.namespaces[0].functions[0].signatures[0].throws = []; },
+        (reference) => { reference.namespaces[0].functions[0].signatures[0].throws[0].error = "\n"; },
+        (reference) => { reference.namespaces[0].functions[0].signatures[0].deprecated = " "; },
+        (reference) => { reference.namespaces[0].functions[1].signatures[0].parameters = []; },
+        (reference) => {
+            delete reference.namespaces[0].functions[1].signatures[0].variadic;
+            reference.namespaces[0].functions[1].signatures[0].parameters = ["a", "b", "c", "d", "e"].map((name) => ({ name }));
+        }
     ];
 
     for (const mutate of cases) {
@@ -458,7 +492,7 @@ test("different module versions render only their own API contents", () => {
     nextReference.version = "1.1.0";
     nextReference.namespaces[0].functions = [{
         name: "OPEN",
-        signatures: [{ parameters: ["path"], documentation: "Open inspects an archive." }]
+        signatures: [{ parameters: [{ name: "path" }], description: "Open inspects an archive." }]
     }];
     validateAPIReference(nextReference, nextReference.id, nextReference.version);
 
