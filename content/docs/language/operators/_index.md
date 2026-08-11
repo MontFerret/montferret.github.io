@@ -3,7 +3,7 @@ title: "Operators"
 sidebarTitle: "Operators"
 weight: 70
 draft: false
-description: "Comparison, logical, arithmetic, ternary, range, array, and precedence operators."
+description: "Comparison, logical, coalescing, arithmetic, ternary, range, array, and precedence operators."
 aliases:
   - /docs/fql/operators/
 ---
@@ -36,6 +36,18 @@ RETURN NOT false
 {{</ code >}}
 
 See [Logical Operators]({{< ref "logical" >}}).
+
+## NONE coalescing
+
+The NONE-coalescing operator (`??`) selects a fallback only when its left operand is `NONE`. Unlike logical `OR`, it preserves values such as `false`, zero, and an empty string.
+
+{{< code lang="fql" >}}
+LET user = {}
+
+RETURN user?.displayName ?? "Anonymous"
+{{</ code >}}
+
+See [NONE-Coalescing Operator]({{< ref "coalescing" >}}).
 
 ## Arithmetic
 
@@ -113,4 +125,4 @@ See [Operator Precedence]({{< ref "precedence" >}}).
 
 ## Next steps
 
-{{< docs-related tiles="language-operators-comparison,language-operators-logical,language-operators-arithmetic,language-operators-range,language-operators-ternary,language-operators-array,language-operators-precedence" >}}
+{{< docs-related tiles="language-operators-comparison,language-operators-logical,language-operators-coalescing,language-operators-arithmetic,language-operators-range,language-operators-ternary,language-operators-array,language-operators-precedence" >}}

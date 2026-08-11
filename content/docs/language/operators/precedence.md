@@ -12,6 +12,7 @@ The operator precedence in FQL is similar as in other familiar languages (lowest
 
 - ``=``, ``+=``, ``-=``, ``*=``, ``/=`` assignment and compound assignment
 - ``? :`` ternary operator
+- ``??`` NONE-coalescing operator
 - ``||`` logical or
 - ``&&`` logical and
 - ``==``, ``!=`` equality and inequality
@@ -42,6 +43,22 @@ RETURN 2 + 3 * 4
 RETURN false || true && true
 {{</ editor >}}
 
+{{< code lang="fql" >}}
+LET cached = NONE
+LET fetched = NONE
+LET active = true
+LET nickname = NONE
+
+// OR binds tighter than NONE coalescing:
+// interpreted as (cached OR fetched) ?? "fallback"
+// NONE coalescing binds tighter than the ternary operator:
+// interpreted as active ? (nickname ?? "Anonymous") : "Inactive"
+RETURN {
+    cached: cached OR fetched ?? "fallback",
+    status: active ? nickname ?? "Anonymous" : "Inactive"
+}
+{{</ code >}}
+
 ## Using parentheses
 
 Parentheses ``(`` and ``)`` override the default evaluation order. Use them when the intended grouping differs from the precedence rules, or when the expression is complex enough that the precedence is not immediately obvious.
@@ -62,4 +79,4 @@ RETURN price * (1 - discount) * (1 + tax)
 
 ## Next steps
 
-{{< docs-related tiles="language-operators,language-expressions,language-operators-arithmetic" >}}
+{{< docs-related tiles="language-operators,language-operators-coalescing,language-expressions,language-operators-arithmetic" >}}

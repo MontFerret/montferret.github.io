@@ -62,6 +62,21 @@ RETURN { text, href }
 
 Without `?.`, accessing a property on `NONE` is a runtime error.
 
+## Provide a value when data is absent
+
+Combine optional chaining with `??` when missing data should become a concrete value:
+
+{{< code lang="fql" >}}
+LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+LET element = QUERY ONE ".maybe-missing" IN page USING css ON ERROR RETURN NONE
+
+RETURN element?.textContent ?? "Unknown"
+{{</ code >}}
+
+This keeps `false`, zero, and empty strings unchanged. `??` is not an error handler: the query uses `ON ERROR RETURN NONE` first, optional chaining safely reads the member, and then `??` replaces only the resulting `NONE`.
+
+See [NONE-Coalescing Operator]({{< ref "/docs/language/operators/coalescing" >}}) for details.
+
 ## Retry on failure
 
 Use `ON ERROR RETRY` when a transient failure may resolve on a second attempt:

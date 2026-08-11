@@ -77,6 +77,12 @@ NONE || "fallback"    // "fallback"
 "" || "fallback"      // "fallback"
 {{</ code >}}
 
+{{< notification type="info" >}}
+Use <code>??</code> when only <code>NONE</code> should select the fallback. Unlike <code>OR</code>, NONE coalescing preserves <code>false</code>, zero, and empty strings.
+{{</ notification >}}
+
+See [NONE-Coalescing Operator]({{< ref "coalescing" >}}) for the fallback semantics and examples.
+
 ## Logical NOT
 
 Unary `!` and `NOT` accept only Boolean operands and always return a Boolean.
@@ -131,4 +137,4 @@ When a strict Boolean result is required from a binary logical expression, pass 
 
 ## Next steps
 
-{{< docs-related tiles="language-operators,language-operators-comparison,language-control-flow-match" >}}
+{{< docs-related tiles="language-operators,language-operators-coalescing,language-operators-comparison,language-control-flow-match" >}}

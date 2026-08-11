@@ -156,6 +156,18 @@ RETURN obj?.[key]
 
 Without `?.`, accessing a member on `NONE` is a runtime error.
 
+Use `??` after optional chaining when the final result should have a concrete fallback:
+
+{{< code lang="fql" >}}
+LET obj = NONE
+
+RETURN obj?.name ?? "Unknown"
+{{</ code >}}
+
+`??` selects a fallback only after an expression produces `NONE`; it does not catch runtime errors. Apply `ON ERROR`, postfix recovery after the expression (for example, `func()?`), or optional chaining first when a failure should become `NONE`.
+
+See [NONE-Coalescing Operator]({{% ref "../operators/coalescing" %}}) for the complete behavior.
+
 Optional chaining applies only to member access. `func?()` and `arr?[0]` are not supported — use `ON ERROR RETURN` or a grouped expression instead.
 
 ## Where recovery applies
