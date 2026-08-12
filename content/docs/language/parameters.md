@@ -25,7 +25,7 @@ LET users = [
     { name: "Linus", active: true }
 ]
 
-FOR user IN users {
+RETURN FOR user IN users {
     FILTER user.active == @active
     RETURN user.name
 }
@@ -71,7 +71,7 @@ LET users = [
     { name: "Linus" }
 ]
 
-FOR user IN users {
+RETURN FOR user IN users {
     FILTER user.name == @name
     RETURN user.name
 }

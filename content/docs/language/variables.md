@@ -70,7 +70,7 @@ LET users = [
     }
 ]
 
-FOR u IN users {
+RETURN FOR u IN users {
     LET numProducts = LENGTH(u.cart)
 
     RETURN {
@@ -106,7 +106,7 @@ LET friends = [
     { "id": 10, "name": "Babette Brassill", "userId": 1 }
 ]
 
-FOR u IN users {
+RETURN FOR u IN users {
     LET friends = (
         FOR f IN friends {
             FILTER u.id == f.userId
@@ -147,7 +147,7 @@ RETURN count
 LET numbers = [1, 2, 3, 4, 5]
 VAR total = 0
 
-FOR n IN numbers {
+RETURN FOR n IN numbers {
     total = total + n
     
     RETURN total

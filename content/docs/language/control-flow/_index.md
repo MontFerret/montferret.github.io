@@ -35,7 +35,7 @@ See [Match Expressions]({{< ref "match" >}}).
 A `FOR` expression evaluates its body once for each item in a source collection. It is the primary construct for iterating over arrays, query results, and other iterable values.
 
 {{< code lang="fql" >}}
-FOR n IN [1, 2, 3] {
+RETURN FOR n IN [1, 2, 3] {
     RETURN n * 2
 }
 {{</ code >}}

@@ -67,7 +67,7 @@ ferret run -e '
 LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
 LET posts = JSON_PARSE(TO_STRING(response))
 
-FOR post IN posts
+RETURN FOR post IN posts
     LIMIT 5
     RETURN {
         id: post.id,
@@ -82,7 +82,7 @@ FOR post IN posts
 LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
 LET posts = JSON_PARSE(TO_STRING(response))
 
-FOR post IN posts
+RETURN FOR post IN posts
     LIMIT 5
     RETURN {
         id: post.id,
@@ -147,7 +147,7 @@ A powerful pattern: fetch structured data from an API and enrich it with data fr
 LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
 LET posts = JSON_PARSE(TO_STRING(response))
 
-FOR post IN posts
+RETURN FOR post IN posts
     LIMIT 3
 
     LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")

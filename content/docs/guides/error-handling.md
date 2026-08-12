@@ -146,7 +146,7 @@ Or with a function for reuse:
 
 {{< code lang="fql" >}}
 FUNC queryFirst(page, selectors) {
-    FOR selector IN selectors
+    RETURN FOR selector IN selectors
         LET result = QUERY ONE selector IN page USING css ON ERROR RETURN NONE
         FILTER result != NONE
         LIMIT 1
@@ -167,7 +167,7 @@ When iterating over items, a single failure in one item should not stop the enti
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 LET items = page[~ css`article`]
 
-FOR item IN items
+RETURN FOR item IN items
     LET title = item[~? css`h2`]?.textContent
     LET link = item[~? css`a`]?.attributes?.href
     LET description = item[~? css`p`]?.textContent
@@ -185,7 +185,7 @@ To catch and skip items that fail entirely, wrap the loop body in a grouped expr
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 LET items = page[~ css`article`]
 
-FOR item IN items
+RETURN FOR item IN items
     LET result = ({
         title: item[~? css`h2`]?.textContent,
         link: item[~? css`a`]?.attributes?.href

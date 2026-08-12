@@ -52,7 +52,7 @@ Once you have an element, read its properties:
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
-FOR link IN (QUERY "a" IN page USING css)
+RETURN FOR link IN (QUERY "a" IN page USING css)
     LIMIT 5
     RETURN {
         text: link.textContent,
@@ -103,7 +103,7 @@ When a page has repeating structures â€” product cards, table rows, list items â
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
 LET cards = QUERY ".product-card" IN page USING css
 
-FOR card IN cards
+RETURN FOR card IN cards
     RETURN {
         name: (QUERY ONE QUERY ".product-name" IN card USING css)?.textContent,
         price: (QUERY ONE QUERY ".product-price" IN card USING css)?.textContent
@@ -142,7 +142,7 @@ Use `FILTER`, `SORT`, and `LIMIT` inside a `FOR` loop to shape the output:
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
 LET cards = QUERY '.product-card' IN page USING css
 
-FOR card IN cards
+RETURN FOR card IN cards
     LET title = (QUERY ONE '.product-title' IN card USING css)?.textContent
     LET price = (QUERY ONE '.product-price' IN card USING css)?.textContent
 

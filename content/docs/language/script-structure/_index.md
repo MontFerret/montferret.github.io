@@ -56,9 +56,11 @@ VAR total = 0
 
 FOR price IN [10, 20, 30] {
     total = total + price
-    
+
     RETURN total
 }
+
+RETURN total
 {{< /editor >}}
 
 Only `VAR` bindings can be reassigned. `LET` bindings cannot be changed after they are created, and no binding can be declared twice in the same scope. Prefer `LET` unless mutation is actually needed.
@@ -113,12 +115,7 @@ Statements describe the flow of the script. Expressions produce the values that 
 
 ## Returning a result
 
-Every FQL script must end in a terminal statement.
-
-A terminal statement produces the script result. FQL currently has two terminal forms:
-
-- `RETURN`, which returns a single value
-- a top-level `FOR` statement, which iterates over a collection and returns the produced collection
+Use `RETURN` to produce a script result. A script can also finish without `RETURN`; after its statements run, it completes successfully with `NONE`. Completely empty or whitespace-only source is still invalid.
 
 The returned value can be any FQL value: `NONE`, a boolean, number, string, array, object, binary value, or host value.
 
@@ -127,12 +124,27 @@ RETURN "Hello, world!"
 {{< /editor >}}
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-FOR i IN 1..10 {
+RETURN FOR i IN 1..10 {
     RETURN i * i
 }
 {{< /editor >}}
 
-The loop body is the same in both cases. The difference is what happens to the produced collection: a top-level `FOR` makes it the script result; a parenthesized `FOR` stores it for further use.
+`RETURN FOR` returns the collection produced by the loop directly. Parenthesized `FOR` expressions remain useful when the collection must be assigned, nested, or passed to another expression.
+
+A standalone `FOR` is an ordinary statement. Its body still runs, but its produced collection is discarded:
+
+{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+VAR total = 0
+
+FOR value IN [1, 2, 3] {
+    total = total + value
+    RETURN value
+}
+
+RETURN total
+{{< /editor >}}
+
+Likewise, an expression used as a block-function statement is evaluated and discarded. Only an explicit `RETURN` or an arrow body determines a function result.
 
 ## Scopes and blocks
 

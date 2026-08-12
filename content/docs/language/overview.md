@@ -14,7 +14,7 @@ FQL is a small, expression-oriented language for extracting, transforming, and r
 
 ## Scripts produce values
 
-Every useful FQL script ends by producing a result. The most direct way is with `RETURN`:
+Use `RETURN` when an FQL script needs to produce a result:
 
 {{< editor lang="fql" >}}
 LET price = 19.99
@@ -27,7 +27,7 @@ RETURN {
 }
 {{< /editor >}}
 
-A script can also end with a top-level `FOR` expression, in which case the result is the array that `FOR` produces. Either way, FQL scripts communicate through returned values rather than printed output. That makes the same script usable across different surfaces: a CLI can serialize the result as JSON, an embedded application can receive it as a Go value, and a test runner can assert against it directly. The script does not need to know who is consuming the result.
+To return a loop's array, write `RETURN FOR ...`. A script that reaches the end without `RETURN` completes with `NONE`; standalone loops execute but discard their arrays. FQL scripts communicate through returned values rather than printed output. That makes the same script usable across different surfaces: a CLI can serialize the result as JSON, an embedded application can receive it as a Go value, and a test runner can assert against it directly. The script does not need to know who is consuming the result.
 
 ## Expressions are the main building block
 
@@ -63,7 +63,7 @@ LET users = [
     { name: "Linus", active: true }
 ]
 
-FOR user IN users {
+RETURN FOR user IN users {
     FILTER user.active
     RETURN user.name
 }
@@ -74,7 +74,7 @@ This script starts with an array of users and returns only the names of active o
 {{< editor lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 
-FOR item IN page[~ css`.product-card`] {
+RETURN FOR item IN page[~ css`.product-card`] {
     FILTER item.attributes["data-in-stock"] == "true"
     RETURN {
         title: item[~? css`.product-title`].textContent,

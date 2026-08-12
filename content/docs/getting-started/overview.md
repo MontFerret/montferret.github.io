@@ -57,7 +57,7 @@ For example, a script might query product cards from a document and return a nor
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 LET products = page[~ css`.product-card`]
 
-FOR product IN products
+RETURN FOR product IN products
     RETURN {
         name: product[~ css`.product-title`],
         price: product[~ css`.product-price`],

@@ -169,7 +169,7 @@ Here is a simple example of scrolling to the bottom of a page to load more produ
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/infinite-scroll/", { driver: "cdp" })
 LET pageSize = 8
 
-FOR i WHILE SCROLL_BOTTOM(page)
+RETURN FOR i WHILE SCROLL_BOTTOM(page)
     WAIT(500)
     FOR product IN QUERY `:skip(${i * pageSize}, .product-card)` IN page USING css
         RETURN {
@@ -207,7 +207,7 @@ WAITFOR EXISTS QUERY ONE "#search-loader" IN page USING css
 LET products = QUERY ".product-card" IN page USING css
 
 // Step 3: extract data from each product card
-FOR product IN products
+RETURN FOR product IN products
     RETURN {
         brand: QUERY ONE ".product-brand" IN product USING css,
         name: QUERY ONE ".product-title" IN product USING css,

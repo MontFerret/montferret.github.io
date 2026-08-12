@@ -90,7 +90,7 @@ The `params` field adds user parameters for that script. Parameters are availabl
 ```yaml
 query:
   text: |
-    FOR user IN @users
+    RETURN FOR user IN @users
       FILTER user.active
       RETURN user.name
   params:

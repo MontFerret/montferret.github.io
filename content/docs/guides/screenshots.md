@@ -129,7 +129,7 @@ LET urls = [
     "https://mockery.ferretlang.org/scenarios/ecommerce/"
 ]
 
-FOR url, i IN urls
+RETURN FOR url, i IN urls
     LET page = WEB::HTML::OPEN(url, { driver: "cdp" })
     LET data = SCREENSHOT(page, { fullPage: TRUE })
     LET filename = "screenshot-" + TO_STRING(i) + ".png"

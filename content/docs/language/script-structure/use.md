@@ -46,7 +46,7 @@ Here, `GET(...)` resolves to `IO::NET::HTTP::GET(...)`.
 
 ## Place USE before the script body
 
-`USE` declarations belong in the script header. Put them before variable declarations, function declarations, function calls, and terminal statements such as `RETURN` or a top-level `FOR`.
+`USE` declarations belong in the script header. Put them before variable declarations, function declarations, function calls, standalone loops, and `RETURN` statements.
 
 A script may declare more than one alias:
 

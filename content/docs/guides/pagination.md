@@ -47,7 +47,7 @@ FUNC NEXT_PAGE(pageNum) {
 }
 
 // Process the current page, then continue while a “next” link exists.
-FOR i DO WHILE QUERY EXISTS nextSelector IN page USING css
+RETURN FOR i DO WHILE QUERY EXISTS nextSelector IN page USING css
     // Prevent accidental infinite or unexpectedly long pagination.
     LIMIT 5
     
@@ -90,7 +90,7 @@ LET pageSize = 8
 
 // Process the initial content, then keep scrolling until the page
 // can no longer be scrolled further.
-FOR i DO WHILE SCROLL_BOTTOM(page)
+RETURN FOR i DO WHILE SCROLL_BOTTOM(page)
     // The first batch is already available.
     // For subsequent iterations, briefly wait for newly requested
     // content to be added to the page.
@@ -129,7 +129,7 @@ LET baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/products"
 // Total number of pages to visit.
 LET totalPages = 5
 // Iterate over every page number in the range.
-FOR pageNum IN 1..totalPages
+RETURN FOR pageNum IN 1..totalPages
     // Build the URL for the current page.
     // The first page uses the base URL, while subsequent pages
     // follow the site's numbered URL pattern.
@@ -168,7 +168,7 @@ LET firstPage = WEB::HTML::OPEN(baseURL + "1")
 LET lastPageLink = QUERY ONE ".pagination a:last-child" IN firstPage USING css
 LET totalPages = TO_INT(lastPageLink?.textContent) ON ERROR RETURN 1
 
-FOR pageNum IN 1..totalPages
+RETURN FOR pageNum IN 1..totalPages
     LET page = WEB::HTML::OPEN(baseURL + TO_STRING(pageNum))
     FOR item IN page[~ css`.product-card`]
         RETURN item[~? css`.product-name`]?.textContent

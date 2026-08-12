@@ -34,7 +34,7 @@ RETURN { foo: "bar" }
 However, when returning data from an iteration, the result values will be always an array:
 
 {{< code lang="fql" height="100px" >}}
-FOR u IN elements
+RETURN FOR u IN elements
     RETURN i.href
 {{</ code >}}
 

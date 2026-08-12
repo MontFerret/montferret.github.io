@@ -82,7 +82,7 @@ Capability-specific behavior is documented in [Capabilities]({{< ref "capabiliti
 Inside a script, values may be basic values or host values. At the boundary of a script, plain arrays, objects, strings, numbers, booleans, binary values, and `NONE` are the most portable results:
 
 {{< code lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-FOR product IN products {
+RETURN FOR product IN products {
     RETURN {
         name: product.name,
         price: product.price,

@@ -50,7 +50,7 @@ LET users = [
     { name: "Linus", age: 31, active: true }
 ]
 
-FOR user IN users {
+RETURN FOR user IN users {
     FILTER user.active && user.age >= 35
     RETURN {
         name: user.name,
@@ -291,7 +291,7 @@ LET users = [
     { name: "Grace", active: false }
 ]
 
-FOR user IN users {
+RETURN FOR user IN users {
     RETURN {
         name: user.name,
         active: user.active

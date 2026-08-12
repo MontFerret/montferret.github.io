@@ -34,7 +34,7 @@ RETURN 1 + 1
 
 This script does not open a page or use a browser. It evaluates an expression and returns the result.
 
-Every Ferret script produces its final value with `RETURN`. In this case, the returned value is the result of `1 + 1`.
+`RETURN` produces the script's final value. In this case, the returned value is the result of `1 + 1`; without an explicit return, a non-empty script completes with `NONE`.
 
 ## Work with structured data
 

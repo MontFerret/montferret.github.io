@@ -640,7 +640,7 @@ LET products = [
     { name: "Enterprise plan", features: ["docs", "search", "sharing", "sso"] }
 ]
 
-FOR product IN products {
+RETURN FOR product IN products {
     FILTER product.features ANY == "sso"
     RETURN product.name
 }
@@ -655,7 +655,7 @@ LET products = [
     { name: "Stable release", tags: ["public", "stable"] }
 ]
 
-FOR product IN products {
+RETURN FOR product IN products {
     FILTER product.tags NONE == "internal"
     RETURN product.name
 }

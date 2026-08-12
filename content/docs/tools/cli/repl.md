@@ -46,7 +46,7 @@ LET users = [
     { name: "Grace", active: FALSE }
 ]
 
-FOR user IN users
+RETURN FOR user IN users
     FILTER user.active
     RETURN user.name
 %

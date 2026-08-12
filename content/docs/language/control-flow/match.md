@@ -117,7 +117,7 @@ Even though both conditions above are true, the result is `"first"` because arms
 Because `MATCH` produces a value, it can appear anywhere an expression is expected — in a `LET` declaration, as a function argument, or in the body of a loop.
 
 {{< editor lang="fql" >}}
-FOR v IN [1, 2, 3] {
+RETURN FOR v IN [1, 2, 3] {
     RETURN MATCH v {
         1 => "one",
         2 => "two",

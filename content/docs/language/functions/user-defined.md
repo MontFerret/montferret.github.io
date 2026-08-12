@@ -48,15 +48,23 @@ FUNC normalizePrice(input) {
 RETURN normalizePrice("  $19.99  ")
 {{</ editor >}}
 
-Every block function must end with an explicit `RETURN` or a result-producing `FOR`. Arbitrary final expressions are not returned implicitly; use the arrow form for a single expression.
+An explicit `RETURN` sets the block function's result. If execution reaches the closing brace without one, the function completes successfully with `NONE`. Arbitrary expression statements are evaluated and discarded rather than returned implicitly; use the arrow form for a single expression.
 
-### Returning a terminal FOR result
+An empty block is therefore a valid effect-only function:
 
-A block function may end directly with a `FOR`. The array produced by the loop becomes the function result.
+{{< editor lang="fql" >}}
+FUNC noop() {}
+
+RETURN noop()
+{{</ editor >}}
+
+### Returning a FOR result
+
+A block function can return a loop directly with `RETURN FOR`. The array produced by the loop becomes the function result.
 
 {{< editor lang="fql" >}}
 FUNC doubleAll(items) {
-    FOR item IN items {
+    RETURN FOR item IN items {
         RETURN item * 2
     }
 }
@@ -64,7 +72,9 @@ FUNC doubleAll(items) {
 RETURN doubleAll([1, 2, 3])
 {{</ editor >}}
 
-This uses the same loop result as a top-level or parenthesized `FOR`; it does not add another wrapper or implicitly return unrelated trailing expressions. For example, `FUNC value() { 42 }` is invalid. Write `FUNC value() => 42` or `FUNC value() { RETURN 42 }` instead.
+This uses the same loop result as a parenthesized `FOR`; it does not add another wrapper. `RETURN DISTINCT FOR` applies the normal return-level deduplication directly to the loop result.
+
+A final standalone loop is not promoted into a function result. It still executes, but the collection it produces is discarded and the function falls through with `NONE`. Likewise, `FUNC value() { 42 }` evaluates `42` as an expression statement and returns `NONE`. Write `FUNC value() => 42` or `FUNC value() { RETURN 42 }` to return the value.
 
 ## Parameters
 
@@ -151,7 +161,7 @@ LET users = [
     { name: "Linus", role: "viewer", active: true }
 ]
 
-FOR user IN users {
+RETURN FOR user IN users {
     FILTER user.active
     RETURN formatUser(user)
 }

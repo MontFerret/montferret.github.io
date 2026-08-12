@@ -152,7 +152,7 @@ LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-pro
 LET grid = WAITFOR VALUE QUERY ONE "#dynamic-products-grid" IN page USING css
 WAITFOR EXISTS QUERY '[data-testid="dynamic-product-card"]' IN page USING css
 
-FOR product IN grid.children
+RETURN FOR product IN grid.children
     LET title = product[~? css`.product-title`]
     RETURN {
         title: title?.textContent,

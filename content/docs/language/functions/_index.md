@@ -162,7 +162,7 @@ LET users = [
     { name: "Linus", active: true }
 ]
 
-FOR user IN users {
+RETURN FOR user IN users {
     FILTER user.active == true AND LENGTH(user.name) >= 4
     RETURN user.name
 }

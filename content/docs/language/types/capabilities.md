@@ -88,7 +88,7 @@ The query literal, any parameters supplied with `WITH`, and any options supplied
 An iterable value can produce a sequence of values, which allows it to be used with `FOR ... IN`.
 
 {{< code lang="fql" >}}
-FOR item IN collection {
+RETURN FOR item IN collection {
     RETURN item
 }
 {{</ code >}}
@@ -263,7 +263,7 @@ RETURN QUERY `SELECT * FROM users` IN "not a database" USING sql
 This fails because a string does not support query execution.
 
 {{< editor lang="fql" >}}
-FOR item IN 42 {
+RETURN FOR item IN 42 {
     RETURN item
 }
 {{</ editor >}}

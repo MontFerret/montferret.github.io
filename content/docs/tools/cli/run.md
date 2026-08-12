@@ -54,7 +54,7 @@ ferret run script.fql --param url=https://example.com --param limit=50
 {{< editor lang="fql" >}}
 LET page = DOCUMENT(@url)
 
-FOR item IN page[~ css`.result`]
+RETURN FOR item IN page[~ css`.result`]
     LIMIT @limit
     RETURN item.textContent
 {{< /editor >}}

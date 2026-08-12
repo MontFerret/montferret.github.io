@@ -23,7 +23,7 @@ A browser-backed page exposes its frames through the `frames` property:
 {{< code lang="fql" >}}
 LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 
-FOR frame IN page.frames
+RETURN FOR frame IN page.frames
     RETURN {
         url: frame.URL,
         title: frame.title
