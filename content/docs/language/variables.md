@@ -156,6 +156,41 @@ FOR n IN numbers {
 
 In this example, `total` starts at 0 and is updated for each value in numbers.
 
+## Destructuring declarations
+
+`LET` and `VAR` can bind several names from one object or array. The source expression is evaluated once.
+
+{{< editor lang="fql" >}}
+LET {
+    name,
+    profile: { city },
+    scores: [first, _, third]
+} = {
+    name: "Ada",
+    profile: { city: "London" },
+    scores: [10, 20, 30]
+}
+
+RETURN { name, city, first, third }
+{{</ editor >}}
+
+Object entries use the property name as the binding name. Add `:` to use a different name or a nested pattern. Array entries are positional, and `_` explicitly ignores a property or position without reading it. A nested child pattern with no named bindings, such as `metadata: [_, _]` or `details: {}`, is ignored as a whole: Ferret does not retrieve or validate that child value. Patterns can be nested recursively and can end with a trailing comma. Empty patterns (`{}` and `[]`) are valid.
+
+Every named leaf follows the declaration kind. Leaves declared by `LET` are immutable. Leaves declared by `VAR` are independently mutable:
+
+{{< editor lang="fql" >}}
+VAR { count, step } = { count: 1, step: 2 }
+
+count += step
+step += 1
+
+RETURN { count, step }
+{{</ editor >}}
+
+Missing properties or elements bind `NONE`. Destructuring `NONE` also propagates `NONE` through nested patterns, while extra source values are ignored. A non-`NONE` value reached by the root pattern or by a child pattern needed to produce a binding must support keyed access for an object pattern or indexed access for an array pattern; otherwise execution fails with `cannot destructure <Actual> as Object` or `cannot destructure <Actual> as Array`. Explicit empty root patterns still perform this shape check; ignored child patterns do not.
+
+Array holes are not allowed; write `_` for each ignored position. Defaults, rest or spread entries, quoted or computed object keys, and conditions are not supported in binding patterns. Destructuring is declaration syntax only: assignments and function parameters still bind one existing target or name.
+
 ## Compound assignment
 
 FQL supports compound assignment operators that combine an arithmetic operation with assignment. They are shorthand for updating a `VAR` variable in place:
@@ -182,4 +217,3 @@ Compound assignment operators can only be used with `VAR` variables. Using them 
 ## Next steps
 
 {{< docs-related tiles="language-expressions,language-operators,language-control-flow" >}}
-

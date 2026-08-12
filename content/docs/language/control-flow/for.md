@@ -61,6 +61,27 @@ FOR _, index IN ["a", "b", "c"] {
 }
 {{</ editor >}}
 
+### Destructuring items
+
+`FOR ... IN` can destructure each item with the same recursive object and array patterns used by `LET` and `VAR`.
+
+{{< editor lang="fql" >}}
+LET users = [
+    { name: "Ada", stats: { score: 3 } },
+    { name: "Grace", stats: { score: 5 } }
+]
+
+FOR { name, stats: { score } }, index IN users {
+    RETURN { index, name, score }
+}
+{{</ editor >}}
+
+The source is still evaluated once. At the start of each iteration, every named leaf is introduced as an immutable loop binding that is scoped to the loop. Object aliases and nested patterns use `:`, array entries are positional, and `_` skips a property or position without reading it. A nested child pattern with no named bindings is skipped as a whole, so Ferret neither retrieves nor validates that child value.
+
+Missing properties or elements bind `NONE`, and nested patterns propagate `NONE`. Extra values are ignored. A non-`NONE` item reached by the root pattern or by a child pattern needed to produce a binding must support keyed access for `{ ... }` or indexed access for `[ ... ]`; otherwise execution fails at that pattern with `cannot destructure <Actual> as Object` or `cannot destructure <Actual> as Array`. Explicit empty root patterns still validate the item shape; ignored child patterns do not.
+
+Array holes, defaults, rest or spread entries, quoted or computed keys, and pattern conditions are not supported. Destructuring does not apply to condition-driven `FOR ... WHILE` loops.
+
 ## Shaping results
 
 Clauses placed between the source and the `RETURN` transform the stream of items. They take effect in the order they are written.
@@ -100,7 +121,7 @@ FOR n IN [1, 2, 3, 4, 5, 6, 7, 8] {
 
 ### COLLECT
 
-`COLLECT` groups items by one or more keys. The result has one entry per distinct group, and the original loop variable is no longer in scope — only the group keys and anything you collect alongside them.
+`COLLECT` groups items by one or more keys. The result has one entry per distinct group, and the original loop binding or destructured leaves are no longer in scope — only the group keys and anything you collect alongside them.
 
 {{< editor lang="fql" >}}
 LET users = [
