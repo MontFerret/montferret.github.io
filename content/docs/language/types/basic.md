@@ -297,6 +297,16 @@ return [
 ]
 {{</ editor >}}
 
+Use `...expression` inside an array literal to copy the elements of another Array into a new array:
+
+{{< editor lang="fql" >}}
+let middle = [2, 3]
+
+return [1, ...middle, 4]
+{{</ editor >}}
+
+Array entries are evaluated once from left to right. Spreading `none` adds no elements. The copy is shallow: the source array is not changed, but nested values are shared. The spread operand must be an Array or `none`; strings, ranges, and other iterable values produce a `TypeError`.
+
 ## Objects
 
 An object is an unordered collection of named values, written with curly braces:
@@ -369,6 +379,24 @@ return {
     same: {} == none
 }
 {{</ editor >}}
+
+Use `...expression` inside an object literal to copy properties from another Object into a new object:
+
+{{< editor lang="fql" >}}
+let defaults = {
+    theme: "light",
+    pageSize: 20
+}
+
+return {
+    ...defaults,
+    theme: "dark"
+}
+{{</ editor >}}
+
+Object entries are evaluated once from left to right, so a later property replaces an earlier property with the same name, whether either property came from a spread. Spreading `none` adds no properties. The copy is shallow and does not mutate the source object. The operand must be an Object or `none`; other map-like and concrete values produce a `TypeError`.
+
+Spread is available only while constructing array and object literals. It does not add rest destructuring, spread call arguments, `for` expansion, deep merging, or mutation.
 
 ## DateTime values
 
