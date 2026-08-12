@@ -297,7 +297,7 @@ return [
 ]
 {{</ editor >}}
 
-Use `...expression` inside an array literal to copy the elements of another Array into a new array:
+Use `...expression` inside an array literal to copy the elements of another Array or host-provided runtime List into a new array:
 
 {{< editor lang="fql" >}}
 let middle = [2, 3]
@@ -305,7 +305,7 @@ let middle = [2, 3]
 return [1, ...middle, 4]
 {{</ editor >}}
 
-Array entries are evaluated once from left to right. Spreading `none` adds no elements. The copy is shallow: the source array is not changed, but nested values are shared. The spread operand must be an Array or `none`; strings, ranges, and other iterable values produce a `TypeError`.
+Array entries are evaluated once from left to right. Spreading `none` adds no elements. The copy is shallow: the source list is not changed, but nested values are shared. The spread operand must be an Array, another runtime List, or `none`; strings, ranges, and values that are merely iterable produce a `TypeError`.
 
 ## Objects
 
@@ -380,7 +380,7 @@ return {
 }
 {{</ editor >}}
 
-Use `...expression` inside an object literal to copy properties from another Object into a new object:
+Use `...expression` inside an object literal to copy properties from another Object or host-provided runtime Map into a new object:
 
 {{< editor lang="fql" >}}
 let defaults = {
@@ -394,7 +394,7 @@ return {
 }
 {{</ editor >}}
 
-Object entries are evaluated once from left to right, so a later property replaces an earlier property with the same name, whether either property came from a spread. Spreading `none` adds no properties. The copy is shallow and does not mutate the source object. The operand must be an Object or `none`; other map-like and concrete values produce a `TypeError`.
+Object entries are evaluated once from left to right, so a later property replaces an earlier property with the same name, whether either property came from a spread. Spreading `none` adds no properties. The copy is shallow and does not mutate the source map. The operand must be an Object, another runtime Map, or `none`; other concrete values produce a `TypeError`.
 
 Spread is available only while constructing array and object literals. It does not add rest destructuring, spread call arguments, `for` expansion, deep merging, or mutation.
 

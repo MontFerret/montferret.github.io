@@ -177,6 +177,28 @@ return l.text
 
 `Iterator.Next` must return `io.EOF` when the sequence is exhausted. If the iterator holds resources (an open cursor, for example), implement `io.Closer` on it as well.
 
+### Bulk snapshots for spread
+
+Array spread accepts values that implement `runtime.List`, and object spread accepts values that implement `runtime.Map`. Ferret can enumerate those interfaces directly, so host values do not need another capability for correctness.
+
+Remote or paginated collections can optionally provide a native bulk representation:
+
+{{< code lang="go" >}}
+type ListSnapshotter interface {
+    Snapshot(context.Context) (*Array, error)
+}
+
+type MapSnapshotter interface {
+    Snapshot(context.Context) (*Object, error)
+}
+{{</ code >}}
+
+When a valid List or Map implements the matching snapshot interface, spread calls `Snapshot` once and copies from the returned native Array or Object. A successful call must return a non-nil value. If it returns an error, spread propagates that error without retrying through element-by-element or property-by-property enumeration.
+
+The snapshot interfaces are optional optimizations. Implementing `ListSnapshotter` without `runtime.List`, or `MapSnapshotter` without `runtime.Map`, does not make a value spreadable.
+
+`Snapshot` is a bulk read of the collection's current contents. It does not promise transactional or atomic point-in-time consistency for a remote source unless the host implementation provides that guarantee. It also does not transfer ownership and is separate from `vm.Materialize`, which performs terminal conversion of a VM result with explicit lifecycle semantics.
+
 ### Query, dispatch, and observe
 
 | Interface | Key method | FQL syntax |
