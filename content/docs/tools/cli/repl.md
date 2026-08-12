@@ -26,12 +26,12 @@ Please use `exit` or `Ctrl-D` to exit this program.
 Type any FQL expression at the prompt. The result prints as soon as evaluation finishes:
 
 ```
-> RETURN 1 + 2
+> return 1 + 2
 3
 ```
 
 ```
-> RETURN { name: "Ada", active: TRUE }
+> return { name: "Ada", active: true }
 {"active":true,"name":"Ada"}
 ```
 
@@ -41,14 +41,14 @@ For scripts that span multiple lines, start a block with `%`, type the lines, th
 
 ```
 > %
-LET users = [
-    { name: "Ada", active: TRUE },
-    { name: "Grace", active: FALSE }
+let users = [
+    { name: "Ada", active: true },
+    { name: "Grace", active: false }
 ]
 
-RETURN FOR user IN users
-    FILTER user.active
-    RETURN user.name
+return for user in users
+    filter user.active
+    return user.name
 %
 ["Ada"]
 ```
@@ -62,7 +62,7 @@ ferret repl --param greeting=hello
 {{< /terminal >}}
 
 ```
-> RETURN @greeting
+> return @greeting
 "hello"
 ```
 

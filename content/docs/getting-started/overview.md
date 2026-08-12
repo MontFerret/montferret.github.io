@@ -9,20 +9,23 @@ aliases:
 ---
 
 # Overview
-Ferret is a programmable data extraction and automation engine for developers.
-It provides a small declarative language, an embeddable runtime, and an extensible execution model for querying, transforming, and automating data from websites, documents, APIs, and application-defined sources.
-Ferret is especially useful when data lives behind messy HTML, browser interactions, inconsistent external systems, or configuration-driven workflows that need more structure than ad-hoc scripts.
-At a high level, Ferret helps you describe:
+
+Ferret is a declarative-first, expression-oriented embedded language and runtime for data automation. FQL scripts query and transform ordinary data, application-defined host values, documents, APIs, and browser-backed resources while the embedding application controls the available capabilities.
+
+Ferret is especially useful when data logic should be portable, reviewable, and change independently from the host application. At a high level, a script describes:
+
 - where data comes from
 - how to query it
 - how to wait for it
 - how to transform it
 - how to return clean structured output
-  Ferret can be used as a command-line tool, embedded into Go applications, extended with modules, or used as a small domain-specific language for configuration-driven systems.
+
+Ferret can be used as a command-line tool, embedded into Go applications, extended with modules, or used as a small domain-specific language for configuration-driven systems.
 
 ## What Ferret is
-Ferret is built around FQL, a declarative language designed for data extraction, transformation, and automation workflows.
-Instead of writing large amounts of imperative glue code, Ferret lets you describe the shape of the data you want and the operations needed to get it.
+Ferret is built around FQL, a declarative-first language designed for data extraction, transformation, and automation workflows. Its core is expression-oriented: `match`, `for`, `filter`, `query`, and `waitfor` compose domain logic and produce values. `var` and `while` add constrained mutable state for workflows that need it.
+
+Instead of writing large amounts of host-language glue code, Ferret lets you describe the shape of the data you want and the operations needed to get it.
 A Ferret program can query a document, interact with a browser-backed value, transform arrays and objects, call host-provided functions, and return structured data that can be consumed by another system.
 Ferret is not limited to HTML scraping.
 
@@ -54,11 +57,11 @@ A Ferret script usually follows a simple pattern:
 For example, a script might query product cards from a document and return a normalized list of objects:
 
 {{< editor lang="fql" readonly="true" params="false" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
-LET products = page[~ css`.product-card`]
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+let products = page[~ css`.product-card`]
 
-RETURN FOR product IN products
-    RETURN {
+return for product in products
+    return {
         name: product[~ css`.product-title`],
         price: product[~ css`.product-price`],
         url: product[~ css`:attr("href", .product-link)`]
@@ -136,6 +139,23 @@ This is useful when extraction rules, pipeline steps, validation checks, or auto
 
 The host application remains in control: it decides which functions are available, which values are passed into the script, which modules are loaded, and which capabilities the script can use.
 
+For example, a billing service can pass invoice data directly from Go through the `@invoices` parameter. The FQL script selects open invoices and assigns each one to a review queue without loading a web page:
+
+{{< code lang="fql" >}}
+return for invoice in @invoices {
+    filter invoice.status == "open"
+    return {
+        id: invoice.id,
+        queue: match {
+            when invoice.total >= 10000 => "review",
+            _                           => "standard",
+        }
+    }
+}
+{{</ code >}}
+
+The host owns the invoice records and execution boundary; the embedded script owns the configurable data decision.
+
 ### As part of a larger workflow
 
 Ferret can also be used as one piece of a larger system.
@@ -152,7 +172,7 @@ It is not intended to replace Go, Python, JavaScript, or other languages used to
 
 Ferret is also not a massive web crawler for downloading the internet. Its focus is targeted, precise, repeatable extraction and automation.
 
-Ferret is not limited to web scraping either. HTML and browser automation are important parts of the ecosystem, but Ferret’s core model is broader: querying, transforming, and automating capable values through a small declarative language.
+Ferret is not limited to web scraping either. HTML and browser automation are important parts of the ecosystem, but Ferret’s core model is broader: querying, transforming, and automating capable values through a small declarative-first, expression-oriented language.
 
 ## The Ferret ecosystem
 

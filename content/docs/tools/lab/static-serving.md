@@ -22,8 +22,8 @@ lab run --serve ./dist@app tests/
 The service URL is available as `@lab.static.app`.
 
 {{< code lang="fql" >}}
-LET doc = DOCUMENT(@lab.static.app + "/index.html")
-RETURN doc.title
+let doc = DOCUMENT(@lab.static.app + "/index.html")
+return doc.title
 {{< /code >}}
 
 Multiple directories can be served in the same run:
@@ -71,7 +71,7 @@ Static entries must point to existing directories. The default alias is the dire
 Aliases must start with a letter or underscore and may contain letters, numbers, underscores, and hyphens. Use bracket access for aliases that are not valid FQL dotted-property names:
 
 {{< code lang="fql" >}}
-RETURN @lab.static["api-fixtures"] + "/users.json"
+return @lab.static["api-fixtures"] + "/users.json"
 {{< /code >}}
 
 Duplicate aliases are rejected.

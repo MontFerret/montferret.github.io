@@ -20,14 +20,14 @@ A script is a top-level sequence of statements. Statements are evaluated in orde
 Most scripts follow a simple pattern: declare or receive input, transform data, return a result.
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-LET user = {
+let user = {
     name: "Ada",
     roles: ["admin", "editor"]
 }
 
-LET isAdmin = CONTAINS(user.roles, "admin")
+let isAdmin = CONTAINS(user.roles, "admin")
 
-RETURN {
+return {
     name: user.name,
     isAdmin: isAdmin
 }
@@ -35,75 +35,75 @@ RETURN {
 
 ## Script headers
 
-A script can begin with one or more `USE` declarations. They create local aliases for namespaces or namespaced functions and must appear before the script body. See the [`USE` statement reference]({{< ref "/docs/language/script-structure/use" >}}) for the syntax and resolution rules.
+A script can begin with one or more `use` declarations. They create local aliases for namespaces or namespaced functions and must appear before the script body. See the [`use` statement reference]({{< ref "/docs/language/script-structure/use" >}}) for the syntax and resolution rules.
 
 ## Statements
 
 A statement describes a step in the script. Some statements create bindings; others produce results or control iteration.
 
-`LET` creates an immutable binding:
+`let` creates an immutable binding:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-LET name = "Ada"
+let name = "Ada"
 
-RETURN name
+return name
 {{< /editor >}}
 
-`VAR` creates a mutable binding: one whose value can be reassigned later in the same scope:
+`var` creates a mutable binding: one whose value can be reassigned later in the same scope:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-VAR total = 0
+var total = 0
 
-FOR price IN [10, 20, 30] {
+for price in [10, 20, 30] {
     total = total + price
 
-    RETURN total
+    return total
 }
 
-RETURN total
+return total
 {{< /editor >}}
 
-Only `VAR` bindings can be reassigned. `LET` bindings cannot be changed after they are created, and no binding can be declared twice in the same scope. Prefer `LET` unless mutation is actually needed.
+Only `var` bindings can be reassigned. `let` bindings cannot be changed after they are created, and no binding can be declared twice in the same scope. Prefer `let` unless mutation is actually needed.
 
-More advanced scripts may also use `FOR`, `FILTER`, `COLLECT`, `MATCH`, `WAITFOR`, `DISPATCH`, `DO WHILE`, or function declarations. Those constructs are covered in their own pages.
+More advanced scripts may also use `for`, `filter`, `collect`, `match`, `waitfor`, `dispatch`, `do while`, or function declarations. Those constructs are covered in their own pages.
 
 ## Expressions
 
-Most of the useful work in FQL happens inside expressions. An expression is any piece of syntax that produces a value: a literal, a function call, an arithmetic combination, a field access, a query, or a nested `FOR`. Expressions can be assigned to bindings, passed as arguments, or returned directly.
+Most of the useful work in FQL happens inside expressions. An expression is any piece of syntax that produces a value: a literal, a function call, an arithmetic combination, a field access, a query, or a nested `for`. Expressions can be assigned to bindings, passed as arguments, or returned directly.
 
 Simple literals and arithmetic:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-RETURN (1 + 2) * 3
+return (1 + 2) * 3
 {{< /editor >}}
 
 Function calls:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-RETURN UPPER("hello")
+return UPPER("hello")
 {{< /editor >}}
 
 Object and array construction:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-RETURN {
+return {
     name: "Ada",
     active: true,
     score: 42,
     tags: ["admin", "editor"],
-    missingValue: NONE
+    missingValue: none
 }
 {{< /editor >}}
 
 Expressions can also be composed. The output of one becomes the input of another:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-LET user = {
+let user = {
     name: "Ada",
     roles: ["admin", "editor"]
 }
 
-RETURN {
+return {
     name: user.name,
     roleCount: LENGTH(user.roles)
 }
@@ -115,82 +115,82 @@ Statements describe the flow of the script. Expressions produce the values that 
 
 ## Returning a result
 
-Use `RETURN` to produce a script result. A script can also finish without `RETURN`; after its statements run, it completes successfully with `NONE`. Completely empty or whitespace-only source is still invalid.
+Use `return` to produce a script result. A script can also finish without `return`; after its statements run, it completes successfully with `none`. Completely empty or whitespace-only source is still invalid.
 
-The returned value can be any FQL value: `NONE`, a boolean, number, string, array, object, binary value, or host value.
+The returned value can be any FQL value: `none`, a boolean, number, string, array, object, binary value, or host value.
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-RETURN "Hello, world!"
+return "Hello, world!"
 {{< /editor >}}
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-RETURN FOR i IN 1..10 {
-    RETURN i * i
+return for i in 1..10 {
+    return i * i
 }
 {{< /editor >}}
 
-`RETURN FOR` returns the collection produced by the loop directly. Parenthesized `FOR` expressions remain useful when the collection must be assigned, nested, or passed to another expression.
+`return for` returns the collection produced by the loop directly. Parenthesized `for` expressions remain useful when the collection must be assigned, nested, or passed to another expression.
 
-A standalone `FOR` is an ordinary statement. Its body still runs, but its produced collection is discarded:
+A standalone `for` is an ordinary statement. Its body still runs, but its produced collection is discarded:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-VAR total = 0
+var total = 0
 
-FOR value IN [1, 2, 3] {
+for value in [1, 2, 3] {
     total = total + value
-    RETURN value
+    return value
 }
 
-RETURN total
+return total
 {{< /editor >}}
 
-Likewise, an expression used as a block-function statement is evaluated and discarded. Only an explicit `RETURN` or an arrow body determines a function result.
+Likewise, an expression used as a block-function statement is evaluated and discarded. Only an explicit `return` or an arrow body determines a function result.
 
 ## Scopes and blocks
 
 Some statements introduce a nested scope. Names declared inside that scope are not visible outside it.
 
-`FOR` is the most common block-producing statement:
+`for` is the most common block-producing statement:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-LET values = (FOR i IN 1..5 {
-    LET square = i * i
-    RETURN square
+let values = (for i in 1..5 {
+    let square = i * i
+    return square
 }
 )
 
-RETURN values
+return values
 {{< /editor >}}
 
-`square` exists only inside the `FOR` block. Referencing it outside the block is an error.
+`square` exists only inside the `for` block. Referencing it outside the block is an error.
 
-Other statements have block-like shapes as well. A `MATCH` expression describes branching logic:
+Other statements have block-like shapes as well. A `match` expression describes branching logic:
 
 {{< editor lang="fql" params=`{"status": "active"}` >}}
-RETURN MATCH @status {
+return match @status {
     "active" => "Account is active",
     "paused" => "Account is paused",
     _ => "Unknown status"
 }
 {{< /editor >}}
 
-A `WAITFOR` block describes event-oriented runtime logic:
+A `waitfor` block describes event-oriented runtime logic:
 
 {{< code lang="fql" >}}
-WAITFOR EVENT network.response_received
-    WHEN event.status == 200
-RETURN event.url
+waitfor event network.response_received
+    when event.status == 200
+return event.url
 {{< /code >}}
 
 A function declaration creates a reusable local function:
 
 {{< editor lang="fql" >}}
-FUNC fullName(user) => user.firstName + " " + user.lastName
+func fullName(user) => user.firstName + " " + user.lastName
 
-RETURN fullName({ firstName: "Ada", lastName: "Lovelace" })
+return fullName({ firstName: "Ada", lastName: "Lovelace" })
 {{< /editor >}}
 
-Each of these has its own detailed rules and is covered in its dedicated documentation — `MATCH` and `WAITFOR` in [Control Flow]({{% ref "control-flow" %}}), and function declarations in [Functions]({{% ref "functions" %}}). This section shows the structural shape only.
+Each of these has its own detailed rules and is covered in its dedicated documentation — `match` and `waitfor` in [Control Flow]({{% ref "control-flow" %}}), and function declarations in [Functions]({{% ref "functions" %}}). This section shows the structural shape only.
 
 ## Comments
 
@@ -198,7 +198,7 @@ FQL supports single-line comments that begin with `//` and extend to the end of 
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
 // This is a comment
-RETURN "Hello, world!"  // This is another comment
+return "Hello, world!"  // This is another comment
 {{< /editor >}}
 
 Multi-line comments are enclosed in `/*` and `*/`:
@@ -208,7 +208,7 @@ Multi-line comments are enclosed in `/*` and `*/`:
 This is a multi-line comment.
 It can span multiple lines.
 */
-RETURN "Hello, world!"
+return "Hello, world!"
 {{< /editor >}}
 
 FQL is whitespace-insensitive. Spaces, tabs, and newlines separate tokens but do not affect semantics. Whitespace inside strings is preserved.
@@ -218,71 +218,71 @@ FQL is whitespace-insensitive. Spaces, tabs, and newlines separate tokens but do
 Names identify variables, object fields, functions, and other script-level symbols. A name must start with a letter or underscore, followed by any combination of letters, digits, and underscores:
 
 {{< code lang="fql" >}}
-LET _name = "Ada"
-LET name2 = "Grace"
-LET Name = "Turing"
+let _name = "Ada"
+let name2 = "Grace"
+let Name = "Turing"
 {{< /code >}}
 
 Keywords are reserved words with special meaning in FQL. They are case-sensitive and conventionally written in uppercase. The full set of reserved keywords is:
 
 {{< code lang="fql" >}}
-USE
-AS
-MATCH
-WHEN
-FUNC
-FOR
-RETURN
-QUERY
-USING
-WAITFOR
-DISPATCH
-OPTIONS
-TIMEOUT
-EVERY
-BACKOFF
-JITTER
-EXISTS
-COUNT
-ONE
-DISTINCT
-FILTER
-SORT
-LIMIT
-LET
-VAR
-COLLECT
-ASC
-DESC
-AT
-LEAST
-INTO
-KEEP
-WITH
-ALL
-ANY
-AGGREGATE
-EVENT
-LIKE
-NOT
-IN
-DO
-WHILE
-AND
-OR
-ON
-ERROR
-FAIL
-RETRY
-DELAY
-DELETE
-VALUE
+use
+as
+match
+when
+func
+for
+return
+query
+using
+waitfor
+dispatch
+options
+timeout
+every
+backoff
+jitter
+exists
+count
+one
+distinct
+filter
+sort
+limit
+let
+var
+collect
+asc
+desc
+at
+least
+into
+keep
+with
+all
+any
+aggregate
+event
+like
+not
+in
+do
+while
+and
+or
+on
+error
+fail
+retry
+delay
+delete
+value
 {{< /code >}}
 
 When an object field shares its name with a keyword, quote the field name:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-RETURN {
+return {
     "return": "This field is named 'return', which is a keyword, so it is quoted."
 }
 {{< /editor >}}

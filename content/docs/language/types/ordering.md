@@ -15,13 +15,13 @@ FQL defines a deterministic relational order for non-Duration built-in values. I
 When two non-Duration built-ins have different types, their type decides the result:
 
 {{< code >}}
-NONE < bool < number < string < datetime < binary < array < object
+none < bool < number < string < datetime < binary < array < object
 {{</ code >}}
 
 Values are compared within their type only after the types match. `Int` and `Float` share the numeric comparison domain and compare by numeric value.
 
 {{< code lang="fql" >}}
-NONE < false
+none < false
 false < true
 true < 0
 1 < 2.5
@@ -35,7 +35,7 @@ true < 0
 Duration is intentionally separate from the cross-type chain. Two Durations compare by signed nanosecond value, and equivalent units compare equal.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     less: 500ms < 1s,
     equal: 1000ms == 1s
 }
@@ -60,13 +60,13 @@ SORTED([1s, "2s"]) // runtime error
 
 ## Equality, membership, and uniqueness
 
-Equality does not use the cross-type order to make different types equal. Membership, `MATCH`, grouping, set operations, and deduplication all verify canonical equality recursively.
+Equality does not use the cross-type order to make different types equal. Membership, `match`, grouping, set operations, and deduplication all verify canonical equality recursively.
 
 Equivalent native Durations collapse to the first representative, while strings and numbers remain distinct from Duration:
 
 {{< code lang="fql" >}}
-DISTINCT ["1s", 1000, 1s] // keeps all three values
-DISTINCT [1s, 1000ms]      // keeps the first Duration
+distinct ["1s", 1000, 1s] // keeps all three values
+distinct [1s, 1000ms]      // keeps the first Duration
 {{</ code >}}
 
 Hashes may select candidate buckets internally, but equality determines whether values are actually the same.
@@ -75,7 +75,7 @@ Hashes may select candidate buckets internally, but equality determines whether 
 
 Within a built-in type:
 
-- `NONE` is equal only to `NONE`.
+- `none` is equal only to `none`.
 - Booleans use `false < true`.
 - Numbers compare by numeric value across `Int` and `Float`.
 - Durations compare by signed nanoseconds, only with Duration.
@@ -107,11 +107,11 @@ Array comparison is recursive. A nested Duration/non-Duration pair remains unequ
 
 Objects compare their attributes rather than declaration order. Attribute names are considered in sorted order, and corresponding values use the same recursive comparison rules.
 
-If one object lacks an attribute present in the other, the missing value is treated as `NONE` for comparison.
+If one object lacks an attribute present in the other, the missing value is treated as `none` for comparison.
 
 {{< code lang="fql" >}}
 {} < { "a": 1 }
-{} == { "a": NONE }
+{} == { "a": none }
 { "a": 1 } < { "a": 2 }
 { "a": true } < { "a": 0 }
 {{</ code >}}
@@ -119,7 +119,7 @@ If one object lacks an attribute present in the other, the missing value is trea
 Declaration order does not affect equality:
 
 {{< editor lang="fql" height="110px" >}}
-RETURN { "a": 1, "b": 2 } == { "b": 2, "a": 1 }
+return { "a": 1, "b": 2 } == { "b": 2, "a": 1 }
 {{</ editor >}}
 
 ## Host values

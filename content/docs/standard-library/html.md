@@ -309,7 +309,7 @@ ELEMENT
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element.go#L16)
 
-ELEMENT finds an element by a given CSS selector. Returns NONE if element not found.
+ELEMENT finds an element by a given CSS selector. Returns `none` if element not found.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -656,7 +656,7 @@ NAVIGATE_BACK
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_back.go#L18)
 
-NAVIGATE_BACK navigates a given page back within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns FALSE.
+NAVIGATE_BACK navigates a given page back within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns `false`.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -677,7 +677,7 @@ NAVIGATE_FORWARD
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_forward.go#L18)
 
-NAVIGATE_FORWARD navigates a given page forward within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns FALSE.
+NAVIGATE_FORWARD navigates a given page forward within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns `false`.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -698,7 +698,7 @@ PAGINATION
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pagination.go#L16)
 
-PAGINATION creates an iterator that goes through pages using CSS selector. The iterator starts from the current page i.e. it does not change the page on 1st iteration. That allows you to keep scraping logic inside FOR loop.
+PAGINATION creates an iterator that goes through pages using CSS selector. The iterator starts from the current page i.e. it does not change the page on 1st iteration. That allows you to keep scraping logic inside a `for` loop.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

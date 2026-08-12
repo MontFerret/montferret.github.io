@@ -39,8 +39,8 @@ func main() {
     plan, err := engine.Compile(
         context.Background(),
         source.New("extract-titles.fql", `
-            LET page = WEB::HTML::OPEN(@url)
-            RETURN page[~ css` + "`h1, h2`" + `][*].textContent
+            let page = WEB::HTML::OPEN(@url)
+            return page[~ css` + "`h1, h2`" + `][*].textContent
         `),
     )
     if err != nil {

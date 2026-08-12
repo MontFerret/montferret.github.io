@@ -11,15 +11,15 @@ Beware, a target iframe must be in the same domain, otherwise its properties and
 {{</ notification >}}
 
 {{< editor height="250px" >}}
-LET page = DOCUMENT("https://www.w3schools.com/html/html_iframe.asp", {
+let page = DOCUMENT("https://www.w3schools.com/html/html_iframe.asp", {
     driver: "cdp"
 })
 
-LET content = (
-    FOR f IN page.frames
-        FILTER f.URL == "https://www.w3schools.com/html/default.asp"
-            RETURN f.head.innerHTML
+let content = (
+    for f in page.frames
+        filter f.URL == "https://www.w3schools.com/html/default.asp"
+            return f.head.innerHTML
 )
 
-RETURN FIRST(content)
+return FIRST(content)
 {{< /editor >}}

@@ -14,51 +14,51 @@ Page interactions require the `cdp` driver. See [Browser-driven pages]({{< ref "
 
 ## Click an element
 
-Use `DISPATCH "click"` or the arrow shorthand `<-` to click:
+Use `dispatch "click"` or the arrow shorthand `<-` to click:
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
     driver: "cdp"
 })
-LET button = QUERY ONE '[data-testid="page-next"]' IN page USING css
+let button = query one '[data-testid="page-next"]' in page using css
 
-DISPATCH "click" IN button
+dispatch "click" in button
 
 // Arrow shorthand — equivalent to the above
 button <- "click"
 {{</ code >}}
 
-After a click, the page may change. Use `WAITFOR` to wait for the result before extracting data:
+After a click, the page may change. Use `waitfor` to wait for the result before extracting data:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
     driver: "cdp"
 })
-LET button = QUERY ONE '[data-testid="page-next"]' IN page USING css
+let button = query one '[data-testid="page-next"]' in page using css
 
-DISPATCH "click" IN button
+dispatch "click" in button
 
-WAITFOR EXISTS (QUERY ONE '[data-testid="dynamic-product-card"]' IN page USING css)
-    TIMEOUT 5s
+waitfor exists (query one '[data-testid="dynamic-product-card"]' in page using css)
+    timeout 5s
 
-RETURN QUERY '[data-testid="dynamic-product-card"]' IN page USING css
+return query '[data-testid="dynamic-product-card"]' in page using css
 {{</ editor >}}
 
 ## Fill a text input
 
-Use `DISPATCH "input"` with a `WITH` payload to type into an input field:
+Use `dispatch "input"` with a `with` payload to type into an input field:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", {
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", {
     driver: "cdp"
 })
-LET input = QUERY ONE "#search-query" IN page USING css
+let input = query one "#search-query" in page using css
 
-LET beforeCount = QUERY COUNT '.product-card' IN page USING css
-DISPATCH "input" IN input WITH { value: "camera" }
-LET afterCount = QUERY COUNT '.product-card' IN page USING css
+let beforeCount = query count '.product-card' in page using css
+dispatch "input" in input with { value: "camera" }
+let afterCount = query count '.product-card' in page using css
 
-RETURN {
+return {
     beforeCount,
     afterCount
 }
@@ -66,19 +66,19 @@ RETURN {
 
 ## Select from a dropdown
 
-Use `DISPATCH "select"` with an array of values:
+Use `dispatch "select"` with an array of values:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", {
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", {
     driver: "cdp"
 })
-LET categories = QUERY ONE "#search-category" IN page USING css
+let categories = query one "#search-category" in page using css
 
-LET beforeCount = QUERY COUNT '.product-card' IN page USING css
-DISPATCH "select" IN categories WITH { value: "laptops" }
-LET afterCount = QUERY COUNT '.product-card' IN page USING css
+let beforeCount = query count '.product-card' in page using css
+dispatch "select" in categories with { value: "laptops" }
+let afterCount = query count '.product-card' in page using css
 
-RETURN {
+return {
     beforeCount,
     afterCount
 }
@@ -89,34 +89,34 @@ RETURN {
 A typical form interaction combines filling inputs with a click or form submission:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/forms/", {
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/forms/", {
     driver: "cdp"
 })
 
-DISPATCH "input" IN (QUERY ONE "#query" IN page USING css) WITH { value: "ferret" }
-DISPATCH "click" IN (QUERY ONE "#search-form button[type='submit']" IN page USING css)
+dispatch "input" in (query one "#query" in page using css) with { value: "ferret" }
+dispatch "click" in (query one "#search-form button[type='submit']" in page using css)
 
-LET result = WAITFOR VALUE (QUERY ONE "#form-result" IN page USING css)
-    WHEN .textContent != ""
-    TIMEOUT 3s
-    ON TIMEOUT FAIL
+let result = waitfor value (query one "#form-result" in page using css)
+    when .textContent != ""
+    timeout 3s
+    on timeout fail
 
-RETURN result.textContent
+return result.textContent
 {{</ editor >}}
 
 ## Wait for the result of an interaction
 
-The `WAITFOR EVENT ... TRIGGER` pattern is the safest way to combine an interaction with waiting for its result. It subscribes to the event *before* triggering the action, avoiding a race condition where the event fires before listening begins:
+The `waitfor event ... trigger` pattern is the safest way to combine an interaction with waiting for its result. It subscribes to the event *before* triggering the action, avoiding a race condition where the event fires before listening begins:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/", { driver: "cdp" })
-LET next = QUERY ONE '[data-testid="page-next"]' IN page USING css
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/", { driver: "cdp" })
+let next = query one '[data-testid="page-next"]' in page using css
 
-WAITFOR EVENT "navigation" IN page
-    TRIGGER DISPATCH "click" IN next
-    TIMEOUT 10s
+waitfor event "navigation" in page
+    trigger dispatch "click" in next
+    timeout 10s
 
-RETURN QUERY ".product-grid" IN page USING css
+return query ".product-grid" in page using css
 {{</ editor >}}
 
 This reads as: start listening for a `navigation` event, then click the button, then wait until the event arrives or the timeout is reached.
@@ -124,13 +124,13 @@ This reads as: start listening for a `navigation` event, then click the button, 
 ## Focus
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/forms/", { driver: "cdp" })
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/forms/", { driver: "cdp" })
 
-LET input = QUERY ONE '#query' IN page USING css
-DISPATCH "focus" IN input
-LET test = QUERY ONE '[data-testid="form-event-status"]' IN page USING css
+let input = query one '#query' in page using css
+dispatch "focus" in input
+let test = query one '[data-testid="form-event-status"]' in page using css
 
-RETURN test.textContent
+return test.textContent
 {{</ editor >}}
 
 ## Hover
@@ -138,26 +138,26 @@ RETURN test.textContent
 Use `mouseover` and `mouseout` to trigger hover effects. Some pages may require a `mousemove` event instead:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/mouse/", { driver: "cdp" })
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/mouse/", { driver: "cdp" })
 
-LET target = QUERY ONE '#mouse-hover-target' IN page USING css
-DISPATCH "mouseover" IN target
-DISPATCH "mouseout" IN target
+let target = query one '#mouse-hover-target' in page using css
+dispatch "mouseover" in target
+dispatch "mouseout" in target
 
-LET test = QUERY ONE '#mouse-hover-status' IN page USING css
+let test = query one '#mouse-hover-status' in page using css
 
-RETURN test.textContent
+return test.textContent
 {{</ editor >}}
 
 Or, helper functions `HOVER` and `UNHOVER` can be used:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/mouse/", { driver: "cdp" })
-LET target = QUERY ONE '#mouse-hover-target' IN page USING css
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/mouse/", { driver: "cdp" })
+let target = query one '#mouse-hover-target' in page using css
 WEB::HTML::HOVER(target)
-LET test = QUERY ONE '#mouse-hover-status' IN page USING css
+let test = query one '#mouse-hover-status' in page using css
 
-RETURN test.textContent
+return test.textContent
 {{</ editor >}}
 
 ## Scroll the page
@@ -166,15 +166,15 @@ Use `SCROLL_BOTTOM` or `SCROLL_TOP` to scroll the page, or `SCROLL_ELEMENT` for 
 Here is a simple example of scrolling to the bottom of a page to load more products:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/infinite-scroll/", { driver: "cdp" })
-LET pageSize = 8
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/infinite-scroll/", { driver: "cdp" })
+let pageSize = 8
 
-RETURN FOR i WHILE SCROLL_BOTTOM(page)
+return for i while SCROLL_BOTTOM(page)
     WAIT(500)
-    FOR product IN QUERY `:skip(${i * pageSize}, .product-card)` IN page USING css
-        RETURN {
-            name: QUERY ONE '[data-testid="product-title"]' IN product USING css,
-            price: QUERY ONE '[data-testid="product-price"]' IN product USING css,
+    for product in query `:skip(${i * pageSize}, .product-card)` in page using css
+        return {
+            name: query one '[data-testid="product-title"]' in product using css,
+            price: query one '[data-testid="product-price"]' in product using css,
         }
 {{</ editor >}}
 
@@ -183,53 +183,53 @@ RETURN FOR i WHILE SCROLL_BOTTOM(page)
 Complex workflows chain several interactions together. Each step waits for the previous one to complete before proceeding:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", { driver: "cdp" })
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/search/", { driver: "cdp" })
 
-FUNC PARSE_PRICE(product) {
-    LET priceNode = QUERY ONE ".product-price" IN product USING css
-    LET priceText = priceNode.attributes["data-price"]
-    LET price = TO_FLOAT(SUBSTITUTE(priceText, "$", ""))
-    RETURN price
+func PARSE_PRICE(product) {
+    let priceNode = query one ".product-price" in product using css
+    let priceText = priceNode.attributes["data-price"]
+    let price = TO_FLOAT(SUBSTITUTE(priceText, "$", ""))
+    return price
 }
 
 // Step 1a: fill and submit a search form
-DISPATCH "input" IN (QUERY ONE "#search-query" IN page USING css) WITH { value: "laptop" }
+dispatch "input" in (query one "#search-query" in page using css) with { value: "laptop" }
 
 // Step 1b: submit the form
-DISPATCH "click" IN (QUERY ONE '[data-testid="search-submit"]' IN page USING css)
+dispatch "click" in (query one '[data-testid="search-submit"]' in page using css)
 
 // Step 2a: wait for the results to load by checking for the loader to disappear
-WAITFOR EXISTS QUERY ONE "#search-loader" IN page USING css
-    WHEN TO_BOOL(.attributes.disabled) == true
-    TIMEOUT 10s
+waitfor exists query one "#search-loader" in page using css
+    when TO_BOOL(.attributes.disabled) == true
+    timeout 10s
 
 // Step 2b: collect product cards
-LET products = QUERY ".product-card" IN page USING css
+let products = query ".product-card" in page using css
 
 // Step 3: extract data from each product card
-RETURN FOR product IN products
-    RETURN {
-        brand: QUERY ONE ".product-brand" IN product USING css,
-        name: QUERY ONE ".product-title" IN product USING css,
+return for product in products
+    return {
+        brand: query one ".product-brand" in product using css,
+        name: query one ".product-title" in product using css,
         price: PARSE_PRICE(product),
     }
 {{</ editor >}}
 
 ## Error recovery for interactions
 
-Interactions can fail — an element might not be clickable, or the page might not respond. Attach `ON ERROR RETURN` to handle failures gracefully:
+Interactions can fail — an element might not be clickable, or the page might not respond. Attach `on error return` to handle failures gracefully:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 
-LET button = QUERY ONE ".optional-popup-close" IN page USING css
-    ON ERROR RETURN NONE
+let button = query one ".optional-popup-close" in page using css
+    on error return none
 
-LET dismissed = button != NONE
-    ? (DISPATCH "click" IN button ON ERROR RETURN NONE)
-    : NONE
+let dismissed = button != none
+    ? (dispatch "click" in button on error return none)
+    : none
 
-RETURN QUERY "article" IN page USING css
+return query "article" in page using css
 {{</ editor >}}
 
 ## Next steps

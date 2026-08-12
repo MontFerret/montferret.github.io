@@ -13,7 +13,7 @@ The [previous post](/blog/ferret-v2-announcement/) covered why Ferret v2 exists 
 
 This time I want to talk about something more concrete: execution.
 
-The new runtime isn't just a faster version of the old one. It's built on a different execution model entirely, and that change touches almost everything: performance, embeddability, tooling, future language features, and the kinds of optimizations Ferret can support.
+The new runtime isn't just a faster version of the old one. It is the execution foundation for Ferret's declarative-first, expression-oriented embedded language, and that change touches almost everything: performance, embeddability, tooling, future language features, and the kinds of optimizations Ferret can support.
 
 ## The wall
 
@@ -89,8 +89,8 @@ A small example makes the shift clearer.
 Take a trivial query like this:
 
 ```fql
-LET x = 1 + 2
-RETURN x * 3
+let x = 1 + 2
+return x * 3
 ```
 
 At the source level, this is simple enough that you barely think about it. But internally, v2 can treat it as a proper compilation problem:

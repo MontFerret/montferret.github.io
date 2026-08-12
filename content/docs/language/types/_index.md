@@ -18,7 +18,7 @@ To understand FQL values, it helps to separate three related ideas.
 
 | Idea | Description |
 | --- | --- |
-| Basic values | Values built into FQL itself: `NONE`, booleans, numbers, strings, arrays, objects, and binary values. |
+| Basic values | Values built into FQL itself: `none`, booleans, numbers, strings, arrays, objects, and binary values. |
 | Host values | Values provided by a runtime, module, or embedding application, such as documents, elements, responses, files, cursors, or application-specific objects. |
 | Capabilities | Behaviors a value supports, such as property access, iteration, querying, dispatching actions, or serialization. |
 
@@ -30,16 +30,16 @@ The category a value belongs to does not fully determine what operations are ava
 
 ## Basic values
 
-Basic values are the ordinary, built-in values of the language: the absence marker `NONE`, the booleans `true` and `false`, numbers, strings, arrays, objects, and raw binary data. Most scripts work primarily with basic values, either constructing them directly or extracting them from host values.
+Basic values are the ordinary, built-in values of the language: the absence marker `none`, the booleans `true` and `false`, numbers, strings, arrays, objects, and raw binary data. Most scripts work primarily with basic values, either constructing them directly or extracting them from host values.
 
 {{< editor lang="fql" >}}
-LET user = {
+let user = {
     name: "Ada",
     active: true,
     roles: ["admin", "editor"]
 }
 
-RETURN user.name
+return user.name
 {{< /editor >}}
 
 Each type has specific rules for comparison, equality, and how it participates in expressions. These are documented in [Basic Types]({{< ref "basic" >}}).
@@ -49,9 +49,9 @@ Each type has specific rules for comparison, equality, and how it participates i
 Host values are values defined outside the core language. They are provided by Ferret runtimes, modules, or applications that embed Ferret, and they may represent anything managed by the host environment — an HTML document, a browser element, an HTTP response, a file, a database cursor, or an application-specific object.
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
-RETURN {
+return {
     title: page.title,
     url: page.url
 }
@@ -67,10 +67,10 @@ Host values are explained in [Host Values]({{< ref "host" >}}).
 
 Not every value supports every operation, and capabilities are how FQL describes this. A capability is a behavior that a value exposes: property access, iteration, querying, dispatching actions, or serialization. Whether a given value supports a given capability depends on the value itself, not on its category.
 
-Arrays support iteration, which is what the `FOR` statement relies on. Objects support property access, which is what makes dot notation meaningful. A browser element provided by a host runtime may support dispatch, allowing commands to be sent to it:
+Arrays support iteration, which is what the `for` statement relies on. Objects support property access, which is what makes dot notation meaningful. A browser element provided by a host runtime may support dispatch, allowing commands to be sent to it:
 
 {{< code lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-DISPATCH "click" IN button
+dispatch "click" in button
 {{< /code >}}
 
 Capabilities are particularly important for host values because different host values may support different operations. A document may expose properties; a cursor may be iterable; a browser element may accept dispatched commands. Understanding which capabilities a value supports tells you what you can do with it in a script.
@@ -79,11 +79,11 @@ Capability-specific behavior is documented in [Capabilities]({{< ref "capabiliti
 
 ## Values at the boundary
 
-Inside a script, values may be basic values or host values. At the boundary of a script, plain arrays, objects, strings, numbers, booleans, binary values, and `NONE` are the most portable results:
+Inside a script, values may be basic values or host values. At the boundary of a script, plain arrays, objects, strings, numbers, booleans, binary values, and `none` are the most portable results:
 
 {{< code lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-RETURN FOR product IN products {
-    RETURN {
+return for product in products {
+    return {
         name: product.name,
         price: product.price,
         available: product.stock > 0

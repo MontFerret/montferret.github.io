@@ -3,58 +3,58 @@ title: "Subquery Expressions"
 sidebarTitle: "Subqueries"
 weight: 30
 draft: false
-description: "Use a parenthesized FOR block as a value to compose and nest FQL transformations."
+description: "Use a parenthesized for block as a value to compose and nest FQL transformations."
 ---
 
 # Subquery Expressions
 
-A subquery is a query block wrapped in parentheses and used as a value. Most often it is a [`FOR`]({{< ref "for" >}}) loop whose result — always an array — is assigned, returned, or passed to another expression.
+A subquery is a query block wrapped in parentheses and used as a value. Most often it is a [`for`]({{< ref "for" >}}) loop whose result — always an array — is assigned, returned, or passed to another expression.
 
 {{< editor lang="fql" >}}
-LET users = [
+let users = [
     { name: "Ada", active: true },
     { name: "Grace", active: false },
     { name: "Linus", active: true }
 ]
 
-LET activeUsers = (
-    FOR u IN users {
-        FILTER u.active
-        RETURN u.name
+let activeUsers = (
+    for u in users {
+        filter u.active
+        return u.name
     }
 )
 
-RETURN activeUsers
+return activeUsers
 {{</ editor >}}
 
-The parentheses are required. A `FOR` loop written without them is the output of the query itself, not a value you can place inside another expression.
+The parentheses are required. A `for` loop written without them is the output of the query itself, not a value you can place inside another expression.
 
 ## Composing transformations
 
 Because a subquery is just a value, it can be used anywhere a value is expected — including as an argument to a function.
 
 {{< editor lang="fql" >}}
-RETURN LENGTH(
-    (FOR n IN 1..10 { FILTER n % 2 == 0 RETURN n })
+return LENGTH(
+    (for n in 1..10 { filter n % 2 == 0 return n })
 )
 {{</ editor >}}
 
 A subquery can also be indexed like any other array.
 
 {{< editor lang="fql" >}}
-RETURN (FOR n IN 1..5 { RETURN n * n })[2]
+return (for n in 1..5 { return n * n })[2]
 {{</ editor >}}
 
 ## Nesting
 
-The `RETURN` of one loop can be another subquery, which produces nested arrays.
+The `return` of one loop can be another subquery, which produces nested arrays.
 
 {{< editor lang="fql" >}}
-RETURN (
-    FOR i IN 1..3 {
-        RETURN (
-            FOR j IN 1..3 {
-                RETURN i * j
+return (
+    for i in 1..3 {
+        return (
+            for j in 1..3 {
+                return i * j
             }
         )
     }
@@ -65,7 +65,7 @@ Each inner subquery is evaluated once per iteration of the outer loop.
 
 ## Subqueries and query expressions
 
-A subquery composes FQL transformations: it runs a `FOR` block and hands you the result. This is different from a [Query Expression]({{< ref "query" >}}), which delegates a query to a host value such as an HTML document. They share the word "query" but solve different problems — use a subquery to shape data with FQL, and `QUERY` to extract data through a host capability.
+A subquery composes FQL transformations: it runs a `for` block and hands you the result. This is different from a [Query Expression]({{< ref "query" >}}), which delegates a query to a host value such as an HTML document. They share the word "query" but solve different problems — use a subquery to shape data with FQL, and `query` to extract data through a host capability.
 
 ## Next steps
 

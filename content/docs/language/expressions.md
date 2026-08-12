@@ -12,14 +12,14 @@ aliases:
 
 An expression is a piece of FQL code that produces a value.
 
-Expressions appear throughout a query: on the right side of `LET` and `VAR`, inside `RETURN`, in function arguments, conditions, filters, object fields, array items, and other places where a value is expected.
+Expressions appear throughout a query: on the right side of `let` and `var`, inside `return`, in function arguments, conditions, filters, object fields, array items, and other places where a value is expected.
 
 {{< editor lang="fql" >}}
-LET name = "Ada"
-LET active = true
-LET roles = ["admin", "editor"]
+let name = "Ada"
+let active = true
+let roles = ["admin", "editor"]
 
-RETURN {
+return {
     name: name,
     active: active,
     roleCount: LENGTH(roles)
@@ -44,15 +44,15 @@ Common examples include:
 - conditional branches
 
 {{< editor lang="fql" >}}
-LET users = [
+let users = [
     { name: "Ada", age: 36, active: true },
     { name: "Grace", age: 42, active: false },
     { name: "Linus", age: 31, active: true }
 ]
 
-RETURN FOR user IN users {
-    FILTER user.active && user.age >= 35
-    RETURN {
+return for user in users {
+    filter user.active && user.age >= 35
+    return {
         name: user.name,
         label: CONCAT(user.name, " is active")
     }
@@ -61,7 +61,7 @@ RETURN FOR user IN users {
 
 The query uses expressions in several different positions:
 
-- `users` is the input expression for the `FOR` loop.
+- `users` is the input expression for the `for` loop.
 - `user.active && user.age >= 35` is the filter expression.
 - `user.name` is an object field value expression.
 - `CONCAT(user.name, " is active")` is a function call expression.
@@ -71,8 +71,8 @@ The query uses expressions in several different positions:
 A literal expression writes a value directly in the query.
 
 {{< editor lang="fql" >}}
-RETURN {
-    none: NONE,
+return {
+    none: none,
     boolean: true,
     number: 42,
     string: "hello",
@@ -90,13 +90,13 @@ For the complete list of built-in value types, see the [Values and Types section
 A variable reference is an expression that reads the value of a variable.
 
 {{< editor lang="fql" >}}
-LET name = "Ada"
-LET greeting = CONCAT("Hello, ", name)
+let name = "Ada"
+let greeting = CONCAT("Hello, ", name)
 
-RETURN greeting
+return greeting
 {{</ editor >}}
 
-The expression name evaluates to the value assigned by the earlier `LET` statement.
+The expression name evaluates to the value assigned by the earlier `let` statement.
 
 Variables are resolved from the current scope. A variable can only be referenced after it has been declared in a scope where it is visible.
 
@@ -105,14 +105,14 @@ Variables are resolved from the current scope. A variable can only be referenced
 Property access reads a field from an object or runtime-backed value.
 
 {{< editor lang="fql" >}}
-LET user = {
+let user = {
     name: "Ada",
     profile: {
         city: "London"
     }
 }
 
-RETURN user.profile.city
+return user.profile.city
 {{</ editor >}}
 
 Property access can be chained when nested values are being read.
@@ -124,18 +124,18 @@ For objects, the accessed property is matched by name. For runtime-backed values
 Indexed access reads an item from a value by position or key.
 
 {{< editor lang="fql" >}}
-LET users = ["Ada", "Grace", "Linus"]
+let users = ["Ada", "Grace", "Linus"]
 
-RETURN users[0]
+return users[0]
 {{</ editor >}}
 
 Indexes are expressions too:
 
 {{< editor lang="fql" >}}
-LET users = ["Ada", "Grace", "Linus"]
-LET index = 1
+let users = ["Ada", "Grace", "Linus"]
+let index = 1
 
-RETURN users[index]
+return users[index]
 {{</ editor >}}
 
 Indexed access is commonly used with arrays. Host values may also support indexed access if the runtime defines that behavior.
@@ -145,10 +145,10 @@ Indexed access is commonly used with arrays. Host values may also support indexe
 Operators combine expressions into larger expressions.
 
 {{< editor lang="fql">}}
-LET price = 100
-LET quantity = 3
+let price = 100
+let quantity = 3
 
-RETURN price * quantity >= 250
+return price * quantity >= 250
 {{</ editor >}}
 
 The expression `price * quantity` produces a number, and comparing it with `>= 250` produces a boolean.
@@ -160,10 +160,10 @@ See the [Operators section]({{% ref "operators" %}}) for the full list of suppor
 A function call is an expression that invokes a function and produces its result.
 
 {{< editor lang="fql" >}}
-LET firstName = "Ada"
-LET lastName = "Lovelace"
+let firstName = "Ada"
+let lastName = "Lovelace"
 
-RETURN CONCAT(UPPER(firstName), " ", UPPER(lastName))
+return CONCAT(UPPER(firstName), " ", UPPER(lastName))
 {{</ editor >}}
 
 Function arguments are expressions too. The inner calls to `UPPER` are evaluated and passed as arguments to `CONCAT`.
@@ -175,17 +175,17 @@ For details on function declarations and calls, see the [Functions section]({{% 
 A collection expression creates an array or object value.
 
 {{< editor lang="fql" >}}
-LET first = "Ada"
-LET second = "Grace"
+let first = "Ada"
+let second = "Grace"
 
-RETURN [first, second, "Linus"]
+return [first, second, "Linus"]
 {{</ editor >}}
 
 {{< editor lang="fql" >}}
-LET name = "Ada"
-LET active = true
+let name = "Ada"
+let active = true
 
-RETURN {
+return {
     name: name,
     active: active,
     label: CONCAT(name, " is active")
@@ -197,7 +197,7 @@ Array items and object field values are expressions. They are evaluated in order
 Collections can contain any value type, including nested arrays and objects.
 
 {{< editor lang="fql" >}}
-RETURN [
+return [
     { name: "Ada", roles: ["admin", "editor"] },
     { name: "Grace", roles: ["viewer"] }
 ]
@@ -210,12 +210,12 @@ Object field names become property names in the resulting object.
 A conditional expression selects a value based on a condition, using the ternary operator.
 
 {{< editor lang="fql" >}}
-LET user = {
+let user = {
     name: "Ada",
     active: true
 }
 
-RETURN user.active ? "active" : "inactive"
+return user.active ? "active" : "inactive"
 {{</ editor >}}
 
 The condition is evaluated first. If it is true, the first branch is used. Otherwise, the second branch is used. Both branches are expressions.
@@ -227,34 +227,34 @@ See the [Ternary Operator section]({{% ref "operators/ternary" %}}) for the full
 Some query constructs can produce values and be used as expressions.
 
 {{< editor lang="fql" >}}
-LET users = [
+let users = [
     { name: "Ada", active: true },
     { name: "Grace", active: false },
     { name: "Linus", active: true }
 ]
 
-LET activeUsers = (
-    FOR user IN users {
-        FILTER user.active
-        RETURN user.name
+let activeUsers = (
+    for user in users {
+        filter user.active
+        return user.name
     }
 )
 
-RETURN activeUsers
+return activeUsers
 {{</ editor >}}
 
 Nested query blocks can also be used this way:
 
 {{< editor lang="fql" >}}
-LET products = (
-    FOR i IN 1..5 {
-        FOR x IN 1..5 {
-            RETURN i * x
+let products = (
+    for i in 1..5 {
+        for x in 1..5 {
+            return i * x
         }
     }
 )
 
-RETURN products
+return products
 {{</ editor >}}
 
 A subquery expression evaluates a query block and uses its result as a value. This allows a query result to be assigned to a variable, returned as part of another value, or passed to a function.
@@ -267,16 +267,16 @@ Expressions produce values.
 
 Statements describe query structure, control flow, or variable declarations.
 
-For example, `LET` is a statement. The code on the right side of `=` is an expression:
+For example, `let` is a statement. The code on the right side of `=` is an expression:
 
 {{< code lang="fql" >}}
-LET total = price * quantity
+let total = price * quantity
 {{</ code >}}
 
-`RETURN` is also a statement. The value after `RETURN` is an expression:
+`return` is also a statement. The value after `return` is an expression:
 
 {{< editor lang="fql" >}}
-RETURN total >= 250
+return total >= 250
 {{</ editor >}}
 
 Only the expression parts of a statement can be nested inside other expressions.
@@ -286,20 +286,20 @@ Only the expression parts of a statement can be nested inside other expressions.
 Expressions are evaluated when the surrounding statement or expression is evaluated.
 
 {{< editor lang="fql" >}}
-LET users = [
+let users = [
     { name: "Ada", active: true },
     { name: "Grace", active: false }
 ]
 
-RETURN FOR user IN users {
-    RETURN {
+return for user in users {
+    return {
         name: user.name,
         active: user.active
     }
 }
 {{</ editor >}}
 
-In this query, the object expression after `RETURN` is evaluated once for each item produced by the loop.
+In this query, the object expression after `return` is evaluated once for each item produced by the loop.
 
 Expression evaluation follows the structure of the query. Nested expressions are evaluated as needed to produce the value of the outer expression.
 

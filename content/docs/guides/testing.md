@@ -36,13 +36,13 @@ tests/
 ```
 
 {{< code lang="fql" title="tests/headings.test.fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-LET headings = page[~ css`h1, h2`]
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let headings = page[~ css`h1, h2`]
 
 TESTING::NOT_EMPTY(headings, "page should have headings")
 TESTING::GT(LENGTH(headings), 0, "at least one heading expected")
 
-RETURN TRUE
+return true
 {{</ code >}}
 
 ## Run the tests
@@ -58,9 +58,9 @@ Lab discovers all `.test.fql` files in the directory and runs them. A test passe
 Name a file with `.fail.fql` to indicate that it *should* fail:
 
 {{< code lang="fql" title="tests/missing-element.fail.fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-LET el = QUERY ONE ".does-not-exist" IN page USING css
-RETURN el.textContent
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let el = query one ".does-not-exist" in page using css
+return el.textContent
 {{</ code >}}
 
 This test passes only if the script produces an error.
@@ -74,17 +74,17 @@ For testing many queries with structured assertions, use `.yaml` test files:
 tests:
   - name: "posts endpoint returns data"
     query: |
-      LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
-      LET posts = JSON_PARSE(TO_STRING(response))
-      RETURN LENGTH(posts)
+      let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
+      let posts = JSON_PARSE(TO_STRING(response))
+      return LENGTH(posts)
     assert:
       gt: 0
 
   - name: "single post has title"
     query: |
-      LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts/1")
-      LET post = JSON_PARSE(TO_STRING(response))
-      RETURN post.title
+      let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts/1")
+      let post = JSON_PARSE(TO_STRING(response))
+      return post.title
     assert:
       not_empty: true
 ```
@@ -111,13 +111,13 @@ lab --dir ./tests --static ./tests/fixtures --static-port 8080
 Reference the local server in your test:
 
 {{< code lang="fql" title="tests/products.test.fql" >}}
-LET page = WEB::HTML::OPEN("http://localhost:8080/products.html")
-LET items = page[~ css`.product-card`]
+let page = WEB::HTML::OPEN("http://localhost:8080/products.html")
+let items = page[~ css`.product-card`]
 
 TESTING::NOT_EMPTY(items, "should find product cards")
 TESTING::EQ(LENGTH(items), 3, "expected 3 products")
 
-RETURN TRUE
+return true
 {{</ code >}}
 
 See [Static File Server]({{< ref "/docs/tools/lab/static-serving" >}}) for details.

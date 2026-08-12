@@ -3,157 +3,157 @@ title: "Waitfor Expressions"
 sidebarTitle: "Waitfor"
 weight: 60
 draft: false
-description: "Suspend evaluation until a condition becomes true or an event arrives with the WAITFOR expression."
+description: "Suspend evaluation until a condition becomes true or an event arrives with the waitfor expression."
 ---
 
 # Waitfor Expressions
 
-A `WAITFOR` expression pauses a query until something happens, then resumes and produces a value. It can wait for one condition or event, or synchronize a group with `ANY { ... }` or `ALL { ... }`.
+A `waitfor` expression pauses a query until something happens, then resumes and produces a value. It can wait for one condition or event, or synchronize a group with `any { ... }` or `all { ... }`.
 
 ## Waiting for a condition
 
-In its condition (predicate) mode, `WAITFOR` re-checks an ordinary expression until it is satisfied or a timeout is reached. This mode is a pure language construct — it needs no special capability.
+In its condition (predicate) mode, `waitfor` re-checks an ordinary expression until it is satisfied or a timeout is reached. This mode is a pure language construct — it needs no special capability.
 
 There are four forms:
 
 | Form | Waits until | Returns |
 | --- | --- | --- |
-| `WAITFOR <expr>` | the expression is true | `true`, or `false` on timeout |
-| `WAITFOR EXISTS <expr>` | the expression is non-empty according to `EXISTS` semantics | `true`, or `false` on timeout |
-| `WAITFOR NOT EXISTS <expr>` | the expression is empty or absent | `true`, or `false` on timeout |
-| `WAITFOR VALUE <expr>` | the expression yields anything other than `NONE` | that value, or `NONE` on timeout |
+| `waitfor <expr>` | the expression is true | `true`, or `false` on timeout |
+| `waitfor exists <expr>` | the expression is non-empty according to `exists` semantics | `true`, or `false` on timeout |
+| `waitfor not exists <expr>` | the expression is empty or absent | `true`, or `false` on timeout |
+| `waitfor value <expr>` | the expression yields anything other than `none` | that value, or `none` on timeout |
 
 {{< editor lang="fql" >}}
-RETURN WAITFOR EXISTS [1, 2, 3] TIMEOUT 100ms
+return waitfor exists [1, 2, 3] timeout 100ms
 {{</ editor >}}
 
-`WAITFOR VALUE` treats empty strings, arrays, and objects as valid values and returns them immediately. When you need the candidate itself but also require it to be non-empty, add a `WHEN` condition:
+`waitfor value` treats empty strings, arrays, and objects as valid values and returns them immediately. When you need the candidate itself but also require it to be non-empty, add a `when` condition:
 
 {{< code lang="fql" >}}
-RETURN WAITFOR VALUE loadItems()
-    WHEN LENGTH(.) > 0
-    TIMEOUT 5s
+return waitfor value loadItems()
+    when LENGTH(.) > 0
+    timeout 5s
 {{</ code >}}
 
 The expression is re-evaluated on each attempt, so it can reflect state that changes over time. When the wait runs out, the result reports the timeout rather than raising an error:
 
 {{< editor lang="fql" >}}
-RETURN WAITFOR FALSE TIMEOUT 50ms EVERY 10ms
+return waitfor false timeout 50ms every 10ms
 {{</ editor >}}
 
 ### Synchronizing condition groups
 
-Add `ANY` or `ALL` before a block to evaluate several conditions as one polling operation. The mode before `ANY` or `ALL` applies to every entry:
+Add `any` or `all` before a block to evaluate several conditions as one polling operation. The mode before `any` or `all` applies to every entry:
 
 {{< code lang="fql" >}}
-LET firstReady = WAITFOR ANY {
+let firstReady = waitfor any {
     queue.ready
     worker.ready
 }
-TIMEOUT 5s
+timeout 5s
 
-LET bothValues = WAITFOR VALUE ALL {
+let bothValues = waitfor value all {
     queue.value
     worker.value
 }
-TIMEOUT 5s
+timeout 5s
 {{</ code >}}
 
 The grouped forms return:
 
 | Form | Success condition | Result |
 | --- | --- | --- |
-| `WAITFOR ANY { ... }` | at least one expression is true | `true` |
-| `WAITFOR ALL { ... }` | every expression is true in the same polling cycle | `true` |
-| `WAITFOR EXISTS ANY/ALL { ... }` | one/all expressions satisfy `EXISTS` | `true` |
-| `WAITFOR NOT EXISTS ANY/ALL { ... }` | one/all expressions satisfy `NOT EXISTS` | `true` |
-| `WAITFOR VALUE ANY { ... }` | at least one expression is not `NONE` | the first qualifying value in declaration order |
-| `WAITFOR VALUE ALL { ... }` | every expression is not `NONE` in the same polling cycle | an array of values in declaration order |
+| `waitfor any { ... }` | at least one expression is true | `true` |
+| `waitfor all { ... }` | every expression is true in the same polling cycle | `true` |
+| `waitfor exists any/all { ... }` | one/all expressions satisfy `exists` | `true` |
+| `waitfor not exists any/all { ... }` | one/all expressions satisfy `not exists` | `true` |
+| `waitfor value any { ... }` | at least one expression is not `none` | the first qualifying value in declaration order |
+| `waitfor value all { ... }` | every expression is not `none` in the same polling cycle | an array of values in declaration order |
 
-Polling groups synchronize **state**. `ALL` does not remember an entry that passed in an earlier cycle: every entry must pass together during one cycle. `ANY` and `ALL` evaluate entries in declaration order and stop evaluating the current cycle as soon as the outcome is known.
+Polling groups synchronize **state**. `all` does not remember an entry that passed in an earlier cycle: every entry must pass together during one cycle. `any` and `all` evaluate entries in declaration order and stop evaluating the current cycle as soon as the outcome is known.
 
-Each entry may have its own repeated `WHEN` conditions. Inside them, `.` is that entry's candidate:
+Each entry may have its own repeated `when` conditions. Inside them, `.` is that entry's candidate:
 
 {{< code lang="fql" >}}
-RETURN WAITFOR VALUE ANY {
+return waitfor value any {
     primaryStatus()
-        WHEN .ready
-        WHEN .healthy
+        when .ready
+        when .healthy
     fallbackStatus()
-        WHEN .ready
+        when .ready
 }
-TIMEOUT 10s
-EVERY 100ms
+timeout 10s
+every 100ms
 {{</ code >}}
 
-`TIMEOUT`, `EVERY`, `BACKOFF`, `JITTER`, `ON TIMEOUT`, and `ON ERROR` belong to the whole group. A group has one timeout and one polling schedule; entries cannot define separate policies.
+`timeout`, `every`, `backoff`, `jitter`, `on timeout`, and `on error` belong to the whole group. A group has one timeout and one polling schedule; entries cannot define separate policies.
 
 ### Tuning the wait
 
 Several clauses control how the wait behaves:
 
-- `TIMEOUT <duration>` — the maximum time to wait, provided as a value coercible to Duration.
-- `EVERY <interval>` — how often to re-check. A second coercible Duration, `EVERY <interval>, <cap>`, caps how large the interval can grow. Without this clause, polling defaults to `100ms`.
-- `BACKOFF LINEAR | EXPONENTIAL | NONE` — how the interval between checks grows over time.
-- `JITTER <0..1>` — randomizes the interval to avoid synchronized retries.
-- `WHEN <condition>` — an additional condition that must also hold; the candidate value is available as `.`.
+- `timeout <duration>` — the maximum time to wait, provided as a value coercible to Duration.
+- `every <interval>` — how often to re-check. A second coercible Duration, `every <interval>, <cap>`, caps how large the interval can grow. Without this clause, polling defaults to `100ms`.
+- `backoff LINEAR | EXPONENTIAL | none` — how the interval between checks grows over time.
+- `jitter <0..1>` — randomizes the interval to avoid synchronized retries.
+- `when <condition>` — an additional condition that must also hold; the candidate value is available as `.`.
 
 {{< code lang="fql" >}}
-WAITFOR VALUE loadStatus()
-    TIMEOUT 10s
-    EVERY 100ms, 1s
-    BACKOFF EXPONENTIAL
-    JITTER 0.2
+waitfor value loadStatus()
+    timeout 10s
+    every 100ms, 1s
+    backoff EXPONENTIAL
+    jitter 0.2
 {{</ code >}}
 
-`TIMEOUT`, `EVERY`, and its cap accept ordinary expressions, so values can be stored or computed:
+`timeout`, `every`, and its cap accept ordinary expressions, so values can be stored or computed:
 
 {{< code lang="fql" >}}
-LET base = 50ms
+let base = 50ms
 
-RETURN WAITFOR VALUE loadStatus()
-    TIMEOUT base * 20
-    EVERY base, base * 4
+return waitfor value loadStatus()
+    timeout base * 20
+    every base, base * 4
 {{</ code >}}
 
-`TIMEOUT`, `EVERY`, and its cap use the canonical Duration conversion rules. Numbers are milliseconds, duration strings may be compound, and singleton lists are converted recursively:
+`timeout`, `every`, and its cap use the canonical Duration conversion rules. Numbers are milliseconds, duration strings may be compound, and singleton lists are converted recursively:
 
 {{< code lang="fql" >}}
-LET timeout = "1s500ms"
+let timeout = "1s500ms"
 
-RETURN WAITFOR FALSE
-    TIMEOUT timeout
-    EVERY 25, [100]
+return waitfor false
+    timeout timeout
+    every 25, [100]
 {{</ code >}}
 
 All scheduling results must be non-negative. Conversion failures, overflow, and negative values raise runtime errors.
 
 ### Recovering from a timeout
 
-By default a timed-out wait returns `false` (or `NONE` for the `VALUE` form). A recovery clause lets you choose a different result.
+By default a timed-out wait returns `false` (or `none` for the `value` form). A recovery clause lets you choose a different result.
 
 {{< editor lang="fql" >}}
-RETURN WAITFOR VALUE NONE TIMEOUT 30ms EVERY 5ms ON TIMEOUT RETURN "gave up"
+return waitfor value none timeout 30ms every 5ms on timeout return "gave up"
 {{</ editor >}}
 
-Use `ON ERROR` to handle a failure raised while evaluating the condition.
+Use `on error` to handle a failure raised while evaluating the condition.
 
 ## Waiting for an event
 
-In event mode, `WAITFOR` subscribes to an event source and waits for a matching event, which it returns as a value.
+In event mode, `waitfor` subscribes to an event source and waits for a matching event, which it returns as a value.
 
 {{< code lang="fql" >}}
-LET event = WAITFOR EVENT "navigation" IN page TIMEOUT 5s
+let event = waitfor event "navigation" in page timeout 5s
 {{</ code >}}
 
 Event timeouts use the same Duration conversion and non-negative scheduling policy as condition waits.
 
-A `WHEN` filter accepts only events that match a condition. Inside the filter, the incoming event is available as `.`. Multiple `WHEN` clauses must all pass.
+A `when` filter accepts only events that match a condition. Inside the filter, the incoming event is available as `.`. Multiple `when` clauses must all pass.
 
 {{< code lang="fql" >}}
-WAITFOR EVENT "message" IN socket
-    WHEN .type == "data"
-    TIMEOUT 5s
+waitfor event "message" in socket
+    when .type == "data"
+    timeout 5s
 {{</ code >}}
 
 ### Synchronizing event occurrences
@@ -161,50 +161,50 @@ WAITFOR EVENT "message" IN socket
 Event groups use the existing event entry syntax and may subscribe to different sources:
 
 {{< code lang="fql" >}}
-LET event = WAITFOR EVENT ANY {
-    "navigation" IN page
-    "download" IN browser
-    "disconnect" IN socket
+let event = waitfor event any {
+    "navigation" in page
+    "download" in browser
+    "disconnect" in socket
 }
-TIMEOUT 10s
+timeout 10s
 {{</ code >}}
 
-`EVENT ANY` returns the first qualifying event that occurs and closes the other subscriptions. Concurrent events have no declaration-order tie-break. If one source ends without a qualifying event, the other arms keep waiting; if every source ends without a match, the result is `NONE`, as with a singular event wait.
+`event any` returns the first qualifying event that occurs and closes the other subscriptions. Concurrent events have no declaration-order tie-break. If one source ends without a qualifying event, the other arms keep waiting; if every source ends without a match, the result is `none`, as with a singular event wait.
 
-`EVENT ALL` waits until every subscription has produced one qualifying event. Each arm remains satisfied after its event occurs, and the result is an array in declaration order even when the events arrive in another order:
+`event all` waits until every subscription has produced one qualifying event. Each arm remains satisfied after its event occurs, and the result is an array in declaration order even when the events arrive in another order:
 
 {{< code lang="fql" >}}
-LET events = WAITFOR EVENT ALL {
-    "domcontentloaded" IN page
-    "networkidle" IN page
+let events = waitfor event all {
+    "domcontentloaded" in page
+    "networkidle" in page
 }
-TIMEOUT 10s
+timeout 10s
 {{</ code >}}
 
-Every `EVENT ALL` arm must produce an event that passes its `WHEN` filters. If an unmatched source ends, the wait fails immediately because the group can no longer be satisfied. A source ending after its arm has matched does not affect the result.
+Every `event all` arm must produce an event that passes its `when` filters. If an unmatched source ends, the wait fails immediately because the group can no longer be satisfied. A source ending after its arm has matched does not affect the result.
 
 Event groups synchronize **occurrences**, unlike polling groups, which synchronize state in one cycle. Event filters are per entry:
 
 {{< code lang="fql" >}}
-RETURN WAITFOR EVENT ANY {
-    "response" IN page
-        WHEN .status >= 500
-    "dialog" IN page
-        WHEN .type == "confirm"
+return waitfor event any {
+    "response" in page
+        when .status >= 500
+    "dialog" in page
+        when .type == "confirm"
 }
-TIMEOUT 10s
+timeout 10s
 {{</ code >}}
 
-All subscriptions are established concurrently. A timeout, cancellation, setup failure, trigger failure, stream error, or completed wait closes every remaining subscription. `TIMEOUT`, `TRIGGER`, `ON TIMEOUT`, and `ON ERROR` apply once to the whole group.
+All subscriptions are established concurrently. A timeout, cancellation, setup failure, trigger failure, stream error, or completed wait closes every remaining subscription. `timeout`, `trigger`, `on timeout`, and `on error` apply once to the whole group.
 
 ### Triggering the event
 
-A `TRIGGER` clause runs statements *after* the subscription is set up but *before* waiting begins. For an event group, every subscription is established before the one shared trigger runs. This is how you cause the event you are waiting for without risking a race where it fires before you start listening.
+A `trigger` clause runs statements *after* the subscription is set up but *before* waiting begins. For an event group, every subscription is established before the one shared trigger runs. This is how you cause the event you are waiting for without risking a race where it fires before you start listening.
 
 {{< code lang="fql" >}}
-WAITFOR EVENT "response" IN page
-    TRIGGER ( button <- "click" )
-    TIMEOUT 10s
+waitfor event "response" in page
+    trigger ( button <- "click" )
+    timeout 10s
 {{</ code >}}
 
 The trigger body can dispatch events and run other statements. See [Dispatch Expressions]({{< ref "dispatch" >}}).

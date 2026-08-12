@@ -20,7 +20,7 @@ ferret run script.fql
 Use `--eval` (or `-e`) to run a FQL expression directly:
 
 {{< terminal >}}
-ferret run -e 'RETURN 1 + 2'
+ferret run -e 'return 1 + 2'
 {{< /terminal >}}
 
 The `--eval` flag cannot be combined with a file argument.
@@ -52,11 +52,11 @@ ferret run script.fql --param url=https://example.com --param limit=50
 {{< /terminal >}}
 
 {{< editor lang="fql" >}}
-LET page = DOCUMENT(@url)
+let page = DOCUMENT(@url)
 
-RETURN FOR item IN page[~ css`.result`]
-    LIMIT @limit
-    RETURN item.textContent
+return for item in page[~ css`.result`]
+    limit @limit
+    return item.textContent
 {{< /editor >}}
 
 Values are parsed as JSON when possible, otherwise treated as strings:

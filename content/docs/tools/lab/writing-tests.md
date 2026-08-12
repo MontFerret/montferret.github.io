@@ -14,12 +14,12 @@ Lab runs two kinds of tests: FQL unit tests and YAML suites. Use a plain `.fql` 
 A `.fql` test passes when Ferret executes the script without returning an error.
 
 {{< code lang="fql" >}}
-LET users = [
+let users = [
   { name: "Ada" },
   { name: "Grace" }
 ]
 
-RETURN T::EQ(LENGTH(users), 2)
+return T::EQ(LENGTH(users), 2)
 {{</ code >}}
 
 Save the file as `users.fql` and run it:
@@ -35,7 +35,7 @@ Lab does not inspect the returned value for `.fql` tests. If the script returns 
 A file ending in `.fail.fql` passes only when the runtime returns an error.
 
 {{< code lang="fql" >}}
-RETURN MISSING_FUNCTION()
+return MISSING_FUNCTION()
 {{</ code >}}
 
 Save this as `invalid.fail.fql`. Lab will fail the test if the script unexpectedly succeeds.
@@ -49,15 +49,15 @@ A YAML suite runs a `query` script first, stores its JSON result, and then runs 
 ```yaml
 query:
   text: |
-    RETURN [
+    return [
       { name: "Ada" },
       { name: "Grace" }
     ]
 
 assert:
   text: |
-    LET result = @lab.data.query.result
-    RETURN T::EQ(LENGTH(result), 2)
+    let result = @lab.data.query.result
+    return T::EQ(LENGTH(result), 2)
 ```
 
 The suite passes when the assertion script executes successfully. Use assertion helpers or another expression that raises a runtime error when the expectation is not met. The query result is available in the assertion under `@lab.data.query.result`.
@@ -90,9 +90,9 @@ The `params` field adds user parameters for that script. Parameters are availabl
 ```yaml
 query:
   text: |
-    RETURN FOR user IN @users
-      FILTER user.active
-      RETURN user.name
+    return for user in @users
+      filter user.active
+      return user.name
   params:
     users:
       - name: Ada
@@ -102,7 +102,7 @@ query:
 
 assert:
   text: |
-    RETURN T::EQ(@lab.data.query.result, ["Ada"])
+    return T::EQ(@lab.data.query.result, ["Ada"])
 ```
 
 Script-level `params` are merged into the user parameters for that script. They can be used with values passed by `lab run --param`.
@@ -110,7 +110,7 @@ Script-level `params` are merged into the user parameters for that script. They 
 The assertion can also inspect the parameters used for the query:
 
 {{< code lang="fql" >}}
-RETURN T::EQ(@lab.data.query.params.users[0].name, "Ada")
+return T::EQ(@lab.data.query.params.users[0].name, "Ada")
 {{</ code >}}
 
 ## Set a suite timeout
@@ -122,13 +122,13 @@ timeout: 60
 
 query:
   text: |
-    RETURN DOCUMENT(@url).title
+    return DOCUMENT(@url).title
   params:
     url: "https://example.com"
 
 assert:
   text: |
-    RETURN T::NOT::EMPTY(@lab.data.query.result)
+    return T::NOT::EMPTY(@lab.data.query.result)
 ```
 
 Timeouts are enforced around the suite run. Use this for tests that legitimately need more time than the command default.

@@ -7,7 +7,7 @@ description: "Format FQL scripts to a consistent style."
 
 # Fmt
 
-The `fmt` command formats FQL scripts to a consistent style.
+The `fmt` command formats FQL scripts to a consistent style. By default, it writes language keywords and literals in their canonical lowercase form.
 
 ## Format files in place
 
@@ -56,7 +56,7 @@ When formatting multiple files with `--dry-run`, each file's output is preceded 
 | `--tab-width` | `4` | Indentation size in spaces |
 | `--single-quote` | `false` | Use single quotes instead of double quotes |
 | `--bracket-spacing` | `true` | Add spaces inside object brackets |
-| `--case-mode` | `upper` | Keyword case: `upper`, `lower`, or `ignore` |
+| `--case-mode` | `lower` | Keyword case: canonical `lower`, or compatibility/preference modes `upper` and `ignore` |
 
 ### Examples
 
@@ -66,11 +66,19 @@ Format with a wider line width:
 ferret fmt --print-width 120 script.fql
 {{< /terminal >}}
 
-Use lowercase keywords and single quotes:
+Use single quotes while keeping the canonical lowercase keyword style:
 
 {{< terminal >}}
-ferret fmt --case-mode lower --single-quote script.fql
+ferret fmt --single-quote script.fql
 {{< /terminal >}}
+
+Use uppercase output for compatibility with an existing codebase or a team preference:
+
+{{< terminal >}}
+ferret fmt --case-mode upper script.fql
+{{< /terminal >}}
+
+Use `--case-mode ignore` only when an existing workflow depends on that compatibility mode.
 
 ## Next steps
 

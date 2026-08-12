@@ -23,7 +23,7 @@ Worker is now listening on port 8080. Test it with a curl request:
 {{< terminal command="true" >}}
 curl -s -X POST http://localhost:8080/api/query \
   -H "Content-Type: application/json" \
-  -d '{"query": "RETURN 1 + 1"}'
+  -d '{"query": "return 1 + 1"}'
 {{< /terminal >}}
 
 ## Add browser support
@@ -56,7 +56,7 @@ Now Worker can execute browser-backed scripts:
 curl -s -X POST http://localhost:8080/api/query \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "LET p = WEB::HTML::OPEN(\"https://mockery.ferretlang.org\", { driver: \"cdp\" })\nRETURN p.title"
+    "query": "let p = WEB::HTML::OPEN(\"https://mockery.ferretlang.org\", { driver: \"cdp\" })\nreturn p.title"
   }'
 {{< /terminal >}}
 
@@ -83,7 +83,7 @@ Send parameters alongside the query:
 curl -s -X POST http://localhost:8080/api/query \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "LET p = WEB::HTML::OPEN(@url)\nRETURN p.title",
+    "query": "let p = WEB::HTML::OPEN(@url)\nreturn p.title",
     "params": { "url": "https://mockery.ferretlang.org" }
   }'
 {{< /terminal >}}

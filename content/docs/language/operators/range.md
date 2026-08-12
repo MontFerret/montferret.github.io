@@ -13,7 +13,7 @@ FQL supports expressing simple numeric ranges with the ``..`` operator. This ope
 The ``..`` operator will produce an array of the integer values in the defined range, with both bounding values included.
 
 {{< editor lang="fql" >}}
-RETURN 2010..2013
+return 2010..2013
 {{</ editor >}}
 
 ## Next steps

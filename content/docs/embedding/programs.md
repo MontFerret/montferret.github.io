@@ -16,7 +16,7 @@ There are two ways to get a `Plan` from the engine:
 
 {{< code lang="go" >}}
 // From FQL source — compiles and returns a plan
-plan, err := engine.Compile(ctx, source.NewAnonymous(`RETURN 1 + 1`))
+plan, err := engine.Compile(ctx, source.NewAnonymous(`return 1 + 1`))
 
 // From a pre-compiled artifact — loads and returns a plan
 plan, err := engine.Load(artifactBytes)
@@ -38,7 +38,7 @@ import (
 )
 
 // Compile to bytecode
-plan, err := engine.Compile(ctx, source.New("query.fql", `RETURN UPPER(@name)`))
+plan, err := engine.Compile(ctx, source.New("query.fql", `return UPPER(@name)`))
 if err != nil {
     log.Fatal(err)
 }
@@ -214,7 +214,7 @@ func main() {
     }
     defer engine.Close()
 
-    plan, err := engine.Compile(source.New("greeting.fql", `RETURN UPPER(@name)`))
+    plan, err := engine.Compile(source.New("greeting.fql", `return UPPER(@name)`))
     if err != nil {
         log.Fatal(err)
     }

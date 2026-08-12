@@ -5,7 +5,7 @@ draft: false
 ---
 
 {{< editor height="450px" >}}
-LET google = DOCUMENT("https://www.google.com/", {
+let google = DOCUMENT("https://www.google.com/", {
     driver: "cdp",
     userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36"
 })
@@ -22,10 +22,10 @@ CLICK(google, 'input[name="btnK"]')
 
 WAIT_NAVIGATION(google)
 
-FOR result IN ELEMENTS(google, '.g')
+return for result in ELEMENTS(google, '.g')
     // filter out extra elements like videos and 'People also ask'
-    FILTER TRIM(result.attributes.class) == 'g'
-    RETURN {
+    filter TRIM(result.attributes.class) == 'g'
+    return {
         title: INNER_TEXT(result, 'h3'),
         description: INNER_TEXT(result, '.rc > div:nth-child(2) span'),
         url: INNER_TEXT(result, 'cite')

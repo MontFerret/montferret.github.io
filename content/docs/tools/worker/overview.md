@@ -18,7 +18,7 @@ Start Worker, then send a JSON request to `POST /`:
 {{< terminal >}}
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
-  -d '{"text":"RETURN 1 + 2"}'
+  -d '{"text":"return 1 + 2"}'
 {{< /terminal >}}
 
 The response body is the query result:
@@ -27,7 +27,7 @@ The response body is the query result:
 3
 ```
 
-Worker does not wrap successful results in a service envelope. If the script returns an object, array, string, number, boolean, or `NONE`, the response body is that serialized value.
+Worker does not wrap successful results in a service envelope. If the script returns an object, array, string, number, boolean, or `none`, the response body is that serialized value.
 
 ## Pass parameters
 
@@ -37,7 +37,7 @@ Use the `params` object to pass values that the script reads with `@name`:
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "LET doc = DOCUMENT(@url) RETURN doc.title",
+    "text": "let doc = DOCUMENT(@url) return doc.title",
     "params": {
       "url": "https://example.com"
     }
@@ -68,8 +68,8 @@ The HTML module registers two drivers:
 Use `driver: "cdp"` when a script needs browser rendering or browser interaction:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://ferretlang.org", { driver: "cdp" })
-RETURN page.title
+let page = WEB::HTML::OPEN("https://ferretlang.org", { driver: "cdp" })
+return page.title
 {{< /editor >}}
 
 ## Runtime boundaries

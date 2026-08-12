@@ -14,7 +14,7 @@ FQL has nine built-in value types:
 
 | Type | Example | Description |
 | --- | --- | --- |
-| `NONE` | `NONE` | Represents an absent or undefined value. |
+| `none` | `none` | Represents an absent or undefined value. |
 | `bool` | `true`, `false` | Represents a truth value. |
 | `number` | `42`, `3.14` | Represents numeric values, both integer and floating-point. |
 | `duration` | `250ms`, `1.5s` | Represents a signed length of time with nanosecond precision. |
@@ -26,45 +26,45 @@ FQL has nine built-in value types:
 
 Ferret hosts may also define additional value types — documents, elements, HTTP responses, files, handles, database connections, and other external resources. These are called host values and are covered separately in [Host Values](#).
 
-## NONE
+## none
 
-`NONE` is Ferret's equivalent of `null`, `nil`, or `None` in other languages.
+`none` is Ferret's equivalent of `null`, `nil`, or `None` in other languages.
 
 It represents the absence of a value.
 
 {{< editor lang="fql"  >}}
-RETURN NONE
+return none
 {{</ editor >}}
 
-`NONE` is a real value in FQL. It can be assigned to variables, placed inside arrays and objects, returned from functions, and compared with other values.
+`none` is a real value in FQL. It can be assigned to variables, placed inside arrays and objects, returned from functions, and compared with other values.
 
 {{< editor lang="fql" >}}
-LET value = NONE
+let value = none
 
-RETURN {
+return {
     value: value,
-    isMissing: value == NONE
+    isMissing: value == none
 }
 {{</ editor >}}
 
-Unlike SQL `NULL`, comparing with `NONE` does not automatically produce another `NONE`.
+Unlike SQL `null`, comparing with `none` does not automatically produce another `none`.
 
 {{< editor lang="fql">}}
-RETURN {
-    same: NONE == NONE,
-    different: NONE != 1
+return {
+    same: none == none,
+    different: none != 1
 }
 {{</ editor >}}
 
-`NONE` is useful when a value is intentionally absent:
+`none` is useful when a value is intentionally absent:
 
 {{< editor lang="fql">}}
-LET user = {
+let user = {
     name: "Ada",
-    email: NONE
+    email: none
 }
 
-RETURN user.email
+return user.email
 {{</ editor >}}
 
 It is useful when that absence needs to remain distinct from ordinary values such as `false`, `0`, `""`, `[]`, or `{}`.
@@ -81,9 +81,9 @@ FQL has two boolean values:
 Booleans are commonly produced by comparison operators, logical operators, predicates, and conditions.
 
 {{< editor lang="fql" >}}
-LET count = 3
+let count = 3
 
-RETURN {
+return {
     hasItems: count > 0,
     isEmpty: count == 0
 }
@@ -92,10 +92,10 @@ RETURN {
 Boolean values can be combined with logical operators:
 
 {{< editor lang="fql" >}}
-LET enabled = true
-LET hasAccess = false
+let enabled = true
+let hasAccess = false
 
-RETURN enabled AND hasAccess
+return enabled and hasAccess
 {{</ editor >}}
 
 ## Numbers
@@ -103,7 +103,7 @@ RETURN enabled AND hasAccess
 FQL uses the number type for numeric values. Numbers can be written as integers or decimals:
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     count: 10,
     price: 19.95,
     temperature: -4.5
@@ -113,16 +113,16 @@ RETURN {
 Numbers support arithmetic operations:
 
 {{< editor lang="fql" >}}
-LET price = 20
-LET tax = 1.5
+let price = 20
+let tax = 1.5
 
-RETURN price + tax
+return price + tax
 {{</ editor >}}
 
 They can also be compared:
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     less: 1 < 2,
     equal: 10 == 10,
     greater: 5 > 3
@@ -137,7 +137,7 @@ Numbers are ordered by numeric value:
 Numeric-looking strings are still strings. FQL does not treat `"10"` as the same value as `10`.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     number: 10,
     string: "10",
     same: 10 == "10"
@@ -153,29 +153,29 @@ FQL internally distinguishes integers and floats. Most arithmetic and comparison
 Strings represent text and can be written as quoted literals:
 
 {{< editor lang="fql"  >}}
-RETURN "Hello, Ferret"
+return "Hello, Ferret"
 {{</ editor >}}
 
 Strings can be empty:
 
 {{< editor lang="fql"  >}}
-RETURN ""
+return ""
 {{</ editor >}}
 
-An empty string is still a text value, not the absence of a value. It is different from `NONE`.
+An empty string is still a text value, not the absence of a value. It is different from `none`.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     empty: "",
-    missing: NONE,
-    same: "" == NONE
+    missing: none,
+    same: "" == none
 }
 {{</ editor >}}
 
 Strings are commonly used for names, labels, URLs, selectors, extracted text, keys, and identifiers.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     title: "Example page",
     url: "https://example.com",
     selector: ".article-title"
@@ -185,7 +185,7 @@ RETURN {
 Strings can be compared with other strings. Comparisons use the string contents, so two strings are equal when they contain the same sequence of characters.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     same: "ferret" == "ferret",
     different: "ferret" != "Ferret"
 }
@@ -194,13 +194,13 @@ RETURN {
 String comparisons are always case-sensitive.
 
 {{< editor lang="fql" >}}
-RETURN "Ferret" == "ferret"
+return "Ferret" == "ferret"
 {{</ editor >}}
 
 When either `+` operand is a String, Ferret concatenates the String representations of both operands. This is the only arithmetic rule that stringifies otherwise unsupported operand types.
 
 {{< editor lang="fql" >}}
-RETURN ["items: " + 3, 1s + " elapsed"]
+return ["items: " + 3, 1s + " elapsed"]
 {{</ editor >}}
 
 ### Template literals
@@ -208,19 +208,19 @@ RETURN ["items: " + 3, 1s + " elapsed"]
 Template literals are strings delimited by backticks that support embedded expressions. An expression inside `${...}` is evaluated and its result is inserted into the string.
 
 {{< editor lang="fql" >}}
-LET name = "Ferret"
-LET version = 2
+let name = "Ferret"
+let version = 2
 
-RETURN `Hello from ${name} v${version}!`
+return `Hello from ${name} v${version}!`
 {{</ editor >}}
 
 Any FQL expression can appear inside the interpolation:
 
 {{< editor lang="fql" >}}
-LET price = 19.95
-LET quantity = 3
+let price = 19.95
+let quantity = 3
 
-RETURN `Total: ${price * quantity}`
+return `Total: ${price * quantity}`
 {{</ editor >}}
 
 Template literals can span multiple lines. Backtick strings are useful when constructing text that includes variable data without calling `CONCAT`.
@@ -230,14 +230,14 @@ Template literals can span multiple lines. Backtick strings are useful when cons
 Arrays are ordered collections of values written with square brackets:
 
 {{< editor lang="fql" >}}
-RETURN [1, 2, 3]
+return [1, 2, 3]
 {{</ editor >}}
 
 Arrays can contain any FQL value:
 
 {{< editor lang="fql" >}}
-RETURN [
-    NONE,
+return [
+    none,
     true,
     42,
     "text",
@@ -249,49 +249,49 @@ RETURN [
 Arrays preserve the order of their elements.
 
 {{< editor lang="fql" >}}
-RETURN ["first", "second", "third"]
+return ["first", "second", "third"]
 {{</ editor >}}
 
 Array items can be accessed by index using bracket notation:
 
 {{< editor lang="fql" >}}
-LET roles = ["admin", "editor", "viewer"]
+let roles = ["admin", "editor", "viewer"]
 
-RETURN roles[0]
+return roles[0]
 {{</ editor >}}
 
 An empty array represents a collection with no items:
 
 {{< editor lang="fql" >}}
-RETURN []
+return []
 {{</ editor >}}
 
-An empty array is not the same as `NONE`.
+An empty array is not the same as `none`.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     emptyArray: [],
-    missing: NONE,
-    same: [] == NONE
+    missing: none,
+    same: [] == none
 }
 {{</ editor >}}
 
-Arrays are commonly produced by FOR loops and collection operations.
+Arrays are commonly produced by for loops and collection operations.
 
 {{< editor lang="fql" >}}
-LET numbers = (
-    FOR value IN [1, 2, 3] {
-        RETURN value * 2
+let numbers = (
+    for value in [1, 2, 3] {
+        return value * 2
     }
 )
 
-RETURN numbers
+return numbers
 {{</ editor >}}
 
 Array elements can be nested:
 
 {{< editor lang="fql" >}}
-RETURN [
+return [
     ["Ada", "Lovelace"],
     ["Grace", "Hopper"]
 ]
@@ -302,7 +302,7 @@ RETURN [
 An object is an unordered collection of named values, written with curly braces:
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     name: "Ada",
     active: true
 }
@@ -311,10 +311,10 @@ RETURN {
 Each object entry has a property name and a value, which can be any FQL value.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     name: "Ada",
     age: 36,
-    email: NONE,
+    email: none,
     tags: ["math", "computing"],
     profile: {
         active: true
@@ -327,46 +327,46 @@ Object properties can be accessed with dot notation or bracket notation.
 Use dot notation when the property name is known ahead of time:
 
 {{< editor lang="fql" >}}
-LET user = {
+let user = {
     name: "Ada",
     active: true
 }
 
-RETURN user.name
+return user.name
 {{</ editor >}}
 
 Use bracket notation when the property name comes from a string literal or variable:
 
 {{< editor lang="fql" >}}
-LET user = {
+let user = {
     name: "Ada",
     active: true
 }
 
-LET property = "name"
+let property = "name"
 
-RETURN user[property]
+return user[property]
 {{</ editor >}}
 
 Because objects do not preserve key order, property order does not affect object equality. Two objects with the same properties and values are equal, even if those properties were written in a different order.
 
 {{< editor lang="fql" >}}
-RETURN { a: 1, b: 2 } == { b: 2, a: 1 }
+return { a: 1, b: 2 } == { b: 2, a: 1 }
 {{</ editor >}}
 
 An empty object represents a record with no properties:
 
 {{< editor lang="fql" >}}
-RETURN {}
+return {}
 {{</ editor >}}
 
-An empty object is not the same as `NONE`.
+An empty object is not the same as `none`.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     emptyObject: {},
-    missing: NONE,
-    same: {} == NONE
+    missing: none,
+    same: {} == none
 }
 {{</ editor >}}
 
@@ -377,9 +377,9 @@ DateTime values represent a specific point in time.
 They are typically created using standard library functions such as `NOW()`, `DATE()`, or `TO_DATETIME()`:
 
 {{< editor lang="fql" >}}
-LET now = NOW()
+let now = NOW()
 
-RETURN {
+return {
     current: now,
     year: DATE_YEAR(now),
     month: DATE_MONTH(now)
@@ -389,10 +389,10 @@ RETURN {
 DateTime values support native instant comparison and checked arithmetic with native Duration values. Adding a Duration in either operand order produces another DateTime. Subtracting a Duration from a DateTime produces another DateTime, and subtracting two DateTime values produces the elapsed Duration between their canonical instants.
 
 {{< editor lang="fql" >}}
-LET start = TO_DATETIME("2024-01-01T00:00:00Z")
-LET end = start + 30d
+let start = TO_DATETIME("2024-01-01T00:00:00Z")
+let end = start + 30d
 
-RETURN {
+return {
     start: start,
     end: end,
     elapsed: end - start
@@ -412,9 +412,9 @@ They are used for data that should be handled as bytes instead of ordinary text,
 Binary values are part of the FQL value model, but they are usually returned by functions, modules, or runtime operations. For example, an HTTP, file, or encoding module may return binary data when the result should be treated as bytes.
 
 {{< editor lang="fql" >}}
-LET file = IO::NET::HTTP::GET("https://avatars.githubusercontent.com/u/39228646?s=200&v=4")
+let file = IO::NET::HTTP::GET("https://avatars.githubusercontent.com/u/39228646?s=200&v=4")
 
-RETURN file
+return file
 {{</ editor >}}
 
 <div class="notification is-info">
@@ -445,9 +445,9 @@ Durations are native FQL values backed by signed nanoseconds. A duration literal
 Duration literals work anywhere an ordinary expression is accepted. Compound source literals such as `1h30m` are not supported; compose literals with arithmetic instead. Duration strings do support compound forms, so `TO_DURATION("1h30m")` produces the same value as `1h + 30m`.
 
 {{< code lang="fql" >}}
-LET interval = 1h + 30m
+let interval = 1h + 30m
 
-RETURN {
+return {
     doubled: interval * 2,
     ratio: 1s / 250ms,
     isDuration: IS_DURATION(interval),
@@ -462,7 +462,7 @@ RETURN {
 | Duration | unchanged |
 | Int or Float | milliseconds; fractional nanoseconds are truncated toward zero |
 | Duration string | parsed using duration syntax, including compound forms such as `"1h30m"` |
-| `NONE` or `false` | `0ms` |
+| `none` or `false` | `0ms` |
 | `true` | `1ms` |
 | empty list | `0ms` |
 | singleton list | recursively converts its only element |
@@ -477,27 +477,27 @@ String-triggered `+` remains concatenation. For example, `1s + "1s"` returns `"1
 
 Conversion, parsing, scaling, and division truncate fractional nanoseconds toward zero. Values outside the signed Duration range raise a range error instead of wrapping. Use `TO_STRING` when text is required.
 
-Equivalent values have the same normalized string form. For example, `5000ms` renders as `5s`, and days may render as hours. A zero Duration is false when evaluated by binary `AND` or `OR`; any non-zero Duration is true. Unary `!` and `NOT` accept only Boolean values. Negative durations are valid values and arithmetic results, but scheduling operations reject them.
+Equivalent values have the same normalized string form. For example, `5000ms` renders as `5s`, and days may render as hours. A zero Duration is false when evaluated by binary `and` or `or`; any non-zero Duration is true. Unary `!` and `not` accept only Boolean values. Negative durations are valid values and arithmetic results, but scheduling operations reject them.
 
 ## Type checks
 
 Scripts often receive values in different shapes. Use type-related functions or predicates when logic needs to branch based on the kind of value being handled.
 
 {{< editor lang="fql" >}}
-LET value = "42"
+let value = "42"
 
-RETURN IS_STRING(value) ? "text" : "not text"
+return IS_STRING(value) ? "text" : "not text"
 {{</ editor >}}
 
 Type checks are useful when working with external data, optional fields, runtime-backed values, or module results.
 
 {{< editor lang="fql" >}}
-LET user = {
+let user = {
     name: "Ada",
 }
-LET value = user.email
+let value = user.email
 
-RETURN value == NONE ? "missing" : value
+return value == none ? "missing" : value
 {{</ editor >}}
 
 See [the Standard Library section]({{% ref "docs/standard-library/types" %}}) for the full list of available type-checking functions.

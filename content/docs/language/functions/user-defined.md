@@ -3,7 +3,7 @@ title: "User-Defined Functions"
 sidebarTitle: "User-Defined"
 weight: 10
 draft: false
-description: "Declare reusable functions within a script using the FUNC keyword."
+description: "Declare reusable functions within a script using the func keyword."
 ---
 
 # User-defined functions
@@ -11,14 +11,14 @@ description: "Declare reusable functions within a script using the FUNC keyword.
 A user-defined function is a reusable piece of logic declared within a script. Once declared, the function can be called like any built-in function.
 
 {{< editor lang="fql" >}}
-FUNC double(x) => x * 2
+func double(x) => x * 2
 
-RETURN double(21)
+return double(21)
 {{</ editor >}}
 
 ## Declaration
 
-A function declaration begins with the `FUNC` keyword, followed by a name, a parameter list in parentheses, and a body.
+A function declaration begins with the `func` keyword, followed by a name, a parameter list in parentheses, and a body.
 
 There are two body forms: arrow and block.
 
@@ -27,9 +27,9 @@ There are two body forms: arrow and block.
 The arrow form uses `=>` followed by a single expression. The result of the expression is the return value.
 
 {{< editor lang="fql" >}}
-FUNC greet(name) => CONCAT("Hello, ", name, "!")
+func greet(name) => CONCAT("Hello, ", name, "!")
 
-RETURN greet("Ada")
+return greet("Ada")
 {{</ editor >}}
 
 Use the arrow form when the function body is a single expression.
@@ -39,59 +39,59 @@ Use the arrow form when the function body is a single expression.
 The block form encloses the function body in braces. Use it when the function needs intermediate bindings or multiple steps.
 
 {{< editor lang="fql" >}}
-FUNC normalizePrice(input) {
-    LET cleaned = TRIM(input)
-    LET numeric = SUBSTITUTE(cleaned, "$", "")
-    RETURN TO_FLOAT(numeric)
+func normalizePrice(input) {
+    let cleaned = TRIM(input)
+    let numeric = SUBSTITUTE(cleaned, "$", "")
+    return TO_FLOAT(numeric)
 }
 
-RETURN normalizePrice("  $19.99  ")
+return normalizePrice("  $19.99  ")
 {{</ editor >}}
 
-An explicit `RETURN` sets the block function's result. If execution reaches the closing brace without one, the function completes successfully with `NONE`. Arbitrary expression statements are evaluated and discarded rather than returned implicitly; use the arrow form for a single expression.
+An explicit `return` sets the block function's result. If execution reaches the closing brace without one, the function completes successfully with `none`. Arbitrary expression statements are evaluated and discarded rather than returned implicitly; use the arrow form for a single expression.
 
 An empty block is therefore a valid effect-only function:
 
 {{< editor lang="fql" >}}
-FUNC noop() {}
+func noop() {}
 
-RETURN noop()
+return noop()
 {{</ editor >}}
 
-### Returning a FOR result
+### Returning a for result
 
-A block function can return a loop directly with `RETURN FOR`. The array produced by the loop becomes the function result.
+A block function can return a loop directly with `return for`. The array produced by the loop becomes the function result.
 
 {{< editor lang="fql" >}}
-FUNC doubleAll(items) {
-    RETURN FOR item IN items {
-        RETURN item * 2
+func doubleAll(items) {
+    return for item in items {
+        return item * 2
     }
 }
 
-RETURN doubleAll([1, 2, 3])
+return doubleAll([1, 2, 3])
 {{</ editor >}}
 
-This uses the same loop result as a parenthesized `FOR`; it does not add another wrapper. `RETURN DISTINCT FOR` applies the normal return-level deduplication directly to the loop result.
+This uses the same loop result as a parenthesized `for`; it does not add another wrapper. `return distinct for` applies the normal return-level deduplication directly to the loop result.
 
-A final standalone loop is not promoted into a function result. It still executes, but the collection it produces is discarded and the function falls through with `NONE`. Likewise, `FUNC value() { 42 }` evaluates `42` as an expression statement and returns `NONE`. Write `FUNC value() => 42` or `FUNC value() { RETURN 42 }` to return the value.
+A final standalone loop is not promoted into a function result. It still executes, but the collection it produces is discarded and the function falls through with `none`. Likewise, `func value() { 42 }` evaluates `42` as an expression statement and returns `none`. Write `func value() => 42` or `func value() { return 42 }` to return the value.
 
 ## Parameters
 
 Parameters are listed inside parentheses, separated by commas.
 
 {{< editor lang="fql" >}}
-FUNC fullName(first, last) => CONCAT(first, " ", last)
+func fullName(first, last) => CONCAT(first, " ", last)
 
-RETURN fullName("Ada", "Lovelace")
+return fullName("Ada", "Lovelace")
 {{</ editor >}}
 
 A function may have no parameters:
 
 {{< editor lang="fql" >}}
-FUNC now() => "2024-01-01"
+func now() => "2024-01-01"
 
-RETURN now()
+return now()
 {{</ editor >}}
 
 Parameters are positional. The caller must provide exactly the number of arguments the function expects.
@@ -101,69 +101,69 @@ Parameters are positional. The caller must provide exactly the number of argumen
 A function body can read variables from the enclosing scope.
 
 {{< editor lang="fql" >}}
-LET base = 10
+let base = 10
 
-FUNC add(value) => base + value
+func add(value) => base + value
 
-RETURN add(5)
+return add(5)
 {{</ editor >}}
 
-If the outer variable is declared with `VAR`, the function can also modify it:
+If the outer variable is declared with `var`, the function can also modify it:
 
 {{< editor lang="fql" >}}
-VAR counter = 0
+var counter = 0
 
-FUNC inc() {
+func inc() {
     counter = counter + 1
-    RETURN counter
+    return counter
 }
 
-RETURN [inc(), inc(), inc()]
+return [inc(), inc(), inc()]
 {{</ editor >}}
 
-Variables declared with `LET` are immutable and cannot be reassigned inside a function.
+Variables declared with `let` are immutable and cannot be reassigned inside a function.
 
 ## Nesting functions
 
 Functions can be declared inside other functions.
 
 {{< editor lang="fql" >}}
-FUNC process(items) {
-    FUNC transform(item) => item * 2
+func process(items) {
+    func transform(item) => item * 2
 
-    RETURN (
-        FOR item IN items {
-            RETURN transform(item)
+    return (
+        for item in items {
+            return transform(item)
         }
     )
 }
 
-RETURN process([1, 2, 3])
+return process([1, 2, 3])
 {{</ editor >}}
 
 A nested function can access variables from all enclosing scopes, not just the immediately surrounding one.
 
 ## Using functions in loops
 
-User-defined functions work naturally with `FOR` loops and other query constructs.
+User-defined functions work naturally with `for` loops and other query constructs.
 
 {{< editor lang="fql" >}}
-FUNC formatUser(user) {
-    RETURN {
+func formatUser(user) {
+    return {
         label: CONCAT(user.name, " (", user.role, ")"),
         active: user.active
     }
 }
 
-LET users = [
+let users = [
     { name: "Ada", role: "admin", active: true },
     { name: "Grace", role: "editor", active: false },
     { name: "Linus", role: "viewer", active: true }
 ]
 
-RETURN FOR user IN users {
-    FILTER user.active
-    RETURN formatUser(user)
+return for user in users {
+    filter user.active
+    return formatUser(user)
 }
 {{</ editor >}}
 
@@ -174,10 +174,10 @@ Function names follow the same rules as variable names: they must start with a l
 Function names are case-sensitive. `add` and `Add` are different functions.
 
 {{< editor lang="fql" >}}
-FUNC a() => 1
-FUNC A() => 2
+func a() => 1
+func A() => 2
 
-RETURN a() + A()
+return a() + A()
 {{</ editor >}}
 
 By convention, built-in functions are written in uppercase, while user-defined function names may use the style preferred by the script author.

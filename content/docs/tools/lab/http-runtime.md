@@ -21,7 +21,7 @@ For each query, Lab sends a `POST` request to the runtime endpoint with JSON:
 
 ```json
 {
-  "text": "RETURN @name",
+  "text": "return @name",
   "params": {
     "name": "Ada"
   }

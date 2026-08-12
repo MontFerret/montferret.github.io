@@ -25,15 +25,15 @@ An array is a basic value type. It is also iterable and sortable. These are sepa
 A host database connection is not an array, an object, or a string. It has none of those storage shapes. However, it may be queryable if the host exposes query execution for it.
 
 {{< code lang="fql" >}}
-LET db = DB::SQLITE::OPEN("data.db")
+let db = DB::SQLITE::OPEN("data.db")
 
-RETURN QUERY `
+return query `
   SELECT name
   FROM users
-` IN db USING sql
+` in db using sql
 {{</ code >}}
 
-The `QUERY ... IN` operation does not check whether `db` is an array or an object. It checks whether `db` supports query execution. That check is a capability check.
+The `query ... in` operation does not check whether `db` is an array or an object. It checks whether `db` supports query execution. That check is a capability check.
 
 ## Capabilities vs host types
 
@@ -42,9 +42,9 @@ Host types often use capabilities to integrate with the language.
 The runtime does not need to know every concrete host type in advance. Instead, it checks whether the value supports the capability required by an operation. This is the key mechanism that allows host values to participate in FQL expressions without being predefined by the language.
 
 {{< code lang="fql" >}}
-QUERY `
+query `
   SELECT * FROM users
-` IN db USING sql
+` in db using sql
 {{</ code >}}
 
 In this example, `db` is a host value. The query expression does not require `db` to be a specific concrete database type. It requires `db` to support the queryable capability. Any host value that supports query execution can be used here, regardless of whether it wraps SQLite, PostgreSQL, an in-memory store, or something else entirely.
@@ -62,34 +62,34 @@ The following capabilities describe the most common behavioral contracts that va
 A queryable value can execute query literals.
 
 {{< code lang="fql" >}}
-QUERY `SELECT * FROM users` IN db USING sql
+query `SELECT * FROM users` in db using sql
 {{</ code >}}
 
 Query execution supports several forms:
 
 {{< code lang="fql" >}}
 // All matching values
-QUERY `SELECT * FROM users` IN db USING sql
+query `SELECT * FROM users` in db using sql
 
 // First matching value
-QUERY ONE `SELECT * FROM users WHERE id = 1` IN db USING sql
+query one `SELECT * FROM users WHERE id = 1` in db using sql
 
 // Count of matching values
-QUERY COUNT `SELECT * FROM users` IN db USING sql
+query count `SELECT * FROM users` in db using sql
 
 // Whether any match exists
-QUERY EXISTS `SELECT * FROM users WHERE active = true` IN db USING sql
+query exists `SELECT * FROM users WHERE active = true` in db using sql
 {{</ code >}}
 
-The query literal, any parameters supplied with `WITH`, and any options supplied with `OPTIONS` are all passed to the value. The value decides how to interpret and execute the query.
+The query literal, any parameters supplied with `with`, and any options supplied with `options` are all passed to the value. The value decides how to interpret and execute the query.
 
 ### Iterable
 
-An iterable value can produce a sequence of values, which allows it to be used with `FOR ... IN`.
+An iterable value can produce a sequence of values, which allows it to be used with `for ... in`.
 
 {{< code lang="fql" >}}
-RETURN FOR item IN collection {
-    RETURN item
+return for item in collection {
+    return item
 }
 {{</ code >}}
 
@@ -116,7 +116,7 @@ See [Type Ordering]({{< ref "ordering" >}}) for the full ordering model.
 A sortable value can be sorted in place.
 
 {{< code lang="fql" >}}
-SORT values ASC
+sort values asc
 {{</ code >}}
 
 Arrays are sortable by default. A host value that represents a collection may also support sorting if the host provides that capability.
@@ -126,7 +126,7 @@ Arrays are sortable by default. A host value that represents a collection may al
 An observable value can produce a stream of events over time.
 
 {{< code lang="fql" >}}
-WAITFOR EVENT "load" IN page
+waitfor event "load" in page
 {{</ code >}}
 
 Observability is used for event-driven operations where the script waits for something to happen. The value defines which events it can produce and how subscriptions work.
@@ -136,7 +136,7 @@ Observability is used for event-driven operations where the script waits for som
 A dispatchable value can receive and handle dispatched commands.
 
 {{< code lang="fql" >}}
-DISPATCH "click" IN button
+dispatch "click" in button
 {{</ code >}}
 
 Dispatch is effectful: it causes a side effect on the target value without producing a return value. Browser elements, UI controls, and other interactive host values commonly support dispatch.
@@ -168,22 +168,22 @@ A readable value supports member access — retrieving an element by position or
 Index-based access uses bracket notation with an integer position:
 
 {{< code lang="fql" >}}
-LET first = items[0]
-LET last = items[LENGTH(items) - 1]
+let first = items[0]
+let last = items[LENGTH(items) - 1]
 {{</ code >}}
 
 Key-based access uses dot notation or bracket notation with a string key:
 
 {{< code lang="fql" >}}
-LET name = user.name
-LET name = user["name"]
+let name = user.name
+let name = user["name"]
 {{</ code >}}
 
-Safe navigation returns `NONE` instead of raising an error when the target value is `NONE`:
+Safe navigation returns `none` instead of raising an error when the target value is `none`:
 
 {{< code lang="fql" >}}
-LET city = user?.address?.city
-LET first = items?[0]
+let city = user?.address?.city
+let first = items?[0]
 {{</ code >}}
 
 Built-in arrays are readable by index. Built-in objects are readable by key. Host values may support either or both forms of access.
@@ -193,10 +193,10 @@ Built-in arrays are readable by index. Built-in objects are readable by key. Hos
 A writable value supports member assignment — setting an element at a position or under a key.
 
 {{< code lang="fql" >}}
-VAR items = [1, 2, 3]
+var items = [1, 2, 3]
 items[0] = 10
 
-VAR user = { name: "Ada" }
+var user = { name: "Ada" }
 user.name = "Grace"
 user["active"] = true
 {{</ code >}}
@@ -205,15 +205,15 @@ Built-in arrays support index assignment. Built-in objects support key assignmen
 
 ### Removable
 
-A removable value supports member deletion through the `DELETE` statement.
+A removable value supports member deletion through the `delete` statement.
 
 {{< code lang="fql" >}}
-VAR user = { name: "Ada", deprecated: true }
-DELETE user.deprecated
-DELETE user["deprecated"]
+var user = { name: "Ada", deprecated: true }
+delete user.deprecated
+delete user["deprecated"]
 {{</ code >}}
 
-Deletion removes the member entirely — it is not the same as assigning `NONE`, which keeps the key present with an absent value.
+Deletion removes the member entirely — it is not the same as assigning `none`, which keeps the key present with an absent value.
 
 Built-in objects support key removal. Host values may support removal if the host provides that capability.
 
@@ -225,18 +225,18 @@ This check happens at runtime, not at parse time. FQL does not statically verify
 
 | Operation | Required capability |
 | --- | --- |
-| `QUERY ... IN value` | Queryable |
-| `FOR item IN value` | Iterable |
-| `SORT value` | Sortable |
-| `WAITFOR EVENT ... IN value` | Observable |
-| `DISPATCH ... IN value` | Dispatchable |
+| `query ... in value` | Queryable |
+| `for item in value` | Iterable |
+| `sort value` | Sortable |
+| `waitfor event ... in value` | Observable |
+| `dispatch ... in value` | Dispatchable |
 | `value == other` / `value != other` | Equatable |
 | `value < other` and other relational comparisons | Comparable |
 | `value[index]` | Readable (by index) |
 | `value.key` / `value["key"]` | Readable (by key) |
 | `value[index] = x` | Writable (by index) |
 | `value.key = x` | Writable (by key) |
-| `DELETE value.key` | Removable |
+| `delete value.key` | Removable |
 
 A value may support multiple capabilities simultaneously. An array is iterable, sortable, measurable, equatable, comparable, and readable by index. An object is iterable, measurable, equatable, comparable, readable by key, writable by key, and removable by key. A host cursor might be iterable and closable but not queryable or sortable.
 
@@ -257,21 +257,21 @@ Context-aware capabilities receive the execution context unchanged. Ferret does 
 Using an operation with a value that does not support the required capability results in a runtime error.
 
 {{< editor lang="fql" >}}
-RETURN QUERY `SELECT * FROM users` IN "not a database" USING sql
+return query `SELECT * FROM users` in "not a database" using sql
 {{</ editor >}}
 
 This fails because a string does not support query execution.
 
 {{< editor lang="fql" >}}
-RETURN FOR item IN 42 {
-    RETURN item
+return for item in 42 {
+    return item
 }
 {{</ editor >}}
 
 This fails because a number is not iterable.
 
 {{< editor lang="fql" >}}
-RETURN DISPATCH "click" IN "not an element"
+return dispatch "click" in "not an element"
 {{</ editor >}}
 
 This fails because a string does not support dispatch.

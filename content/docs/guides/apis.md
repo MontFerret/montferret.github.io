@@ -18,18 +18,18 @@ Use `IO::NET::HTTP::GET` to fetch data from an API:
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts/1")
-LET data = JSON_PARSE(TO_STRING(response))
-RETURN data
+let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts/1")
+let data = JSON_PARSE(TO_STRING(response))
+return data
 '
 {{< /terminal >}}
 {{< /tab >}}
 
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts/1")
-LET data = JSON_PARSE(TO_STRING(response))
-RETURN data
+let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts/1")
+let data = JSON_PARSE(TO_STRING(response))
+return data
 {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
@@ -41,7 +41,7 @@ RETURN data
 Use `IO::NET::HTTP::POST` with a body and headers:
 
 {{< code lang="fql" >}}
-LET response = IO::NET::HTTP::POST({
+let response = IO::NET::HTTP::POST({
     url: "https://jsonplaceholder.typicode.com/posts",
     body: TO_BINARY(JSON_STRINGIFY({
         title: "Ferret",
@@ -53,23 +53,23 @@ LET response = IO::NET::HTTP::POST({
     }
 })
 
-RETURN JSON_PARSE(TO_STRING(response))
+return JSON_PARSE(TO_STRING(response))
 {{</ code >}}
 
 ## Iterate over API results
 
-Fetch a list and process it with `FOR`:
+Fetch a list and process it with `for`:
 
 {{< tabs >}}
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
-LET posts = JSON_PARSE(TO_STRING(response))
+let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
+let posts = JSON_PARSE(TO_STRING(response))
 
-RETURN FOR post IN posts
-    LIMIT 5
-    RETURN {
+return for post in posts
+    limit 5
+    return {
         id: post.id,
         title: post.title
     }
@@ -79,12 +79,12 @@ RETURN FOR post IN posts
 
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
-LET posts = JSON_PARSE(TO_STRING(response))
+let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
+let posts = JSON_PARSE(TO_STRING(response))
 
-RETURN FOR post IN posts
-    LIMIT 5
-    RETURN {
+return for post in posts
+    limit 5
+    return {
         id: post.id,
         title: post.title
     }
@@ -97,24 +97,24 @@ RETURN FOR post IN posts
 Many APIs use offset or page-based pagination:
 
 {{< code lang="fql" >}}
-LET baseURL = "https://jsonplaceholder.typicode.com/posts?_start="
-LET pageSize = 10
+let baseURL = "https://jsonplaceholder.typicode.com/posts?_start="
+let pageSize = 10
 
-LET result = (
-    FOR pageNum IN 0..2
-        LET offset = pageNum * pageSize
-        LET url = baseURL + TO_STRING(offset) + "&_limit=" + TO_STRING(pageSize)
-        LET response = IO::NET::HTTP::GET(url)
-        LET posts = JSON_PARSE(TO_STRING(response))
+let result = (
+    for pageNum in 0..2
+        let offset = pageNum * pageSize
+        let url = baseURL + TO_STRING(offset) + "&_limit=" + TO_STRING(pageSize)
+        let response = IO::NET::HTTP::GET(url)
+        let posts = JSON_PARSE(TO_STRING(response))
 
-        FOR post IN posts
-            RETURN {
+        for post in posts
+            return {
                 id: post.id,
                 title: post.title
             }
 )
 
-RETURN result
+return result
 {{</ code >}}
 
 ## Add headers and authentication
@@ -122,7 +122,7 @@ RETURN result
 Pass custom headers for APIs that require authentication:
 
 {{< code lang="fql" >}}
-LET response = IO::NET::HTTP::GET({
+let response = IO::NET::HTTP::GET({
     url: "https://api.example.com/data",
     headers: {
         "Authorization": "Bearer " + @token,
@@ -130,7 +130,7 @@ LET response = IO::NET::HTTP::GET({
     }
 })
 
-RETURN JSON_PARSE(TO_STRING(response))
+return JSON_PARSE(TO_STRING(response))
 {{</ code >}}
 
 Use a bind parameter (`@token`) so the secret is not hardcoded in the script:
@@ -144,16 +144,16 @@ ferret run script.fql --param token=your-api-key
 A powerful pattern: fetch structured data from an API and enrich it with data from HTML pages:
 
 {{< code lang="fql" >}}
-LET response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
-LET posts = JSON_PARSE(TO_STRING(response))
+let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
+let posts = JSON_PARSE(TO_STRING(response))
 
-RETURN FOR post IN posts
-    LIMIT 3
+return for post in posts
+    limit 3
 
-    LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-        ON ERROR RETURN NONE
+    let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+        on error return none
 
-    RETURN {
+    return {
         id: post.id,
         title: post.title,
         pageTitle: page?.title
@@ -162,14 +162,14 @@ RETURN FOR post IN posts
 
 ## Handle API errors
 
-Use `ON ERROR RETURN` and `ON ERROR RETRY` for network failures:
+Use `on error return` and `on error retry` for network failures:
 
 {{< code lang="fql" >}}
-LET response = IO::NET::HTTP::GET("https://api.example.com/data")
-    ON ERROR RETRY 3 DELAY 1s BACKOFF EXPONENTIAL
-    OR RETURN NONE
+let response = IO::NET::HTTP::GET("https://api.example.com/data")
+    on error retry 3 delay 1s backoff EXPONENTIAL
+    or return none
 
-RETURN response != NONE
+return response != none
     ? JSON_PARSE(TO_STRING(response))
     : { error: "API unavailable" }
 {{</ code >}}

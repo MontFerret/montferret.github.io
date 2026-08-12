@@ -375,7 +375,7 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     parsed: TO_DATETIME("2026-08-02T12:00:00Z"),
     seconds: TO_DATETIME(1690992000, "s"),
     milliseconds: TO_DATETIME(1690992000000, "ms"),
@@ -460,7 +460,7 @@ Argument   | Type     | Default value  | Description
 **Returns** `Int, Float` Converted numeric value.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     integer: TO_NUMBER(10),
     parsed: TO_NUMBER("10"),
     fractional: TO_NUMBER("2.5"),

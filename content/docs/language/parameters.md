@@ -19,15 +19,15 @@ Click on <b>PARAMS</b> to open the parameter editor and provide values for the p
 </div>
 
 {{< editor lang="fql" params=`{"active": true}` >}}
-LET users = [
+let users = [
     { name: "Ada", active: true },
     { name: "Grace", active: false },
     { name: "Linus", active: true }
 ]
 
-RETURN FOR user IN users {
-    FILTER user.active == @active
-    RETURN user.name
+return for user in users {
+    filter user.active == @active
+    return user.name
 }
 {{</ editor >}}
 
@@ -38,10 +38,10 @@ In this example, `@active` is not a boolean literal written in the query. It is 
 Parameter names must start with a letter or underscore. They may contain letters, digits, and underscores.
 
 {{< code lang="fql" >}}
-RETURN @name
-RETURN @user_id
-RETURN @value1
-RETURN @_value
+return @name
+return @user_id
+return @value1
+return @_value
 {{</ code >}}
 
 The leading `@` is part of the parameter syntax, but not part of the parameter name itself.
@@ -55,7 +55,7 @@ They are not written as part of the query text.
 A query fails if it references a bind parameter that was not provided.
 
 {{< editor lang="fql" >}}
-RETURN @name
+return @name
 {{</ editor >}}
 
 In this example, the query expects a parameter named `name`.
@@ -65,15 +65,15 @@ In this example, the query expects a parameter named `name`.
 Bind parameters represent values directly. They should not be wrapped in quotes.
 
 {{< editor lang="fql" params=`{"name": "Grace"}` >}}
-LET users = [
+let users = [
     { name: "Ada" },
     { name: "Grace" },
     { name: "Linus" }
 ]
 
-RETURN FOR user IN users {
-    FILTER user.name == @name
-    RETURN user.name
+return for user in users {
+    filter user.name == @name
+    return user.name
 }
 {{</ editor >}}
 
@@ -84,7 +84,7 @@ Quoted text is always treated as a string literal. An unquoted @name expression 
 Bind parameters can be used anywhere a value expression is expected.
 
 {{< editor lang="fql" params=`{"id": "F03D4CB9"}` >}}
-RETURN CONCAT("prefix-", @id, "-suffix")
+return CONCAT("prefix-", @id, "-suffix")
 {{</ editor >}}
 
 The parameter value participates in the expression the same way as any other value.
@@ -94,13 +94,13 @@ The parameter value participates in the expression the same way as any other val
 Bind parameters can also be used with bracket notation to access object properties dynamically.
 
 {{< editor lang="fql" params=`{"attr": "foo", "subattr": "bar"}` >}}
-LET doc = {
+let doc = {
     foo: {
         bar: "baz"
     }
 }
 
-RETURN doc[@attr][@subattr]
+return doc[@attr][@subattr]
 {{</ editor >}}
 
 ## Next steps

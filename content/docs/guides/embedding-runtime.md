@@ -45,7 +45,7 @@ func main() {
 
     output, err := engine.Run(
         context.Background(),
-        source.NewAnonymous(`RETURN { message: "Ferret is running" }`),
+        source.NewAnonymous(`return { message: "Ferret is running" }`),
     )
     if err != nil {
         log.Fatal(err)
@@ -138,8 +138,8 @@ engine, err := ferret.New(
 Scripts select the driver at query time with `{ driver: "cdp" }`:
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-RETURN page.title
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+return page.title
 {{</ code >}}
 
 Without the `driver` option, the default `memory` driver is used.
@@ -150,8 +150,8 @@ When the same query runs multiple times — with different parameters, in differ
 
 {{< code lang="go" >}}
 plan, err := engine.Compile(ctx, source.New("extract-title", `
-    LET page = WEB::HTML::OPEN(@url)
-    RETURN page.title
+    let page = WEB::HTML::OPEN(@url)
+    return page.title
 `))
 if err != nil {
     log.Fatal(err)
@@ -282,7 +282,7 @@ Test it:
 {{< terminal command="true" >}}
 curl -s -X POST http://localhost:8080/api/query \
   -H "Content-Type: application/json" \
-  -d '{"query": "RETURN UPPER(@name)", "params": {"name": "ferret"}}'
+  -d '{"query": "return UPPER(@name)", "params": {"name": "ferret"}}'
 {{</ terminal >}}
 
 {{< notification type="info" >}}

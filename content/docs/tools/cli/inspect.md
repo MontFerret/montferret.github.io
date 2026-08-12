@@ -22,7 +22,7 @@ Without any filter flags, the full disassembly is printed: summary, bytecode ins
 Use `-e` (or `--eval`) to inspect an expression directly:
 
 {{< terminal >}}
-ferret inspect -e 'RETURN 1 + 2'
+ferret inspect -e 'return 1 + 2'
 {{< /terminal >}}
 
 ## Read from stdin

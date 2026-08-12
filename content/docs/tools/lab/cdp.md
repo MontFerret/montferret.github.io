@@ -16,11 +16,11 @@ In current Lab v2, there is no `--cdp` flag and no `LAB_CDP` environment variabl
 A browser-backed test is still a normal Lab test file:
 
 {{< code lang="fql" >}}
-LET doc = DOCUMENT("https://example.com", {
+let doc = DOCUMENT("https://example.com", {
   driver: "cdp"
 })
 
-RETURN doc.title
+return doc.title
 {{< /code >}}
 
 Run it with Lab:

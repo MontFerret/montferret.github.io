@@ -8,6 +8,6 @@ noLabel: true
 
 # Ferret Documentation
 
-Ferret is a programmable data extraction runtime and query language for turning pages, documents, APIs, and browser state into structured data. These docs are organized around the path from first query to production tooling.
+Ferret is a declarative-first, expression-oriented embedded language and runtime for data automation. It turns host values, pages, documents, APIs, and browser state into structured results. These docs follow the path from a first FQL script to embedding and production tooling.
 
 {{< docs-related tiles="getting-started-overview,getting-started-installation,getting-started-quick-start,language,runtime-modules,stdlib,tools" >}}

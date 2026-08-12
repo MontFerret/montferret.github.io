@@ -8,10 +8,10 @@ description: "Conditional evaluation with the ternary operator and its shortcut 
 
 # Ternary operator
 
-FQL supports a ternary operator that can be used for conditional evaluation. The ternary operator expects a boolean condition as its first operand, and it returns the result of the second operand if the condition evaluates to true, and the third operand otherwise.
+The ternary operator provides compact two-way value selection. It expects a boolean condition as its first operand and returns the second operand when the condition is true, or the third operand otherwise. For structured branching, patterns, or condition chains, use [`match`]({{% ref "../control-flow/match" %}}).
 
 {{< code lang="fql" >}}
-u.age > 15 || u.active == true ? u.userId : NONE
+u.age > 15 || u.active == true ? u.userId : none
 {{</ code >}}
 
 There is also a shortcut variant of the ternary operator with just two operands. This variant can be used when the expression for the boolean condition and the return value should be the same:

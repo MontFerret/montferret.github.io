@@ -14,40 +14,40 @@ FQL provides a set of operators for comparing values, combining conditions, perf
 
 ## Comparison
 
-Comparison operators compare two operands and return a boolean result. They include equality (`==`, `!=`), ordering (`<`, `<=`, `>`, `>=`), containment (`IN`, `NOT IN`), pattern matching (`LIKE`, `NOT LIKE`), and regular expression matching (`=~`, `!~`).
+Comparison operators compare two operands and return a boolean result. They include equality (`==`, `!=`), ordering (`<`, `<=`, `>`, `>=`), containment (`in`, `not in`), pattern matching (`like`, `not like`), and regular expression matching (`=~`, `!~`).
 
 {{< code lang="fql" >}}
 65 == 65
 "abc" != "ABC"
-1 IN [1, 2, 3]
-"foo" LIKE "f*"
+1 in [1, 2, 3]
+"foo" like "f*"
 {{</ code >}}
 
 See [Comparison Operators]({{< ref "comparison" >}}).
 
 ## Logical
 
-Logical operators evaluate expressions according to their truth value. FQL supports `&&` / `AND`, `||` / `OR`, and `!` / `NOT`. The binary operators use short-circuit evaluation and return one of their operands rather than always returning a boolean.
+Logical operators evaluate expressions according to their truth value. FQL supports `&&` / `and`, `||` / `or`, and `!` / `not`. The binary operators use short-circuit evaluation and return one of their operands rather than always returning a boolean.
 
 {{< code lang="fql" >}}
-RETURN true && "value"
-RETURN NONE || "fallback"
-RETURN NOT false
+return true && "value"
+return none || "fallback"
+return not false
 {{</ code >}}
 
 See [Logical Operators]({{< ref "logical" >}}).
 
-## NONE coalescing
+## none coalescing
 
-The NONE-coalescing operator (`??`) selects a fallback only when its left operand is `NONE`. Unlike logical `OR`, it preserves values such as `false`, zero, and an empty string.
+The none-coalescing operator (`??`) selects a fallback only when its left operand is `none`. Unlike logical `or`, it preserves values such as `false`, zero, and an empty string.
 
 {{< code lang="fql" >}}
-LET user = {}
+let user = {}
 
-RETURN user?.displayName ?? "Anonymous"
+return user?.displayName ?? "Anonymous"
 {{</ code >}}
 
-See [NONE-Coalescing Operator]({{< ref "coalescing" >}}).
+See [none-Coalescing Operator]({{< ref "coalescing" >}}).
 
 ## Arithmetic
 
@@ -76,46 +76,46 @@ See [Range Operator]({{< ref "range" >}}).
 The ternary operator provides conditional evaluation. It returns one of two values depending on a boolean condition.
 
 {{< code lang="fql" >}}
-u.age > 15 ? u.userId : NONE
+u.age > 15 ? u.userId : none
 {{</ code >}}
 
 See [Ternary Operator]({{< ref "ternary" >}}).
 
 ## Array
 
-Array operators work with arrays and nested array structures. They include indexed access (`[]`), expansion (`[*]`), flattening (`[**]`), inline filtering and projection, the question mark operator (`[?]`), and array comparison operators (`ANY`, `ALL`, `NONE`).
+Array operators work with arrays and nested array structures. They include indexed access (`[]`), expansion (`[*]`), flattening (`[**]`), inline filtering and projection, the question mark operator (`[?]`), and array comparison operators (`any`, `all`, `none`).
 
 {{< code lang="fql" >}}
 users[*].name
 values[**]
-values[* FILTER . > 2 LIMIT 3 RETURN . * 10]
-tags ANY == "fql"
+values[* filter . > 2 limit 3 return . * 10]
+tags any == "fql"
 {{</ code >}}
 
 See [Array Operators]({{< ref "array" >}}).
 
-## DELETE
+## delete
 
-The `DELETE` statement removes a property from an object or host value.
+The `delete` statement removes a property from an object or host value.
 
 {{< code lang="fql" >}}
-DELETE target.property
-DELETE target["property"]
+delete target.property
+delete target["property"]
 {{</ code >}}
 
 Both dot notation and bracket notation are supported:
 
 {{< editor lang="fql" >}}
-VAR user = { name: "Ada", deprecated: true, role: "admin" }
+var user = { name: "Ada", deprecated: true, role: "admin" }
 
-DELETE user.deprecated
+delete user.deprecated
 
-RETURN user
+return user
 {{</ editor >}}
 
-Deletion removes the property entirely — it is not the same as assigning `NONE`, which keeps the key present with an absent value.
+Deletion removes the property entirely — it is not the same as assigning `none`, which keeps the key present with an absent value.
 
-`DELETE` works with any value that supports the removable capability. Built-in objects support key removal. Host values may support removal if the host runtime provides that capability.
+`delete` works with any value that supports the removable capability. Built-in objects support key removal. Host values may support removal if the host runtime provides that capability.
 
 ## Precedence
 

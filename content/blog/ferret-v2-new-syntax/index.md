@@ -11,7 +11,7 @@ Hello friends,
 
 Today I want to talk about one of the most exciting parts of Ferret v2: new language capabilities that are now available directly in the syntax.
 
-Ferret v2 is not meant to be a completely different language. The goal is to preserve the original spirit of Ferret - a practical language for extracting structured data from messy websites - while making the language more expressive, more consistent, and easier to extend.
+Ferret v2 is not meant to be a completely different language. The goal is to preserve the original spirit of Ferret while making it a clearer declarative-first, expression-oriented embedded language for data automation: more expressive, more consistent, and easier to extend.
 
 The familiar Ferret style remains: small scripts, readable data flow, structured values, and extraction-focused operations. The new syntax is there to make those scripts clearer, not to make Ferret feel like a large general-purpose programming language.
 
@@ -33,7 +33,7 @@ Ferret v2 introduces syntax-level support for these concepts not because the lan
 
 A function call can perform the same work, but it cannot always describe the same intent.
 
-For example, a compiler can understand that `QUERY ".product-item" IN document USING css` is a query operation. It can attach better diagnostics to the selector, apply query-specific policies, validate dialect support, and eventually optimize or trace the operation as part of the execution model.
+For example, a compiler can understand that `query ".product-item" in document using css` is a query operation. It can attach better diagnostics to the selector, apply query-specific policies, validate dialect support, and eventually optimize or trace the operation as part of the execution model.
 
 With a plain function call, most of that meaning is hidden behind an arbitrary host function boundary.
 
@@ -58,18 +58,18 @@ In Ferret v1, querying was strongly associated with documents, elements, and sel
 In Ferret v2, querying becomes a general language capability. A value can support queries if it implements the queryable capability.
 
 {{< editor lang="fql" height="132px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-LET elements = QUERY "article h2" IN doc USING css
-RETURN elements
+let doc = DOCUMENT("https://mockery.ferretlang.org")
+let elements = query "article h2" in doc using css
+return elements
 {{</ editor >}}
 
-The important part is `USING css`. The query string does not define the meaning by itself. The dialect does.
+The important part is `using css`. The query string does not define the meaning by itself. The dialect does.
 
 That means the same language construct can work with different query dialects:
 
 {{< code lang="fql" height="96px" >}}
-LET products = QUERY ".product" IN doc USING css
-LET rows = QUERY "SELECT * FROM products WHERE price > 100" IN db USING sql
+let products = query ".product" in doc using css
+let rows = query "SELECT * FROM products WHERE price > 100" in db using sql
 {{</ code >}}
 
 The language does not need separate statements for CSS selectors, XPath, SQL, JSONPath, or future query systems.
@@ -85,33 +85,33 @@ Queries often need different result shapes. Sometimes you want all matches. Some
 Ferret v2 introduces query modifiers for those cases:
 
 {{< code lang="fql" height="128px" >}}
-LET products = QUERY ".product" IN doc USING css
-LET hasLogin = QUERY EXISTS "form.login" IN doc USING css
-LET count = QUERY COUNT ".product" IN doc USING css
-LET first = QUERY ONE ".product" IN doc USING css
+let products = query ".product" in doc using css
+let hasLogin = query exists "form.login" in doc using css
+let count = query count ".product" in doc using css
+let first = query one ".product" in doc using css
 {{</ code >}}
 
-By default, `QUERY` returns the normal result shape for the selected dialect and target value. For CSS-style document queries, that usually means a collection of matching elements.
+By default, `query` returns the normal result shape for the selected dialect and target value. For CSS-style document queries, that usually means a collection of matching elements.
 
-`QUERY EXISTS` returns a boolean value:
+`query exists` returns a boolean value:
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN QUERY EXISTS "article h2" IN doc USING css
+let doc = DOCUMENT("https://mockery.ferretlang.org")
+return query exists "article h2" in doc using css
 {{</ editor >}}
 
-`QUERY COUNT` returns the number of matches:
+`query count` returns the number of matches:
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN QUERY COUNT "article h2" IN doc USING css
+let doc = DOCUMENT("https://mockery.ferretlang.org")
+return query count "article h2" in doc using css
 {{</ editor >}}
 
-`QUERY ONE` returns a single matching result:
+`query one` returns a single matching result:
 
 {{< editor lang="fql" height="84px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN QUERY ONE "article h2" IN doc USING css
+let doc = DOCUMENT("https://mockery.ferretlang.org")
+return query one "article h2" in doc using css
 {{</ editor >}}
 
 This is useful for the common case where a script expects one element and does not want to query a collection and then index into it manually.
@@ -119,14 +119,14 @@ This is useful for the common case where a script expects one element and does n
 Instead of writing:
 
 {{< code lang="fql" height="84px" >}}
-LET products = QUERY ".product-card" IN doc USING css
-LET product = products[0]
+let products = query ".product-card" in doc using css
+let product = products[0]
 {{</ code >}}
 
 A script can express the intent directly:
 
 {{< code lang="fql" height="84px" >}}
-LET product = QUERY ONE ".product-card" IN doc USING css
+let product = query one ".product-card" in doc using css
 {{</ code >}}
 
 The modifier makes cardinality visible. A query that returns all matches is different from a query that returns one match. A query that checks existence is different from a query that counts matches.
@@ -142,27 +142,27 @@ For common cases, the long form can be too verbose. Ferret v2 also supports shor
 The regular shorthand uses `~`:
 
 {{< editor lang="fql" height="112px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN doc[~ css`article h2`]
+let doc = DOCUMENT("https://mockery.ferretlang.org")
+return doc[~ css`article h2`]
 {{</ editor >}}
 
 This is equivalent to a regular query:
 
 {{< code lang="fql" height="84px" >}}
-QUERY "article h2" IN doc USING css
+query "article h2" in doc using css
 {{</ code >}}
 
 When a script expects a single result, Ferret also supports the `~?` shorthand:
 
 {{< editor lang="fql" height="112px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN doc[~? css`article h2`]
+let doc = DOCUMENT("https://mockery.ferretlang.org")
+return doc[~? css`article h2`]
 {{</ editor >}}
 
-This is equivalent to `QUERY ONE`:
+This is equivalent to `query one`:
 
 {{< code lang="fql" height="84px" >}}
-QUERY ONE "article h2" IN doc USING css
+query one "article h2" in doc using css
 {{</ code >}}
 
 The distinction is small, but important.
@@ -174,23 +174,23 @@ The distinction is small, but important.
 That makes the common “give me the first matching thing” case more readable without forcing scripts to query a collection and then index into it manually:
 
 {{< code lang="fql" height="128px" >}}
-LET title = doc[~? css`article h2`]
+let title = doc[~? css`article h2`]
 
 // instead of
-LET title = doc[~ css`article h2`][0]
+let title = doc[~ css`article h2`][0]
 {{</ code >}}
 
 More dynamic query expressions should still use the long form:
 
 {{< code lang="fql" height="96px" >}}
-LET selector = ".product[data-id='" + id + "']"
-LET product = QUERY ONE selector IN doc USING css WITH { timeout: 5000 }
+let selector = ".product[data-id='" + id + "']"
+let product = query one selector in doc using css with { timeout: 5000 }
 {{</ code >}}
 
 The same applies to other dialects that need explicit options:
 
 {{< code lang="fql" height="96px" >}}
-LET product = QUERY ONE "SELECT * FROM products WHERE id = ?" IN db USING sql WITH { params: [@id] }
+let product = query one "SELECT * FROM products WHERE id = ?" in db using sql with { params: [@id] }
 {{</ code >}}
 
 This gives Ferret both sides: concise syntax for everyday cases, and explicit syntax for cases that need more control.
@@ -208,7 +208,7 @@ Ferret v2 brings array operators inspired by ArangoDB’s AQL into the language 
 Instead of writing loops for every small transformation, scripts can map, filter, slice, and project arrays directly.
 
 {{< editor lang="fql" height="356px" apiVersion="2" >}}
-LET products = [
+let products = [
     { name: "Widget", price: 19.99 },
     { name: "Gadget", price: 149.99 },
     { name: "Thingamajig", price: 49.99 },
@@ -216,11 +216,11 @@ LET products = [
     { name: "Doohickey", price: 199.99 }
 ]
 
-LET names = products[*].name
-LET expensive = products[* FILTER .price > 100]
-LET firstThree = products[* LIMIT 3]
+let names = products[*].name
+let expensive = products[* filter .price > 100]
+let firstThree = products[* limit 3]
 
-RETURN {
+return {
     names: names,
     expensive: expensive,
     firstThree: firstThree
@@ -232,22 +232,22 @@ The basic operators cover the most common cases:
 - `[n]` accesses an array element by index.
 - `[*]` expands an array and allows projecting fields from each item.
 - `[**]`, `[***]`, and deeper forms flatten nested arrays.
-- `[* FILTER ...]` filters an array while expanding it.
-- `[* LIMIT ...]` limits the expanded result.
-- `[* RETURN ...]` projects each expanded item into a new shape.
+- `[* filter ...]` filters an array while expanding it.
+- `[* limit ...]` limits the expanded result.
+- `[* return ...]` projects each expanded item into a new shape.
 - `[? ...]` checks whether an array contains values matching a condition.
 
 The `[*]` operator is especially useful after queries. For example, extracting all link targets from a page can stay compact:
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/")
-RETURN doc[~ css`a`][*].attributes.href
+let doc = DOCUMENT("https://mockery.ferretlang.org/")
+return doc[~ css`a`][*].attributes.href
 {{</ editor >}}
 
 Inline expressions make filtering and projection more explicit. They use `.` to refer to the current array item:
 
 {{< editor lang="fql" height="328px" apiVersion="2" >}}
-LET products = [
+let products = [
     { name: "Widget", price: 19.99 },
     { name: "Gadget", price: 149.99 },
     { name: "Thingamajig", price: 49.99 },
@@ -255,19 +255,19 @@ LET products = [
     { name: "Doohickey", price: 199.99 }
 ]
 
-RETURN products[*
-    FILTER .price > 100
-    RETURN {
+return products[*
+    filter .price > 100
+    return {
         title: .name,
         price: .price
     }
 ]
 {{</ editor >}}
 
-`FILTER`, `LIMIT`, and `RETURN` can be combined in that order:
+`filter`, `limit`, and `return` can be combined in that order:
 
 {{< editor lang="fql" height="376px" apiVersion="2">}}
-LET products = [
+let products = [
     { name: "Widget", price: 19.99 },
     { name: "Gadget", price: 149.99 },
     { name: "Thingamajig", price: 49.99 },
@@ -278,10 +278,10 @@ LET products = [
     { name: "Gizmo", price: 179.99 }
 ]
 
-RETURN products[*
-    FILTER .price > 100
-    LIMIT 3
-    RETURN {
+return products[*
+    filter .price > 100
+    limit 3
+    return {
         title: .name,
         price: TO_FLOAT(.price)
     }
@@ -291,7 +291,7 @@ RETURN products[*
 The question-mark operator is different. It does not return the filtered items. It answers whether matching items exist.
 
 {{< editor lang="fql" height="274px" apiVersion="2">}}
-LET products = [
+let products = [
     { name: "Widget", price: 19.99 },
     { name: "Gadget", price: 149.99 },
     { name: "Thingamajig", price: 49.99 },
@@ -302,24 +302,24 @@ LET products = [
     { name: "Gizmo", price: 179.99 }
 ]
 
-RETURN products[? ANY FILTER .price > 100]
+return products[? any filter .price > 100]
 {{</ editor >}}
 
 This returns a boolean value.
 
-That distinction matters: use `[* FILTER ...]` when you want the matching values, and `[? ...]` when you want to test whether matching values exist.
+That distinction matters: use `[* filter ...]` when you want the matching values, and `[? ...]` when you want to test whether matching values exist.
 
 Array contraction is useful when querying nested collections:
 
 {{< editor lang="fql" height="152px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/")
-LET sections = QUERY "section" IN doc USING css
-LET linksBySection = sections[* RETURN .[~ css`a`]]
+let doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/ecommerce/")
+let sections = query "section" in doc using css
+let linksBySection = sections[* return .[~ css`a`]]
 
-RETURN linksBySection[**].attributes.href
+return linksBySection[**].attributes.href
 {{</ editor >}}
 
-This is especially useful after a query. `QUERY` gives the script a collection of values, and array operators help turn that collection into the shape the caller actually needs.
+This is especially useful after a query. `query` gives the script a collection of values, and array operators help turn that collection into the shape the caller actually needs.
 
 The goal is the same as with the rest of Ferret v2 syntax: make common extraction workflows readable without forcing every small data transformation into a manual loop.
 
@@ -329,18 +329,18 @@ Many values are not only queryable. They can also receive events, commands, or s
 
 In browser automation, clicking an element is the obvious example. But dispatch is not limited to DOM events. A queue, actor, stream, workflow, or custom host object could also expose dispatch behavior.
 
-Ferret v2 represents this with `DISPATCH`:
+Ferret v2 represents this with `dispatch`:
 
 {{< code lang="fql" height="84px" >}}
-DISPATCH "click" IN button
+dispatch "click" in button
 {{</ code >}}
 
 With payload and options, the same statement stays explicit:
 
 {{< code lang="fql" height="128px" >}}
-DISPATCH "input" IN searchBox WITH {
+dispatch "input" in searchBox with {
     value: "ferret"
-} OPTIONS {
+} options {
     bubbles: true
 }
 {{</ code >}}
@@ -363,20 +363,20 @@ Values with dispatch capabilities are provided by registered host modules.
 
 ## Match for structured control flow
 
-Ferret v2 also improves control flow with `MATCH`.
+Ferret v2 also improves control flow with `match`.
 
 The goal is not to make Ferret feel imperative. The goal is to provide enough control flow for real extraction logic while preserving the language’s declarative feel.
 
-Ternary expressions are still useful for small choices. `MATCH` is meant for cases where branching logic grows beyond one or two conditions and benefits from a more structured form.
+Ternary expressions are still useful for small choices. `match` is meant for cases where branching logic grows beyond one or two conditions and benefits from a more structured form.
 
 Guard-style matching can express condition-based branching:
 
 {{< editor lang="fql" height="160px" apiVersion="2" >}}
-LET status = 501
-RETURN MATCH {
-    WHEN status == 404 => "not_found",
-    WHEN status == 403 => "forbidden",
-    WHEN status >= 500 => "server_error",
+let status = 501
+return match {
+    when status == 404 => "not_found",
+    when status == 403 => "forbidden",
+    when status >= 500 => "server_error",
     _ => "ok"
 }
 {{</ editor >}}
@@ -384,8 +384,8 @@ RETURN MATCH {
 Scrutinee-style matching can inspect a value directly:
 
 {{< editor lang="fql" height="160px" apiVersion="2" >}}
-LET status = 404
-RETURN MATCH status {
+let status = 404
+return match status {
     200 => "ok",
     404 => "not_found",
     _ => "unknown"
@@ -395,22 +395,22 @@ RETURN MATCH status {
 Ferret v2 also supports object pattern matching. This is useful when a script needs to branch based on the shape or selected fields of a value:
 
 {{< editor lang="fql" height="256px" apiVersion="2" >}}
-LET response = {
+let response = {
     status: 500,
     body: "Internal Server Error"
 }
 
-RETURN MATCH response {
+return match response {
     { status: 200, body: body } => body,
-    { status: 404 } => NONE,
-    { status: status } WHEN status >= 500 => "server_error",
+    { status: 404 } => none,
+    { status: status } when status >= 500 => "server_error",
     _ => "unknown"
 }
 {{</ editor >}}
 
 This makes common extraction and normalization logic easier to express. Instead of pulling fields out first and then writing a chain of conditions, the match arm can describe the shape it expects and bind the values it needs.
 
-The pattern system will continue to evolve, but object pattern matching is already supported and is part of Ferret’s current direction. `MATCH` should become the primary way to express structured branching when a script has multiple cases to handle.
+The pattern system will continue to evolve, but object pattern matching is already supported and is part of Ferret’s current direction. `match` should become the primary way to express structured branching when a script has multiple cases to handle.
 
 This is especially useful in extraction workflows, where scripts often need to classify responses, handle missing values, normalize data, or branch based on page state.
 
@@ -421,49 +421,49 @@ Ferret v2 also adds string templates for cases where scripts need to build reada
 Extraction scripts often need to create URLs, format labels, build messages, or normalize output fields. Plain string concatenation works, but it quickly becomes noisy.
 
 {{< code lang="fql" height="96px" >}}
-LET name = @user
-LET message = "Hello " + name
-RETURN message
+let name = @user
+let message = "Hello " + name
+return message
 {{</ code >}}
 
 With string templates, the same expression is easier to read:
 
 {{< code lang="fql" height="96px" >}}
-LET message = `Hello ${@user}`
-RETURN message
+let message = `Hello ${@user}`
+return message
 {{</ code >}}
 
 Expressions inside `${...}` are evaluated and inserted into the final string:
 
 {{< editor lang="fql" height="160px" apiVersion="2" >}}
-LET product = {
+let product = {
     title: "Keyboard",
     price: 99.99
 }
 
-RETURN `${product.title}: ${product.price} USD`
+return `${product.title}: ${product.price} USD`
 {{</ editor >}}
 
 String templates are especially useful when building dynamic query strings or URLs:
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET category = "phones"
-LET page = 2
+let category = "phones"
+let page = 2
 
-LET url = `https://mockery.ferretlang.org/scenarios/ecommerce/categories/${category}/page/${page}`
-RETURN WEB::ARTICLE::EXTRACT(DOCUMENT(url))
+let url = `https://mockery.ferretlang.org/scenarios/ecommerce/categories/${category}/page/${page}`
+return WEB::ARTICLE::EXTRACT(DOCUMENT(url))
 {{</ editor >}}
 
 They also work well for shaping final output:
 
 {{< editor lang="fql" height="224px" apiVersion="2" >}}
-LET product = {
+let product = {
     title: "Keyboard",
     price: 99.99,
     available: true
 }
 
-RETURN {
+return {
     title: product.title,
     label: `${product.title} - $${product.price}`,
     status: `available: ${product.available}`
@@ -479,35 +479,35 @@ Ferret has traditionally favored query-style expression flow, but some tasks are
 Ferret v2 separates immutable and mutable bindings:
 
 {{< editor lang="fql" height="192px" apiVersion="2" >}}
-VAR attempts = 0
+var attempts = 0
 
-FOR WHILE attempts < 3
+for while attempts < 3
     attempts += 1
 
-RETURN attempts
+return attempts
 {{</ editor >}}
 
-`LET` remains immutable. `VAR` is explicit. Reassignment is allowed only when the nearest binding is mutable.
+`let` remains immutable. `var` is explicit. Reassignment is allowed only when the nearest binding is mutable.
 
 {{< editor lang="fql" height="192px" apiVersion="2" >}}
-LET attempts = 0
+let attempts = 0
 
-FOR WHILE attempts < 3
+for while attempts < 3
     attempts += 1
 
-RETURN attempts
+return attempts
 {{</ editor >}}
 
-The second example is invalid because `attempts` was declared with `LET`.
+The second example is invalid because `attempts` was declared with `let`.
 
 This keeps mutation available without making every binding mutable by default.
 
-One important distinction is that `LET` prevents rebinding the variable itself. It does not necessarily make the underlying value deeply immutable. If a value supports mutation, its fields may still be updated.
+One important distinction is that `let` prevents rebinding the variable itself. It does not necessarily make the underlying value deeply immutable. If a value supports mutation, its fields may still be updated.
 
 For objects and other mutable values, Ferret uses familiar assignment syntax:
 
 {{< editor lang="fql" height="312px" apiVersion="2" >}}
-LET user = {
+let user = {
     name: "Bob",
     profile: {
         active: false
@@ -521,15 +521,15 @@ user.name = "Alice"
 user.profile.active = true
 user.stats.visits += 1
 
-RETURN user
+return user
 {{</ editor >}}
 
 Safe access also applies naturally to mutation paths:
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET user = NONE
+let user = none
 user?.profile?.active = true
-RETURN user
+return user
 {{</ editor >}}
 
 The goal is not to make Ferret more imperative than necessary. The goal is to support the cases where mutation describes the workflow more naturally, while preserving immutability as the default style.
@@ -540,10 +540,10 @@ Assignment lets scripts create or update values, but extraction workflows also o
 
 A script may need to clean up intermediate fields, remove deprecated metadata, drop optional values, or normalize an object before returning it.
 
-Ferret v2 adds `DELETE` for removing properties from mutable values:
+Ferret v2 adds `delete` for removing properties from mutable values:
 
 {{< editor lang="fql" height="240px" apiVersion="2" >}}
-LET user = {
+let user = {
     name: "Alice",
     profile: {
         active: true,
@@ -551,9 +551,9 @@ LET user = {
     }
 }
 
-DELETE user.profile.deprecated
+delete user.profile.deprecated
 
-RETURN user
+return user
 {{</ editor >}}
 
 This removes the final property in the path. It does not delete the whole object. In this example, `profile` remains, but `profile.deprecated` is removed.
@@ -561,7 +561,7 @@ This removes the final property in the path. It does not delete the whole object
 Bracket access is supported as well:
 
 {{< editor lang="fql" height="240px" apiVersion="2" >}}
-LET user = {
+let user = {
     name: "Alice",
     metadata: {
         source: "import",
@@ -569,24 +569,24 @@ LET user = {
     }
 }
 
-DELETE user.metadata["temp"]
+delete user.metadata["temp"]
 
-RETURN user
+return user
 {{</ editor >}}
 
 Safe access can be used when intermediate values may be missing:
 
 {{< editor lang="fql" height="152px" apiVersion="2" >}}
-LET user = NONE
+let user = none
 
-DELETE user?.profile?.deprecated
+delete user?.profile?.deprecated
 
-RETURN user
+return user
 {{</ editor >}}
 
-This makes deletion safe and explicit. If the path cannot be reached because a safe segment evaluates to `NONE`, the operation does nothing.
+This makes deletion safe and explicit. If the path cannot be reached because a safe segment evaluates to `none`, the operation does nothing.
 
-Like assignment, `DELETE` works on values that support mutation. The statement describes the operation, while the value decides how that operation is applied.
+Like assignment, `delete` works on values that support mutation. The statement describes the operation, while the value decides how that operation is applied.
 
 The goal is to make cleanup and normalization code readable without introducing helper functions for basic property removal.
 
@@ -599,15 +599,15 @@ Pages are dynamic. Data may appear after a network request, a DOM update, an ani
 Ferret v2 makes waiting explicit:
 
 {{< editor lang="fql" height="224px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/delayed-rendering/", {
+let doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/delayed-rendering/", {
     driver: "cdp"
 })
 
-RETURN WAITFOR VALUE doc[~ css`[data-testid="delayed-long"]`]
-    WHEN LENGTH(.) > 0 AND FIRST(.).attributes["data-state"] == "ready"
-    TIMEOUT 10s
-    EVERY 250ms
-    ON TIMEOUT RETURN NONE
+return waitfor value doc[~ css`[data-testid="delayed-long"]`]
+    when LENGTH(.) > 0 and FIRST(.).attributes["data-state"] == "ready"
+    timeout 10s
+    every 250ms
+    on timeout return none
 {{</ editor >}}
 
 This describes the operation directly: evaluate the value repeatedly, use a polling interval, stop after a timeout, and choose a fallback if the condition is not met.
@@ -633,41 +633,41 @@ This makes it possible to wait for network behavior directly instead of guessing
 For example, a script can wait until the page becomes network-idle before querying the DOM:
 
 {{< editor lang="fql" height="224px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/network-idle/", {
+let doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/network-idle/", {
     driver: "cdp"
 })
 
-WAITFOR EVENT "network.idle" IN doc TIMEOUT 10s
+waitfor event "network.idle" in doc timeout 10s
 
-RETURN doc[~ css`#network-log li`][*].textContent
+return doc[~ css`#network-log li`][*].textContent
 {{</ editor >}}
 
 A script can also wait for a specific request to finish before reading the updated page state:
 
 {{< editor lang="fql" height="224px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", {
+let doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", {
     driver: "cdp"
 })
 
-RETURN WAITFOR EVENT "network.request_finished" IN doc
-    WHEN CONTAINS(.url, "slow-1.json")
-    TIMEOUT 10s
+return waitfor event "network.request_finished" in doc
+    when CONTAINS(.url, "slow-1.json")
+    timeout 10s
 {{</ editor >}}
 
 Network events are also useful for debugging or collecting metadata from a page session:
 
 {{< editor lang="fql" height="384px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/polling/", {
+let doc = DOCUMENT("https://mockery.ferretlang.org/scenarios/network/polling/", {
     driver: "cdp"
 })
 
-LET response = WAITFOR EVENT "network.response_received" IN doc
-    WHEN CONTAINS(.url, ".json")
-    TIMEOUT 10s
-    ON TIMEOUT RETURN NONE
+let response = waitfor event "network.response_received" in doc
+    when CONTAINS(.url, ".json")
+    timeout 10s
+    on timeout return none
 
-RETURN MATCH response {
-    NONE => {
+return match response {
+    none => {
         ok: false,
         reason: "products_api_not_seen"
     },
@@ -679,7 +679,7 @@ RETURN MATCH response {
 }
 {{</ editor >}}
 
-The important part is that network activity becomes observable through the same language-level waiting model. Ferret does not need a separate `WAITFOR NETWORK` construct. The CDP driver can expose network activity as events, and `WAITFOR EVENT` can observe them.
+The important part is that network activity becomes observable through the same language-level waiting model. Ferret does not need a separate `waitfor NETWORK` construct. The CDP driver can expose network activity as events, and `waitfor event` can observe them.
 
 This keeps the language general while still supporting browser-specific workflows.
 
@@ -690,19 +690,19 @@ Web data extraction often fails for normal reasons: a page is slow, an element i
 In Ferret v2, failure policy can live close to the operation that may fail.
 
 {{< editor lang="fql" height="128px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN QUERY ONE "#price" IN doc USING css 
-    ON ERROR RETURN NONE
+let doc = DOCUMENT("https://mockery.ferretlang.org")
+return query one "#price" in doc using css
+    on error return none
 {{</ editor >}}
 
 Timeout behavior can be expressed in a similar way where supported:
 
 {{< editor lang="fql" height="146px" apiVersion="2" >}}
-LET doc = DOCUMENT("https://mockery.ferretlang.org")
-RETURN WAITFOR VALUE doc[~ css`.loaded`]
-    TIMEOUT 5s
-    EVERY 250ms
-    ON TIMEOUT RETURN NONE
+let doc = DOCUMENT("https://mockery.ferretlang.org")
+return waitfor value doc[~ css`.loaded`]
+    timeout 5s
+    every 250ms
+    on timeout return none
 {{</ editor >}}
 
 This keeps the happy path readable while making fallback behavior explicit.
@@ -710,8 +710,8 @@ This keeps the happy path readable while making fallback behavior explicit.
 It also gives Ferret a clearer execution model. A timeout policy or fallback value is not hidden inside arbitrary user code. It is part of the operation itself.
 
 {{< editor lang="fql" height="120px" apiVersion="2" >}}
-LET parsed = TO_FLOAT("not a number") ON ERROR RETURN 42
-RETURN parsed
+let parsed = TO_FLOAT("not a number") on error return 42
+return parsed
 {{</ editor >}}
 
 ## User-defined functions
@@ -725,20 +725,20 @@ Functions are especially useful for normalization logic: parsing prices, cleanin
 For larger functions, the block form gives enough structure without relying on indentation-sensitive syntax or `END` markers.
 
 {{< editor lang="fql" height="192px" apiVersion="2" >}}
-FUNC normalizePrice(input) {
-    LET cleaned = TRIM(input)
-    LET numeric = SUBSTITUTE(cleaned, "$", "")
-    RETURN TO_FLOAT(numeric)
+func normalizePrice(input) {
+    let cleaned = TRIM(input)
+    let numeric = SUBSTITUTE(cleaned, "$", "")
+    return TO_FLOAT(numeric)
 }
 
-RETURN normalizePrice("$19.99")
+return normalizePrice("$19.99")
 {{</ editor >}}
 
 For smaller functions, the body can stay compact:
 
 {{< editor lang="fql" height="96px" apiVersion="2" >}}
-FUNC add(a, b) => a + b
-RETURN add(2, 3)
+func add(a, b) => a + b
+return add(2, 3)
 {{</ editor >}}
 
 This should make Ferret scripts easier to organize while keeping the language focused.
@@ -750,15 +750,15 @@ With user-defined functions and pattern matching, Ferret can express more comple
 This is an important step toward making Ferret a more self-contained language for data extraction and processing.
 
 {{< editor lang="fql" height="196px" apiVersion="2" >}}
-FUNC fib(n) {
-    RETURN MATCH n {
+func fib(n) {
+    return match n {
         0 => 0,
         1 => 1,
         _ => fib(n - 1) + fib(n - 2)
     }
 }
 
-RETURN fib(10)
+return fib(10)
 {{</ editor >}}
 
 ## Where values with capabilities come from
@@ -770,21 +770,21 @@ A Ferret script does not manually attach capabilities to a value. Capabilities c
 For example, an HTML module can expose a document value that supports CSS queries:
 
 {{< code lang="fql" height="96px" >}}
-LET document = HTML::PARSE(page)
-LET title = QUERY ONE "h1" IN document USING css
+let document = HTML::PARSE(page)
+let title = query one "h1" in document using css
 {{</ code >}}
 
 A DOM element can be both queryable and dispatchable:
 
 {{< code lang="fql" height="96px" >}}
-LET button = QUERY ONE "button.submit" IN document USING css
-DISPATCH "click" IN button
+let button = query one "button.submit" in document using css
+dispatch "click" in button
 {{</ code >}}
 
 A database module could expose a connection or table value that supports SQL queries:
 
 {{< code lang="fql" height="96px" >}}
-LET rows = QUERY "SELECT * FROM products" IN db USING sql
+let rows = query "SELECT * FROM products" in db using sql
 {{</ code >}}
 
 A host application embedding Ferret can also provide its own values. That could be a queue, cache, workflow object, browser session, API client, or any other domain-specific object.
@@ -793,7 +793,7 @@ From the script’s point of view, these values participate in the same language
 
 As the compiler and runtime mature, this model also gives Ferret a clearer way to report capability errors. The problem is not just that a function failed, but that a value does not support the operation being requested.
 
-For example, `QUERY ... IN value USING css` requires the target value to support querying with the selected dialect. If it does not, Ferret can report that directly.
+For example, `query ... in value using css` requires the target value to support querying with the selected dialect. If it does not, Ferret can report that directly.
 
 For the Ferret ecosystem, this separation matters.
 
@@ -803,25 +803,25 @@ That boundary keeps the language compact while leaving plenty of room for extens
 
 It is also the reason HTML drivers are no longer treated as part of the language core. They were moved to <b><a href="https://github.com/MontFerret/contrib">a separate repository</a></b> to make it easier to iterate on browser-specific behavior without affecting the core language. The same applies to other domain-specific modules that may come in the future.
 
-## Namespace aliases with USE
+## Namespace aliases with use
 
 Ferret v2 also improves how scripts work with modules.
 
 Modules can expose host functions, but fully-qualified names can become noisy when a script repeatedly uses functions from the same module or namespace.
 
-`USE` lets a script create a local alias for a fully-qualified namespace or symbol:
+`use` lets a script create a local alias for a fully-qualified namespace or symbol:
 
 {{< editor lang="fql" height="160px" apiVersion="2" >}}
-USE IO::NET::HTTP::GET AS GET
+use IO::NET::HTTP::GET as GET
 
-LET out = GET("https://mockery.ferretlang.org/api/products/index.json")
+let out = GET("https://mockery.ferretlang.org/api/products/index.json")
 
-RETURN JSON_PARSE(out)
+return JSON_PARSE(out)
 {{</ editor >}}
 
 This keeps module-based scripts readable without pulling an entire module directly into local scope.
 
-The important part is that `USE` does not hide where functionality comes from. It creates an explicit local alias for a fully-qualified namespace or symbol, so scripts can stay concise while still making the shortcut visible at the top of the file.
+The important part is that `use` does not hide where functionality comes from. It creates an explicit local alias for a fully-qualified namespace or symbol, so scripts can stay concise while still making the shortcut visible at the top of the file.
 
 This keeps Ferret explicit while making module-heavy scripts easier to read.
 
@@ -831,21 +831,21 @@ The common thread behind these additions is capability-oriented design.
 
 Ferret v2 does not need every domain to become a new language feature. Instead, the language provides a small set of operations that can work across different kinds of values:
 
-- `QUERY` for values that can be queried.
+- `query` for values that can be queried.
 - array operators for transforming and filtering collections.
 - string templates for readable string construction.
-- `DISPATCH` for values that can receive events or signals.
-- `WAITFOR` for values or expressions that can be observed over time.
-- `MATCH` for structured branching.
-- assignment and `DELETE` for local/object mutation and property removal.
-- `USE` for explicit aliases to fully-qualified names.
+- `dispatch` for values that can receive events or signals.
+- `waitfor` for values or expressions that can be observed over time.
+- `match` for structured branching.
+- assignment and `delete` for local/object mutation and property removal.
+- `use` for explicit aliases to fully-qualified names.
 - operation-level policies for errors and timeouts.
 
 The goal is not to turn every useful library operation into syntax. Only operations that shape the structure of extraction workflows should become language constructs.
 
 The syntax stays focused, while capabilities allow modules and host applications to define what those operations mean for their own values.
 
-That is what makes Ferret more than a browser scripting language. Browser automation remains an important use case, but the language is being shaped as a programmable data extraction engine.
+That is what makes Ferret more than a browser scripting language. Browser automation remains an important use case, but the language is being shaped as a declarative-first, expression-oriented embedded language for data automation.
 
 Ferret should help developers turn messy websites and data sources into clean structured data. These language-level capabilities are designed around that goal.
 

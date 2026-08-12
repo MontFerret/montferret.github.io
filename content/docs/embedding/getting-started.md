@@ -43,7 +43,7 @@ func main() {
 
     output, err := engine.Run(
         context.Background(),
-        source.NewAnonymous(`RETURN { name: "Ferret", version: 2 }`),
+        source.NewAnonymous(`return { name: "Ferret", version: 2 }`),
     )
     if err != nil {
         log.Fatal(err)
@@ -61,7 +61,7 @@ func main() {
 When the same query runs many times — with different parameters, in different goroutines, or on a schedule — compile it once and create sessions from the resulting plan:
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.New("greeting", `RETURN UPPER(@name)`))
+plan, err := engine.Compile(ctx, source.New("greeting", `return UPPER(@name)`))
 if err != nil {
     log.Fatal(err)
 }
@@ -129,7 +129,7 @@ See [Parameters]({{< ref "parameters" >}}) for the full parameter API.
 Ferret returns standard Go errors. Compilation errors include source location information:
 
 {{< code lang="go" >}}
-_, err := engine.Compile(ctx, source.New("bad.fql", `RETURN @`))
+_, err := engine.Compile(ctx, source.New("bad.fql", `return @`))
 if err != nil {
     fmt.Println(err)
     // compilation error with line and column

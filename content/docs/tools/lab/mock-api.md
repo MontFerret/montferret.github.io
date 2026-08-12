@@ -22,10 +22,10 @@ lab run --mock ./users.yaml@api tests/
 The service URL is available as `@lab.mock.api`.
 
 {{< code lang="fql" >}}
-LET response = IO::NET::HTTP::GET(@lab.mock.api + "/users/123")
-LET user = JSON_PARSE(TO_STRING(response))
+let response = IO::NET::HTTP::GET(@lab.mock.api + "/users/123")
+let user = JSON_PARSE(TO_STRING(response))
 
-RETURN user.id == "123"
+return user.id == "123"
 {{< /code >}}
 
 Multiple mock APIs can be served in the same run:
@@ -65,7 +65,7 @@ Mock entries must point to existing files. The default alias is the spec filenam
 Aliases must start with a letter or underscore and may contain letters, numbers, underscores, and hyphens. Use bracket access for aliases that are not valid FQL dotted-property names:
 
 {{< code lang="fql" >}}
-RETURN @lab.mock["users-api"] + "/users/123"
+return @lab.mock["users-api"] + "/users/123"
 {{< /code >}}
 
 Duplicate aliases are rejected.
@@ -101,7 +101,7 @@ paths:
           name: "User {{ .Path.id }}"
 ```
 
-The mock server currently handles `GET`, `POST`, `PUT`, `PATCH`, and `DELETE` operations. Paths must start with `/`.
+The mock server currently handles `GET`, `POST`, `PUT`, `PATCH`, and `delete` operations. Paths must start with `/`.
 
 `x-lab-mock` supports:
 

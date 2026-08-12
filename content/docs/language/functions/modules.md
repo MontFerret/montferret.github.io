@@ -3,7 +3,7 @@ title: "Module Functions"
 sidebarTitle: "Modules"
 weight: 20
 draft: false
-description: "Call namespaced functions and create aliases with the USE statement."
+description: "Call namespaced functions and create aliases with the use statement."
 ---
 
 # Module functions
@@ -26,17 +26,17 @@ IO::NET::HTTP::GET("https://api.example.com/data")
 
 The namespace makes it clear where the function comes from and avoids name conflicts between different providers.
 
-## The USE statement
+## The use statement
 
-When a script repeatedly calls functions from the same namespace, `USE` can create a shorter local alias. Put the declaration at the start of the script, before the script body.
+When a script repeatedly calls functions from the same namespace, `use` can create a shorter local alias. Put the declaration at the start of the script, before the script body.
 
 {{< code lang="fql" >}}
-USE IO::FS AS FS
+use IO::FS as FS
 
-RETURN FS::READ("/tmp/data.json")
+return FS::READ("/tmp/data.json")
 {{</ code >}}
 
-`USE` is a compile-time alias; it does not load a module or change which functions the runtime provides. See the [`USE` statement reference]({{< ref "/docs/language/script-structure/use" >}}) for function aliases, placement rules, and name-resolution behavior.
+`use` is a compile-time alias; it does not load a module or change which functions the runtime provides. See the [`use` statement reference]({{< ref "/docs/language/script-structure/use" >}}) for function aliases, placement rules, and name-resolution behavior.
 
 ## Where functions come from
 

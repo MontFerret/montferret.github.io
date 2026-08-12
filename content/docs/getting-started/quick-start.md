@@ -20,13 +20,13 @@ Start with a simple expression:
 
 {{< tab title="Terminal" >}}
 {{< terminal >}}
-ferret run -e 'RETURN 1 + 1'
+ferret run -e 'return 1 + 1'
 {{< /terminal >}}
 {{< /tab >}}
 
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-RETURN 1 + 1
+return 1 + 1
 {{< /editor >}}
 {{< /tab >}}
 
@@ -34,7 +34,7 @@ RETURN 1 + 1
 
 This script does not open a page or use a browser. It evaluates an expression and returns the result.
 
-`RETURN` produces the script's final value. In this case, the returned value is the result of `1 + 1`; without an explicit return, a non-empty script completes with `NONE`.
+`return` produces the script's final value. In this case, the returned value is the result of `1 + 1`; without an explicit return, a non-empty script completes with `none`.
 
 ## Work with structured data
 
@@ -44,12 +44,12 @@ Ferret can also work with objects, arrays, and function calls:
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-LET user = {
+let user = {
     name: "Ada",
     roles: ["admin", "editor"]
 }
 
-RETURN {
+return {
     name: user.name,
     isAdmin: CONTAINS(user.roles, "admin")
 }
@@ -59,12 +59,12 @@ RETURN {
 
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET user = {
+let user = {
     name: "Ada",
     roles: ["admin", "editor"]
 }
 
-RETURN {
+return {
     name: user.name,
     isAdmin: CONTAINS(user.roles, "admin")
 }
@@ -72,9 +72,9 @@ RETURN {
 {{< /tab >}}
 {{< /tabs >}}
 
-This example defines a variable with `LET`, creates an object, reads fields with dot notation, and returns a new object.
+This example defines a variable with `let`, creates an object, reads fields with dot notation, and returns a new object.
 
-`LET` creates a local binding. Here, user is an object with a name field and a roles array. The `RETURN` expression builds a new object from that data and uses `CONTAINS` to check whether the user has the admin role.
+`let` creates a local binding. Here, user is an object with a name field and a roles array. The `return` expression builds a new object from that data and uses `CONTAINS` to check whether the user has the admin role.
 
 ## Query HTML
 
@@ -84,16 +84,16 @@ Now let’s load a page and query HTML elements from it:
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page[~ css`article`]
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+return page[~ css`article`]
 '
 {{< /terminal >}}
 {{< /tab >}}
 
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page[~ css`article`]
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+return page[~ css`article`]
 {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
@@ -112,15 +112,16 @@ Some pages need JavaScript to render their content. For those cases, Ferret can 
 {{< tab title="Terminal" >}} 
 {{< terminal command="true" >}}
 ferret run -e '
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-RETURN page.title
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+return page.title
 '
 {{< /terminal >}}
 {{< /tab >}}
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" }) 
-RETURN page.title {{< /editor >}}
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+return page.title
+{{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
 
@@ -134,7 +135,7 @@ For static HTML pages, the non-browser mode is usually simpler and faster.
 For anything longer than a small example, save the script to a `.fql` file:
 
 {{< terminal command="true" >}}
-echo 'RETURN "Hello, Ferret"' > hello.fql
+echo 'return "Hello, Ferret"' > hello.fql
 {{< /terminal >}}
 
 Then run it:
@@ -148,7 +149,7 @@ ferret run hello.fql
 Scripts can also read parameters passed from the CLI. Parameters are available through the `@` prefix:
 
 {{< terminal command="true" >}}
-echo 'RETURN "Hello, " + @name' > hello.fql
+echo 'return "Hello, " + @name' > hello.fql
 {{< /terminal >}}
 
 Run it with a parameter:

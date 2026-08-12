@@ -21,9 +21,9 @@ FUNCTION_NAME(argument1, argument2, ...)
 For example:
 
 {{< editor lang="fql" >}}
-LET values = [1, 2, 3, 4]
+let values = [1, 2, 3, 4]
 
-RETURN LENGTH(values)
+return LENGTH(values)
 {{</ editor >}}
 
 Function names are case-sensitive. `LENGTH` and `length` refer to different identifiers.
@@ -33,9 +33,9 @@ Function names are case-sensitive. `LENGTH` and `length` refer to different iden
 A function call may be used anywhere an expression is accepted.
 
 {{< editor lang="fql" >}}
-LET name = "Ada Lovelace"
+let name = "Ada Lovelace"
 
-RETURN {
+return {
     original: name,
     upper: UPPER(name),
     length: LENGTH(name)
@@ -45,18 +45,18 @@ RETURN {
 Arguments are evaluated before the function is called. The resulting values are then passed to the function in the order in which the arguments appear.
 
 {{< editor lang="fql" >}}
-LET subtotal = 120
-LET taxRate = 0.08
+let subtotal = 120
+let taxRate = 0.08
 
-RETURN ROUND(subtotal + subtotal * taxRate)
+return ROUND(subtotal + subtotal * taxRate)
 {{</ editor >}}
 
 A function may also be called with the result of another function.
 
 {{< editor lang="fql" >}}
-LET message = "  hello ferret  "
+let message = "  hello ferret  "
 
-RETURN UPPER(TRIM(message))
+return UPPER(TRIM(message))
 {{</ editor >}}
 
 Nested calls are ordinary expressions. They should be used only where the resulting expression remains clear enough for the query being written.
@@ -66,7 +66,7 @@ Nested calls are ordinary expressions. They should be used only where the result
 Function arguments are separated by commas.
 
 {{< editor lang="fql" >}}
-RETURN CONCAT("ferret", "-", "lang")
+return CONCAT("ferret", "-", "lang")
 {{</ editor >}}
 
 The number and type of accepted arguments depend on the function. Some functions require a fixed number of arguments. Others accept optional arguments or a variable number of arguments.
@@ -74,13 +74,13 @@ The number and type of accepted arguments depend on the function. Some functions
 For example, a function may require a string:
 
 {{< editor lang="fql" >}}
-RETURN LOWER("FERRET")
+return LOWER("FERRET")
 {{</ editor >}}
 
 Another function may accept an array:
 
 {{< editor lang="fql" >}}
-RETURN FIRST([10, 20, 30])
+return FIRST([10, 20, 30])
 {{</ editor >}}
 
 If a function receives an unsupported number of arguments or a value of an unsupported type, the query fails with an error.
@@ -89,24 +89,24 @@ If a function receives an unsupported number of arguments or a value of an unsup
 
 Every function call produces a value.
 
-The returned value may be any FQL value: `NONE`, a `boolean`, `number`, `string`, `array`, `object`, `binary` value, or host value.
+The returned value may be any FQL value: `none`, a `boolean`, `number`, `string`, `array`, `object`, `binary` value, or host value.
 
 {{< editor lang="fql" >}}
-LET numbers = [4, 8, 15, 16, 23, 42]
+let numbers = [4, 8, 15, 16, 23, 42]
 
-RETURN {
+return {
     count: LENGTH(numbers),
     first: FIRST(numbers),
-    hasValue: 15 IN numbers
+    hasValue: 15 in numbers
 }
 {{</ editor >}}
 
-A function may return `NONE` when no value is available, when a lookup fails, or when the function is defined to represent absence that way. The exact behavior depends on the function.
+A function may return `none` when no value is available, when a lookup fails, or when the function is defined to represent absence that way. The exact behavior depends on the function.
 
 {{< editor lang="fql" >}}
-LET values = []
+let values = []
 
-RETURN FIRST(values)
+return FIRST(values)
 {{</ editor >}}
 
 ## Built-in functions
@@ -116,9 +116,9 @@ FQL provides built-in functions for common operations on values such as `strings
 Built-in functions are available at the top level, without a namespace prefix.
 
 {{< editor lang="fql" >}}
-LET tags = ["docs", "fql", "runtime"]
+let tags = ["docs", "fql", "runtime"]
 
-RETURN {
+return {
     count: LENGTH(tags),
     first: FIRST(tags),
     joined: CONCAT_SEPARATOR(", ", tags)
@@ -131,23 +131,23 @@ The available built-in functions are documented in [the standard library referen
 
 Because function calls are expressions, they can be combined with other expression forms.
 
-They can be used in LET declarations:
+They can be used in let declarations:
 
 {{< editor lang="fql" >}}
-LET normalized = LOWER(TRIM("  Ferret  "))
+let normalized = LOWER(TRIM("  Ferret  "))
 
-RETURN normalized
+return normalized
 {{</ editor >}}
 
 They can be used in object projections:
 
 {{< editor lang="fql" >}}
-LET user = {
+let user = {
     name: "Ada",
     email: "ADA@example.com"
 }
 
-RETURN {
+return {
     name: user.name,
     email: LOWER(user.email)
 }
@@ -156,24 +156,24 @@ RETURN {
 They can be used in filters:
 
 {{< editor lang="fql" >}}
-LET users = [
+let users = [
     { name: "Ada", active: true },
     { name: "Grace", active: false },
     { name: "Linus", active: true }
 ]
 
-RETURN FOR user IN users {
-    FILTER user.active == true AND LENGTH(user.name) >= 4
-    RETURN user.name
+return for user in users {
+    filter user.active == true and LENGTH(user.name) >= 4
+    return user.name
 }
 {{</ editor >}}
 
 They can also be used in array inline expressions:
 
 {{< editor lang="fql" >}}
-LET names = [" Ada ", " Grace ", " Linus "]
+let names = [" Ada ", " Grace ", " Linus "]
 
-RETURN names[* RETURN TRIM(.)]
+return names[* return TRIM(.)]
 {{</ editor >}}
 
 Inside an inline array expression, the current element is accessed with `.`.
@@ -183,7 +183,7 @@ Inside an inline array expression, the current element is accessed with `.`.
 Some functions operate on values whose exact type is known only at runtime. This commonly happens when values come from bind parameters, host applications, modules, external data, or runtime capabilities.
 
 {{< editor lang="fql" >}}
-RETURN LENGTH(@items)
+return LENGTH(@items)
 {{</ editor >}}
 
 The query may compile even when the final value of `@items` is not known yet. If the provided value is not supported by the function at runtime, the query fails with an error.
@@ -204,7 +204,7 @@ A function call can fail for several reasons:
 For example, a function that expects an array may reject a string:
 
 {{< editor lang="fql" >}}
-RETURN FIRST("not an array")
+return FIRST("not an array")
 {{</ editor >}}
 
 Errors are reported by the compiler when they can be detected statically. Errors that depend on runtime values are reported during execution.

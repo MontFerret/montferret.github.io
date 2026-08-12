@@ -15,8 +15,8 @@ Parameters let the host application inject values into FQL queries. They are the
 In FQL, parameters are referenced with the `@` prefix:
 
 {{< code lang="fql" >}}
-LET result = @base_url + "/users/" + TO_STRING(@user_id)
-RETURN result
+let result = @base_url + "/users/" + TO_STRING(@user_id)
+return result
 {{</ code >}}
 
 ## Engine-level parameters
@@ -95,8 +95,8 @@ A compiled plan knows which parameters the query declares. Use `plan.Params()` t
 
 {{< code lang="go" >}}
 plan, err := engine.Compile(ctx, source.NewAnonymous(`
-    LET url = @base_url + "/users/" + TO_STRING(@user_id)
-    RETURN url
+    let url = @base_url + "/users/" + TO_STRING(@user_id)
+    return url
 `))
 if err != nil {
     log.Fatal(err)
@@ -151,7 +151,7 @@ func main() {
     ctx := context.Background()
 
     plan, err := engine.Compile(ctx, source.NewAnonymous(`
-        RETURN CONCAT(@greeting, " ", @name, @punctuation)
+        return CONCAT(@greeting, " ", @name, @punctuation)
     `))
     if err != nil {
         log.Fatal(err)

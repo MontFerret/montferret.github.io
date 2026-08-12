@@ -15,7 +15,7 @@ Ferret programs operate on runtime values. When a program finishes, the final re
 While the program is running, this is an FQL object containing FQL values. After execution completes, the runtime serializes the result — for example, as a JSON object:
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
   name: "Ada",
   active: true,
   tags: ["math", "logic"]
@@ -31,15 +31,15 @@ During execution, values remain Ferret runtime values. Arrays, objects, host val
 Temporary values that are created and discarded during execution are not serialized. A value only needs to be serializable if it becomes part of the returned result.
 
 {{< editor lang="fql" >}}
-LET items = [1, 2, 3, 4, 5]
+let items = [1, 2, 3, 4, 5]
 
-LET doubled = (
-    FOR item IN items {
-        RETURN item * 2
+let doubled = (
+    for item in items {
+        return item * 2
     }
 )
 
-RETURN doubled[0]
+return doubled[0]
 {{</ editor >}}
 
 Here, `items` and `doubled` are intermediate values. Only the final result — a single number — is serialized.
@@ -50,7 +50,7 @@ Basic FQL values have well-defined serialized representations. The exact encodin
 
 | FQL value | JSON representation |
 | --- | --- |
-| `NONE` | `null` |
+| `none` | `null` |
 | `true`, `false` | `true`, `false` |
 | integer | number |
 | float | number |
@@ -68,7 +68,7 @@ See [Basic Types]({{< ref "basic" >}}) for details on each value type.
 Arrays and objects are serialized recursively. Each element or field value must itself be serializable.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
   users: [
     { name: "Ada", scores: [95, 87] },
     { name: "Grace", scores: [91, 88] }
@@ -84,25 +84,25 @@ Object field order is not guaranteed. FQL objects are unordered collections of n
 
 Object keys are always strings in the serialized representation.
 
-## NONE
+## none
 
-`NONE` represents the absence of a value in FQL. When serialized to JSON, `NONE` is encoded as `null`.
+`none` represents the absence of a value in FQL. When serialized to JSON, `none` is encoded as `null`.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
   name: "Ada",
-  middleName: NONE
+  middleName: none
 }
 {{</ editor >}}
 
-Fields with a `NONE` value are included in the serialized output. A field set to `NONE` is not the same as a missing field — it is a field that is explicitly present with an absent value.
+Fields with a `none` value are included in the serialized output. A field set to `none` is not the same as a missing field — it is a field that is explicitly present with an absent value.
 
 ## Binary values
 
 Binary values represent raw bytes. Because many output formats are text-based, binary values are encoded in a format-appropriate way.
 
 {{< editor lang="fql" >}}
-RETURN IO::NET::HTTP::GET("https://mockery.ferretlang.org/")
+return IO::NET::HTTP::GET("https://mockery.ferretlang.org/")
 {{</ editor >}}
 
 In JSON, binary values are encoded as Base64 strings. Other encodings may use a native binary representation.
@@ -112,7 +112,7 @@ In JSON, binary values are encoded as Base64 strings. Other encodings may use a 
 Date and time values are serialized as strings. In JSON, date/time values are encoded using the RFC 3339 format.
 
 {{< editor lang="fql" >}}
-RETURN NOW()
+return NOW()
 {{</ editor >}}
 
 ## Duration values
@@ -120,7 +120,7 @@ RETURN NOW()
 Duration values are serialized as normalized strings in JSON and MessagePack, including when nested in arrays or objects.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
   timeout: 5000ms,
   intervals: [100ms, 1s]
 }
@@ -134,26 +134,26 @@ Host values represent values provided by the embedding runtime. They may wrap ex
 
 Host values are not serialized by inspecting their internal structure. Instead, their serialized form is determined by the host runtime.
 
-A host value may serialize to an object, string, number, array, `NONE`, or another supported representation. The encoding depends on what the host value exposes. For example, a host value may implement a standard marshaling interface that defines how it is converted to the output format.
+A host value may serialize to an object, string, number, array, `none`, or another supported representation. The encoding depends on what the host value exposes. For example, a host value may implement a standard marshaling interface that defines how it is converted to the output format.
 
 Some host values may not be serializable at all. If a non-serializable host value is part of the returned result, serialization produces an error.
 
 {{< code lang="fql" >}}
-LET db = DB::SQLITE::OPEN("data.db")
+let db = DB::SQLITE::OPEN("data.db")
 
 // This may fail — a connection handle may not be serializable
-RETURN db
+return db
 {{</ code >}}
 
 Instead, return data extracted from the host value:
 
 {{< code lang="fql" >}}
-LET db = DB::SQLITE::OPEN({ memory: true })
+let db = DB::SQLITE::OPEN({ memory: true })
 
-RETURN QUERY `
+return query `
   SELECT id, name
   FROM users
-` IN db USING sql
+` in db using sql
 {{</ code >}}
 
 The first example attempts to serialize a database connection handle, which may not have a meaningful external representation. The second example returns query results — basic values that serialize naturally.
@@ -165,10 +165,10 @@ See [Host Values]({{< ref "host" >}}) and [Capability Types]({{< ref "capabiliti
 Some runtime values are iterable but are not arrays. For example, host values that represent cursors, result sets, or lazy sequences may produce values on demand rather than holding them all in memory.
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
-LET elements = QUERY `.product-card` IN page USING css
+let page = WEB::HTML::WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+let elements = query `.product-card` in page using css
 
-RETURN elements
+return elements
 {{</ editor >}}
 
 When an iterable value is part of the returned result, the runtime materializes it into a list before serialization. The iterable is fully consumed, and the resulting list is serialized as an array.
@@ -211,19 +211,19 @@ Examples include:
 - **Non-serializable host values** — host values that do not define an external representation, such as raw connection handles or internal runtime objects.
 
 {{< code lang="fql" >}}
-LET format = (val) => val + "!"
+let format = (val) => val + "!"
 
 // This fails — functions are not serializable
-RETURN format
+return format
 {{</ code >}}
 
 If a non-serializable value is nested inside an otherwise serializable structure, the entire serialization fails:
 
 {{< code lang="fql" >}}
-LET format = (val) => val + "!"
+let format = (val) => val + "!"
 
 // This also fails — the function is nested inside the returned object
-RETURN {
+return {
   name: "Ada",
   formatter: format
 }
@@ -243,14 +243,14 @@ When serialization fails, the error identifies what could not be serialized. The
 
 {{< code lang="fql" >}}
 // Instead of returning the connection
-LET db = DB::SQLITE::OPEN("data.db")
+let db = DB::SQLITE::OPEN("data.db")
 
 // Return the data
-LET users = (
-    QUERY `SELECT id, name FROM users` IN db USING sql
+let users = (
+    query `SELECT id, name FROM users` in db using sql
 )
 
-RETURN users
+return users
 {{</ code >}}
 
 ## Next steps

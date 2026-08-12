@@ -25,7 +25,7 @@ Request body:
 
 ```json
 {
-  "text": "RETURN @name",
+  "text": "return @name",
   "params": {
     "name": "Ada"
   }
@@ -45,7 +45,7 @@ Example:
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "RETURN { name: @name, active: true }",
+    "text": "return { name: @name, active: true }",
     "params": {
       "name": "Ada"
     }
@@ -89,7 +89,7 @@ Use the CDP driver from FQL when the script needs Chrome:
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "LET page = DOCUMENT(@url, { driver: \"cdp\" }) RETURN page.title",
+    "text": "let page = DOCUMENT(@url, { driver: \"cdp\" }) return page.title",
     "params": {
       "url": "https://example.com"
     }
@@ -160,7 +160,7 @@ The Ferret CLI and Lab use Worker-compatible HTTP runtimes by sending the same `
 
 ```json
 {
-  "text": "RETURN @name",
+  "text": "return @name",
   "params": {
     "name": "Ada"
   }

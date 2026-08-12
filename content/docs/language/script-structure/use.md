@@ -1,25 +1,25 @@
 ---
-title: "USE Statement"
+title: "use Statement"
 sidebarTitle: "Use"
 weight: 10
 draft: false
-description: "Create local aliases for namespaces and namespaced functions with the USE statement."
+description: "Create local aliases for namespaces and namespaced functions with the use statement."
 ---
 
-# The USE statement
+# The use statement
 
-`USE` creates a local alias for a fully qualified namespace or namespaced function. Use it when repeating a long qualified name would make a script harder to read.
+`use` creates a local alias for a fully qualified namespace or namespaced function. Use it when repeating a long qualified name would make a script harder to read.
 
-Aliases are resolved when the script is compiled. `USE` does not import, load, or register a module.
+Aliases are resolved when the script is compiled. `use` does not import, load, or register a module.
 
 ## Alias a namespace
 
 Use a namespace alias as the first segment of a qualified function name:
 
 {{< code lang="fql" >}}
-USE IO::NET::HTTP AS HTTP
+use IO::NET::HTTP as HTTP
 
-RETURN HTTP::GET("https://api.example.com/data")
+return HTTP::GET("https://api.example.com/data")
 {{</ code >}}
 
 Here, `HTTP::GET(...)` resolves to `IO::NET::HTTP::GET(...)`.
@@ -27,36 +27,36 @@ Here, `HTTP::GET(...)` resolves to `IO::NET::HTTP::GET(...)`.
 The syntax is:
 
 {{< code lang="fql" >}}
-USE target AS alias
+use target as alias
 {{</ code >}}
 
 For a namespace alias, `target` is the fully qualified namespace and `alias` is the shorter name used by the rest of the script.
 
 ## Alias a function
 
-`USE` can also alias a specific namespaced function. The alias is then called without a namespace prefix:
+`use` can also alias a specific namespaced function. The alias is then called without a namespace prefix:
 
 {{< code lang="fql" >}}
-USE IO::NET::HTTP::GET AS GET
+use IO::NET::HTTP::GET as GET
 
-RETURN GET("https://api.example.com/data")
+return GET("https://api.example.com/data")
 {{</ code >}}
 
 Here, `GET(...)` resolves to `IO::NET::HTTP::GET(...)`.
 
-## Place USE before the script body
+## Place use before the script body
 
-`USE` declarations belong in the script header. Put them before variable declarations, function declarations, function calls, standalone loops, and `RETURN` statements.
+`use` declarations belong in the script header. Put them before variable declarations, function declarations, function calls, standalone loops, and `return` statements.
 
 A script may declare more than one alias:
 
 {{< code lang="fql" >}}
-USE IO::FS AS FS
-USE IO::NET::HTTP::GET AS GET
+use IO::FS as FS
+use IO::NET::HTTP::GET as GET
 
-LET data = FS::READ("/tmp/data.json")
+let data = FS::READ("/tmp/data.json")
 
-RETURN [data, GET("https://api.example.com/data")]
+return [data, GET("https://api.example.com/data")]
 {{</ code >}}
 
 ## Resolution rules

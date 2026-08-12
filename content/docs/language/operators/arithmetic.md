@@ -26,7 +26,7 @@ For exponentiation, use `POW()`. The syntax `base ** exponent` is not supported.
 Numeric arithmetic accepts only `Int` and `Float` values.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     integer: 1 + 2,
     mixed: 1 + 2.5,
     product: 2.5 * 3,
@@ -45,13 +45,13 @@ Zero divisors produce the specific diagnostics `division by zero` and `modulo by
 Numeric-looking strings are not numbers. Convert them explicitly:
 
 {{< editor lang="fql" >}}
-LET input = "10"
+let input = "10"
 
-RETURN TO_NUMBER(input) - 2
+return TO_NUMBER(input) - 2
 {{</ editor >}}
 
 {{< notification type="info" >}}
-Implicit numeric-string, Boolean, <code>NONE</code>, collection, Binary, and opaque host-value arithmetic is no longer supported. Use an explicit <code>TO_*</code> function when conversion is intended.
+Implicit numeric-string, Boolean, <code>none</code>, collection, Binary, and opaque host-value arithmetic is no longer supported. Use an explicit <code>TO_*</code> function when conversion is intended.
 {{</ notification >}}
 
 ## String concatenation
@@ -59,11 +59,11 @@ Implicit numeric-string, Boolean, <code>NONE</code>, collection, Binary, and opa
 If either `+` operand is an actual String, Ferret concatenates both operands' String representations. The String may appear on either side and may be combined with any runtime value.
 
 {{< editor lang="fql" >}}
-RETURN [
+return [
     "a" + 1,
     1 + "a",
     "enabled=" + true,
-    NONE + " value",
+    none + " value",
     [1, 2] + " items",
     1s + " elapsed"
 ]
@@ -94,9 +94,9 @@ DateTime and Duration arithmetic accepts only the native operand pairs below. Co
 | unary `+Duration` or `-Duration` | Duration |
 
 {{< editor lang="fql" >}}
-LET start = TO_DATETIME("2024-03-10T06:30:00Z")
+let start = TO_DATETIME("2024-03-10T06:30:00Z")
 
-RETURN {
+return {
     combined: 1s + 250ms,
     multiplied: 2.5 * 5s,
     scaled: 5s / 2,
@@ -117,10 +117,10 @@ Unsupported temporal pairs include `DateTime + DateTime`, `Duration - DateTime`,
 Unary `+` and `-` accept only `Int`, `Float`, and `Duration`. Other operand types raise an invalid-operation error.
 
 {{< editor lang="fql" >}}
-LET x = -5
-LET interval = 500ms
+let x = -5
+let interval = 500ms
 
-RETURN [-x, +interval, -interval]
+return [-x, +interval, -interval]
 {{</ editor >}}
 
 ## Invalid operations

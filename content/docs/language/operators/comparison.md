@@ -14,8 +14,8 @@ FQL provides:
 
 - `==` and `!=` for equality
 - `<`, `<=`, `>`, and `>=` for relational comparison
-- `IN` and `NOT IN` for containment
-- `LIKE` and `NOT LIKE` for wildcard matching
+- `in` and `not in` for containment
+- `like` and `not like` for wildcard matching
 - `=~` and `!~` for regular expression matching
 
 ## Equality
@@ -23,10 +23,10 @@ FQL provides:
 Equality and inequality are valid across all operand types. Incompatible values are unequal: `==` returns false and `!=` returns true. FQL does not implicitly convert strings, numbers, DateTime values, or Duration values before testing equality.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     mixedNumeric: 1 == 1.0,
     numericString: 65 == "65",
-    noneAndZero: NONE == 0,
+    noneAndZero: none == 0,
     sameText: "abc" == "abc",
     incompatible: 1s != "1s"
 }
@@ -34,7 +34,7 @@ RETURN {
 
 `Int` and `Float` are the numeric exception: they compare by numeric value. Arrays and objects compare recursively, so nested values follow these same rules. Object property declaration order does not affect equality.
 
-`MATCH`, membership, grouping, set operations, and deduplication use the same canonical equality semantics.
+`match`, membership, grouping, set operations, and deduplication use the same canonical equality semantics.
 
 ## Relational comparison
 
@@ -54,7 +54,7 @@ See [Type Ordering]({{< ref "../types/ordering" >}}) for structural and cross-ty
 Native Duration values compare only with other native Duration values. Equivalent units normalize to the same value.
 
 {{< editor lang="fql" >}}
-RETURN {
+return {
     equivalent: 1s == 1000ms,
     greater: 5s > 4999ms,
     stringIsDifferent: 1s == "1s",
@@ -70,7 +70,7 @@ operator '>' cannot be applied to String and Duration
 operator '<=' cannot be applied to Duration and String
 {{</ code >}}
 
-The same rule applies recursively. For example, `[1s] == ["1s"]` is false, while `[1s] < ["1s"]` raises an invalid-operation error. Element-wise `ANY`, `ALL`, and `NONE` comparisons also use this strict behavior.
+The same rule applies recursively. For example, `[1s] == ["1s"]` is false, while `[1s] < ["1s"]` raises an invalid-operation error. Element-wise `any`, `all`, and `none` comparisons also use this strict behavior.
 
 {{< notification type="info" >}}
 Duration comparison no longer converts numbers or strings implicitly. Use <code>TO_DURATION(value)</code> before comparison when conversion is intended.
@@ -80,7 +80,7 @@ DateTime values compare by canonical instant when both operands are DateTime. A 
 
 ## Containment
 
-`IN` tests the left value against the container on the right:
+`in` tests the left value against the container on the right:
 
 - an Array or other runtime List tests whether an equal element exists;
 - an Object or other runtime Map tests whether an equal value exists;
@@ -88,26 +88,26 @@ DateTime values compare by canonical instant when both operands are DateTime. A 
 - any other right operand returns false.
 
 {{< editor lang="fql" >}}
-RETURN {
-    arrayValue: 1 IN [2, 3, 1],
-    objectValue: "Ada" IN { name: "Ada" },
-    substring: "err" IN "runtime error",
-    unsupported: "foo" IN NONE
+return {
+    arrayValue: 1 in [2, 3, 1],
+    objectValue: "Ada" in { name: "Ada" },
+    substring: "err" in "runtime error",
+    unsupported: "foo" in none
 }
 {{</ editor >}}
 
 Object containment checks values, not property names. Use the appropriate property-access or existence operation when testing a key.
 
-`NOT IN` negates the `IN` result. Consequently, it returns true for an unsupported right operand.
+`not in` negates the `in` result. Consequently, it returns true for an unsupported right operand.
 
 ## Pattern matching
 
-`LIKE` compares a String against a case-sensitive wildcard pattern. `*` matches any sequence and `?` matches one character. `NOT LIKE` returns the opposite result.
+`like` compares a String against a case-sensitive wildcard pattern. `*` matches any sequence and `?` matches one character. `not like` returns the opposite result.
 
 {{< code lang="fql" >}}
-"foo" LIKE "f*"
-"abc" LIKE "?bc"
-"abc" NOT LIKE "a*"
+"foo" like "f*"
+"abc" like "?bc"
+"abc" not like "a*"
 {{</ code >}}
 
 ## Regular expressions

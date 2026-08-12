@@ -18,18 +18,18 @@ Use `SCREENSHOT` to capture the visible page:
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-LET data = SCREENSHOT(page)
-RETURN data
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let data = SCREENSHOT(page)
+return data
 '
 {{< /terminal >}}
 {{< /tab >}}
 
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-LET data = SCREENSHOT(page)
-RETURN data
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let data = SCREENSHOT(page)
+return data
 {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
@@ -37,11 +37,11 @@ RETURN data
 `SCREENSHOT` returns binary data (base64-encoded PNG). To save it to a file, use `IO::FS::WRITE`:
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-LET data = SCREENSHOT(page)
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let data = SCREENSHOT(page)
 IO::FS::WRITE("screenshot.png", data)
 
-RETURN "saved"
+return "saved"
 {{</ code >}}
 
 ## Screenshot options
@@ -49,16 +49,16 @@ RETURN "saved"
 Pass options to control the output:
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 
-LET data = SCREENSHOT(page, {
+let data = SCREENSHOT(page, {
     format: "jpeg",
     quality: 80,
-    fullPage: TRUE
+    fullPage: true
 })
 
 IO::FS::WRITE("full-page.jpg", data)
-RETURN "saved"
+return "saved"
 {{</ code >}}
 
 | Option | Type | Description |
@@ -72,27 +72,27 @@ RETURN "saved"
 Use `PDF` to produce a PDF document from the page:
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
-LET data = PDF(page)
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let data = PDF(page)
 IO::FS::WRITE("page.pdf", data)
 
-RETURN "saved"
+return "saved"
 {{</ code >}}
 
 ## PDF options
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 
-LET data = PDF(page, {
-    landscape: TRUE,
-    printBackground: TRUE,
+let data = PDF(page, {
+    landscape: true,
+    printBackground: true,
     paperWidth: 8.5,
     paperHeight: 11
 })
 
 IO::FS::WRITE("report.pdf", data)
-RETURN "saved"
+return "saved"
 {{</ code >}}
 
 | Option | Type | Description |
@@ -108,15 +108,15 @@ RETURN "saved"
 Dynamic pages may need time to render. Wait for the content to stabilize before capturing:
 
 {{< code lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
 
-WAITFOR EXISTS QUERY ONE ".fully-loaded" IN page USING css
-    TIMEOUT 10s
+waitfor exists query one ".fully-loaded" in page using css
+    timeout 10s
 
-LET data = SCREENSHOT(page, { fullPage: TRUE })
+let data = SCREENSHOT(page, { fullPage: true })
 IO::FS::WRITE("loaded.png", data)
 
-RETURN "saved"
+return "saved"
 {{</ code >}}
 
 ## Capture multiple pages
@@ -124,18 +124,18 @@ RETURN "saved"
 Combine screenshots with pagination or navigation:
 
 {{< code lang="fql" >}}
-LET urls = [
+let urls = [
     "https://mockery.ferretlang.org",
     "https://mockery.ferretlang.org/scenarios/ecommerce/"
 ]
 
-RETURN FOR url, i IN urls
-    LET page = WEB::HTML::OPEN(url, { driver: "cdp" })
-    LET data = SCREENSHOT(page, { fullPage: TRUE })
-    LET filename = "screenshot-" + TO_STRING(i) + ".png"
+return for url, i in urls
+    let page = WEB::HTML::OPEN(url, { driver: "cdp" })
+    let data = SCREENSHOT(page, { fullPage: true })
+    let filename = "screenshot-" + TO_STRING(i) + ".png"
     IO::FS::WRITE(filename, data)
 
-    RETURN { url, filename }
+    return { url, filename }
 {{</ code >}}
 
 ## Next steps

@@ -260,7 +260,7 @@ func main() {
 
     plan, err := engine.Compile(
         context.Background(),
-        source.NewAnonymous(`RETURN "Hello, Ferret!"`),
+        source.NewAnonymous(`return "Hello, Ferret!"`),
     )
     if err != nil {
         log.Fatal(err)

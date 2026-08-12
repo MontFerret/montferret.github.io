@@ -36,7 +36,7 @@ engine, err := ferret.New(
 Scripts can then call these functions directly:
 
 {{< code lang="fql" >}}
-RETURN { timestamp: NOW_UNIX(), doubled: DOUBLE(21) }
+return { timestamp: NOW_UNIX(), doubled: DOUBLE(21) }
 {{</ code >}}
 
 ## Function signatures
@@ -82,7 +82,7 @@ engine, err := ferret.New(
 Scripts call these as:
 
 {{< code lang="fql" >}}
-RETURN {
+return {
     md5: CRYPTO::MD5("hello"),
     sha: CRYPTO::SHA256("hello")
 }
@@ -209,7 +209,7 @@ func main() {
     output, err := engine.Run(
         context.Background(),
         source.NewAnonymous(`
-            RETURN {
+            return {
                 titled: TEXT::TITLE_CASE("hello world"),
                 wrapped: TEXT::WRAP("content", "**"),
                 joined: TEXT::JOIN("a", "b", "c")

@@ -33,7 +33,7 @@ Start with ordinary Go documentation prose. The first sentence should begin with
 //
 // Example:
 //
-//	RETURN XML::DECODE("<root><item /></root>")
+//	return XML::DECODE("<root><item /></root>")
 //
 // @param data {String|Binary} XML content.
 // @return {Object} Normalized XML document.

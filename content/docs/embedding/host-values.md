@@ -24,7 +24,7 @@ Host values let an embedding application expose Go-managed resources and objects
 |-----------|----------|-------------|-----------|
 | Parameter | Static data: strings, numbers, config, JSON-like structures | `@name` — a plain value | Host sets before execution |
 | Function | Stateless computation: hash, format, fetch | `FN(args)` → result | No state between calls |
-| Host value | Stateful resource or behavioral object | Variable with capabilities: `val.prop`, `FOR x IN val`, `QUERY ... IN val` | Host creates; runtime tracks `io.Closer` |
+| Host value | Stateful resource or behavioral object | Variable with capabilities: `val.prop`, `for x in val`, `query ... in val` | Host creates; runtime tracks `io.Closer` |
 | Module | Self-contained extension bundling functions + hooks | Namespaced functions and values | Module `Register` + engine lifecycle hooks |
 
 When in doubt, walk through these questions:
@@ -123,8 +123,8 @@ engine, err := ferret.New(
 {{</ code >}}
 
 {{< code lang="fql" >}}
-LET l = LABEL("urgent")
-RETURN TO_STRING(l)
+let l = LABEL("urgent")
+return TO_STRING(l)
 // "urgent"
 {{</ code >}}
 
@@ -139,11 +139,11 @@ A host value without capability interfaces is opaque — scripts can hold it and
 | `KeyReadable` | `Get(ctx, key Value) (Value, error)` | `val.prop`, `val["key"]` |
 | `KeyLookup` | `Lookup(ctx, key Value) (Value, bool, error)` | `val?.prop`              |
 | `KeyWritable` | `Set(ctx, key, value Value) error` | `val.prop = x`           |
-| `KeyRemovable` | `RemoveKey(ctx, key Value) error` | `DELETE val.prop`         |
+| `KeyRemovable` | `RemoveKey(ctx, key Value) error` | `delete val.prop`         |
 | `IndexReadable` | `At(ctx, idx Int) (Value, error)` | `val[0]`                 |
 | `IndexLookup` | `LookupAt(ctx, index Int) (Value, bool, error)` | `val?[0]`                |
 | `IndexWritable` | `SetAt(ctx, idx Int, value Value) error` | `val[0] = x`             |
-| `IndexRemovable` | `RemoveAt(ctx, idx Int) (Value, error)` | `DELETE val[0]`          |
+| `IndexRemovable` | `RemoveAt(ctx, idx Int) (Value, error)` | `delete val[0]`          |
 
 Adding property access to the `Label` type:
 
@@ -161,8 +161,8 @@ func (l *Label) Get(_ context.Context, key runtime.Value) (runtime.Value, error)
 {{</ code >}}
 
 {{< code lang="fql" >}}
-LET l = LABEL("urgent")
-RETURN l.text
+let l = LABEL("urgent")
+return l.text
 // "urgent"
 {{</ code >}}
 
@@ -170,10 +170,10 @@ RETURN l.text
 
 | Interface | Method | FQL syntax |
 |-----------|--------|------------|
-| `Iterable` | `Iterate(ctx) (Iterator, error)` | `FOR x IN val` |
+| `Iterable` | `Iterate(ctx) (Iterator, error)` | `for x in val` |
 | `Iterator` | `Next(ctx) (value, key Value, err error)` | (returned by `Iterate`) |
 | `Measurable` | `Length(ctx) (Int, error)` | `LENGTH(val)` |
-| `Containable` | `Contains(ctx, value Value) (Boolean, error)` | `x IN val` |
+| `Containable` | `Contains(ctx, value Value) (Boolean, error)` | `x in val` |
 
 `Iterator.Next` must return `io.EOF` when the sequence is exhausted. If the iterator holds resources (an open cursor, for example), implement `io.Closer` on it as well.
 
@@ -181,9 +181,9 @@ RETURN l.text
 
 | Interface | Key method | FQL syntax |
 |-----------|------------|------------|
-| `Queryable` | `Query(ctx, Query) (List, error)` + 3 modifiers | `QUERY ... IN val USING ...` |
-| `Dispatchable` | `Dispatch(ctx, DispatchEvent) error` | `DISPATCH "event" TO val` / `val <- event` |
-| `Observable` | `Subscribe(ctx, Subscription) (Stream, error)` | `WAITFOR EVENT "name" IN val` |
+| `Queryable` | `Query(ctx, Query) (List, error)` + 3 modifiers | `query ... in val using ...` |
+| `Dispatchable` | `Dispatch(ctx, DispatchEvent) error` | `dispatch "event" TO val` / `val <- event` |
+| `Observable` | `Subscribe(ctx, Subscription) (Stream, error)` | `waitfor event "name" in val` |
 
 The `Queryable` interface has four methods: `Query`, `QueryOne`, `QueryCount`, and `QueryExists`. If your implementation only needs the list-returning `Query`, delegate the other three to the built-in helpers:
 
@@ -239,7 +239,7 @@ if db, ok := runtime.UnwrapAs[*sql.DB](arg); ok {
 
 ## Returning host values from functions
 
-A common pattern is a namespaced function that opens a resource and returns it as a host value. The following example implements a minimal in-memory store that supports `QUERY ... IN`:
+A common pattern is a namespaced function that opens a resource and returns it as a host value. The following example implements a minimal in-memory store that supports `query ... in`:
 
 {{< code lang="go" >}}
 package main
@@ -336,8 +336,8 @@ func main() {
     defer engine.Close()
 
     plan, err := engine.Compile(ctx, source.NewAnonymous(`
-        LET db = DB::OPEN()
-        RETURN QUERY "SELECT * WHERE age > 18" IN db
+        let db = DB::OPEN()
+        return query "SELECT * WHERE age > 18" in db
     `))
     if err != nil {
         log.Fatal(err)
@@ -373,7 +373,7 @@ engine, err := ferret.New(
 {{</ code >}}
 
 {{< code lang="fql" >}}
-RETURN QUERY "SELECT * WHERE age > 18" IN @db
+return query "SELECT * WHERE age > 18" in @db
 {{</ code >}}
 
 This is useful when the host application controls the resource lifecycle and wants to share a single instance across multiple query executions. The engine-level parameter is available to every session without re-creation.
@@ -426,15 +426,15 @@ func (s *Store) Query(ctx context.Context, q runtime.Query) (runtime.List, error
 }
 {{</ code >}}
 
-Return cancellation with `%w` when adding context. Errors compatible with `context.Canceled` or `context.DeadlineExceeded` terminate execution directly and cannot be caught by `ON ERROR`, retry recovery, or another protected FQL operation.
+Return cancellation with `%w` when adding context. Errors compatible with `context.Canceled` or `context.DeadlineExceeded` terminate execution directly and cannot be caught by `on error`, retry recovery, or another protected FQL operation.
 
 `io.Closer` has no context parameter. Its `Close` call is treated as one atomic operation.
 
 ## Error behavior
 
-When a capability method returns a non-cancellation error, the VM raises an FQL runtime error at the point of the operation. The error message includes the value's type and the Go error text. FQL scripts can recover from eligible errors with `ON ERROR ...`. Cancellation and deadline errors always propagate to the embedding caller. See [Error Handling]({{< ref "docs/language/control-flow/error-handling" >}}).
+When a capability method returns a non-cancellation error, the VM raises an FQL runtime error at the point of the operation. The error message includes the value's type and the Go error text. FQL scripts can recover from eligible errors with `on error ...`. Cancellation and deadline errors always propagate to the embedding caller. See [Error Handling]({{< ref "docs/language/control-flow/error-handling" >}}).
 
-When the script attempts an operation that requires a capability the value does not implement (for example, `FOR x IN val` on a non-`Iterable` value), the VM raises a type error listing the expected capability.
+When the script attempts an operation that requires a capability the value does not implement (for example, `for x in val` on a non-`Iterable` value), the VM raises a type error listing the expected capability.
 
 Use the runtime error helpers to return well-formatted errors from your capability methods:
 

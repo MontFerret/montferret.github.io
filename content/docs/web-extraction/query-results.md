@@ -13,10 +13,10 @@ Query results
 
 Unlike AQL, the result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
 
-For example, when the ``RETURN`` statement is used as the last query statement, a values gets returned as it is:
+For example, when the ``return`` statement is used as the last query statement, a values gets returned as it is:
 
 {{< code lang="fql" height="90px" >}}
-RETURN 1
+return 1
 {{</ code >}}
 
 {{< code lang="fql" height="90px" >}}
@@ -24,7 +24,7 @@ RETURN 1
 {{</ code >}}
 
 {{< code lang="fql" height="90px" >}}
-RETURN { foo: "bar" }
+return { foo: "bar" }
 {{</ code >}}
 
 {{< code lang="fql" height="90px" >}}
@@ -34,8 +34,8 @@ RETURN { foo: "bar" }
 However, when returning data from an iteration, the result values will be always an array:
 
 {{< code lang="fql" height="100px" >}}
-RETURN FOR u IN elements
-    RETURN i.href
+return for u in elements
+    return i.href
 {{</ code >}}
 
 {{< code lang="fql" height="90px" >}}

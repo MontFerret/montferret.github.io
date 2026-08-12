@@ -89,7 +89,7 @@ Parameter values are parsed as JSON. Strings must be JSON strings, so quote them
 In FQL, parameters are available by name:
 
 ```fql
-RETURN {
+return {
   url: @url,
   limit: @limit,
   active: @active

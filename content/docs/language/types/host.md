@@ -21,12 +21,12 @@ A host value represents something owned by the host environment rather than by F
 For example, a database connection value may refer to an open connection managed by a Go module. A browser page value may refer to a live browser tab managed by the browser runtime. FQL does not inspect or copy those values directly. Instead, it works with them through functions, operators, and runtime capabilities.
 
 {{< code lang="fql" >}}
-LET db = DB::SQLITE::OPEN("data.db")
+let db = DB::SQLITE::OPEN("data.db")
 
-RETURN QUERY `
+return query `
   SELECT name
   FROM users
-` IN db
+` in db
 {{</ code >}}
 
 In this example, `db` is a host value. It is not an object containing database fields. It is a runtime-provided value that can be used by operations which understand database connections.
@@ -38,29 +38,29 @@ Host values can participate in normal expression flow.
 They can be assigned to variables:
 
 {{< code lang="fql" >}}
-LET db = DB::SQLITE::OPEN("data.db")
+let db = DB::SQLITE::OPEN("data.db")
 {{</ code >}}
 
 They can be passed to functions:
 
 {{< code lang="fql" >}}
-RETURN DB::TABLES(db)
+return DB::TABLES(db)
 {{</ code >}}
 
 They can be grouped with related data while a query is running:
 
 {{< code lang="fql" >}}
-LET db = DB::SQLITE::OPEN("data.db")
+let db = DB::SQLITE::OPEN("data.db")
 
-LET context = {
+let context = {
   source: db,
   table: "users"
 }
 
-RETURN QUERY `
+return query `
   SELECT *
   FROM users
-` IN context.source
+` in context.source
 {{</ code >}}
 
 However, the internal data of a host value is opaque to FQL. A host value does not automatically expose object fields, array elements, or scalar operations unless the runtime explicitly supports them.
@@ -76,9 +76,9 @@ Some host values expose capabilities that make them usable with familiar FQL syn
 Other host values may expose no properties at all and can only be used through functions or specific language operations.
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::PARSE("<a href='https://example.com'>Example</a>")
+let page = WEB::HTML::PARSE("<a href='https://example.com'>Example</a>")
 
-RETURN page.body
+return page.body
 {{</ editor >}}
 
 In this example, property access works because the HTML host value explicitly supports it. FQL is not accessing the host value's internal implementation directly; it is using a capability exposed by that value.
@@ -87,18 +87,18 @@ In this example, property access works because the HTML host value explicitly su
 
 Some host values expose capabilities.
 
-A capability describes an operation that a value supports. For example, a database connection may support query execution, which allows it to be used with `QUERY ... IN`.
+A capability describes an operation that a value supports. For example, a database connection may support query execution, which allows it to be used with `query ... in`.
 
 {{< code lang="fql" >}}
-LET db = DB::SQLITE::OPEN("data.db")
+let db = DB::SQLITE::OPEN("data.db")
 
-RETURN QUERY `
+return query `
   SELECT *
   FROM users
-` IN db
+` in db
 {{</ code >}}
 
-The `QUERY ... IN db` expression works because `db` provides the capability required by query execution.
+The `query ... in db` expression works because `db` provides the capability required by query execution.
 
 FQL does not need to know how the database connection is implemented internally. It only needs to know that the value supports the required operation.
 
@@ -125,7 +125,7 @@ Host values are regular FQL values during execution, but they are not always ser
 When a program returns a result, Ferret converts that result into the output format selected by the host. The default output format is JSON, but embedded hosts may choose a different encoding.
 
 {{< code lang="fql" >}}
-RETURN DB::SQLITE::OPEN("data.db")
+return DB::SQLITE::OPEN("data.db")
 {{</ code >}}
 
 This expression returns a host value during execution. When the program result is finalized, the host decides how that value should be represented in the selected output format.

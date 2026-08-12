@@ -10,12 +10,12 @@
                         <span class="hero-wordmark">Ferret</span>
                     </div>
 
-                    <p class="landing-eyebrow">Declarative data extraction</p>
-                    <h1 id="landing-title">Extract with intent</h1>
+                    <p class="landing-eyebrow">Declarative-first data automation</p>
+                    <h1 id="landing-title">Embed data logic</h1>
                     <p class="landing-hero-lead">
-                        Ferret is an open-source query language (FQL) and runtime
-                        for structured data extraction from web pages, APIs,
-                        databases, and files.
+                        Ferret is an open-source, expression-oriented language
+                        and embeddable runtime for structured data workflows
+                        across host values, web pages, APIs, databases, and files.
                     </p>
 
                     <div class="landing-actions" aria-label="Primary actions">
@@ -48,15 +48,15 @@
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-browser" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET page = WEB::HTML::OPEN(@page, { driver: "cdp" })
+let page = WEB::HTML::OPEN(@page, { driver: "cdp" })
 
-LET products = WAITFOR VALUE page[~ `.product-card`]
-    WHEN LENGTH(.) > 0
-    TIMEOUT 5000
-    ON TIMEOUT RETURN []
+let products = waitfor value page[~ `.product-card`]
+    when LENGTH(.) > 0
+    timeout 5000
+    on timeout return []
 
-FOR product IN products
-    RETURN {
+return for product in products
+    return {
         brand: product[~? `.product-brand`].textContent,
         title: product[~? `.product-title`].textContent,
         price: product[~? `.product-price`].textContent,
@@ -80,14 +80,14 @@ FOR product IN products
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-ai" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET page = WEB::HTML::OPEN(@page)
+let page = WEB::HTML::OPEN(@page)
 
-LET model = AI::LLM::MODEL("openai", {
+let model = AI::LLM::MODEL("openai", {
     model: @model,
     apiKey: @apiKey
 })
 
-RETURN AI::LLM::EXTRACT(model, page.innerHTML, @schema, {
+return AI::LLM::EXTRACT(model, page.innerHTML, @schema, {
     instructions: "Use the advertised price."
 })
                                         </div>
@@ -109,15 +109,15 @@ RETURN AI::LLM::EXTRACT(model, page.innerHTML, @schema, {
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-api" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET api = NET::REST::CLIENT(@endpoint)
+let api = NET::REST::CLIENT(@endpoint)
                                             
-FOR order IN QUERY @path IN api WITH {
+return for order in query @path in api with {
     query: {
         status: "open",
         limit: 20
     }
 }
-    RETURN {
+    return {
         id: order.id,
         customer: order.customer.name,
         total: order.total,
@@ -142,15 +142,15 @@ FOR order IN QUERY @path IN api WITH {
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-database" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET db = DB::SQLITE::OPEN({ path: @db })
+let db = DB::SQLITE::OPEN({ path: @db })
 
-FOR invoice IN QUERY `
+return for invoice in query `
     SELECT id, customer, total
     FROM invoices
     WHERE total > ?
-` IN db WITH { params: [@minTotal] }
+` in db with { params: [@minTotal] }
 
-    RETURN {
+    return {
         id: invoice.id,
         customer: invoice.customer,
         total: invoice.total
@@ -174,12 +174,12 @@ FOR invoice IN QUERY `
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-document" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET workbook = DOCUMENT::XLSX::OPEN(@file)
-LET sales = DOCUMENT::XLSX::SHEET(workbook, @sheet)
+let workbook = DOCUMENT::XLSX::OPEN(@file)
+let sales = DOCUMENT::XLSX::SHEET(workbook, @sheet)
 
-FOR row IN QUERY "A1:D100" IN sales WITH { headers: true }
-    FILTER row.Active
-    RETURN {
+return for row in query "A1:D100" in sales with { headers: true }
+    filter row.Active
+    return {
         name: row.Name,
         department: row.Department,
         score: row.Score
@@ -203,11 +203,11 @@ FOR row IN QUERY "A1:D100" IN sales WITH { headers: true }
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-file" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-LET file = IO::FS::READ(@file)
+let file = IO::FS::READ(@file)
 
-FOR row IN CSV::DECODE_ROWS(file)
-    FILTER row.status == @status
-    RETURN {
+return for row in CSV::DECODE_ROWS(file)
+    filter row.status == @status
+    return {
         orderId: row.order_id,
         customer: row.customer,
         reason: row.error

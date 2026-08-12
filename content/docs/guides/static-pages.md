@@ -17,8 +17,8 @@ Static extraction does not need a browser. Ferret fetches the HTML over HTTP and
 Use `WEB::HTML::OPEN` to fetch and parse an HTML page:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-RETURN page.title
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+return page.title
 {{< /editor >}}
 
 The function returns an HTML page value. You can read properties like `title` directly on it.
@@ -28,19 +28,19 @@ The function returns an HTML page value. You can read properties like `title` di
 Use the query expression to find elements:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
-RETURN QUERY "article h2" IN page USING css
+return query "article h2" in page using css
 {{< /editor >}}
 
 This returns all matching elements as an array.
 
-To get a single element, use `QUERY ONE`:
+To get a single element, use `query one`:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
-RETURN QUERY ONE "article h2" IN page USING css
+return query one "article h2" in page using css
 {{< /editor >}}
 
 More about query expressions [see the documentation]({{< ref "/docs/language/control-flow/query" >}}).
@@ -50,11 +50,11 @@ More about query expressions [see the documentation]({{< ref "/docs/language/con
 Once you have an element, read its properties:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
-RETURN FOR link IN (QUERY "a" IN page USING css)
-    LIMIT 5
-    RETURN {
+return for link in (query "a" in page using css)
+    limit 5
+    return {
         text: link.textContent,
         href: link.attributes.href
     }
@@ -71,24 +71,24 @@ Common element properties:
 
 ## Use array operators for compact extraction
 
-The `[*]` array operator lets you project fields from a list of elements without writing a `FOR` loop:
+The `[*]` array operator lets you project fields from a list of elements without writing a `for` loop:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-LET links = QUERY "a" IN page USING css
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let links = query "a" in page using css
 
-RETURN links[*].attributes.href
+return links[*].attributes.href
 {{< /editor >}}
 
 You can also filter inline:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-LET links = QUERY "a" IN page USING css
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let links = query "a" in page using css
 
-RETURN links[*
-    FILTER .attributes.href != NONE
-    RETURN {
+return links[*
+    filter .attributes.href != none
+    return {
         text: .textContent,
         href: .attributes.href
     }
@@ -100,33 +100,33 @@ RETURN links[*
 When a page has repeating structures — product cards, table rows, list items — query the container first, then query inside each one:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
-LET cards = QUERY ".product-card" IN page USING css
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
+let cards = query ".product-card" in page using css
 
-RETURN FOR card IN cards
-    RETURN {
-        name: (QUERY ONE QUERY ".product-name" IN card USING css)?.textContent,
-        price: (QUERY ONE QUERY ".product-price" IN card USING css)?.textContent
+return for card in cards
+    return {
+        name: (query one query ".product-name" in card using css)?.textContent,
+        price: (query one query ".product-price" in card using css)?.textContent
     }
 {{< /editor >}}
 
 > NOTE: For simple queries, you can use the shortcut query syntax. For details and limitations, see [Shortcut syntax]({{< ref "/docs/language/control-flow/query#shortcut-syntax" >}}).
 
-The `?.` optional chaining operator returns `NONE` instead of failing when an element is not found. This keeps the script running even when some cards are missing a field.
+The `?.` optional chaining operator returns `none` instead of failing when an element is not found. This keeps the script running even when some cards are missing a field.
 
 ## Handle missing elements
 
-Not every page has the elements you expect. Use `QUERY EXISTS` to check before extracting, or `ON ERROR RETURN` to provide a fallback:
+Not every page has the elements you expect. Use `query exists` to check before extracting, or `on error return` to provide a fallback:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
 
-LET title = QUERY ONE ".page-title" IN page USING css
-    ON ERROR RETURN NONE
+let title = query one ".page-title" in page using css
+    on error return none
 
-LET hasNav = QUERY EXISTS "nav" IN page USING css
+let hasNav = query exists "nav" in page using css
 
-RETURN {
+return {
     title: title?.textContent,
     hasNav
 }
@@ -136,21 +136,21 @@ For more error handling patterns, see [Error handling and resilience]({{< ref "e
 
 ## Filter and sort results
 
-Use `FILTER`, `SORT`, and `LIMIT` inside a `FOR` loop to shape the output:
+Use `filter`, `sort`, and `limit` inside a `for` loop to shape the output:
 
 {{< editor lang="fql" >}}
-LET page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
-LET cards = QUERY '.product-card' IN page USING css
+let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
+let cards = query '.product-card' in page using css
 
-RETURN FOR card IN cards
-    LET title = (QUERY ONE '.product-title' IN card USING css)?.textContent
-    LET price = (QUERY ONE '.product-price' IN card USING css)?.textContent
+return for card in cards
+    let title = (query one '.product-title' in card using css)?.textContent
+    let price = (query one '.product-price' in card using css)?.textContent
 
-    FILTER title != NONE
-    SORT title ASC
-    LIMIT 10
+    filter title != none
+    sort title asc
+    limit 10
 
-    RETURN { title, price }
+    return { title, price }
 {{</ editor >}}
 
 ## Use parameters for reusable scripts
@@ -159,9 +159,9 @@ Save a script to a file and pass the URL as a parameter:
 
 {{< terminal command="true" >}}
 echo '
-LET page = WEB::HTML::OPEN(@url)
-LET headers = QUERY 'h1, h2, h3' IN page USING css
-RETURN headers[*].textContent
+let page = WEB::HTML::OPEN(@url)
+let headers = query 'h1, h2, h3' in page using css
+return headers[*].textContent
 ' > headings.fql
 {{< /terminal >}}
 
@@ -177,10 +177,10 @@ ferret run headings.fql --param url=https://mockery.ferretlang.org
 {{< tab title="Try in browser" >}}
 
 {{< editor lang="fql" params=`{ "url": "https://mockery.ferretlang.org/"}` >}}
-LET page = WEB::HTML::OPEN(@url)
-LET headers = QUERY 'h1, h2, h3' IN page USING css
+let page = WEB::HTML::OPEN(@url)
+let headers = query 'h1, h2, h3' in page using css
 
-RETURN headers[*].textContent
+return headers[*].textContent
 {{</ editor >}}
 {{</ tab >}}
 {{</ tabs >}}

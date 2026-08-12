@@ -134,7 +134,7 @@ NTH
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/nth.go#L16)
 
-NTH returns the element of an array at a given position. It is the same as anyArray[position] for positive positions, but does not support negative positions. If position is negative or beyond the upper bound of the array, then NONE will be returned.
+NTH returns the element of an array at a given position. It is the same as anyArray[position] for positive positions, but does not support negative positions. If position is negative or beyond the upper bound of the array, then `none` will be returned.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

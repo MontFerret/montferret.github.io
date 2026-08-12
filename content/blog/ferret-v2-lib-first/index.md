@@ -11,7 +11,7 @@ When people first discover Ferret, they usually encounter the command-line inter
 
 They write a query, run it against a website or an API, inspect the results, and move on, and for many use cases, that’s all they need.
 
-But in reality, the CLI was never the center of the project. Ferret was built around a much simpler idea: build the library first, then build applications around it.
+But in reality, the CLI was never the center of the project. Ferret was built around a much simpler idea: make a declarative-first, expression-oriented language an embeddable library first, then build applications around it.
 
 One engineering principle that has influenced almost every project I’ve built over the past fifteen years is this: whenever possible, I start by building a library.
 
@@ -124,12 +124,12 @@ Suppose you’re building an inventory system.
 Your application could register an `INVENTORY` namespace that exposes products, warehouses, suppliers, or purchase orders directly to queries.
 
 {{< code lang="fql" >}}
-LET products = INVENTORY::SEARCH({
+let products = INVENTORY::SEARCH({
     category: "Books",
     available: true
 })
 
-RETURN products
+return products
 {{</ code >}}
 
 `INVENTORY` isn’t built into Ferret at all; it’s simply a namespace provided by your application. 
