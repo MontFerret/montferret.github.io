@@ -1,14 +1,19 @@
 ---
-title: "Ferret v2: Language Evolution"
-subtitle: "Ferret Is Growing Into Its Own Language"
+title: "Ferret v2: Moving Beyond AQL"
+subtitle: "What We’re Keeping, What We’re Changing, and Why"
 draft: false
 author: "Tim Voronov"
 authorLink: "https://github.com/ziflex"
 date: "2026-08-13"
 ---
-Ferret started life with a strong influence from ArangoDB's AQL.
 
-You can still see that heritage immediately in a traditional Ferret script:
+One of the fun (and sometimes dangerous) parts of working on a language for a long time is that, at some point, it starts developing a personality of its own.
+
+You add a feature because you need it, another one because the previous feature made something else possible, and then one day you look at the language and realize that some of the conventions you started with don't quite fit anymore.
+
+That's more or less where Ferret is with v2.
+
+Ferret started life with a pretty strong influence from ArangoDB's AQL, and you can still see that heritage immediately in a traditional Ferret script:
 
 ```fql
 FOR user IN users
@@ -16,21 +21,21 @@ FOR user IN users
     RETURN user.email
 ```
 
-That syntax served Ferret well. It made data transformations familiar, kept scripts concise, and gave the language a strongly declarative foundation.
+That syntax has served Ferret very well. It made data transformations familiar, kept scripts concise, and gave the language the declarative foundation that is still very much at the heart of Ferret today.
 
-But Ferret has changed.
+But over the years, Ferret has grown quite a bit beyond that original model and v2 has pushed it much further.
 
-Especially with Ferret v2, the language is no longer best understood as a query language adapted for automation. It has functions, pattern matching, mutable state, synchronization primitives, host-defined values, queryable objects, and an increasingly capable embedding API.
+It has functions and pattern matching now. It has mutable state when you need it, synchronization primitives for dealing with asynchronous systems, host-defined and queryable values, and an embedding API that increasingly treats Ferret as a language applications can extend rather than simply a query engine they can call.
 
-At some point, carrying every convention inherited from AQL stops providing familiarity and starts obscuring what the language has become.
+And while working on v2, I've increasingly found myself asking a slightly different question. Not *"how would AQL express this?"*, but simply *"how should Ferret express this?"*
 
-So we're changing a few of them.
+That's a small distinction, but I think it's an important one.
+
+At some point, carrying every convention inherited from AQL stops making the language feel familiar and starts obscuring what it has actually become. So with v2, we're letting go of a few of those conventions — while keeping the parts of that declarative foundation that still make Ferret, well, Ferret.
 
 ## Lowercase is now canonical
 
-Ferret keywords have long been case-insensitive. This isn't changing.
-
-These are still valid:
+Ferret keywords have long been case-insensitive, and that's not changing. Both of these are still perfectly valid:
 
 ```fql
 FOR user IN users
@@ -44,9 +49,7 @@ for user in users
     return user
 ```
 
-But starting with Ferret v2, the second form is the canonical one.
-
-The formatter, documentation, website, and official examples will use lowercase keywords:
+Starting with Ferret v2, though, the second form becomes the canonical one. The formatter, documentation, website, and official examples will all use lowercase keywords:
 
 ```fql
 let users = query "users" in db
@@ -61,13 +64,11 @@ return for user in users {
 }
 ```
 
-This may look like a cosmetic change, but it changes the first impression of the language considerably.
+On the surface this is obviously a cosmetic change, but I think it changes the first impression of the language quite a bit.
 
-Uppercase keywords carry a strong association with SQL and other query languages. That association was useful when Ferret was much closer to its AQL origins.
+Uppercase keywords carry a very strong association with SQL and other query languages, which made perfect sense when Ferret was much closer to its AQL origins. Today, that association can actually be a little misleading because querying is only one part of what the language does.
 
-Today it can be misleading.
-
-Ferret is designed to be embedded into applications and used for more than querying:
+Ferret is designed to be embedded into applications, and perfectly normal Ferret code now looks like this:
 
 ```fql
 func classify(response) {
@@ -79,10 +80,14 @@ func classify(response) {
 }
 ```
 
+or this:
+
 ```fql
 click(submit)
 waitfor exists confirmation
 ```
+
+or this:
 
 ```fql
 for request in requests {
@@ -91,19 +96,13 @@ for request in requests {
 }
 ```
 
-In lowercase, these constructs look like parts of the same small programming language rather than programming constructs grafted onto SQL-like syntax.
+With lowercase keywords, all of these constructs simply look like parts of the same small programming language instead of programming constructs gradually grafted onto something SQL-like.
 
-That's much closer to how we think about Ferret today.
+And that's much closer to how I think about Ferret today.
 
 ## Declarative doesn't have to mean SQL-like
 
-Changing the visual style doesn't change Ferret's execution philosophy.
-
-Ferret remains a declarative-first language.
-
-The distinction matters.
-
-Uppercase keywords don't make a language declarative, just as lowercase keywords don't make one imperative.
+Changing the visual style doesn't mean changing Ferret's execution philosophy. Ferret is still very deliberately a declarative-first language; it just turns out that uppercase keywords aren't what makes a language declarative.
 
 Consider:
 
@@ -114,13 +113,9 @@ for user in users {
 }
 ```
 
-The program describes selection and transformation. It doesn't tell the runtime to iterate a collection, test a condition, skip an iteration, append a value to an accumulator, and continue.
+This describes a selection and a transformation. It doesn't tell the runtime to iterate a collection, test a condition, skip an iteration, append a value to an accumulator, and then continue with the next item. That difference is important, and it's something I very much want to preserve.
 
-That distinction is intentional.
-
-Ferret does have imperative features. Mutable variables and `while` exist because real-world automation sometimes requires state.
-
-Browser automation is a particularly good example:
+At the same time, Ferret does have imperative features. Mutable variables and `for while` exist because, well, real-world automation sometimes requires state, and browser automation is probably the easiest place to see why:
 
 ```fql
 let previous_count = 0
@@ -137,17 +132,13 @@ for while !done {
 }
 ```
 
-Infinite scrolling, pagination, changing DOM state, asynchronous events, and other interactions don't always fit neatly into a purely declarative model.
+Infinite scrolling, pagination, changing DOM state, asynchronous events, and all the other weird things websites do don't always fit neatly into a purely declarative model, and I don't think Ferret should pretend otherwise.
 
-Ferret doesn't try to pretend otherwise.
-
-The goal isn't declarative purity.
-
-The goal is to provide enough state and iteration to deal with the real world without gradually turning Ferret into another general-purpose scripting language.
+So the goal isn't declarative purity. It's to provide enough state and iteration to deal with the real world without slowly turning Ferret into yet another general-purpose scripting language.
 
 ## Why `match` instead of `if`
 
-This philosophy is also why Ferret v2 gained pattern matching rather than conventional `if`/`else` control flow.
+That philosophy is also why Ferret v2 gained pattern matching rather than conventional `if`/`else` control flow.
 
 For example:
 
@@ -160,9 +151,7 @@ let status = match response.status {
 }
 ```
 
-Pattern matching makes branching value-oriented.
-
-Similarly, filtering a collection doesn't require an `if` followed by `continue`:
+Pattern matching keeps branching value-oriented, and the same idea applies elsewhere in the language. If I want to filter a collection, for example, I don't need an `if` followed by `continue`:
 
 ```fql
 return for user in users {
@@ -171,32 +160,28 @@ return for user in users {
 }
 ```
 
-Ferret already has a construct that directly expresses the intent.
+Ferret already has a construct that says exactly what I mean.
 
-This is a useful principle for the language going forward: before adding another general-purpose control-flow mechanism, ask whether the underlying operation deserves a more declarative primitive instead.
+I think this gives us a useful rule for evolving the language: before adding another general-purpose control-flow mechanism, ask whether the operation we're trying to express deserves a more declarative primitive of its own.
 
-Sometimes the answer will still be an imperative feature. `while` is evidence of that.
-
-But it shouldn't be the default.
+Sometimes the answer will still be an imperative feature — `while` exists for a reason — but I don't want that to be the default answer.
 
 ## Scripts no longer have to return something
 
-There is another AQL inheritance we're removing in v2.
+There is another piece of AQL inheritance we're dropping in v2: historically, every Ferret script had to produce a value.
 
-Historically, every Ferret script had to produce a value.
+For a query language, that makes perfect sense. You run a query because you want it to calculate and return something.
 
-That makes perfect sense for a query language: a query exists to calculate a result.
-
-It makes considerably less sense for this:
+For this, though?
 
 ```fql
 click(submit)
 waitfor exists confirmation
 ```
 
-What meaningful value should this script return?
+What exactly should it return?
 
-Previously, scripts like this had to manufacture one:
+Previously, scripts like this had to manufacture a result even when there wasn't a meaningful one:
 
 ```fql
 click(submit)
@@ -205,25 +190,21 @@ waitfor exists confirmation
 return none
 ```
 
-In Ferret v2, they don't.
+In Ferret v2, they don't have to. Reaching the end of a script simply means that it completed successfully with `none`.
 
-Reaching the end of a script now means successful completion with `none`.
-
-The explicit version remains valid:
+You can still write the explicit version:
 
 ```fql
 return none
 ```
 
-It simply isn't required.
+but there is no reason to require it when the script exists entirely for its effects.
 
-This makes effect-oriented Ferret programs much more natural, particularly when Ferret is embedded as a DSL inside another application.
+It's a small change, but effect-oriented Ferret programs feel much more natural this way, especially when Ferret is embedded as a DSL inside another application.
 
 ## Functions follow the same rule
 
-User-defined functions now behave consistently with scripts.
-
-A function that exists for its effects doesn't need a ceremonial return:
+User-defined functions now behave the same way. If a function exists for its effects, it doesn't need a ceremonial `return none` either:
 
 ```fql
 func notify(user) {
@@ -232,9 +213,9 @@ func notify(user) {
 }
 ```
 
-If execution reaches the end of the function, it returns `none`.
+If execution reaches the end, the function returns `none`.
 
-Functions that produce values continue to use `return`:
+Functions that actually produce values continue to use `return`:
 
 ```fql
 func normalize(user) {
@@ -245,15 +226,13 @@ func normalize(user) {
 }
 ```
 
-And expression-bodied functions remain concise:
+And expression-bodied functions stay nice and concise:
 
 ```fql
 func square(x) => x * x
 ```
 
-There is no implicit return of the last arbitrary expression in a block.
-
-For example:
+One thing we're deliberately *not* doing is implicitly returning the last arbitrary expression from a block. So this:
 
 ```fql
 func square(x) {
@@ -261,15 +240,15 @@ func square(x) {
 }
 ```
 
-does not return `x * x`.
+doesn't return `x * x`.
 
-Block-bodied functions return values explicitly.
+If a block-bodied function produces a value, it says so explicitly.
 
 ## `for` is no longer secretly a script return
 
-This leads to one breaking change.
+That brings us to one actual breaking change.
 
-Historically, a final `for` loop could implicitly provide the result of a Ferret script:
+Historically, if a `for` loop was the final statement in a Ferret script, its result could implicitly become the result of the whole script:
 
 ```fql
 for user in users {
@@ -278,11 +257,9 @@ for user in users {
 }
 ```
 
-This was another useful behavior inherited from Ferret's query-language model.
+This made a lot of sense when Ferret was much more query-shaped, but once scripts are allowed to complete without producing a value, making the final `for` magically special starts looking pretty strange.
 
-But once scripts are allowed to complete without producing a value, making the final `for` special introduces an inconsistency.
-
-A `for` already produces a value in Ferret. That value can be captured:
+A `for` already produces a value in Ferret, and you can capture that value just like any other:
 
 ```fql
 let emails = (
@@ -295,13 +272,9 @@ let emails = (
 return emails
 ```
 
-The fact that the same construct happened to return from the script merely because it appeared at the end was a separate rule.
+The fact that the same construct also happened to return from the entire script just because it appeared at the end was really a separate rule, and v2 removes it.
 
-Ferret v2 removes that special case.
-
-A standalone `for` remains value-producing, but an unused result is discarded.
-
-If you want the loop result to become the result of the script, say so:
+A standalone `for` is still value-producing, but if you don't use that value, it's discarded. If you want the result of the loop to become the result of the script, just say so:
 
 ```fql
 return for user in users {
@@ -310,13 +283,13 @@ return for user in users {
 }
 ```
 
-Besides being more explicit, this reads surprisingly well:
+I actually like how this reads:
 
 > return, for every active user, their email.
 
-More importantly, `for` now means exactly the same thing wherever it appears.
+More importantly, though, `for` now means exactly the same thing wherever it appears.
 
-It can be assigned:
+You can assign it:
 
 ```fql
 let emails = (
@@ -326,7 +299,7 @@ let emails = (
 )
 ```
 
-returned:
+return it:
 
 ```fql
 return for user in users {
@@ -334,7 +307,7 @@ return for user in users {
 }
 ```
 
-or used standalone when its result isn't needed:
+or use it standalone when you simply don't care about the produced value:
 
 ```fql
 for user in users {
@@ -342,11 +315,11 @@ for user in users {
 }
 ```
 
-Its position in a body no longer changes its semantics.
+Its position in a body no longer quietly changes what it means.
 
 ## One rule for executable bodies
 
-These changes allow Ferret to have a much simpler result model.
+The nice part is that all of these changes leave Ferret with a much simpler result model.
 
 For scripts and block-bodied functions:
 
@@ -362,13 +335,11 @@ Expression-bodied functions remain explicitly value-producing:
 func double(value) => value * 2
 ```
 
-There is no longer a special rule saying that every script must return something, nor another rule promoting a final `for` into the script result.
+That's pretty much it. We no longer need one rule saying that every script must return something and another special rule promoting a final `for` into the script result.
 
 ## What about existing Ferret programs?
 
-Changing the canonical keyword casing does not break existing programs.
-
-Uppercase remains valid:
+The good news is that changing the canonical keyword casing doesn't break anything. Uppercase remains perfectly valid:
 
 ```fql
 FOR item IN items {
@@ -376,7 +347,7 @@ FOR item IN items {
 }
 ```
 
-The formatter will simply canonicalize it to:
+The formatter will simply turn it into:
 
 ```fql
 for item in items {
@@ -386,14 +357,14 @@ for item in items {
 
 The change to final `for` semantics, however, is intentionally breaking.
 
-A v1-style script such as:
+A v1-style script like this:
 
 ```fql
 FOR item IN items
     RETURN item
 ```
 
-that relies on the loop becoming the script result needs to become the v2 equivalent:
+which relies on the loop becoming the script result needs to become the explicit v2 equivalent:
 
 ```fql
 return for item in items {
@@ -401,23 +372,15 @@ return for item in items {
 }
 ```
 
-You won't have to hunt these cases down manually.
+Fortunately, you won't have to go hunting through old Ferret scripts looking for these cases by hand. The CLI migration command will recognize affected constructs and migrate them to their explicit v2 equivalents where possible.
 
-The Ferret CLI migration command will recognize affected constructs and migrate them to their explicit v2 equivalents where possible.
-
-The goal of the migration tooling is straightforward: **make semantic changes explicit without making upgrading existing Ferret programs unnecessarily painful.**
+That's really the goal of the migration tooling in general: make semantic changes explicit without making upgrading existing Ferret programs unnecessarily painful.
 
 ## A language, not just a query
 
-None of these changes individually redefine Ferret.
+None of these changes individually redefine Ferret, but taken together they reflect something that's been happening gradually throughout v2.
 
-Together, though, they reflect something that has been happening gradually throughout v2.
-
-Ferret isn't trying to become a general-purpose programming language.
-
-It also isn't just a query language anymore.
-
-It's a small, declarative-first, expression-oriented language designed to be embedded into applications and specialized through host-provided capabilities.
+Ferret isn't trying to become a general-purpose programming language, but it isn't just a query language anymore either. It's becoming a small, declarative-first, expression-oriented language designed to be embedded into applications and specialized through capabilities provided by the host.
 
 It can query:
 
@@ -452,16 +415,10 @@ click(submit)
 waitfor exists confirmation
 ```
 
-And when that's all the program needed to accomplish, it can simply end.
+And if that's everything the program needed to do, it can simply end. No artificial result required.
 
-No artificial result required.
+Ferret's AQL heritage is still very visible in the language, and I don't want to erase it — a lot of Ferret's best ideas grew directly from that foundation. But v2 feels like the right time to separate the ideas that are actually fundamental to Ferret from conventions that survived mostly because, well, they've always been there.
 
-Ferret's AQL heritage is still visible in the language, and that's a good thing. Many of its best ideas grew from that foundation.
+Lowercase syntax is probably the most immediately visible sign of that transition, but the deeper change has been happening for a while now:
 
-But v2 is also the right time to distinguish between the ideas that remain fundamental to Ferret and conventions that survived mostly because they've always been there.
-
-Lowercase syntax is the most immediately visible sign of that transition.
-
-The deeper change is simpler:
-
-**Ferret is growing into its own language.**
+Ferret is growing into its own language.
