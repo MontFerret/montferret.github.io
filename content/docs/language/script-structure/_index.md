@@ -51,21 +51,31 @@ return name
 
 `var` creates a mutable binding: one whose value can be reassigned later in the same scope:
 
-{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+{{< editor lang="fql" >}}
 var total = 0
 
 for price in [10, 20, 30] {
     total = total + price
-
-    return total
 }
 
 return total
-{{< /editor >}}
+{{</ editor >}}
 
 Only `var` bindings can be reassigned. `let` bindings cannot be changed after they are created, and no binding can be declared twice in the same scope. Prefer `let` unless mutation is actually needed.
 
 More advanced scripts may also use `for`, `filter`, `collect`, `match`, `waitfor`, `dispatch`, `do while`, or function declarations. Those constructs are covered in their own pages.
+
+Any expression is valid as a statement at script scope, inside a block function, or in a `for` body. It is evaluated normally and only its final value is discarded:
+
+{{< code lang="fql" >}}
+log("starting")
+user.profile
+1 + 2
+
+return none
+{{</ code >}}
+
+Expression statements are useful for observable work such as function calls, waits, dispatches, and nested loops. FQL does not warn about an unused value, so use `return` explicitly when the value is the intended result.
 
 ## Expressions
 
@@ -129,22 +139,25 @@ return for i in 1..10 {
 }
 {{< /editor >}}
 
-`return for` returns the collection produced by the loop directly. Parenthesized `for` expressions remain useful when the collection must be assigned, nested, or passed to another expression.
+`return for` returns the collection produced by a collecting loop directly. Parenthesized collecting `for` expressions remain useful when the collection must be assigned, nested, or passed to another expression; the loop must have its own `return`.
 
-A standalone `for` is an ordinary statement. Its body still runs, but its produced collection is discarded:
+A returnless braced `for` is an ordinary side-effecting statement. Its body runs without producing a collection:
 
-{{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
+{{< editor lang="fql" >}}
 var total = 0
 
 for value in [1, 2, 3] {
     total = total + value
-    return value
 }
 
 return total
-{{< /editor >}}
+{{</ editor >}}
 
-Likewise, an expression used as a block-function statement is evaluated and discarded. Only an explicit `return` or an arrow body determines a function result.
+A standalone collecting loop also runs as a statement, but its array is discarded. If a script or block function ends after either form, it falls through with `none`; a returnless loop never produces `[]`.
+
+Likewise, any expression used as a script, loop-body, or block-function statement is evaluated and discarded. Only an explicit `return` or an arrow body determines a script or function result.
+
+Parentheses only group expressions. The formatter removes them when grouping is redundant and keeps them when required for precedence, syntax boundaries, recovery, comments, or safe tokenization. A direct bare `for` remains a statement (or a direct `return for` operand); parenthesize it when it is embedded in an initializer, argument, operator expression, or member source.
 
 ## Scopes and blocks
 

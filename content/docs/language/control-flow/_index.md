@@ -12,7 +12,7 @@ Control flow describes how an FQL script determines which expressions are evalua
 
 Most FQL code is evaluated in the order it is written. Control-flow constructs change that linear execution model by introducing branching, iteration, delegation to host values, or suspension until a condition is met.
 
-FQL is expression-oriented, so most control-flow constructs produce values. Their results can be returned, assigned to variables, passed to functions, or composed with other expressions.
+FQL is expression-oriented, so most control-flow constructs produce values. Their results can be returned, assigned to variables, passed to functions, or composed with other expressions. Statement-only forms, such as a returnless braced `for`, run for effects without producing a value.
 
 ## Branching with `match`
 
@@ -32,7 +32,7 @@ See [Match Expressions]({{< ref "match" >}}).
 
 ## Iteration with `for`
 
-A `for` expression evaluates its body once for each item in a source collection. It is the primary construct for iterating over arrays, query results, and other iterable values.
+A `for` loop evaluates its body once for each item in a source collection. It is the primary construct for iterating over arrays, query results, and other iterable values.
 
 {{< code lang="fql" >}}
 return for n in [1, 2, 3] {
@@ -40,13 +40,21 @@ return for n in [1, 2, 3] {
 }
 {{</ code >}}
 
-The result of a `for` expression is the collection of values returned by its body.
+With a loop-owned `return`, the result is the collection of values returned by the body. A braced loop may omit that `return` when it is used as a statement for side effects:
+
+{{< code lang="fql" >}}
+for item in items {
+    process(item)
+}
+{{</ code >}}
+
+The returnless form produces no collection and cannot be used in a value position.
 
 See [For Loops]({{< ref "for" >}}).
 
 ## Composition with subqueries
 
-A subquery wraps a `for` expression in parentheses, allowing its result to be used as a regular value.
+A subquery wraps a collecting `for` expression in parentheses, allowing its array result to be used as a regular value. The loop must have its own `return`.
 
 {{< code lang="fql" >}}
 let doubled = (for n in [1, 2, 3] { return n * 2 })

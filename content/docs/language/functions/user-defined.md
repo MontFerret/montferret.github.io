@@ -74,7 +74,17 @@ return doubleAll([1, 2, 3])
 
 This uses the same loop result as a parenthesized `for`; it does not add another wrapper. `return distinct for` applies the normal return-level deduplication directly to the loop result.
 
-A final standalone loop is not promoted into a function result. It still executes, but the collection it produces is discarded and the function falls through with `none`. Likewise, `func value() { 42 }` evaluates `42` as an expression statement and returns `none`. Write `func value() => 42` or `func value() { return 42 }` to return the value.
+A final standalone loop is not promoted into a function result. A collecting loop still executes, but its array is discarded; a returnless braced loop executes without creating an array. In both cases the function falls through with `none`:
+
+{{< code lang="fql" >}}
+func processAll(items) {
+    for item in items {
+        process(item)
+    }
+}
+{{</ code >}}
+
+Likewise, `func value() { 42 }` evaluates `42` as an expression statement and returns `none`. Write `func value() => 42` or `func value() { return 42 }` to return the value. Use `return for` when the function should return a loop's collected array.
 
 ## Parameters
 

@@ -29,7 +29,7 @@ return {
 }
 {{< /editor >}}
 
-To return a loop's array, write `return for ...`. A script that reaches the end without `return` completes with `none`; standalone loops execute but discard their arrays. FQL scripts communicate through returned values rather than printed output. That makes the same script usable across different surfaces: a CLI can serialize the result as JSON, an embedded application can receive it as a Go value, and a test runner can assert against it directly. The script does not need to know who is consuming the result.
+To return a collecting loop's array, write `return for ...`. A script that reaches the end without `return` completes with `none`. A standalone collecting loop executes but discards its array; a returnless braced loop runs only for side effects and creates no array at all. FQL scripts communicate through returned values rather than printed output. That makes the same script usable across different surfaces: a CLI can serialize the result as JSON, an embedded application can receive it as a Go value, and a test runner can assert against it directly. The script does not need to know who is consuming the result.
 
 ## Expressions are the main building block
 
@@ -62,7 +62,7 @@ When a workflow genuinely needs state, `var` provides a mutable binding and `whi
 
 ## Collections are transformed with for
 
-`for` is not a general-purpose loop - it is a data-shaping construct. It iterates over a collection and returns a new collection, optionally filtering and transforming along the way.
+With a loop-owned `return`, `for` is a data-shaping construct. It iterates over a collection and returns a new collection, optionally filtering and transforming along the way.
 
 {{< editor lang="fql" >}}
 let users = [
@@ -91,7 +91,7 @@ return for item in page[~ css`.product-card`] {
 }
 {{< /editor >}}
 
-Even when the source is messy, the final result can be structured and clean.
+Even when the source is messy, the final result can be structured and clean. When iteration is needed only to invoke functions or update mutable state, a braced `for` may omit its loop-owned `return`; that statement-only form produces no collection.
 
 ## Queries operate on capable values
 

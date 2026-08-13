@@ -8,7 +8,7 @@ description: "Use a parenthesized for block as a value to compose and nest FQL t
 
 # Subquery Expressions
 
-A subquery is a query block wrapped in parentheses and used as a value. Most often it is a [`for`]({{< ref "for" >}}) loop whose result — always an array — is assigned, returned, or passed to another expression.
+A subquery is a collecting query block wrapped in parentheses and used as a value. Most often it is a [`for`]({{< ref "for" >}}) loop whose array result is assigned, returned, or passed to another expression. Because a subquery is a value, the loop must have its own `return`.
 
 {{< editor lang="fql" >}}
 let users = [
@@ -27,7 +27,19 @@ let activeUsers = (
 return activeUsers
 {{</ editor >}}
 
-The parentheses are required. A `for` loop written without them is the output of the query itself, not a value you can place inside another expression.
+The parentheses are required when a `for` is embedded in another expression. Without them, a top-level `for` is a statement and any collected array is discarded.
+
+At a statement or direct-return boundary, the formatter removes unnecessary loop grouping: `(for ... )` becomes `for ...`, and `return (for ... )` becomes `return for ...`. It preserves the parentheses in `let result = (for ... )`, function arguments, operator operands, and member sources because those positions do not accept an embedded bare `for`.
+
+Parentheses do not turn a returnless loop into a value. This is intentionally invalid:
+
+{{< code lang="fql" >}}
+let result = (for item in items {
+    process(item)
+})
+{{</ code >}}
+
+The compiler reports `A FOR loop used as an expression must return a value.` Add a loop-owned `return`, or move the returnless loop into statement position.
 
 ## Composing transformations
 
@@ -62,6 +74,8 @@ return (
 {{</ editor >}}
 
 Each inner subquery is evaluated once per iteration of the outer loop.
+
+The direct spelling `return for ...` expresses the same ownership without the extra parentheses. Use it when the outer loop should collect each inner array. A final bare nested collecting loop is flattened only as a compatibility exception; explicit `return for` is clearer when nested result shape matters.
 
 ## Subqueries and query expressions
 

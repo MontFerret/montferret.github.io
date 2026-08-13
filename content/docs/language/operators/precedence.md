@@ -8,28 +8,28 @@ description: "The evaluation order of FQL operators, from lowest to highest prec
 
 # Operator precedence
 
-The operator precedence in FQL is similar as in other familiar languages (lowest precedence first):
+The operator precedence in FQL is listed below from lowest to highest. This order follows the FQL grammar; do not assume unary and comparison operators have the same relative order as another language.
 
 - ``=``, ``+=``, ``-=``, ``*=``, ``/=`` assignment and compound assignment
 - ``? :`` ternary operator
 - ``??`` none-coalescing operator
 - ``||`` logical or
 - ``&&`` logical and
-- ``==``, ``!=`` equality and inequality
-- ``in``, ``not in`` containment
+- ``!``, ``+``, ``-`` logical negation, unary plus, unary minus
 - ``like``, ``not like`` pattern matching
+- ``in``, ``not in`` containment
+- ``all``, ``any``, ``none`` array comparison operators
+- ``==``, ``!=``, ``<``, ``<=``, ``>=``, ``>`` comparison operators
 - ``=~``, ``!~`` regular expression matching
-- ``<``, ``<=``, ``>=``, ``>`` less than, less equal, greater equal, greater than
-- ``..`` range
 - ``+``, ``-`` addition, subtraction
 - ``*``, ``/``, ``%`` multiplication, division, modulus
-- ``!``, ``+``, ``-`` logical negation, unary plus, unary minus
+- ``..`` range and primary expressions
 - ``()`` function call
 - ``?.`` optional chaining
 - ``.`` member access
 - ``[]`` indexed value access
 
-Operators higher in this list bind more tightly. For example, multiplication is evaluated before addition, logical and before logical or, and comparisons before logical operators.
+Operators higher in this list bind more tightly. For example, multiplication is evaluated before addition, logical and before logical or, and comparisons before unary and logical operators.
 
 {{< editor lang="fql" >}}
 // Multiplication binds tighter than addition:
@@ -61,7 +61,7 @@ return {
 
 ## Using parentheses
 
-Parentheses ``(`` and ``)`` override the default evaluation order. Use them when the intended grouping differs from the precedence rules, or when the expression is complex enough that the precedence is not immediately obvious.
+Parentheses ``(`` and ``)`` group expressions. Use them when the intended grouping differs from the precedence rules. Most binary operators associate to the left; `??` associates to the right, so `a ?? b ?? c` means `a ?? (b ?? c)`.
 
 {{< editor lang="fql" >}}
 return (2 + 3) * 4
@@ -76,6 +76,8 @@ let tax = 0.2
 // With parentheses: subtraction happens before multiplication
 return price * (1 - discount) * (1 + tax)
 {{</ editor >}}
+
+The formatter removes grouping that does not affect syntax or semantics. For example, it writes `1 + (2 * 3)` as `1 + 2 * 3`, but keeps `(1 + 2) * 3`, `a - (b - c)`, and `(a ?? b) ?? c`. It also keeps parentheses required by grammar boundaries, recovery-tail ownership, comments, or lexical safety such as `-(-value)`.
 
 ## Next steps
 

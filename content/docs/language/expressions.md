@@ -267,6 +267,20 @@ Expressions produce values.
 
 Statements describe query structure, control flow, or variable declarations.
 
+Any expression can also appear as a statement at script scope, inside a block function, or in a `for` body. FQL evaluates the expression normally — including function calls, waits, dispatches, errors, recovery, and nested loops — and then discards only its final value:
+
+{{< code lang="fql" >}}
+loadProfile(userId)
+profile.lastSeen
+1 + 2
+
+for item in items {
+    validate(item)
+}
+{{</ code >}}
+
+There is no warning for a discarded expression value. Use an explicit `return` when the value should become the script or block-function result; arrow functions remain value-producing by definition.
+
 For example, `let` is a statement. The code on the right side of `=` is an expression:
 
 {{< code lang="fql" >}}
@@ -279,7 +293,21 @@ let total = price * quantity
 return total >= 250
 {{</ editor >}}
 
-Only the expression parts of a statement can be nested inside other expressions.
+Declarations, assignments, `delete`, function declarations, and direct bare `for` loops retain their dedicated statement forms. A bare `for` can also follow `return`, but it must be parenthesized in an initializer, argument, operator operand, or other embedded value position.
+
+## Parentheses and grouping
+
+Parentheses group an expression; they do not create a separate runtime value or change whether a returnless loop produces a result. The formatter removes redundant parentheses when doing so preserves parsing, precedence, associativity, recovery-tail ownership, comments, and tokenization.
+
+{{< code lang="fql" >}}
+// Canonically formatted as: return value
+return ((value))
+
+// Required to make addition happen before multiplication.
+return (left + right) * scale
+{{</ code >}}
+
+Some boundaries require grouping even when precedence alone would not: an embedded `for`, a compound `query` payload, a compound member source, or an expression that owns a recovery tail. Parentheses containing comments are retained when removing them would lose or relocate the comment.
 
 ## Evaluation
 

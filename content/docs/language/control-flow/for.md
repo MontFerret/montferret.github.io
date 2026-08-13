@@ -3,12 +3,12 @@ title: "For Loops"
 sidebarTitle: "For"
 weight: 20
 draft: false
-description: "Iterate over collections and ranges with for, and shape results with filter, sort, limit, and collect."
+description: "Iterate over collections and ranges with for, either collecting values or running for side effects."
 ---
 
 # For Loops
 
-A `for` loop evaluates its body once for each item produced by a source and collects the returned values into an array. It is the primary iteration construct in FQL.
+A `for` loop evaluates its body once for each item produced by a source. It can collect one returned value per iteration into an array, or run only for side effects. It is the primary iteration construct in FQL.
 
 {{< editor lang="fql" >}}
 return for n in [1, 2, 3, 4] {
@@ -16,9 +16,37 @@ return for n in [1, 2, 3, 4] {
 }
 {{</ editor >}}
 
-The source is evaluated once. The body — including the final `return` — is evaluated once per item, and the result is always an array.
+The source is evaluated once. In this collecting form, the body — including the final loop-owned `return` — is evaluated once per item, and the result is an array. An empty source produces `[]`.
 
-Braces are optional, but they must be paired. The documentation uses the braced form because it makes the loop boundary explicit; the unbraced form remains fully supported and has the same semantics.
+## Collecting and side-effecting loops
+
+A collecting loop ends with its own `return`. Use it wherever the loop must produce an array: after script or function `return`, in a parenthesized subquery, in an initializer, or as part of another expression.
+
+A side-effecting loop omits the loop-owned `return` and does not create a collection. This form is valid only as a statement and requires braces:
+
+{{< code lang="fql" >}}
+var total = 0
+
+for n in [1, 2, 3] {
+    total += n
+}
+
+return total
+{{</ code >}}
+
+An empty or comment-only braced body is valid. If a returnless loop is the final statement in a script or block function, execution falls through with `none`; it does not produce `[]` and does not implicitly return its last expression.
+
+Returnless loops cannot be used where a value is required. For example, this is intentionally invalid:
+
+{{< code lang="fql" >}}
+let values = (for n in [1, 2, 3] {
+    process(n)
+})
+{{</ code >}}
+
+The compiler reports `A FOR loop used as an expression must return a value.` Add a loop-owned `return`, or use the loop as a statement.
+
+Braces are optional only for collecting loops, and paired braces are always required when present. The documentation generally uses braces because they make loop boundaries explicit.
 
 ### Legacy unbraced form
 
@@ -29,7 +57,7 @@ return for n in [1, 2, 3]
     return n * 2
 {{</ code >}}
 
-This is equivalent to the braced example above. Do not mix a single opening or closing brace with an otherwise unbraced body.
+This is equivalent to the braced collecting example above. Unbraced loops still require a terminal `return` or a legacy terminal pass-through loop. Do not mix a single opening or closing brace with an otherwise unbraced body.
 
 ## Iterating a source
 
@@ -84,7 +112,7 @@ Array holes, defaults, rest or spread entries, quoted or computed keys, and patt
 
 ## Shaping results
 
-Clauses placed between the source and the `return` transform the stream of items. They take effect in the order they are written.
+Clauses placed in the loop body transform the stream of items before later body statements or the loop-owned `return`. They take effect in the order they are written and work in both collecting and side-effecting loops.
 
 ### filter
 
@@ -200,13 +228,38 @@ return for i do while false {
 Condition-driven loops keep running until the condition becomes false. Make sure the condition can change — for example, by mutating a var in the body — or bound the wait with a timeout-based waitfor instead.
 {{</ notification >}}
 
-## Returning and discarding loop results
+Condition-driven loops can also be returnless when they are used only for side effects:
+
+{{< code lang="fql" >}}
+var attempts = 0
+
+for while attempts < 3 {
+    attempts += 1
+    tryAgain()
+}
+{{</ code >}}
+
+## Returning, nesting, and discarding loop results
 
 Use `return for ...` to make the loop's collected array the script or block-function result. `return distinct for ...` deduplicates that array using the same semantics as other `return distinct` operands.
 
-A standalone `for` is a statement: it executes the loop body and propagates errors or cancellation, but discards the collected array. This is useful for effect-only iteration. If the surrounding script or block function then falls through, its result is `none`.
+A standalone collecting `for` is a statement: it executes the loop body and propagates errors or cancellation, but discards the collected array. Prefer a braced returnless loop when no iteration value is needed, because it states the effect-only intent and creates no output accumulator. If the surrounding script or block function then falls through, its result is `none`.
 
-Wrapped in parentheses, a `for` is an expression you can assign, pass, or nest. See [Subquery Expressions]({{< ref "subqueries" >}}).
+Parenthesizing a standalone loop does not force its result to be retained. In statement position, `(for ... return ...)` still executes as a discarded expression statement, and the formatter writes the canonical bare `for` form. Parentheses are required only when the loop is embedded where a value is required, such as an initializer, argument, operator operand, or member source.
+
+Each loop owns only the `return` written directly in its body. Use an explicit `return for` when an outer loop should collect each inner array:
+
+{{< editor lang="fql" >}}
+return for row in [[1, 2], [3, 4]] {
+    return for value in row {
+        return value * 2
+    }
+}
+{{</ editor >}}
+
+For compatibility, a bare collecting loop in the final position of another collecting loop is a flattened pass-through when the outer result is required. The same syntax in discarded statement position executes both loops without retaining either result. A nested loop before later body statements is always an ordinary statement whose result is discarded. Prefer explicit `return for` when nested result ownership matters.
+
+Wrapped in parentheses, a collecting `for` is an expression you can assign, pass, or nest. Its own body must return a value. See [Subquery Expressions]({{< ref "subqueries" >}}).
 
 ## Next steps
 
