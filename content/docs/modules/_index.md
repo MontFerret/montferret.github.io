@@ -22,11 +22,11 @@ A module has several related identifiers. They are not interchangeable.
 | Concept | Example | Used by |
 | --- | --- | --- |
 | Registry identity | `ziflex/kvplugin` | `ferret.yaml`, the Registry, and `ferret mod` commands |
-| Runtime namespace | `KV` | FQL functions such as `KV::GET` |
+| Runtime namespace | `kv` | FQL functions such as `kv::get` |
 | Go package path | `github.com/ziflex/ferret-kvplugin` | Go imports and dependency resolution |
 | Runtime registration | `ferret.WithModules(kvplugin.New())` | The host application's Ferret engine |
 
-The Registry identity is a canonical lowercase `owner/name` value. The runtime namespace is an independent, case-sensitive FQL namespace. Barn obtains the installable Go package path from the `go.mod` beside the module manifest instead of deriving it from either identity.
+The Registry identity is a canonical lowercase `owner/name` value. The runtime namespace is an independent FQL identity whose registered segments resolve case-insensitively and are exposed in canonical lowercase. Barn obtains the installable Go package path from the `go.mod` beside the module manifest instead of deriving it from either identity.
 
 ## Modules run in a host application
 

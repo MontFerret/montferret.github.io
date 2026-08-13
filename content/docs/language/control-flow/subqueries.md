@@ -34,7 +34,7 @@ The parentheses are required. A `for` loop written without them is the output of
 Because a subquery is just a value, it can be used anywhere a value is expected — including as an argument to a function.
 
 {{< editor lang="fql" >}}
-return LENGTH(
+return length(
     (for n in 1..10 { filter n % 2 == 0 return n })
 )
 {{</ editor >}}

@@ -22,7 +22,7 @@ lab run --serve ./dist@app tests/
 The service URL is available as `@lab.static.app`.
 
 {{< code lang="fql" >}}
-let doc = DOCUMENT(@lab.static.app + "/index.html")
+let doc = web::html::open(@lab.static.app + "/index.html")
 return doc.title
 {{< /code >}}
 

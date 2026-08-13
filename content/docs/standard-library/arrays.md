@@ -6,19 +6,19 @@ description: "Array functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/arrays/
 menuTitle: 
-menu: [APPEND,FIRST,FLATTEN,INTERSECTION,LAST,MINUS,NTH,OUTERSECTION,POP,POSITION,PUSH,REMOVE_NTH,REMOVE_VALUE,REMOVE_VALUES,SHIFT,SLICE,SORTED,SORTED_UNIQUE,UNION,UNION_DISTINCT,UNIQUE,UNSHIFT,]
+menu: [append,first,flatten,intersection,last,minus,nth,outersection,pop,position,push,remove_nth,remove_value,remove_values,shift,slice,sorted,sorted_unique,union,union_distinct,unique,unshift,]
 ---
 
 
 
 {{< header href="append" >}}
 
-APPEND
+append
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/append.go#L15)
 
-APPEND appends a new item to an array and returns a new array with a given element. If ``uniqueOnly`` is set to true, then will add the item only if it's unique.
+append appends a new item to an array and returns a new array with a given element. If ``uniqueOnly`` is set to true, then will add the item only if it's unique.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -33,12 +33,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="first" >}}
 
-FIRST
+first
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/first.go#L13)
 
-FIRST returns a first element from a given array.
+first returns a first element from a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -52,12 +52,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="flatten" >}}
 
-FLATTEN
+flatten
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/flatten.go#L18)
 
-FLATTEN turns an array of arrays into a flat array. All array elements in array will be expanded in the result array. Non-array elements are added as they are. The function will recurse into sub-arrays up to the specified depth. Duplicates will not be removed.
+flatten turns an array of arrays into a flat array. All array elements in array will be expanded in the result array. Non-array elements are added as they are. The function will recurse into sub-arrays up to the specified depth. Duplicates will not be removed.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -72,12 +72,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="intersection" >}}
 
-INTERSECTION
+intersection
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/intersection.go#L15)
 
-INTERSECTION return the intersection of all arrays specified. The result is an array of values that occur in all arguments. The element order is random. Duplicates are removed.
+intersection return the intersection of all arrays specified. The result is an array of values that occur in all arguments. The element order is random. Duplicates are removed.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -91,12 +91,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="last" >}}
 
-LAST
+last
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/last.go#L13)
 
-LAST returns the last element of an array.
+last returns the last element of an array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -110,12 +110,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="minus" >}}
 
-MINUS
+minus
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/minus.go#L14)
 
-MINUS return the difference of all arrays specified. The order of the result array is undefined and should not be relied on. Duplicates will be removed.
+minus return the difference of all arrays specified. The order of the result array is undefined and should not be relied on. Duplicates will be removed.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -129,12 +129,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="nth" >}}
 
-NTH
+nth
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/nth.go#L16)
 
-NTH returns the element of an array at a given position. It is the same as anyArray[position] for positive positions, but does not support negative positions. If position is negative or beyond the upper bound of the array, then `none` will be returned.
+nth returns the element of an array at a given position. It is the same as anyArray[position] for positive positions, but does not support negative positions. If position is negative or beyond the upper bound of the array, then `none` will be returned.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -149,12 +149,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="outersection" >}}
 
-OUTERSECTION
+outersection
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/outersection.go#L12)
 
-OUTERSECTION return the values that occur only once across all arrays specified. The element order is random.
+outersection return the values that occur only once across all arrays specified. The element order is random.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -168,12 +168,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="pop" >}}
 
-POP
+pop
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/pop.go#L13)
 
-POP returns a new array without last element.
+pop returns a new array without last element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -187,12 +187,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="position" >}}
 
-POSITION
+position
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/position.go#L15)
 
-POSITION returns a value indicating whether an element is contained in array. Optionally returns its position.
+position returns a value indicating whether an element is contained in array. Optionally returns its position.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -208,12 +208,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="push" >}}
 
-PUSH
+push
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/push.go#L15)
 
-PUSH create a new array with appended value.
+push create a new array with appended value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -229,12 +229,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="remove_nth" >}}
 
-REMOVE_NTH
+remove_nth
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/remove_nth.go#L14)
 
-REMOVE_NTH returns a new array without an element by a given position.
+remove_nth returns a new array without an element by a given position.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -249,12 +249,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="remove_value" >}}
 
-REMOVE_VALUE
+remove_value
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/remove_value.go#L16)
 
-REMOVE_VALUE returns a new array with removed all occurrences of value in a given array. Optionally with a limit to the number of removals.
+remove_value returns a new array with removed all occurrences of value in a given array. Optionally with a limit to the number of removals.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -270,12 +270,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="remove_values" >}}
 
-REMOVE_VALUES
+remove_values
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/remove_values.go#L14)
 
-REMOVE_VALUES returns a new array with removed all occurrences of values in a given array.
+remove_values returns a new array with removed all occurrences of values in a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -290,12 +290,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="shift" >}}
 
-SHIFT
+shift
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/shift.go#L13)
 
-SHIFT returns a new array without the first element.
+shift returns a new array without the first element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -309,12 +309,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="slice" >}}
 
-SLICE
+slice
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/slice.go#L15)
 
-SLICE returns a new sliced array.
+slice returns a new sliced array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -330,12 +330,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="sorted" >}}
 
-SORTED
+sorted
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/sorted.go#L14)
 
-SORTED sorts all elements in anyArray. The function will use the default comparison order for FQL value types.
+sorted sorts all elements in anyArray. The function will use the default comparison order for FQL value types.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -349,12 +349,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="sorted_unique" >}}
 
-SORTED_UNIQUE
+sorted_unique
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/sorted_unique.go#L15)
 
-SORTED_UNIQUE sorts all elements in anyArray. The function will use the default comparison order for FQL value types. Additionally, the values in the result array will be made unique
+sorted_unique sorts all elements in anyArray. The function will use the default comparison order for FQL value types. Additionally, the values in the result array will be made unique
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -368,12 +368,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="union" >}}
 
-UNION
+union
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/union.go#L13)
 
-UNION returns the union of all passed arrays.
+union returns the union of all passed arrays.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -387,12 +387,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="union_distinct" >}}
 
-UNION_DISTINCT
+union_distinct
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/union_distinct.go#L13)
 
-UNION_DISTINCT returns the union of all passed arrays with unique values.
+union_distinct returns the union of all passed arrays with unique values.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -406,12 +406,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="unique" >}}
 
-UNIQUE
+unique
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/unique.go#L13)
 
-UNIQUE returns all unique elements from a given array.
+unique returns all unique elements from a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -425,12 +425,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="unshift" >}}
 
-UNSHIFT
+unshift
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/arrays/unshift.go#L15)
 
-UNSHIFT prepends value to a given array.
+unshift prepends value to a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

@@ -14,17 +14,17 @@ For the registration and lifecycle model, see [Modules]({{< ref "/docs/embedding
 
 ## What the module will do
 
-The `KV` module exposes three functions and a host value:
+The `kv` module exposes three functions and a host value:
 
 {{< code lang="fql" >}}
-let cache = KV::OPEN()
+let cache = kv::open()
 
-KV::SET(cache, "language", "FQL")
-KV::SET(cache, "version", 2)
+kv::set(cache, "language", "FQL")
+kv::set(cache, "version", 2)
 
 return {
-    language: KV::GET(cache, "language"),
-    size:     LENGTH(cache),
+    language: kv::get(cache, "language"),
+    size:     length(cache),
     keys:     (for key in cache return key)
 }
 {{</ code >}}
@@ -41,7 +41,7 @@ Expected output:
 ferret mod init acme/kvplugin \
   --go-module github.com/acme/ferret-kvplugin \
   --dir kvplugin \
-  --namespace KV
+  --namespace kv
 cd kvplugin
 go mod tidy
 {{</ terminal >}}
@@ -121,7 +121,7 @@ func resolveConfig(setters []Option) (config, error) {
 
 ## Define the module with the SDK
 
-Use `sdk.NewModule` to define the module name and registration callback. The callback resolves configuration, registers the `KV` library, and attaches lifecycle hooks:
+Use `sdk.NewModule` to define the module name and registration callback. The callback resolves configuration, registers the `kv` library, and attaches lifecycle hooks:
 
 {{< code lang="go" title="module.go" >}}
 package kvplugin
@@ -146,7 +146,7 @@ func New(setters ...Option) module.Module {
             return err
         }
 
-        namespace := bootstrap.Host().Library().Namespace("KV")
+        namespace := bootstrap.Host().Library().Namespace("kv")
         if err := lib.RegisterLib(namespace, config.maxSize); err != nil {
             return err
         }
@@ -177,7 +177,7 @@ The hook functions remain normal Ferret lifecycle hooks. A context returned by `
 
 ## Register namespaced functions
 
-Add `KV::OPEN`, `KV::SET`, and `KV::GET` with the SDK's declarative registration helpers:
+Add `kv::open`, `kv::set`, and `kv::get` with the SDK's declarative registration helpers:
 
 {{< code lang="go" title="lib/lib.go" >}}
 package lib
@@ -249,7 +249,7 @@ The cache implements several capability interfaces so FQL scripts can interact w
 | `runtime.Typed` | Type name in error messages |
 | `runtime.KeyReadable` | `cache.key` property access |
 | `runtime.Iterable` | `for key in cache` |
-| `runtime.Measurable` | `LENGTH(cache)` |
+| `runtime.Measurable` | `length(cache)` |
 | `io.Closer` | Automatic cleanup when the session ends |
 
 {{< code lang="go" title="core/cache.go" >}}
@@ -333,7 +333,7 @@ func (c *Cache) Get(_ context.Context, key runtime.Value) (runtime.Value, error)
     return value, nil
 }
 
-// --- Measurable: LENGTH(cache) ---
+// --- Measurable: length(cache) ---
 
 func (c *Cache) Length(_ context.Context) (runtime.Int, error) {
     c.mu.RLock()
@@ -399,14 +399,14 @@ func main() {
     output, err := engine.Run(
         context.Background(),
         source.NewAnonymous(`
-            let cache = KV::OPEN()
+            let cache = kv::open()
 
-            KV::SET(cache, "language", "FQL")
-            KV::SET(cache, "version", 2)
+            kv::set(cache, "language", "FQL")
+            kv::set(cache, "version", 2)
 
             return {
-                language: KV::GET(cache, "language"),
-                size:     LENGTH(cache),
+                language: kv::get(cache, "language"),
+                size:     length(cache),
                 keys:     (for key in cache return key)
             }
         `),
@@ -445,12 +445,12 @@ func TestCache(t *testing.T) {
     harness := newHarness(t)
 
     output, err := harness.Run(t.Context(), `
-        let cache = KV::OPEN()
-        KV::SET(cache, "a", 1)
-        KV::SET(cache, "b", 2)
+        let cache = kv::open()
+        kv::set(cache, "a", 1)
+        kv::set(cache, "b", 2)
         return {
-            size: LENGTH(cache),
-            a: KV::GET(cache, "a"),
+            size: length(cache),
+            a: kv::get(cache, "a"),
             keys: (for key in cache return key)
         }
     `)
@@ -476,7 +476,7 @@ func TestCache(t *testing.T) {
 func TestCacheRejectsWrongArgumentType(t *testing.T) {
     harness := newHarness(t)
 
-    if _, err := harness.Run(t.Context(), `return KV::GET("not a cache", "key")`); err == nil {
+    if _, err := harness.Run(t.Context(), `return kv::get("not a cache", "key")`); err == nil {
         t.Fatal("expected a cache argument error")
     }
 }
@@ -485,10 +485,10 @@ func TestCacheCapacity(t *testing.T) {
     harness := newHarness(t, kvplugin.WithMaxSize(1))
 
     output, err := harness.Run(t.Context(), `
-        let cache = KV::OPEN()
-        KV::SET(cache, "key", 1)
-        KV::SET(cache, "key", 2)
-        return KV::GET(cache, "key")
+        let cache = kv::open()
+        kv::set(cache, "key", 1)
+        kv::set(cache, "key", 2)
+        return kv::get(cache, "key")
     `)
     if err != nil {
         t.Fatal(err)
@@ -498,9 +498,9 @@ func TestCacheCapacity(t *testing.T) {
     }
 
     if _, err := harness.Run(t.Context(), `
-        let cache = KV::OPEN()
-        KV::SET(cache, "first", 1)
-        KV::SET(cache, "second", 2)
+        let cache = kv::open()
+        kv::set(cache, "first", 1)
+        kv::set(cache, "second", 2)
         return true
     `); err == nil {
         t.Fatal("expected the second key to exceed capacity")

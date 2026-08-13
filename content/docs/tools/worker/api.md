@@ -89,7 +89,7 @@ Use the CDP driver from FQL when the script needs Chrome:
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "let page = DOCUMENT(@url, { driver: \"cdp\" }) return page.title",
+    "text": "let page = web::html::open(@url, { driver: \"cdp\" }) return page.title",
     "params": {
       "url": "https://example.com"
     }

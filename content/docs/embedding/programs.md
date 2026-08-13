@@ -38,7 +38,7 @@ import (
 )
 
 // Compile to bytecode
-plan, err := engine.Compile(ctx, source.New("query.fql", `return UPPER(@name)`))
+plan, err := engine.Compile(ctx, source.New("query.fql", `return upper(@name)`))
 if err != nil {
     log.Fatal(err)
 }
@@ -214,7 +214,7 @@ func main() {
     }
     defer engine.Close()
 
-    plan, err := engine.Compile(source.New("greeting.fql", `return UPPER(@name)`))
+    plan, err := engine.Compile(source.New("greeting.fql", `return upper(@name)`))
     if err != nil {
         log.Fatal(err)
     }

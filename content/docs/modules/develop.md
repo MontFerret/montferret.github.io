@@ -37,7 +37,7 @@ Provide the Registry identity and Go module path when the command cannot prompt:
 ferret mod init acme/kvplugin \
   --go-module github.com/acme/ferret-kvplugin \
   --dir kvplugin \
-  --namespace KV
+  --namespace kv
 {{< /terminal >}}
 
 `--dir` and `--namespace` are optional. When omitted, both default from the `kvplugin` leaf of the module name. The destination must not already exist.
@@ -73,10 +73,10 @@ The generated manifest records both identities explicitly:
 
 ```yaml
 name: acme/kvplugin
-namespace: KV
+namespace: kv
 ```
 
-`name` identifies the module in the Registry and dependency metadata. `namespace` identifies its Ferret-facing API, such as `KV::OPEN`. Changing one does not change the other.
+`name` identifies the module in the Registry and dependency metadata. `namespace` identifies its Ferret-facing API, such as `kv::open`. Changing one does not change the other.
 
 ## Implement and test the module
 

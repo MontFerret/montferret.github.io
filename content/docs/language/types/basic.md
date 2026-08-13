@@ -19,7 +19,7 @@ FQL has nine built-in value types:
 | `number` | `42`, `3.14` | Represents numeric values, both integer and floating-point. |
 | `duration` | `250ms`, `1.5s` | Represents a signed length of time with nanosecond precision. |
 | `string` | `"hello"` | Represents text. |
-| `datetime` | `NOW()` | Represents a point in time. |
+| `datetime` | `now()` | Represents a point in time. |
 | `array` | `[1, 2, 3]` | Represents an ordered sequence of values. |
 | `object` | `{ name: "Ada" }` | Represents a set of named fields. |
 | `binary` | module-specific | Represents raw bytes. |
@@ -144,9 +144,9 @@ return {
 }
 {{</ editor >}}
 
-Use explicit conversion functions when a script needs to turn text into a number or a number into text. For example, `TO_NUMBER("10") - 2` returns `8`, while `"10" - 2` raises an invalid-operation error. A malformed explicit conversion raises a conversion error.
+Use explicit conversion functions when a script needs to turn text into a number or a number into text. For example, `to_number("10") - 2` returns `8`, while `"10" - 2` raises an invalid-operation error. A malformed explicit conversion raises a conversion error.
 
-FQL internally distinguishes integers and floats. Most arithmetic and comparison operations work the same for both, but the distinction matters when type-checking functions are used. `IS_INT` returns true only for integer values, and `IS_FLOAT` returns true only for floating-point values. Use `TO_INT` or `TO_FLOAT` to convert between the two when needed.
+FQL internally distinguishes integers and floats. Most arithmetic and comparison operations work the same for both, but the distinction matters when type-checking functions are used. `is_int` returns true only for integer values, and `is_float` returns true only for floating-point values. Use `to_int` or `to_float` to convert between the two when needed.
 
 ## Strings
 
@@ -223,7 +223,7 @@ let quantity = 3
 return `Total: ${price * quantity}`
 {{</ editor >}}
 
-Template literals can span multiple lines. Backtick strings are useful when constructing text that includes variable data without calling `CONCAT`.
+Template literals can span multiple lines. Backtick strings are useful when constructing text that includes variable data without calling `concat`.
 
 ## Arrays
 
@@ -402,22 +402,22 @@ Spread is available only while constructing array and object literals. It does n
 
 DateTime values represent a specific point in time.
 
-They are typically created using standard library functions such as `NOW()`, `DATE()`, or `TO_DATETIME()`:
+They are typically created using standard library functions such as `now()`, `date()`, or `to_datetime()`:
 
 {{< editor lang="fql" >}}
-let now = NOW()
+let now = now()
 
 return {
     current: now,
-    year: DATE_YEAR(now),
-    month: DATE_MONTH(now)
+    year: date_year(now),
+    month: date_month(now)
 }
 {{</ editor >}}
 
 DateTime values support native instant comparison and checked arithmetic with native Duration values. Adding a Duration in either operand order produces another DateTime. Subtracting a Duration from a DateTime produces another DateTime, and subtracting two DateTime values produces the elapsed Duration between their canonical instants.
 
 {{< editor lang="fql" >}}
-let start = TO_DATETIME("2024-01-01T00:00:00Z")
+let start = to_datetime("2024-01-01T00:00:00Z")
 let end = start + 30d
 
 return {
@@ -427,7 +427,7 @@ return {
 }
 {{</ editor >}}
 
-Use `IS_DATETIME` to check whether a value is a DateTime. `TO_DATETIME` accepts an existing DateTime or an RFC3339 string. It also accepts an Int or finite Float Unix epoch offset when the unit is explicit: `TO_DATETIME(value, "s")`, `TO_DATETIME(value, "ms")`, `TO_DATETIME(value, "us")`, or `TO_DATETIME(value, "ns")`. Ferret does not infer an epoch unit from numeric magnitude, and numeric strings are not treated as epoch values.
+Use `is_datetime` to check whether a value is a DateTime. `to_datetime` accepts an existing DateTime or an RFC3339 string. It also accepts an Int or finite Float Unix epoch offset when the unit is explicit: `to_datetime(value, "s")`, `to_datetime(value, "ms")`, `to_datetime(value, "us")`, or `to_datetime(value, "ns")`. Ferret does not infer an epoch unit from numeric magnitude, and numeric strings are not treated as epoch values.
 
 See [the DateTime standard library functions]({{% ref "docs/standard-library/datetime" %}}) for the full list of available operations.
 
@@ -440,7 +440,7 @@ They are used for data that should be handled as bytes instead of ordinary text,
 Binary values are part of the FQL value model, but they are usually returned by functions, modules, or runtime operations. For example, an HTTP, file, or encoding module may return binary data when the result should be treated as bytes.
 
 {{< editor lang="fql" >}}
-let file = IO::NET::HTTP::GET("https://avatars.githubusercontent.com/u/39228646?s=200&v=4")
+let file = io::net::http::get("https://avatars.githubusercontent.com/u/39228646?s=200&v=4")
 
 return file
 {{</ editor >}}
@@ -470,7 +470,7 @@ Durations are native FQL values backed by signed nanoseconds. A duration literal
 2.5e-1s     // 250 milliseconds
 {{</ code >}}
 
-Duration literals work anywhere an ordinary expression is accepted. Compound source literals such as `1h30m` are not supported; compose literals with arithmetic instead. Duration strings do support compound forms, so `TO_DURATION("1h30m")` produces the same value as `1h + 30m`.
+Duration literals work anywhere an ordinary expression is accepted. Compound source literals such as `1h30m` are not supported; compose literals with arithmetic instead. Duration strings do support compound forms, so `to_duration("1h30m")` produces the same value as `1h + 30m`.
 
 {{< code lang="fql" >}}
 let interval = 1h + 30m
@@ -478,12 +478,12 @@ let interval = 1h + 30m
 return {
     doubled: interval * 2,
     ratio: 1s / 250ms,
-    isDuration: IS_DURATION(interval),
-    type: TYPENAME(interval)
+    isDuration: is_duration(interval),
+    type: typename(interval)
 }
 {{</ code >}}
 
-`TO_DURATION` and scheduling expressions use the broad Duration conversion rules:
+`to_duration` and scheduling expressions use the broad Duration conversion rules:
 
 | Source value | Duration result |
 | --- | --- |
@@ -499,11 +499,11 @@ return {
 
 Arithmetic and comparison operators do not apply this conversion implicitly. Duration addition and subtraction require two native Durations. Multiplication accepts a native `Int` or `Float` in either operand order. Division accepts a native number for scaling or another Duration for a ratio. An exact Duration ratio produces an integer; a fractional ratio produces a float.
 
-Duration equality is also strict: `1s == 1000ms` is true, while `1s == 1000` and `1s == "1s"` are false. Relational comparison between Duration and a non-Duration value raises an invalid-operation error. Use `TO_DURATION(value)` explicitly when conversion is intended.
+Duration equality is also strict: `1s == 1000ms` is true, while `1s == 1000` and `1s == "1s"` are false. Relational comparison between Duration and a non-Duration value raises an invalid-operation error. Use `to_duration(value)` explicitly when conversion is intended.
 
-String-triggered `+` remains concatenation. For example, `1s + "1s"` returns `"1s1s"`, while `1s + TO_DURATION("1s")` returns `2s`.
+String-triggered `+` remains concatenation. For example, `1s + "1s"` returns `"1s1s"`, while `1s + to_duration("1s")` returns `2s`.
 
-Conversion, parsing, scaling, and division truncate fractional nanoseconds toward zero. Values outside the signed Duration range raise a range error instead of wrapping. Use `TO_STRING` when text is required.
+Conversion, parsing, scaling, and division truncate fractional nanoseconds toward zero. Values outside the signed Duration range raise a range error instead of wrapping. Use `to_string` when text is required.
 
 Equivalent values have the same normalized string form. For example, `5000ms` renders as `5s`, and days may render as hours. A zero Duration is false when evaluated by binary `and` or `or`; any non-zero Duration is true. Unary `!` and `not` accept only Boolean values. Negative durations are valid values and arithmetic results, but scheduling operations reject them.
 
@@ -514,7 +514,7 @@ Scripts often receive values in different shapes. Use type-related functions or 
 {{< editor lang="fql" >}}
 let value = "42"
 
-return IS_STRING(value) ? "text" : "not text"
+return is_string(value) ? "text" : "not text"
 {{</ editor >}}
 
 Type checks are useful when working with external data, optional fields, runtime-backed values, or module results.

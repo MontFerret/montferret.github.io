@@ -19,7 +19,7 @@ let users = [
   { name: "Grace" }
 ]
 
-return T::EQ(LENGTH(users), 2)
+return t::eq(length(users), 2)
 {{</ code >}}
 
 Save the file as `users.fql` and run it:
@@ -28,7 +28,7 @@ Save the file as `users.fql` and run it:
 lab run users.fql
 {{< /terminal >}}
 
-Lab does not inspect the returned value for `.fql` tests. If the script returns `false` without a runtime error, Lab still treats the unit test as passed. Use assertion helpers such as `T::EQ` when a mismatch should fail the test.
+Lab does not inspect the returned value for `.fql` tests. If the script returns `false` without a runtime error, Lab still treats the unit test as passed. Use assertion helpers such as `t::eq` when a mismatch should fail the test.
 
 ## Write an expected-failure test
 
@@ -57,7 +57,7 @@ query:
 assert:
   text: |
     let result = @lab.data.query.result
-    return T::EQ(LENGTH(result), 2)
+    return t::eq(length(result), 2)
 ```
 
 The suite passes when the assertion script executes successfully. Use assertion helpers or another expression that raises a runtime error when the expectation is not met. The query result is available in the assertion under `@lab.data.query.result`.
@@ -102,7 +102,7 @@ query:
 
 assert:
   text: |
-    return T::EQ(@lab.data.query.result, ["Ada"])
+    return t::eq(@lab.data.query.result, ["Ada"])
 ```
 
 Script-level `params` are merged into the user parameters for that script. They can be used with values passed by `lab run --param`.
@@ -110,7 +110,7 @@ Script-level `params` are merged into the user parameters for that script. They 
 The assertion can also inspect the parameters used for the query:
 
 {{< code lang="fql" >}}
-return T::EQ(@lab.data.query.params.users[0].name, "Ada")
+return t::eq(@lab.data.query.params.users[0].name, "Ada")
 {{</ code >}}
 
 ## Set a suite timeout
@@ -122,13 +122,13 @@ timeout: 60
 
 query:
   text: |
-    return DOCUMENT(@url).title
+    return web::html::open(@url).title
   params:
     url: "https://example.com"
 
 assert:
   text: |
-    return T::NOT::EMPTY(@lab.data.query.result)
+    return t::not::empty(@lab.data.query.result)
 ```
 
 Timeouts are enforced around the suite run. Use this for tests that legitimately need more time than the command default.

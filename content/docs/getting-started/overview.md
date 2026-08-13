@@ -57,7 +57,7 @@ A Ferret script usually follows a simple pattern:
 For example, a script might query product cards from a document and return a normalized list of objects:
 
 {{< editor lang="fql" readonly="true" params="false" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 let products = page[~ css`.product-card`]
 
 return for product in products

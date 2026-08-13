@@ -31,7 +31,7 @@ return waitfor exists [1, 2, 3] timeout 100ms
 
 {{< code lang="fql" >}}
 return waitfor value loadItems()
-    when LENGTH(.) > 0
+    when length(.) > 0
     timeout 5s
 {{</ code >}}
 

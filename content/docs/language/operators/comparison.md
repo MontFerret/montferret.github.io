@@ -44,7 +44,7 @@ Values of the same built-in type compare according to that type. Mixed `Int`/`Fl
 1 < 2.5
 "abc" < "abd"
 false < 0
-TO_DATETIME("2026-08-02T12:00:00Z") > "not-a-date"
+to_datetime("2026-08-02T12:00:00Z") > "not-a-date"
 {{</ code >}}
 
 See [Type Ordering]({{< ref "../types/ordering" >}}) for structural and cross-type details.
@@ -59,7 +59,7 @@ return {
     greater: 5s > 4999ms,
     stringIsDifferent: 1s == "1s",
     numberIsDifferent: 1s != 1000,
-    explicitConversion: 1s == TO_DURATION("1s")
+    explicitConversion: 1s == to_duration("1s")
 }
 {{</ editor >}}
 
@@ -73,7 +73,7 @@ operator '<=' cannot be applied to Duration and String
 The same rule applies recursively. For example, `[1s] == ["1s"]` is false, while `[1s] < ["1s"]` raises an invalid-operation error. Element-wise `any`, `all`, and `none` comparisons also use this strict behavior.
 
 {{< notification type="info" >}}
-Duration comparison no longer converts numbers or strings implicitly. Use <code>TO_DURATION(value)</code> before comparison when conversion is intended.
+Duration comparison no longer converts numbers or strings implicitly. Use <code>to_duration(value)</code> before comparison when conversion is intended.
 {{</ notification >}}
 
 DateTime values compare by canonical instant when both operands are DateTime. A string is never parsed implicitly; mixed DateTime/non-Duration relational comparisons continue to use the normal cross-type order.

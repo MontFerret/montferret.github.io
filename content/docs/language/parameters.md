@@ -84,7 +84,7 @@ Quoted text is always treated as a string literal. An unquoted @name expression 
 Bind parameters can be used anywhere a value expression is expected.
 
 {{< editor lang="fql" params=`{"id": "F03D4CB9"}` >}}
-return CONCAT("prefix-", @id, "-suffix")
+return concat("prefix-", @id, "-suffix")
 {{</ editor >}}
 
 The parameter value participates in the expression the same way as any other value.

@@ -6,19 +6,19 @@ description: "Utility functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/utils/
 menuTitle: 
-menu: [PRINT,WAIT,]
+menu: [print,wait,]
 ---
 
 
 
 {{< header href="print" >}}
 
-PRINT
+print
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/utils/log.go#L12)
 
-PRINT writes messages into the system log.
+print writes messages into the system log.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -32,12 +32,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait" >}}
 
-WAIT
+wait
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/utils/wait.go#L12)
 
-WAIT pauses the execution for a given period.
+wait pauses the execution for a given period.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

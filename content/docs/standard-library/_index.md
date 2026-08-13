@@ -12,6 +12,8 @@ aliases:
 
 Built-in Ferret functions and modules for working with arrays, objects, strings, numbers, dates, paths, HTML, IO, testing, and type conversion.
 
+Registered namespace segments and host-function names are case-insensitive in FQL. This reference uses their single canonical lowercase qualified spelling.
+
 <div class="docs-section-card-grid">
   <a class="docs-section-card" href="/docs/standard-library/arrays/">
     <strong>Arrays</strong>

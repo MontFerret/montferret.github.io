@@ -21,7 +21,7 @@ Cross-origin iframes restrict access to their content. The iframe must be on the
 A browser-backed page exposes its frames through the `frames` property:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 
 return for frame in page.frames
     return {
@@ -35,16 +35,16 @@ return for frame in page.frames
 Use `filter` to locate a specific frame:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 
 let target = (
     for frame in page.frames
-        filter CONTAINS(frame.URL, "embedded-form")
+        filter contains(frame.URL, "embedded-form")
         limit 1
         return frame
 )
 
-let frame = FIRST(target)
+let frame = first(target)
 return frame?.title
 {{</ code >}}
 
@@ -53,11 +53,11 @@ return frame?.title
 Once you have a frame reference, query it the same way you query a page:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 
-let target = FIRST((
+let target = first((
     for frame in page.frames
-        filter CONTAINS(frame.URL, "embedded")
+        filter contains(frame.URL, "embedded")
         limit 1
         return frame
 ))
@@ -74,11 +74,11 @@ return items[*].textContent
 Dispatch events to elements within the frame just as you would on the main page:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 
-let frame = FIRST((
+let frame = first((
     for f in page.frames
-        filter CONTAINS(f.URL, "login")
+        filter contains(f.URL, "login")
         limit 1
         return f
 ))
@@ -97,17 +97,17 @@ return "submitted"
 A frame might not be present on every page. Use error recovery or conditional checks:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 
 let frames = (
     for f in page.frames
-        filter CONTAINS(f.URL, "target-frame")
+        filter contains(f.URL, "target-frame")
         limit 1
         return f
 )
 
-return LENGTH(frames) > 0
-    ? FIRST(frames)[~ css`.data`][*].textContent
+return length(frames) > 0
+    ? first(frames)[~ css`.data`][*].textContent
     : []
 {{</ code >}}
 

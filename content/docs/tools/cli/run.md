@@ -52,7 +52,7 @@ ferret run script.fql --param url=https://example.com --param limit=50
 {{< /terminal >}}
 
 {{< editor lang="fql" >}}
-let page = DOCUMENT(@url)
+let page = web::html::open(@url)
 
 return for item in page[~ css`.result`]
     limit @limit

@@ -12,7 +12,7 @@ aliases:
 
 FQL is a small, declarative-first, expression-oriented language for data automation. It is designed to be embedded in tools and applications whose host runtime determines what a script can access.
 
-Keywords are case-insensitive, so `return`, `RETURN`, and mixed-case spellings parse the same way. Documentation and formatter output use lowercase as the canonical spelling. Identifiers, function and module names, query dialects, strings, and comments keep their own casing.
+Keywords and registered host-function calls are case-insensitive, while documentation uses lowercase as the canonical spelling. Registered namespace segments and host-function names have one lowercase qualified identity; variables, user-defined functions, aliases, object properties, query dialects, strings, and comments retain their existing casing rules.
 
 ## Scripts produce values
 
@@ -46,7 +46,7 @@ return score >= 80 ? "passed" : "failed"
 
 {{< editor lang="fql" >}}
 let user = { name: "Ada", roles: ["admin", "editor"] }
-let isAdmin = CONTAINS(user.roles, "admin")
+let isAdmin = contains(user.roles, "admin")
 
 return {
     name: user.name,
@@ -80,7 +80,7 @@ return for user in users {
 This script starts with an array of users and returns only the names of active ones. The shape of the data changes; the logic remains declarative. `for` expressions can appear inline too, assigned via `let` and composed with the rest of the script:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 
 return for item in page[~ css`.product-card`] {
     filter item.attributes["data-in-stock"] == "true"
@@ -100,7 +100,7 @@ FQL's query syntax is not tied to one data type or one library. Instead, queryin
 An HTML object might support both CSS and XPath:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 let links = page[~ css`a[href]`]
 
 return links
@@ -109,7 +109,7 @@ return links
 The long form of a query expression makes the structure explicit, and supports passing query-specific data or options:
 
 {{< editor lang="fql" >}}
-let db = DB::SQLITE::OPEN({ memory: true })
+let db = db::sqlite::open({ memory: true })
 
 let create = query one `
   CREATE TABLE users (
@@ -138,10 +138,10 @@ The meaning of `with` and `options` is defined by the value being queried and th
 Dynamic workflows often involve timing: a page may not have finished loading, an element may appear only after JavaScript runs, or a value may change in response to an event. FQL includes waiting constructs for these cases, and they are first-class expressions rather than library utilities.
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/network/delayed-requests/", { driver: "cdp" })
 
 return waitfor value page[~ css`.network-result-card p`]
-    when LENGTH(.) > 0
+    when length(.) > 0
     timeout 5s
     on timeout return false
 {{< /editor >}}
@@ -155,7 +155,7 @@ FQL is intentionally small. The core language defines the syntax and execution m
 A module can provide namespaced functions:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-return YAML::DECODE(`
+return yaml::decode(`
 name: Ada
 roles:
 - admin
@@ -163,7 +163,7 @@ roles:
   `)
   {{< /editor >}}
 
-A module can also provide value types with query support - the HTML module, for example, exposes `DOCUMENT`, `PARSE` functions, and the `css`, `xpath` query dialects. Other modules can provide integrations with file formats, external APIs, browser runtimes, databases, and custom application objects. The language stays consistent regardless of which modules are present; the host environment determines what is available.
+A module can also provide value types with query support - the HTML module, for example, exposes `web::html::open`, `web::html::parse`, and the `css`, `xpath` query dialects. Other modules can provide integrations with file formats, external APIs, browser runtimes, databases, and custom application objects. The language stays consistent regardless of which modules are present; the host environment determines what is available.
 
 This means the same script might behave differently in a CLI context than in a browser automation runtime, not because the language changes, but because the set of registered modules and host capabilities differs. This is similar to how a SQL query depends on the database engine it runs against, or how a JavaScript file behaves differently in a browser versus Node.js.
 

@@ -22,11 +22,11 @@ let roles = ["admin", "editor"]
 return {
     name: name,
     active: active,
-    roleCount: LENGTH(roles)
+    roleCount: length(roles)
 }
 {{</ editor >}}
 
-In this example, `"Ada"`, `true`, `["admin", "editor"]`, `name`, `active`, and `LENGTH(roles)` are all expressions.
+In this example, `"Ada"`, `true`, `["admin", "editor"]`, `name`, `active`, and `length(roles)` are all expressions.
 
 ## Where expressions are used
 
@@ -54,7 +54,7 @@ return for user in users {
     filter user.active && user.age >= 35
     return {
         name: user.name,
-        label: CONCAT(user.name, " is active")
+        label: concat(user.name, " is active")
     }
 }
 {{</ editor >}}
@@ -64,7 +64,7 @@ The query uses expressions in several different positions:
 - `users` is the input expression for the `for` loop.
 - `user.active && user.age >= 35` is the filter expression.
 - `user.name` is an object field value expression.
-- `CONCAT(user.name, " is active")` is a function call expression.
+- `concat(user.name, " is active")` is a function call expression.
 
 ## Literal expressions
 
@@ -91,7 +91,7 @@ A variable reference is an expression that reads the value of a variable.
 
 {{< editor lang="fql" >}}
 let name = "Ada"
-let greeting = CONCAT("Hello, ", name)
+let greeting = concat("Hello, ", name)
 
 return greeting
 {{</ editor >}}
@@ -163,10 +163,10 @@ A function call is an expression that invokes a function and produces its result
 let firstName = "Ada"
 let lastName = "Lovelace"
 
-return CONCAT(UPPER(firstName), " ", UPPER(lastName))
+return concat(upper(firstName), " ", upper(lastName))
 {{</ editor >}}
 
-Function arguments are expressions too. The inner calls to `UPPER` are evaluated and passed as arguments to `CONCAT`.
+Function arguments are expressions too. The inner calls to `upper` are evaluated and passed as arguments to `concat`.
 
 For details on function declarations and calls, see the [Functions section]({{% ref "functions" %}}).
 
@@ -188,7 +188,7 @@ let active = true
 return {
     name: name,
     active: active,
-    label: CONCAT(name, " is active")
+    label: concat(name, " is active")
 }
 {{</ editor >}}
 

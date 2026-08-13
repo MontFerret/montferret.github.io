@@ -6,19 +6,19 @@ description: "Collection functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/collections/
 menuTitle: 
-menu: [COUNT,COUNT_DISTINCT,INCLUDES,LENGTH,REVERSE,]
+menu: [count,count_distinct,includes,length,reverse,]
 ---
 
 
 
 {{< header href="includes" >}}
 
-INCLUDES
+includes
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/include.go#L14)
 
-INCLUDES checks whether a container includes a given value.
+includes checks whether a container includes a given value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -33,12 +33,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="count" >}}
 
-COUNT
+count
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/count.go#L9)
 
-COUNT returns the number of elements in a collection.
+count returns the number of elements in a collection.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -52,12 +52,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="count_distinct" >}}
 
-COUNT_DISTINCT
+count_distinct
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/count_distinct.go#L11)
 
-COUNT_DISTINCT computes the number of distinct elements in the given collection and returns the count as an integer.
+count_distinct computes the number of distinct elements in the given collection and returns the count as an integer.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -71,11 +71,11 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="length" >}}
 
-LENGTH
+length
 
 {{</ header >}}
 
-LENGTH returns the number of elements or characters in a value.
+length returns the number of elements or characters in a value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -89,12 +89,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="reverse" >}}
 
-REVERSE
+reverse
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/collections/reverse.go#L13)
 
-REVERSE returns the reverse of a given string or array value.
+reverse returns the reverse of a given string or array value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

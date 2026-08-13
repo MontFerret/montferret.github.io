@@ -6,19 +6,19 @@ description: "Math functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/math/
 menuTitle: 
-menu: [ABS,ACOS,ASIN,ATAN,ATAN2,AVERAGE,CEIL,COS,DEGREES,EXP,EXP2,FLOOR,LOG,LOG10,LOG2,MAX,MEDIAN,MIN,PERCENTILE,PI,POW,RADIANS,RAND,RANGE,ROUND,SIN,SQRT,STDDEV_POPULATION,STDDEV_SAMPLE,SUM,TAN,VARIANCE_POPULATION,VARIANCE_SAMPLE,]
+menu: [abs,acos,asin,atan,atan2,average,ceil,cos,degrees,exp,exp2,floor,log,log10,log2,max,median,min,percentile,pi,pow,radians,rand,range,round,sin,sqrt,stddev_population,stddev_sample,sum,tan,variance_population,variance_sample,]
 ---
 
 
 
 {{< header href="abs" >}}
 
-ABS
+abs
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/abs.go#L14)
 
-ABS returns the absolute value of a given number.
+abs returns the absolute value of a given number.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -32,12 +32,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="acos" >}}
 
-ACOS
+acos
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/acos.go#L14)
 
-ACOS returns the arccosine, in radians, of a given number.
+acos returns the arccosine, in radians, of a given number.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -51,12 +51,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="asin" >}}
 
-ASIN
+asin
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/asin.go#L14)
 
-ASIN returns the arcsine, in radians, of a given number.
+asin returns the arcsine, in radians, of a given number.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -70,12 +70,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="atan" >}}
 
-ATAN
+atan
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/atan.go#L14)
 
-ATAN returns the arctangent, in radians, of a given number.
+atan returns the arctangent, in radians, of a given number.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -89,12 +89,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="atan2" >}}
 
-ATAN2
+atan2
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/atan2.go#L15)
 
-ATAN2 returns the arc tangent of y/x, using the signs of the two to determine the quadrant of the return value.
+atan2 returns the arc tangent of y/x, using the signs of the two to determine the quadrant of the return value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -109,12 +109,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="average" >}}
 
-AVERAGE
+average
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/average.go#L13)
 
-AVERAGE Returns the average (arithmetic mean) of the values in array.
+average Returns the average (arithmetic mean) of the values in array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -128,12 +128,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="ceil" >}}
 
-CEIL
+ceil
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/ceil.go#L14)
 
-CEIL returns the least integer value greater than or equal to a given value.
+ceil returns the least integer value greater than or equal to a given value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -147,12 +147,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="cos" >}}
 
-COS
+cos
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/cos.go#L14)
 
-COS returns the cosine of a given number.
+cos returns the cosine of a given number.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -166,12 +166,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="degrees" >}}
 
-DEGREES
+degrees
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/degrees.go#L13)
 
-DEGREES returns the angle converted from radians to degrees.
+degrees returns the angle converted from radians to degrees.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -185,12 +185,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="exp" >}}
 
-EXP
+exp
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/exp.go#L14)
 
-EXP returns Euler's constant (2.71828...) raised to the power of value.
+exp returns Euler's constant (2.71828...) raised to the power of value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -204,12 +204,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="exp2" >}}
 
-EXP2
+exp2
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/exp2.go#L14)
 
-EXP2 returns 2 raised to the power of value.
+exp2 returns 2 raised to the power of value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -223,12 +223,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="floor" >}}
 
-FLOOR
+floor
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/floor.go#L14)
 
-FLOOR returns the greatest integer value less than or equal to a given value.
+floor returns the greatest integer value less than or equal to a given value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -242,12 +242,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="log" >}}
 
-LOG
+log
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/log.go#L14)
 
-LOG returns the natural logarithm of a given value.
+log returns the natural logarithm of a given value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -261,12 +261,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="log10" >}}
 
-LOG10
+log10
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/log10.go#L14)
 
-LOG10 returns the decimal logarithm of a given value.
+log10 returns the decimal logarithm of a given value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -280,12 +280,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="log2" >}}
 
-LOG2
+log2
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/log2.go#L14)
 
-LOG2 returns the binary logarithm of a given value.
+log2 returns the binary logarithm of a given value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -299,12 +299,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="max" >}}
 
-MAX
+max
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/max.go#L13)
 
-MAX returns the greatest (arithmetic mean) of the values in array.
+max returns the greatest (arithmetic mean) of the values in array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -318,12 +318,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="median" >}}
 
-MEDIAN
+median
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/median.go#L14)
 
-MEDIAN returns the median of the values in array.
+median returns the median of the values in array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -337,12 +337,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="min" >}}
 
-MIN
+min
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/min.go#L13)
 
-MIN returns the smallest (arithmetic mean) of the values in array.
+min returns the smallest (arithmetic mean) of the values in array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -356,12 +356,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="percentile" >}}
 
-PERCENTILE
+percentile
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/percentile.go#L17)
 
-PERCENTILE returns the nth percentile of the values in a given array.
+percentile returns the nth percentile of the values in a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -377,12 +377,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="pi" >}}
 
-PI
+pi
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/pi.go#L12)
 
-PI returns Pi value.
+pi returns Pi value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -395,12 +395,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="pow" >}}
 
-POW
+pow
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/pow.go#L15)
 
-POW returns the base to the exponent value.
+pow returns the base to the exponent value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -415,12 +415,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="radians" >}}
 
-RADIANS
+radians
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/radians.go#L13)
 
-RADIANS returns the angle converted from degrees to radians.
+radians returns the angle converted from degrees to radians.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -434,12 +434,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="rand" >}}
 
-RAND
+rand
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/rand.go#L13)
 
-RAND return a pseudo-random number between 0 and 1.
+rand return a pseudo-random number between 0 and 1.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -454,12 +454,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="range" >}}
 
-RANGE
+range
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/range.go#L15)
 
-RANGE returns an array of numbers in the specified range, optionally with increments other than 1.
+range returns an array of numbers in the specified range, optionally with increments other than 1.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -475,12 +475,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="round" >}}
 
-ROUND
+round
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/round.go#L14)
 
-ROUND returns the nearest integer, rounding half away from zero.
+round returns the nearest integer, rounding half away from zero.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -494,12 +494,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="sin" >}}
 
-SIN
+sin
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/sin.go#L14)
 
-SIN returns the sine of the radian argument.
+sin returns the sine of the radian argument.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -513,12 +513,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="sqrt" >}}
 
-SQRT
+sqrt
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/sqrt.go#L14)
 
-SQRT returns the square root of a given number.
+sqrt returns the square root of a given number.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -532,12 +532,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="stddev_population" >}}
 
-STDDEV_POPULATION
+stddev_population
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/stddev_population.go#L14)
 
-STDDEV_POPULATION returns the population standard deviation of the values in a given array.
+stddev_population returns the population standard deviation of the values in a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -551,12 +551,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="stddev_sample" >}}
 
-STDDEV_SAMPLE
+stddev_sample
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/stddev_sample.go#L14)
 
-STDDEV_SAMPLE returns the sample standard deviation of the values in a given array.
+stddev_sample returns the sample standard deviation of the values in a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -570,12 +570,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="sum" >}}
 
-SUM
+sum
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/sum.go#L13)
 
-SUM returns the sum of the values in a given array.
+sum returns the sum of the values in a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -589,12 +589,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="tan" >}}
 
-TAN
+tan
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/tan.go#L14)
 
-TAN returns the tangent of a given number.
+tan returns the tangent of a given number.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -608,12 +608,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="variance_population" >}}
 
-VARIANCE_POPULATION
+variance_population
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/variance_population.go#L14)
 
-VARIANCE_POPULATION returns the population variance of the values in a given array.
+variance_population returns the population variance of the values in a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -627,12 +627,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="variance_sample" >}}
 
-VARIANCE_SAMPLE
+variance_sample
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/math/variance_sample.go#L14)
 
-VARIANCE_SAMPLE returns the sample variance of the values in a given array.
+variance_sample returns the sample variance of the values in a given array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

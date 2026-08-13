@@ -17,7 +17,7 @@ func Decode(ctx context.Context, args ...runtime.Value) (runtime.Value, error)
 may expose this Ferret API:
 
 ```text
-XML::DECODE(data: String | Binary) -> Object
+xml::decode(data: String | Binary) -> Object
 ```
 
 Use ordinary Go documentation comments for human-readable documentation and structured tags for the Ferret-facing parameters, result, failures, and deprecation state. Barn derives the public function name and namespace from module registration rather than from the Go identifier.
@@ -33,7 +33,7 @@ Start with ordinary Go documentation prose. The first sentence should begin with
 //
 // Example:
 //
-//	return XML::DECODE("<root><item /></root>")
+//	return xml::decode("<root><item /></root>")
 //
 // @param data {String|Binary} XML content.
 // @return {Object} Normalized XML document.
@@ -168,12 +168,12 @@ The initial contract supports only `@param`, `@return`, `@throws`, and `@depreca
 
 Barn associates supported tags with the registered public API declaration and keeps the ordinary prose separate from structured metadata. It parses the structured block deterministically and reports malformed supported tags with the source file, declaration, and offending tag instead of guessing.
 
-The registered function name remains authoritative. A Go function named `Decode` can therefore document `XML::DECODE`, and the same declaration can be registered under another namespace without changing its Go name.
+The registered function name remains authoritative. A Go function named `Decode` can therefore document `xml::decode`, and the same declaration can be registered under another namespace without changing its Go name.
 
 Raw tags are not the final Registry presentation. The complete `Decode` comment allows the Registry to present information equivalent to:
 
 ```text
-XML::DECODE(data: String | Binary) -> Object
+xml::decode(data: String | Binary) -> Object
 
 Decodes XML content into a normalized document object.
 

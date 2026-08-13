@@ -6,19 +6,19 @@ description: "Path functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/path/
 menuTitle: PATH
-menu: [BASE,CLEAN,DIR,EXT,IS_ABS,JOIN,MATCH,SEPARATE,]
+menu: [base,clean,dir,ext,is_abs,join,match,separate,]
 ---
 
 
 
 {{< header href="base" >}}
 
-PATH::BASE
+path::base
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/base.go#L14)
 
-BASE returns the last component of the path or the path itself if it does not contain any directory separators.
+base returns the last component of the path or the path itself if it does not contain any directory separators.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -32,12 +32,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="clean" >}}
 
-PATH::CLEAN
+path::clean
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/clean.go#L14)
 
-CLEAN returns the shortest path name equivalent to path.
+clean returns the shortest path name equivalent to path.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -51,12 +51,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="dir" >}}
 
-PATH::DIR
+path::dir
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/dir.go#L14)
 
-DIR returns the directory component of path.
+dir returns the directory component of path.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -70,12 +70,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="ext" >}}
 
-PATH::EXT
+path::ext
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/ext.go#L14)
 
-EXT returns the extension of the last component of path.
+ext returns the extension of the last component of path.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -89,12 +89,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="is_abs" >}}
 
-PATH::IS_ABS
+path::is_abs
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/is_abs.go#L14)
 
-IS_ABS reports whether the path is absolute.
+is_abs reports whether the path is absolute.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -108,12 +108,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="join" >}}
 
-PATH::JOIN
+path::join
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/join.go#L14)
 
-JOIN joins any number of path elements into a single path, separating them with slashes.
+join joins any number of path elements into a single path, separating them with slashes.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -127,12 +127,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="match" >}}
 
-PATH::MATCH
+path::match
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/match.go#L15)
 
-MATCH reports whether name matches the pattern.
+match reports whether name matches the pattern.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -147,12 +147,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="separate" >}}
 
-PATH::SEPARATE
+path::separate
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/path/separate.go#L14)
 
-SEPARATE separates the path into a directory and filename component.
+separate separates the path into a directory and filename component.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

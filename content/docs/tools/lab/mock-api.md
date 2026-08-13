@@ -22,8 +22,8 @@ lab run --mock ./users.yaml@api tests/
 The service URL is available as `@lab.mock.api`.
 
 {{< code lang="fql" >}}
-let response = IO::NET::HTTP::GET(@lab.mock.api + "/users/123")
-let user = JSON_PARSE(TO_STRING(response))
+let response = io::net::http::get(@lab.mock.api + "/users/123")
+let user = json_parse(to_string(response))
 
 return user.id == "123"
 {{< /code >}}

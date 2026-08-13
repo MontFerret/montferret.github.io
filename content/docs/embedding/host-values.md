@@ -23,7 +23,7 @@ Host values let an embedding application expose Go-managed resources and objects
 | Mechanism | Best for | Script sees | Lifecycle |
 |-----------|----------|-------------|-----------|
 | Parameter | Static data: strings, numbers, config, JSON-like structures | `@name` — a plain value | Host sets before execution |
-| Function | Stateless computation: hash, format, fetch | `FN(args)` → result | No state between calls |
+| Function | Stateless computation: hash, format, fetch | `fn(args)` → result | No state between calls |
 | Host value | Stateful resource or behavioral object | Variable with capabilities: `val.prop`, `for x in val`, `query ... in val` | Host creates; runtime tracks `io.Closer` |
 | Module | Self-contained extension bundling functions + hooks | Namespaced functions and values | Module `Register` + engine lifecycle hooks |
 
@@ -49,7 +49,7 @@ type Value interface {
 }
 {{</ code >}}
 
-- `String()` — text representation used by `TO_STRING()` and encoding fallbacks.
+- `String()` — text representation used by `to_string()` and encoding fallbacks.
 - `Hash()` — identity hash used by the VM for deduplication and map keys. Use `fnv.New64a` from the standard library.
 - `Copy()` — shallow copy. For host values that wrap a pointer, returning the same pointer is usually correct.
 
@@ -110,7 +110,7 @@ Register a function that returns it:
 {{< code lang="go" >}}
 engine, err := ferret.New(
     ferret.WithFunctionsRegistrar(func(ns runtime.Namespace) {
-        ns.Function().A1().Add("LABEL", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
+        ns.Function().A1().Add("label", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
             text, err := runtime.CastArg[runtime.String](arg, 0)
             if err != nil {
                 return nil, err
@@ -123,8 +123,8 @@ engine, err := ferret.New(
 {{</ code >}}
 
 {{< code lang="fql" >}}
-let l = LABEL("urgent")
-return TO_STRING(l)
+let l = label("urgent")
+return to_string(l)
 // "urgent"
 {{</ code >}}
 
@@ -161,7 +161,7 @@ func (l *Label) Get(_ context.Context, key runtime.Value) (runtime.Value, error)
 {{</ code >}}
 
 {{< code lang="fql" >}}
-let l = LABEL("urgent")
+let l = label("urgent")
 return l.text
 // "urgent"
 {{</ code >}}
@@ -172,7 +172,7 @@ return l.text
 |-----------|--------|------------|
 | `Iterable` | `Iterate(ctx) (Iterator, error)` | `for x in val` |
 | `Iterator` | `Next(ctx) (value, key Value, err error)` | (returned by `Iterate`) |
-| `Measurable` | `Length(ctx) (Int, error)` | `LENGTH(val)` |
+| `Measurable` | `Length(ctx) (Int, error)` | `length(val)` |
 | `Containable` | `Contains(ctx, value Value) (Boolean, error)` | `x in val` |
 
 `Iterator.Next` must return `io.EOF` when the sequence is exhausted. If the iterator holds resources (an open cursor, for example), implement `io.Closer` on it as well.
@@ -346,8 +346,8 @@ func main() {
 
     engine, err := ferret.New(
         ferret.WithFunctionsRegistrar(func(ns runtime.Namespace) {
-            db := ns.Namespace("DB")
-            db.Function().A0().Add("OPEN", func(ctx context.Context) (runtime.Value, error) {
+            db := ns.Namespace("db")
+            db.Function().A0().Add("open", func(ctx context.Context) (runtime.Value, error) {
                 return NewStore(), nil
             })
         }),
@@ -358,7 +358,7 @@ func main() {
     defer engine.Close()
 
     plan, err := engine.Compile(ctx, source.NewAnonymous(`
-        let db = DB::OPEN()
+        let db = db::open()
         return query "SELECT * WHERE age > 18" in db
     `))
     if err != nil {

@@ -17,7 +17,7 @@ Replace the scaffold placeholders with release metadata before tagging the repos
 ```yaml
 $schema: https://schemas.ferretlang.org/module/v1.json
 name: ziflex/kvplugin
-namespace: KV
+namespace: kv
 version: 1.0.0
 description: Provides an in-memory key-value cache for Ferret queries.
 license: Apache-2.0

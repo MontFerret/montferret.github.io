@@ -6,19 +6,19 @@ description: "Testing assertion functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/testing/
 menuTitle: T
-menu: [ARRAY,BINARY,DATETIME,EMPTY,EQUAL,FAIL,FALSE,FLOAT,GT,GTE,INCLUDE,INT,LEN,LT,LTE,MATCH,NONE,OBJECT,STRING,TRUE,]
+menu: [array,binary,datetime,empty,eq,fail,false,float,gt,gte,include,int,len,lt,lte,match,none,object,string,true,]
 ---
 
 
 
 {{< header href="array" >}}
 
-T::ARRAY
+t::array
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/array.go#L13)
 
-ARRAY asserts that value is a array type.
+array asserts that value is a array type.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -33,12 +33,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="binary" >}}
 
-T::BINARY
+t::binary
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/binary.go#L13)
 
-BINARY asserts that value is a binary type.
+binary asserts that value is a binary type.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -53,12 +53,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="datetime" >}}
 
-T::DATETIME
+t::datetime
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/datetime.go#L13)
 
-DATETIME asserts that value is a datetime type.
+datetime asserts that value is a datetime type.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -73,12 +73,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="empty" >}}
 
-T::EMPTY
+t::empty
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/empty.go#L14)
 
-EMPTY asserts that the target does not contain any values.
+empty asserts that the target does not contain any values.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -91,14 +91,14 @@ Argument   | Type     | Default value  | Description
 - - - -
 
 
-{{< header href="equal" >}}
+{{< header href="eq" >}}
 
-T::EQUAL
+t::eq
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/equal.go#L14)
 
-EQUAL asserts equality of actual and expected values.
+eq asserts equality of actual and expected values.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -114,12 +114,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="fail" >}}
 
-T::FAIL
+t::fail
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/fail.go#L11)
 
-FAIL returns an error.
+fail returns an error.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -133,12 +133,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="false" >}}
 
-T::FALSE
+t::false
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/false.go#L14)
 
-FALSE asserts that value is false.
+false asserts that value is false.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -153,12 +153,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="float" >}}
 
-T::FLOAT
+t::float
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/float.go#L13)
 
-FLOAT asserts that value is a float type.
+float asserts that value is a float type.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -173,12 +173,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="gt" >}}
 
-T::GT
+t::gt
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/gt.go#L14)
 
-GT asserts that an actual value is greater than an expected one.
+gt asserts that an actual value is greater than an expected one.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -194,12 +194,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="gte" >}}
 
-T::GTE
+t::gte
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/gte.go#L14)
 
-GTE asserts that an actual value is greater than or equal to an expected one.
+gte asserts that an actual value is greater than or equal to an expected one.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -215,12 +215,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="include" >}}
 
-T::INCLUDE
+t::include
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/include.go#L16)
 
-INCLUDE asserts that haystack includes needle.
+include asserts that haystack includes needle.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -236,12 +236,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="int" >}}
 
-T::INT
+t::int
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/int.go#L13)
 
-INT asserts that value is a int type.
+int asserts that value is a int type.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -256,12 +256,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="len" >}}
 
-T::LEN
+t::len
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/len.go#L15)
 
-LEN asserts that a measurable value has a length or size with the expected value.
+len asserts that a measurable value has a length or size with the expected value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -277,12 +277,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="lt" >}}
 
-T::LT
+t::lt
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/lt.go#L14)
 
-LT asserts that an actual value is lesser than an expected one.
+lt asserts that an actual value is lesser than an expected one.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -298,12 +298,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="lte" >}}
 
-T::LTE
+t::lte
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/lte.go#L14)
 
-LTE asserts that an actual value is lesser than or equal to an expected one.
+lte asserts that an actual value is lesser than or equal to an expected one.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -319,12 +319,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="match" >}}
 
-T::MATCH
+t::match
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/match.go#L15)
 
-MATCH asserts that value matches the regular expression.
+match asserts that value matches the regular expression.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -340,12 +340,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="none" >}}
 
-T::NONE
+t::none
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/none.go#L14)
 
-NONE asserts that value is none.
+none asserts that value is none.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -360,12 +360,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="object" >}}
 
-T::OBJECT
+t::object
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/object.go#L13)
 
-OBJECT asserts that value is a object type.
+object asserts that value is a object type.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -380,12 +380,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="string" >}}
 
-T::STRING
+t::string
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/string.go#L13)
 
-STRING asserts that value is a string type.
+string asserts that value is a string type.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -400,12 +400,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="true" >}}
 
-T::TRUE
+t::true
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/testing/true.go#L14)
 
-TRUE asserts that value is true.
+true asserts that value is true.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

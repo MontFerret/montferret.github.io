@@ -56,7 +56,7 @@ Now Worker can execute browser-backed scripts:
 curl -s -X POST http://localhost:8080/api/query \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "let p = WEB::HTML::OPEN(\"https://mockery.ferretlang.org\", { driver: \"cdp\" })\nreturn p.title"
+    "query": "let p = web::html::open(\"https://mockery.ferretlang.org\", { driver: \"cdp\" })\nreturn p.title"
   }'
 {{< /terminal >}}
 
@@ -83,7 +83,7 @@ Send parameters alongside the query:
 curl -s -X POST http://localhost:8080/api/query \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "let p = WEB::HTML::OPEN(@url)\nreturn p.title",
+    "query": "let p = web::html::open(@url)\nreturn p.title",
     "params": { "url": "https://mockery.ferretlang.org" }
   }'
 {{< /terminal >}}

@@ -6,19 +6,19 @@ description: "Object functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/objects/
 menuTitle: 
-menu: [HAS,KEEP_KEYS,KEYS,MERGE,MERGE_RECURSIVE,VALUES,ZIP,]
+menu: [has,keep_keys,keys,merge,merge_recursive,values,zip,]
 ---
 
 
 
 {{< header href="has" >}}
 
-HAS
+has
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/has.go#L13)
 
-HAS returns the value stored by the given key.
+has returns the value stored by the given key.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -32,12 +32,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="keep_keys" >}}
 
-KEEP_KEYS
+keep_keys
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keep_keys.go#L14)
 
-KEEP_KEYS returns a new object with only given keys.
+keep_keys returns a new object with only given keys.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -52,12 +52,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="keys" >}}
 
-KEYS
+keys
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/keys.go#L15)
 
-KEYS returns string array of object's keys
+keys returns string array of object's keys
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -72,12 +72,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="merge" >}}
 
-MERGE
+merge
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge.go#L13)
 
-MERGE merge the given objects into a single object.
+merge merge the given objects into a single object.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -91,12 +91,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="merge_recursive" >}}
 
-MERGE_RECURSIVE
+merge_recursive
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/merge_recursive.go#L13)
 
-MERGE_RECURSIVE recursively merge the given objects into a single object.
+merge_recursive recursively merge the given objects into a single object.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -110,12 +110,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="values" >}}
 
-VALUES
+values
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/values.go#L13)
 
-VALUES return the attribute values of the object as an array.
+values return the attribute values of the object as an array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -129,12 +129,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="zip" >}}
 
-ZIP
+zip
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/objects/zip.go#L16)
 
-ZIP returns an object assembled from the separate parameters keys and values. Keys and values must be arrays and have the same length.
+zip returns an object assembled from the separate parameters keys and values. Keys and values must be arrays and have the same length.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

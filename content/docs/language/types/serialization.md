@@ -102,7 +102,7 @@ Fields with a `none` value are included in the serialized output. A field set to
 Binary values represent raw bytes. Because many output formats are text-based, binary values are encoded in a format-appropriate way.
 
 {{< editor lang="fql" >}}
-return IO::NET::HTTP::GET("https://mockery.ferretlang.org/")
+return io::net::http::get("https://mockery.ferretlang.org/")
 {{</ editor >}}
 
 In JSON, binary values are encoded as Base64 strings. Other encodings may use a native binary representation.
@@ -112,7 +112,7 @@ In JSON, binary values are encoded as Base64 strings. Other encodings may use a 
 Date and time values are serialized as strings. In JSON, date/time values are encoded using the RFC 3339 format.
 
 {{< editor lang="fql" >}}
-return NOW()
+return now()
 {{</ editor >}}
 
 ## Duration values
@@ -139,7 +139,7 @@ A host value may serialize to an object, string, number, array, `none`, or anoth
 Some host values may not be serializable at all. If a non-serializable host value is part of the returned result, serialization produces an error.
 
 {{< code lang="fql" >}}
-let db = DB::SQLITE::OPEN("data.db")
+let db = db::sqlite::open("data.db")
 
 // This may fail — a connection handle may not be serializable
 return db
@@ -148,7 +148,7 @@ return db
 Instead, return data extracted from the host value:
 
 {{< code lang="fql" >}}
-let db = DB::SQLITE::OPEN({ memory: true })
+let db = db::sqlite::open({ memory: true })
 
 return query `
   SELECT id, name
@@ -165,7 +165,7 @@ See [Host Values]({{< ref "host" >}}) and [Capability Types]({{< ref "capabiliti
 Some runtime values are iterable but are not arrays. For example, host values that represent cursors, result sets, or lazy sequences may produce values on demand rather than holding them all in memory.
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 let elements = query `.product-card` in page using css
 
 return elements
@@ -243,7 +243,7 @@ When serialization fails, the error identifies what could not be serialized. The
 
 {{< code lang="fql" >}}
 // Instead of returning the connection
-let db = DB::SQLITE::OPEN("data.db")
+let db = db::sqlite::open("data.db")
 
 // Return the data
 let users = (

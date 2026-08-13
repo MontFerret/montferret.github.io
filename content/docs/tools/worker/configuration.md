@@ -21,7 +21,7 @@ Environment variable names are the uppercase flag name with dashes changed to un
 | `-request-limit` | `REQUEST_LIMIT` | `0` | Request rate for each IP. `0` disables rate limiting. |
 | `-request-limit-time-window` | `REQUEST_LIMIT_TIME_WINDOW` | `180` | Rate-limit window in seconds. |
 | `-cache-size` | `CACHE_SIZE` | `100` | Number of compiled query plans to keep in the in-memory LRU cache. |
-| `-fs-root` | `FS_ROOT` | Current working directory | Filesystem root for FQL `IO::FS` functions. |
+| `-fs-root` | `FS_ROOT` | Current working directory | Filesystem root for FQL `io::fs` functions. |
 | `-chrome-ip` | `CHROME_IP` | `127.0.0.1` | Chrome remote debugging host. |
 | `-chrome-port` | `CHROME_PORT` | `9222` | Chrome remote debugging port. |
 | `-no-chrome` | `NO_CHROME` | `false` | Disable the CDP driver and skip Chrome checks. |

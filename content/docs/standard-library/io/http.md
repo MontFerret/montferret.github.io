@@ -6,20 +6,20 @@ draft: false
 description: "HTTP functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/io-net-http/
-menuTitle: IO::NET::HTTP
-menu: [DELETE,DO,GET,POST,PUT,]
+menuTitle: io::net::http
+menu: [delete,do,get,post,put,]
 ---
 
 
 
 {{< header href="delete" >}}
 
-IO::NET::HTTP::DELETE
+io::net::http::delete
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/delete.go#L15)
 
-DELETE makes a HTTP DELETE request.
+delete makes a HTTP delete request.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -36,7 +36,7 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="do" >}}
 
-IO::NET::HTTP::DO
+io::net::http::do
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/request.go#L27)
@@ -59,12 +59,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="get" >}}
 
-IO::NET::HTTP::GET
+io::net::http::get
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/get.go#L16)
 
-GET makes a HTTP GET request.
+get makes a HTTP get request.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -80,12 +80,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="post" >}}
 
-IO::NET::HTTP::POST
+io::net::http::post
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/post.go#L15)
 
-POST makes a POST request.
+post makes a post request.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -102,12 +102,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="put" >}}
 
-IO::NET::HTTP::PUT
+io::net::http::put
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/net/http/put.go#L15)
 
-PUT makes a PUT HTTP request.
+put makes a put HTTP request.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

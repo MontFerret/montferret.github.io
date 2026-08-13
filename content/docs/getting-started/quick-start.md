@@ -51,7 +51,7 @@ let user = {
 
 return {
     name: user.name,
-    isAdmin: CONTAINS(user.roles, "admin")
+    isAdmin: contains(user.roles, "admin")
 }
 '
 {{< /terminal >}}
@@ -66,7 +66,7 @@ let user = {
 
 return {
     name: user.name,
-    isAdmin: CONTAINS(user.roles, "admin")
+    isAdmin: contains(user.roles, "admin")
 }
 {{< /editor >}}
 {{< /tab >}}
@@ -74,7 +74,7 @@ return {
 
 This example defines a variable with `let`, creates an object, reads fields with dot notation, and returns a new object.
 
-`let` creates a local binding. Here, user is an object with a name field and a roles array. The `return` expression builds a new object from that data and uses `CONTAINS` to check whether the user has the admin role.
+`let` creates a local binding. Here, user is an object with a name field and a roles array. The `return` expression builds a new object from that data and uses `contains` to check whether the user has the admin role.
 
 ## Query HTML
 
@@ -84,7 +84,7 @@ Now let’s load a page and query HTML elements from it:
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 return page[~ css`article`]
 '
 {{< /terminal >}}
@@ -92,13 +92,13 @@ return page[~ css`article`]
 
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 return page[~ css`article`]
 {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
 
-`WEB::HTML::OPEN` loads the URL and returns an HTML page value. The expression `page[~ css'article']` queries that page using the CSS dialect and returns matching elements.
+`web::html::open` loads the URL and returns an HTML page value. The expression `page[~ css'article']` queries that page using the CSS dialect and returns matching elements.
 
 The `~` operator is FQL’s shorthand query operator. The full query syntax is covered later in the language reference.
 
@@ -112,14 +112,14 @@ Some pages need JavaScript to render their content. For those cases, Ferret can 
 {{< tab title="Terminal" >}} 
 {{< terminal command="true" >}}
 ferret run -e '
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 return page.title
 '
 {{< /terminal >}}
 {{< /tab >}}
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 return page.title
 {{< /editor >}}
 {{< /tab >}}

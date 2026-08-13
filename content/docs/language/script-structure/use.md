@@ -17,12 +17,12 @@ Aliases are resolved when the script is compiled. `use` does not import, load, o
 Use a namespace alias as the first segment of a qualified function name:
 
 {{< code lang="fql" >}}
-use IO::NET::HTTP as HTTP
+use io::net::http as http
 
-return HTTP::GET("https://api.example.com/data")
+return http::get("https://api.example.com/data")
 {{</ code >}}
 
-Here, `HTTP::GET(...)` resolves to `IO::NET::HTTP::GET(...)`.
+Here, `http::get(...)` resolves to `io::net::http::get(...)`.
 
 The syntax is:
 
@@ -37,12 +37,12 @@ For a namespace alias, `target` is the fully qualified namespace and `alias` is 
 `use` can also alias a specific namespaced function. The alias is then called without a namespace prefix:
 
 {{< code lang="fql" >}}
-use IO::NET::HTTP::GET as GET
+use io::net::http::get as get
 
-return GET("https://api.example.com/data")
+return get("https://api.example.com/data")
 {{</ code >}}
 
-Here, `GET(...)` resolves to `IO::NET::HTTP::GET(...)`.
+Here, `get(...)` resolves to `io::net::http::get(...)`.
 
 ## Place use before the script body
 
@@ -51,17 +51,17 @@ Here, `GET(...)` resolves to `IO::NET::HTTP::GET(...)`.
 A script may declare more than one alias:
 
 {{< code lang="fql" >}}
-use IO::FS as FS
-use IO::NET::HTTP::GET as GET
+use io::fs as fs
+use io::net::http::get as get
 
-let data = FS::READ("/tmp/data.json")
+let data = fs::read("/tmp/data.json")
 
-return [data, GET("https://api.example.com/data")]
+return [data, get("https://api.example.com/data")]
 {{</ code >}}
 
 ## Resolution rules
 
-- Aliases and qualified function names are case-sensitive. `HTTP`, `http`, and `Http` are different names.
+- Alias names remain case-sensitive. Registered namespace segments and host-function names are case-insensitive and are documented in canonical lowercase.
 - Reusing an alias for a different target produces a compile-time name error.
 - An alias does not make its target available. The runtime still needs to register the namespace or function named by the target.
 - Runtime capabilities may differ between the CLI, browser runtime, and embedding applications, so an alias can only call functions provided by the current environment.

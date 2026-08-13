@@ -21,7 +21,7 @@ A host value represents something owned by the host environment rather than by F
 For example, a database connection value may refer to an open connection managed by a Go module. A browser page value may refer to a live browser tab managed by the browser runtime. FQL does not inspect or copy those values directly. Instead, it works with them through functions, operators, and runtime capabilities.
 
 {{< code lang="fql" >}}
-let db = DB::SQLITE::OPEN("data.db")
+let db = db::sqlite::open("data.db")
 
 return query `
   SELECT name
@@ -38,19 +38,19 @@ Host values can participate in normal expression flow.
 They can be assigned to variables:
 
 {{< code lang="fql" >}}
-let db = DB::SQLITE::OPEN("data.db")
+let db = db::sqlite::open("data.db")
 {{</ code >}}
 
 They can be passed to functions:
 
 {{< code lang="fql" >}}
-return DB::TABLES(db)
+return db::tables(db)
 {{</ code >}}
 
 They can be grouped with related data while a query is running:
 
 {{< code lang="fql" >}}
-let db = DB::SQLITE::OPEN("data.db")
+let db = db::sqlite::open("data.db")
 
 let context = {
   source: db,
@@ -76,7 +76,7 @@ Some host values expose capabilities that make them usable with familiar FQL syn
 Other host values may expose no properties at all and can only be used through functions or specific language operations.
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::PARSE("<a href='https://example.com'>Example</a>")
+let page = web::html::parse("<a href='https://example.com'>Example</a>")
 
 return page.body
 {{</ editor >}}
@@ -90,7 +90,7 @@ Some host values expose capabilities.
 A capability describes an operation that a value supports. For example, a database connection may support query execution, which allows it to be used with `query ... in`.
 
 {{< code lang="fql" >}}
-let db = DB::SQLITE::OPEN("data.db")
+let db = db::sqlite::open("data.db")
 
 return query `
   SELECT *
@@ -125,7 +125,7 @@ Host values are regular FQL values during execution, but they are not always ser
 When a program returns a result, Ferret converts that result into the output format selected by the host. The default output format is JSON, but embedded hosts may choose a different encoding.
 
 {{< code lang="fql" >}}
-return DB::SQLITE::OPEN("data.db")
+return db::sqlite::open("data.db")
 {{</ code >}}
 
 This expression returns a host value during execution. When the program result is finalized, the host decides how that value should be represented in the selected output format.

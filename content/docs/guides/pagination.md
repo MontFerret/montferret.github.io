@@ -21,7 +21,7 @@ Use `do while` because the loop body must run at least once to process the first
 {{< editor lang="fql" >}}
 // Open the first page using the browser-based CDP driver.
 // Pagination requires a browser because each page is loaded by clicking a link.
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/products/", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/products/", { driver: "cdp" })
 
 // Keep selectors in variables so they can be reused throughout the query.
 let nextSelector = "a.next"
@@ -78,23 +78,23 @@ Key points
 
 ## Infinite scrolling
 
-Some websites load additional content when the user scrolls to the bottom of the page. Use SCROLL_BOTTOM to trigger another content load, then process only the newly added items.
+Some websites load additional content when the user scrolls to the bottom of the page. Use `web::html::scroll_bottom` to trigger another content load, then process only the newly added items.
 
 {{< editor lang="fql" >}}
 // Open the page using the CDP browser driver.
 // Infinite scrolling depends on browser interaction and dynamically loaded content.
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/infinite-scroll/", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/infinite-scroll/", { driver: "cdp" })
 
 // Number of products added after each scroll.
 let pageSize = 8
 
 // Process the initial content, then keep scrolling until the page
 // can no longer be scrolled further.
-return for i do while SCROLL_BOTTOM(page)
+return for i do while web::html::scroll_bottom(page)
     // The first batch is already available.
     // For subsequent iterations, briefly wait for newly requested
     // content to be added to the page.
-    let _ = i == 0 ? none : WAIT(500)
+    let _ = i == 0 ? none : wait(500)
     // Skip products processed during previous iterations and return
     // only the next batch of newly loaded items.
     for product in query `:skip(${i * pageSize}, .product-card)` in page using css
@@ -108,14 +108,14 @@ Key points
 
 * Infinite scrolling requires a browser. The page uses JavaScript and user interaction to load additional content, so the query opens it with the CDP driver.
 * `for do while` processes the initial batch. The loop body runs before its condition is evaluated, allowing the products already present on the first page to be extracted before the first scroll.
-* `SCROLL_BOTTOM` drives the loop. After each iteration, Ferret scrolls to the bottom of the page. The loop continues while further scrolling is possible.
+* `web::html::scroll_bottom` drives the loop. After each iteration, Ferret scrolls to the bottom of the page. The loop continues while further scrolling is possible.
 * The loop index identifies each batch. On the first iteration, i is 0, so the query processes the products initially present on the page. Later values correspond to batches loaded by subsequent scrolls.
-* The first iteration does not wait. The initial products are already available, so `WAIT` is used only after a scroll has triggered another content load.
+* The first iteration does not wait. The initial products are already available, so `wait` is used only after a scroll has triggered another content load.
 * The temporary wait avoids reading the page too early. It gives the website time to fetch and render newly loaded products before extraction begins. This is a temporary workaround until `page.network.status` can be used to wait for the page to become idle.
 * `:skip()` prevents duplicate results. Each iteration skips the products returned by earlier iterations and selects only the newly loaded batch.
 * `pageSize` must match the website’s behavior. The skip offset assumes that every scroll loads eight products. If the site returns variable-sized batches, track the number of already processed elements instead.
 * `query one` extracts fields from each product. Each title and price lookup is scoped to the current product card rather than the entire page.
-* This pattern needs a stopping condition. The loop ends when `SCROLL_BOTTOM(page)` indicates that the page can no longer scroll further. A `limit` can also be added as a safety guard for sites that scroll indefinitely.
+* This pattern needs a stopping condition. The loop ends when `web::html::scroll_bottom(page)` indicates that the page can no longer scroll further. A `limit` can also be added as a safety guard for sites that scroll indefinitely.
 
 ## Iterate numbered pages by URL
 
@@ -136,7 +136,7 @@ return for pageNum in 1..totalPages
     let url = pageNum == 1 ? baseURL: `${baseURL}/page/${pageNum}`
     // Fetch the page over HTTP.
     // Because each page has its own URL, no browser automation is required.
-    let page = WEB::HTML::OPEN(url)
+    let page = web::html::open(url)
     // Extract every product from the current page.
     for item in page[~ css`.product-card`]
         return {
@@ -151,7 +151,7 @@ Key points
 
 * A range drives the pagination. `1..totalPages` generates the sequence of page numbers to visit, making it easy to iterate over numbered URLs.
 * Each URL is built independently. The current page number is used to construct the appropriate URL for each request. The first page often uses a different URL pattern than subsequent pages.
-* Each page is fetched directly. `WEB::HTML::OPEN()` loads every page independently over HTTP, so no browser session or navigation is required.
+* Each page is fetched directly. `web::html::open()` loads every page independently over HTTP, so no browser session or navigation is required.
 * Pages are processed independently. Each iteration loads, extracts, and returns data from one page before moving on to the next.
 * Browser automation is unnecessary. This approach is faster and more resource-efficient because it avoids rendering pages or simulating user interactions.
 * Best suited for static websites. Use this pattern when the desired content is present in the initial HTML returned by the server. If the content is loaded dynamically with JavaScript, use browser automation instead.
@@ -163,27 +163,27 @@ If you do not know the total number of pages, open the first page to find out:
 
 {{< code lang="fql" >}}
 let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/?page="
-let firstPage = WEB::HTML::OPEN(baseURL + "1")
+let firstPage = web::html::open(baseURL + "1")
 
 let lastPageLink = query one ".pagination a:last-child" in firstPage using css
-let totalPages = TO_INT(lastPageLink?.textContent) on error return 1
+let totalPages = to_int(lastPageLink?.textContent) on error return 1
 
 return for pageNum in 1..totalPages
-    let page = WEB::HTML::OPEN(baseURL + TO_STRING(pageNum))
+    let page = web::html::open(baseURL + to_string(pageNum))
     for item in page[~ css`.product-card`]
         return item[~? css`.product-name`]?.textContent
 {{</ code >}}
 
 ## Collect results into a flat array
 
-When each page returns an array of items, the outer loop produces an array of arrays. Use `FLATTEN` to merge them:
+When each page returns an array of items, the outer loop produces an array of arrays. Use `flatten` to merge them:
 
 {{< code lang="fql" >}}
 let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/?page="
 
 let result = (
     for pageNum in 1..3
-        let page = WEB::HTML::OPEN(baseURL + TO_STRING(pageNum))
+        let page = web::html::open(baseURL + to_string(pageNum))
 
         let items = (
             for item in page[~ css`.product-card`]
@@ -196,7 +196,7 @@ let result = (
         return items
 )
 
-return FLATTEN(result)
+return flatten(result)
 {{</ code >}}
 
 Alternatively, use the `[**]` array contraction operator to flatten inline:
@@ -204,7 +204,7 @@ Alternatively, use the `[**]` array contraction operator to flatten inline:
 {{< code lang="fql" >}}
 let result = (
     for pageNum in 1..3
-        let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/?page=" + TO_STRING(pageNum))
+        let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/?page=" + to_string(pageNum))
         return page[~ css`.product-card`][*
             return {
                 name: .[~? css`.product-name`]?.textContent,
@@ -225,7 +225,7 @@ let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/?page="
 
 let result = (
     for pageNum in 1..10
-        let page = WEB::HTML::OPEN(baseURL + TO_STRING(pageNum))
+        let page = web::html::open(baseURL + to_string(pageNum))
             on error retry 2 delay 1s backoff EXPONENTIAL
             or return none
 
@@ -243,7 +243,7 @@ let result = (
         return items
 )
 
-return FLATTEN(result)
+return flatten(result)
 {{</ code >}}
 
 See [Error handling and resilience]({{< ref "error-handling" >}}) for more patterns.

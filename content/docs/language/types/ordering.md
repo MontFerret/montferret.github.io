@@ -50,12 +50,12 @@ A native Duration and any non-Duration value are unequal. Relational comparison 
 "1s" >= 1s                // runtime error
 {{</ code >}}
 
-Use `TO_DURATION` explicitly when the other value should be interpreted as a Duration.
+Use `to_duration` explicitly when the other value should be interpreted as a Duration.
 
 Sorting uses the same relational contract, so a collection that mixes Duration with another type cannot be sorted without first normalizing its values.
 
 {{< code lang="fql" >}}
-SORTED([1s, "2s"]) // runtime error
+sorted([1s, "2s"]) // runtime error
 {{</ code >}}
 
 ## Equality, membership, and uniqueness
@@ -83,7 +83,7 @@ Within a built-in type:
 - DateTime values compare by canonical instant.
 - Binary values compare by their byte contents.
 
-DateTime comparison does not parse strings or convert numeric epoch values. Use `TO_DATETIME` before comparison when conversion is intended.
+DateTime comparison does not parse strings or convert numeric epoch values. Use `to_datetime` before comparison when conversion is intended.
 
 ## Arrays
 

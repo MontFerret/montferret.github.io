@@ -6,19 +6,19 @@ description: "HTML document and element functions in the Ferret standard library
 aliases:
   - /docs/stdlib/html/
 menuTitle: 
-menu: [ATTR_GET,ATTR_QUERY,ATTR_REMOVE,ATTR_SET,BLUR,CLICK,CLICK_ALL,COOKIE_DEL,COOKIE_GET,COOKIE_SET,DOCUMENT,DOCUMENT_EXISTS,DOWNLOAD,ELEMENT,ELEMENTS,ELEMENTS_COUNT,ELEMENT_EXISTS,FOCUS,FRAMES,HOVER,INNER_HTML,INNER_HTML_ALL,INNER_HTML_SET,INNER_TEXT,INNER_TEXT_ALL,INNER_TEXT_SET,INPUT,INPUT_CLEAR,MOUSE,NAVIGATE,NAVIGATE_BACK,NAVIGATE_FORWARD,PAGINATION,PARSE,PDF,SCREENSHOT,SCROLL,SCROLL_BOTTOM,SCROLL_ELEMENT,SCROLL_TOP,SELECT,STYLE_GET,STYLE_REMOVE,STYLE_SET,WAIT_ATTR,WAIT_ATTR_ALL,WAIT_CLASS,WAIT_CLASS_ALL,WAIT_ELEMENT,WAIT_NAVIGATION,WAIT_NO_ATTR,WAIT_NO_ATTR_ALL,WAIT_NO_CLASS,WAIT_NO_CLASS_ALL,WAIT_NO_ELEMENT,WAIT_NO_STYLE,WAIT_NO_STYLE_ALL,WAIT_STYLE,WAIT_STYLE_ALL,XPATH,]
+menu: [attr_get,attr_query,attr_remove,attr_set,blur,click,click_all,cookie_del,cookie_get,cookie_set,document,document_exists,download,element,elements,elements_count,element_exists,focus,frames,hover,inner_html,inner_html_all,inner_html_set,inner_text,inner_text_all,inner_text_set,input,input_clear,mouse,navigate,navigate_back,navigate_forward,pagination,parse,pdf,screenshot,scroll,scroll_bottom,scroll_element,scroll_top,select,style_get,style_remove,style_set,wait_attr,wait_attr_all,wait_class,wait_class_all,wait_element,wait_navigation,wait_no_attr,wait_no_attr_all,wait_no_class,wait_no_class_all,wait_no_element,wait_no_style,wait_no_style_all,wait_style,wait_style_all,xpath,]
 ---
 
 
 
 {{< header href="attr_get" >}}
 
-ATTR_GET
+attr_get
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_get.go#L14)
 
-ATTR_GET gets single or more attribute(s) of a given element.
+attr_get gets single or more attribute(s) of a given element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -33,12 +33,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="attr_query" >}}
 
-ATTR_QUERY
+attr_query
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_query.go#L15)
 
-ATTR_QUERY finds a single or more attribute(s) by an query selector.
+attr_query finds a single or more attribute(s) by an query selector.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -54,12 +54,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="attr_remove" >}}
 
-ATTR_REMOVE
+attr_remove
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_remove.go#L14)
 
-ATTR_REMOVE removes single or more attribute(s) of a given element.
+attr_remove removes single or more attribute(s) of a given element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -74,12 +74,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="attr_set" >}}
 
-ATTR_SET
+attr_set
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/attr_set.go#L16)
 
-ATTR_SET sets or updates a single or more attribute(s) of a given element.
+attr_set sets or updates a single or more attribute(s) of a given element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -95,12 +95,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="blur" >}}
 
-BLUR
+blur
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/blur.go#L13)
 
-BLUR Calls blur on the element.
+blur Calls blur on the element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -115,12 +115,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="click" >}}
 
-CLICK
+click
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/click.go#L15)
 
-CLICK dispatches click event on a given element
+click dispatches click event on a given element
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -136,12 +136,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="click_all" >}}
 
-CLICK_ALL
+click_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/click_all.go#L16)
 
-CLICK_ALL dispatches click event on all matched element
+click_all dispatches click event on all matched element
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -157,12 +157,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="cookie_del" >}}
 
-COOKIE_DEL
+cookie_del
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_del.go#L14)
 
-COOKIE_DEL gets a cookie from a given page by name.
+cookie_del gets a cookie from a given page by name.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -177,12 +177,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="cookie_get" >}}
 
-COOKIE_GET
+cookie_get
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_get.go#L15)
 
-COOKIE_GET gets a cookie from a given page by name.
+cookie_get gets a cookie from a given page by name.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -197,12 +197,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="cookie_set" >}}
 
-COOKIE_SET
+cookie_set
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/cookie_set.go#L13)
 
-COOKIE_SET sets cookies to a given page
+cookie_set sets cookies to a given page
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -217,12 +217,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="document" >}}
 
-DOCUMENT
+document
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/document.go#L53)
 
-DOCUMENT opens an HTML page by a given url. By default, loads a page by http call - resulted page does not support any interactions.
+document opens an HTML page by a given url. By default, loads a page by http call - resulted page does not support any interactions.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -264,12 +264,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="document_exists" >}}
 
-DOCUMENT_EXISTS
+document_exists
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/document_exists.go#L16)
 
-DOCUMENT_EXISTS returns a boolean value indicating whether a web page exists by a given url.
+document_exists returns a boolean value indicating whether a web page exists by a given url.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -285,12 +285,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="download" >}}
 
-DOWNLOAD
+download
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/download.go#L15)
 
-DOWNLOAD downloads a resource from the given GetURL.
+download downloads a resource from the given GetURL.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -304,12 +304,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="element" >}}
 
-ELEMENT
+element
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element.go#L16)
 
-ELEMENT finds an element by a given CSS selector. Returns `none` if element not found.
+element finds an element by a given CSS selector. Returns `none` if element not found.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -324,12 +324,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="elements" >}}
 
-ELEMENTS
+elements
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/elements.go#L14)
 
-ELEMENTS finds HTML elements by a given CSS selector. Returns an empty array if element not found.
+elements finds HTML elements by a given CSS selector. Returns an empty array if element not found.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -344,12 +344,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="elements_count" >}}
 
-ELEMENTS_COUNT
+elements_count
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/elements_count.go#L14)
 
-ELEMENTS_COUNT returns a number of found HTML elements by a given CSS selector. Returns an empty array if element not found.
+elements_count returns a number of found HTML elements by a given CSS selector. Returns an empty array if element not found.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -364,12 +364,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="element_exists" >}}
 
-ELEMENT_EXISTS
+element_exists
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/element_exists.go#L13)
 
-ELEMENT_EXISTS returns a boolean value indicating whether there is an element matched by selector.
+element_exists returns a boolean value indicating whether there is an element matched by selector.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -384,12 +384,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="focus" >}}
 
-FOCUS
+focus
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/focus.go#L13)
 
-FOCUS Sets focus on the element.
+focus Sets focus on the element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -404,12 +404,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="frames" >}}
 
-FRAMES
+frames
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/find_frames.go#L15)
 
-FRAMES finds HTML frames by a given property selector. Returns an empty array if frames not found.
+frames finds HTML frames by a given property selector. Returns an empty array if frames not found.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -425,12 +425,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="hover" >}}
 
-HOVER
+hover
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/hover.go#L15)
 
-HOVER fetches an element with selector, scrolls it into view if needed, and then uses page.mouse to hover over the center of the element. If there's no element matching selector, the method returns an error.
+hover fetches an element with selector, scrolls it into view if needed, and then uses page.mouse to hover over the center of the element. If there's no element matching selector, the method returns an error.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -445,12 +445,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="inner_html" >}}
 
-INNER_HTML
+inner_html
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_html.go#L15)
 
-INNER_HTML returns inner HTML string of a given or matched by CSS selector element
+inner_html returns inner HTML string of a given or matched by CSS selector element
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -465,12 +465,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="inner_html_all" >}}
 
-INNER_HTML_ALL
+inner_html_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_html_all.go#L15)
 
-INNER_HTML_ALL returns an array of inner HTML strings of matched elements.
+inner_html_all returns an array of inner HTML strings of matched elements.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -485,12 +485,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="inner_html_set" >}}
 
-INNER_HTML_SET
+inner_html_set
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/set_inner_html.go#L15)
 
-INNER_HTML_SET sets inner HTML string to a given or matched by CSS selector element
+inner_html_set sets inner HTML string to a given or matched by CSS selector element
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -506,12 +506,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="inner_text" >}}
 
-INNER_TEXT
+inner_text
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_text.go#L15)
 
-INNER_TEXT returns inner text string of a given or matched by CSS selector element
+inner_text returns inner text string of a given or matched by CSS selector element
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -526,12 +526,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="inner_text_all" >}}
 
-INNER_TEXT_ALL
+inner_text_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/get_inner_text_all.go#L15)
 
-INNER_TEXT_ALL returns an array of inner text of matched elements.
+inner_text_all returns an array of inner text of matched elements.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -546,12 +546,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="inner_text_set" >}}
 
-INNER_TEXT_SET
+inner_text_set
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/set_inner_text.go#L15)
 
-INNER_TEXT_SET sets inner text string to a given or matched by CSS selector element
+inner_text_set sets inner text string to a given or matched by CSS selector element
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -567,12 +567,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="input" >}}
 
-INPUT
+input
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/input.go#L16)
 
-INPUT types a value to an underlying input element.
+input types a value to an underlying input element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -589,12 +589,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="input_clear" >}}
 
-INPUT_CLEAR
+input_clear
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/clear.go#L13)
 
-INPUT_CLEAR clears a value from an underlying input element.
+input_clear clears a value from an underlying input element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -609,12 +609,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="mouse" >}}
 
-MOUSE
+mouse
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/mouse_xy.go#L15)
 
-MOUSE moves mouse by given coordinates.
+mouse moves mouse by given coordinates.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -630,12 +630,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="navigate" >}}
 
-NAVIGATE
+navigate
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate.go#L17)
 
-NAVIGATE navigates a given page to a new resource. The operation blocks the execution until the page gets loaded. Which means there is no need in WAIT_NAVIGATION function.
+navigate navigates a given page to a new resource. The operation blocks the execution until the page gets loaded. Which means there is no need in wait_navigation function.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -651,12 +651,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="navigate_back" >}}
 
-NAVIGATE_BACK
+navigate_back
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_back.go#L18)
 
-NAVIGATE_BACK navigates a given page back within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns `false`.
+navigate_back navigates a given page back within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns `false`.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -672,12 +672,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="navigate_forward" >}}
 
-NAVIGATE_FORWARD
+navigate_forward
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/navigate_forward.go#L18)
 
-NAVIGATE_FORWARD navigates a given page forward within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns `false`.
+navigate_forward navigates a given page forward within its navigation history. The operation blocks the execution until the page gets loaded. If the history is empty, the function returns `false`.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -693,12 +693,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="pagination" >}}
 
-PAGINATION
+pagination
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pagination.go#L16)
 
-PAGINATION creates an iterator that goes through pages using CSS selector. The iterator starts from the current page i.e. it does not change the page on 1st iteration. That allows you to keep scraping logic inside a `for` loop.
+pagination creates an iterator that goes through pages using CSS selector. The iterator starts from the current page i.e. it does not change the page on 1st iteration. That allows you to keep scraping logic inside a `for` loop.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -713,12 +713,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="parse" >}}
 
-PARSE
+parse
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/parse.go#L31)
 
-PARSE loads an HTML page from a given string or byte array
+parse loads an HTML page from a given string or byte array
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -743,12 +743,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="pdf" >}}
 
-PDF
+pdf
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/pdf.go#L42)
 
-PDF prints a PDF of the current page.
+pdf prints a PDF of the current page.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -778,12 +778,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="screenshot" >}}
 
-SCREENSHOT
+screenshot
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/screenshot.go#L22)
 
-SCREENSHOT takes a screenshot of a given page.
+screenshot takes a screenshot of a given page.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -804,12 +804,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="scroll" >}}
 
-SCROLL
+scroll
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_xy.go#L19)
 
-SCROLL scrolls by given coordinates.
+scroll scrolls by given coordinates.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -829,12 +829,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="scroll_bottom" >}}
 
-SCROLL_BOTTOM
+scroll_bottom
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_bottom.go#L18)
 
-SCROLL_BOTTOM scrolls the document's window to its bottom.
+scroll_bottom scrolls the document's window to its bottom.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -854,12 +854,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="scroll_element" >}}
 
-SCROLL_ELEMENT
+scroll_element
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_element.go#L20)
 
-SCROLL_ELEMENT scrolls an element on.
+scroll_element scrolls an element on.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -878,12 +878,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="scroll_top" >}}
 
-SCROLL_TOP
+scroll_top
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/scroll_top.go#L18)
 
-SCROLL_TOP scrolls the document's window to its top.
+scroll_top scrolls the document's window to its top.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -903,12 +903,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="select" >}}
 
-SELECT
+select
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/select.go#L15)
 
-SELECT selects a value from an underlying select element.
+select selects a value from an underlying select element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -924,12 +924,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="style_get" >}}
 
-STYLE_GET
+style_get
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_get.go#L14)
 
-STYLE_GET gets single or more style attribute value(s) of a given element.
+style_get gets single or more style attribute value(s) of a given element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -944,12 +944,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="style_remove" >}}
 
-STYLE_REMOVE
+style_remove
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_remove.go#L14)
 
-STYLE_REMOVE removes single or more style attribute value(s) of a given element.
+style_remove removes single or more style attribute value(s) of a given element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -964,12 +964,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="style_set" >}}
 
-STYLE_SET
+style_set
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/style_set.go#L15)
 
-STYLE_SET sets or updates a single or more style attribute value of a given element.
+style_set sets or updates a single or more style attribute value of a given element.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -985,12 +985,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_attr" >}}
 
-WAIT_ATTR
+wait_attr
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr.go#L17)
 
-WAIT_ATTR waits until a target attribute's value appears
+wait_attr waits until a target attribute's value appears
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1008,12 +1008,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_attr_all" >}}
 
-WAIT_ATTR_ALL
+wait_attr_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr_all.go#L17)
 
-WAIT_ATTR_ALL waits for an attribute to appear on all matched elements with a given value. Stops the execution until the navigation ends or operation times out.
+wait_attr_all waits for an attribute to appear on all matched elements with a given value. Stops the execution until the navigation ends or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1030,12 +1030,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_class" >}}
 
-WAIT_CLASS
+wait_class
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class.go#L17)
 
-WAIT_CLASS waits for a class to appear on a given element. Stops the execution until the navigation ends or operation times out.
+wait_class waits for a class to appear on a given element. Stops the execution until the navigation ends or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1052,12 +1052,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_class_all" >}}
 
-WAIT_CLASS_ALL
+wait_class_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class_all.go#L17)
 
-WAIT_CLASS_ALL waits for a class to appear on all matched elements. Stops the execution until the navigation ends or operation times out.
+wait_class_all waits for a class to appear on all matched elements. Stops the execution until the navigation ends or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1074,12 +1074,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_element" >}}
 
-WAIT_ELEMENT
+wait_element
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_element.go#L16)
 
-WAIT_ELEMENT waits for element to appear in the DOM. Stops the execution until it finds an element or operation times out.
+wait_element waits for element to appear in the DOM. Stops the execution until it finds an element or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1095,12 +1095,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_navigation" >}}
 
-WAIT_NAVIGATION
+wait_navigation
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_navigation.go#L26)
 
-WAIT_NAVIGATION waits for a given page to navigate to a new url. Stops the execution until the navigation ends or operation times out.
+wait_navigation waits for a given page to navigate to a new url. Stops the execution until the navigation ends or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1119,12 +1119,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_no_attr" >}}
 
-WAIT_NO_ATTR
+wait_no_attr
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr.go#L27)
 
-WAIT_NO_ATTR waits until a target attribute's value disappears
+wait_no_attr waits until a target attribute's value disappears
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1142,12 +1142,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_no_attr_all" >}}
 
-WAIT_NO_ATTR_ALL
+wait_no_attr_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_attr_all.go#L27)
 
-WAIT_NO_ATTR_ALL waits for an attribute to disappear on all matched elements by a given value. Stops the execution until the navigation ends or operation times out.
+wait_no_attr_all waits for an attribute to disappear on all matched elements by a given value. Stops the execution until the navigation ends or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1164,12 +1164,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_no_class" >}}
 
-WAIT_NO_CLASS
+wait_no_class
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class.go#L27)
 
-WAIT_NO_CLASS waits for a class to disappear on a given element. Stops the execution until the navigation ends or operation times out.
+wait_no_class waits for a class to disappear on a given element. Stops the execution until the navigation ends or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1186,12 +1186,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_no_class_all" >}}
 
-WAIT_NO_CLASS_ALL
+wait_no_class_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_class_all.go#L27)
 
-WAIT_NO_CLASS_ALL waits for a class to disappear on all matched elements. Stops the execution until the navigation ends or operation times out.
+wait_no_class_all waits for a class to disappear on all matched elements. Stops the execution until the navigation ends or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1208,12 +1208,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_no_element" >}}
 
-WAIT_NO_ELEMENT
+wait_no_element
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_element.go#L25)
 
-WAIT_NO_ELEMENT waits for element to disappear in the DOM. Stops the execution until it does not find an element or operation times out.
+wait_no_element waits for element to disappear in the DOM. Stops the execution until it does not find an element or operation times out.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1229,12 +1229,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_no_style" >}}
 
-WAIT_NO_STYLE
+wait_no_style
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style.go#L27)
 
-WAIT_NO_STYLE waits until a target style value disappears
+wait_no_style waits until a target style value disappears
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1252,12 +1252,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_no_style_all" >}}
 
-WAIT_NO_STYLE_ALL
+wait_no_style_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style_all.go#L27)
 
-WAIT_NO_STYLE_ALL waits until a target style value disappears on all matched elements with a given value.
+wait_no_style_all waits until a target style value disappears on all matched elements with a given value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1275,12 +1275,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_style" >}}
 
-WAIT_STYLE
+wait_style
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style.go#L17)
 
-WAIT_STYLE waits until a target style value appears
+wait_style waits until a target style value appears
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1298,12 +1298,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="wait_style_all" >}}
 
-WAIT_STYLE_ALL
+wait_style_all
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/wait_style_all.go#L17)
 
-WAIT_STYLE_ALL waits until a target style value appears on all matched elements with a given value.
+wait_style_all waits until a target style value appears on all matched elements with a given value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -1321,12 +1321,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="xpath" >}}
 
-XPATH
+xpath
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/html/xpath.go#L14)
 
-XPATH evaluates the XPath expression.
+xpath evaluates the XPath expression.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

@@ -138,7 +138,7 @@ engine, err := ferret.New(
 Scripts select the driver at query time with `{ driver: "cdp" }`:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 return page.title
 {{</ code >}}
 
@@ -150,7 +150,7 @@ When the same query runs multiple times — with different parameters, in differ
 
 {{< code lang="go" >}}
 plan, err := engine.Compile(ctx, source.New("extract-title", `
-    let page = WEB::HTML::OPEN(@url)
+    let page = web::html::open(@url)
     return page.title
 `))
 if err != nil {
@@ -282,7 +282,7 @@ Test it:
 {{< terminal command="true" >}}
 curl -s -X POST http://localhost:8080/api/query \
   -H "Content-Type: application/json" \
-  -d '{"query": "return UPPER(@name)", "params": {"name": "ferret"}}'
+  -d '{"query": "return upper(@name)", "params": {"name": "ferret"}}'
 {{</ terminal >}}
 
 {{< notification type="info" >}}

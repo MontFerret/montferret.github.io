@@ -101,10 +101,10 @@ operator '!' cannot be applied to String
 operator '!' cannot be applied to Int
 {{</ code >}}
 
-Use `TO_BOOL(value)` when explicit Boolean conversion is intended.
+Use `to_bool(value)` when explicit Boolean conversion is intended.
 
 {{< notification type="info" >}}
-Double negation is no longer an implicit conversion mechanism. Replace expressions such as <code>!!value</code> with <code>TO_BOOL(value)</code>.
+Double negation is no longer an implicit conversion mechanism. Replace expressions such as <code>!!value</code> with <code>to_bool(value)</code>.
 {{</ notification >}}
 
 ## Short-circuit evaluation
@@ -133,7 +133,7 @@ return none || "fallback"
 return true && 23
 {{</ code >}}
 
-When a strict Boolean result is required from a binary logical expression, pass the result to `TO_BOOL`.
+When a strict Boolean result is required from a binary logical expression, pass the result to `to_bool`.
 
 ## Next steps
 

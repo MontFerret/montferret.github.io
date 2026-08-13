@@ -368,7 +368,7 @@ let friends = [
 ]
 
 return friends[* return {
-    label: CONCAT(.name, " is ", .age),
+    label: concat(.name, " is ", .age),
     adult: .age >= 18
 }]
 {{</ editor >}}
@@ -386,7 +386,7 @@ let friends = [
 return friends[*
     filter .age >= 40
     limit 2
-    return CONCAT(.name, " is ", .age)
+    return concat(.name, " is ", .age)
 ]
 {{</ editor >}}
 
@@ -474,12 +474,12 @@ Conceptually, the question mark operator is equivalent to filtering an array and
 
 | Question mark expression | Equivalent length check |
 | --- | -- |
-| `array[? n filter condition]` | `LENGTH(array[* filter condition]) == n` |
+| `array[? n filter condition]` | `length(array[* filter condition]) == n` |
 | `array[? min..max filter condition]` | the number of matching elements is between min and max |
-| `array[? none filter condition]` | `LENGTH(array[* filter condition]) == 0` |
-| `array[? any filter condition]` | `LENGTH(array[* filter condition]) > 0` |
-| `array[? all filter condition]` | `LENGTH(array[* filter condition]) == LENGTH(array)` |
-| `array[? at least n filter condition]` | `LENGTH(array[* filter condition]) >= n` |
+| `array[? none filter condition]` | `length(array[* filter condition]) == 0` |
+| `array[? any filter condition]` | `length(array[* filter condition]) > 0` |
+| `array[? all filter condition]` | `length(array[* filter condition]) == length(array)` |
+| `array[? at least n filter condition]` | `length(array[* filter condition]) >= n` |
 | `array[?]` | the value is an array with at least one element |
 
 The question mark operator is especially useful for nested search, where a document, object, or result value contains arrays that need to be tested without expanding them into the final output.
@@ -508,7 +508,7 @@ Each element uses the same strict comparison rules as a scalar expression. In pa
 
 {{< code lang="fql" >}}
 [1s, 2s] any == "2s"               // false
-[1s, 2s] any == TO_DURATION("2s")  // true
+[1s, 2s] any == to_duration("2s")  // true
 [1s, 2s] all > 999                  // runtime error
 {{</ code >}}
 

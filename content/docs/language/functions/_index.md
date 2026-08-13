@@ -15,7 +15,7 @@ Functions are expressions that evaluate input values and produce a result.
 A function call consists of a function name followed by a parenthesized argument list. The arguments are expressions, so they may be literals, variables, object or array values, arithmetic expressions, subqueries, or other function calls.
 
 {{< code lang="fql">}}
-FUNCTION_NAME(argument1, argument2, ...)
+function_name(argument1, argument2, ...)
 {{</ code >}}
 
 For example:
@@ -23,10 +23,10 @@ For example:
 {{< editor lang="fql" >}}
 let values = [1, 2, 3, 4]
 
-return LENGTH(values)
+return length(values)
 {{</ editor >}}
 
-Function names are case-sensitive. `LENGTH` and `length` refer to different identifiers.
+Host-function names are case-insensitive in FQL and have one canonical lowercase spelling. For example, `length`, `LENGTH`, and `LeNgTh` resolve to the same host function. User-defined functions retain their own case-sensitive rules.
 
 ## Calling functions
 
@@ -37,8 +37,8 @@ let name = "Ada Lovelace"
 
 return {
     original: name,
-    upper: UPPER(name),
-    length: LENGTH(name)
+    upper: upper(name),
+    length: length(name)
 }
 {{</ editor >}}
 
@@ -48,7 +48,7 @@ Arguments are evaluated before the function is called. The resulting values are 
 let subtotal = 120
 let taxRate = 0.08
 
-return ROUND(subtotal + subtotal * taxRate)
+return round(subtotal + subtotal * taxRate)
 {{</ editor >}}
 
 A function may also be called with the result of another function.
@@ -56,7 +56,7 @@ A function may also be called with the result of another function.
 {{< editor lang="fql" >}}
 let message = "  hello ferret  "
 
-return UPPER(TRIM(message))
+return upper(trim(message))
 {{</ editor >}}
 
 Nested calls are ordinary expressions. They should be used only where the resulting expression remains clear enough for the query being written.
@@ -66,7 +66,7 @@ Nested calls are ordinary expressions. They should be used only where the result
 Function arguments are separated by commas.
 
 {{< editor lang="fql" >}}
-return CONCAT("ferret", "-", "lang")
+return concat("ferret", "-", "lang")
 {{</ editor >}}
 
 The number and type of accepted arguments depend on the function. Some functions require a fixed number of arguments. Others accept optional arguments or a variable number of arguments.
@@ -74,13 +74,13 @@ The number and type of accepted arguments depend on the function. Some functions
 For example, a function may require a string:
 
 {{< editor lang="fql" >}}
-return LOWER("FERRET")
+return lower("FERRET")
 {{</ editor >}}
 
 Another function may accept an array:
 
 {{< editor lang="fql" >}}
-return FIRST([10, 20, 30])
+return first([10, 20, 30])
 {{</ editor >}}
 
 If a function receives an unsupported number of arguments or a value of an unsupported type, the query fails with an error.
@@ -95,8 +95,8 @@ The returned value may be any FQL value: `none`, a `boolean`, `number`, `string`
 let numbers = [4, 8, 15, 16, 23, 42]
 
 return {
-    count: LENGTH(numbers),
-    first: FIRST(numbers),
+    count: length(numbers),
+    first: first(numbers),
     hasValue: 15 in numbers
 }
 {{</ editor >}}
@@ -106,7 +106,7 @@ A function may return `none` when no value is available, when a lookup fails, or
 {{< editor lang="fql" >}}
 let values = []
 
-return FIRST(values)
+return first(values)
 {{</ editor >}}
 
 ## Built-in functions
@@ -119,9 +119,9 @@ Built-in functions are available at the top level, without a namespace prefix.
 let tags = ["docs", "fql", "runtime"]
 
 return {
-    count: LENGTH(tags),
-    first: FIRST(tags),
-    joined: CONCAT_SEPARATOR(", ", tags)
+    count: length(tags),
+    first: first(tags),
+    joined: concat_separator(", ", tags)
 }
 {{</ editor >}}
 
@@ -134,7 +134,7 @@ Because function calls are expressions, they can be combined with other expressi
 They can be used in let declarations:
 
 {{< editor lang="fql" >}}
-let normalized = LOWER(TRIM("  Ferret  "))
+let normalized = lower(trim("  Ferret  "))
 
 return normalized
 {{</ editor >}}
@@ -149,7 +149,7 @@ let user = {
 
 return {
     name: user.name,
-    email: LOWER(user.email)
+    email: lower(user.email)
 }
 {{</ editor >}}
 
@@ -163,7 +163,7 @@ let users = [
 ]
 
 return for user in users {
-    filter user.active == true and LENGTH(user.name) >= 4
+    filter user.active == true and length(user.name) >= 4
     return user.name
 }
 {{</ editor >}}
@@ -173,7 +173,7 @@ They can also be used in array inline expressions:
 {{< editor lang="fql" >}}
 let names = [" Ada ", " Grace ", " Linus "]
 
-return names[* return TRIM(.)]
+return names[* return trim(.)]
 {{</ editor >}}
 
 Inside an inline array expression, the current element is accessed with `.`.
@@ -183,7 +183,7 @@ Inside an inline array expression, the current element is accessed with `.`.
 Some functions operate on values whose exact type is known only at runtime. This commonly happens when values come from bind parameters, host applications, modules, external data, or runtime capabilities.
 
 {{< editor lang="fql" >}}
-return LENGTH(@items)
+return length(@items)
 {{</ editor >}}
 
 The query may compile even when the final value of `@items` is not known yet. If the provided value is not supported by the function at runtime, the query fails with an error.
@@ -204,7 +204,7 @@ A function call can fail for several reasons:
 For example, a function that expects an array may reject a string:
 
 {{< editor lang="fql" >}}
-return FIRST("not an array")
+return first("not an array")
 {{</ editor >}}
 
 Errors are reported by the compiler when they can be detected statically. Errors that depend on runtime values are reported during execution.

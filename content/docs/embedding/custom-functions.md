@@ -10,6 +10,8 @@ description: "Register host-defined functions and namespaces that scripts can ca
 
 Custom functions let the host application expose Go logic to FQL scripts. Functions can be registered individually or organized into namespaces.
 
+Registered namespace segments and host-function names are case-insensitive in FQL and have one canonical lowercase qualified spelling in registries, documentation, and tooling. Register each symbol once; uppercase and mixed-case registrations are normalized for compatibility.
+
 ## Registering functions
 
 The most direct way to add functions is `WithFunctionsRegistrar`. The callback receives a `runtime.Namespace` where you register functions by arity:
@@ -17,11 +19,11 @@ The most direct way to add functions is `WithFunctionsRegistrar`. The callback r
 {{< code lang="go" >}}
 engine, err := ferret.New(
     ferret.WithFunctionsRegistrar(func(ns runtime.Namespace) {
-        ns.Function().A0().Add("NOW_UNIX", func(ctx context.Context) (runtime.Value, error) {
+        ns.Function().A0().Add("now_unix", func(ctx context.Context) (runtime.Value, error) {
             return runtime.NewInt(int(time.Now().Unix())), nil
         })
 
-        ns.Function().A1().Add("DOUBLE", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
+        ns.Function().A1().Add("double", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
             n, err := runtime.CastArg[runtime.Int](arg, 0)
             if err != nil {
                 return nil, err
@@ -36,7 +38,7 @@ engine, err := ferret.New(
 Scripts can then call these functions directly:
 
 {{< code lang="fql" >}}
-return { timestamp: NOW_UNIX(), doubled: DOUBLE(21) }
+return { timestamp: now_unix(), doubled: double(21) }
 {{</ code >}}
 
 ## Function signatures
@@ -45,12 +47,12 @@ Ferret provides typed function signatures for each arity:
 
 | Builder method | Go signature | FQL call |
 |---------------|-------------|----------|
-| `A0()` | `func(ctx) (Value, error)` | `FN()` |
-| `A1()` | `func(ctx, arg) (Value, error)` | `FN(x)` |
-| `A2()` | `func(ctx, arg1, arg2) (Value, error)` | `FN(x, y)` |
-| `A3()` | `func(ctx, arg1, arg2, arg3) (Value, error)` | `FN(x, y, z)` |
-| `A4()` | `func(ctx, arg1, arg2, arg3, arg4) (Value, error)` | `FN(a, b, c, d)` |
-| `Var()` | `func(ctx, args ...Value) (Value, error)` | `FN(a, b, ...)` |
+| `A0()` | `func(ctx) (Value, error)` | `fn()` |
+| `A1()` | `func(ctx, arg) (Value, error)` | `fn(x)` |
+| `A2()` | `func(ctx, arg1, arg2) (Value, error)` | `fn(x, y)` |
+| `A3()` | `func(ctx, arg1, arg2, arg3) (Value, error)` | `fn(x, y, z)` |
+| `A4()` | `func(ctx, arg1, arg2, arg3, arg4) (Value, error)` | `fn(a, b, c, d)` |
+| `Var()` | `func(ctx, args ...Value) (Value, error)` | `fn(a, b, ...)` |
 
 Fixed-arity functions (`A0` through `A4`) automatically validate the argument count. Variadic functions (`Var`) receive a slice and must validate the count themselves.
 
@@ -60,15 +62,15 @@ Use `WithNamespace` with a library builder to create a named group of functions:
 
 {{< code lang="go" >}}
 lib := runtime.NewLibrary()
-ns := lib.Namespace("CRYPTO")
+ns := lib.Namespace("crypto")
 
-ns.Function().A1().Add("MD5", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
+ns.Function().A1().Add("md5", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
     input := arg.String()
     hash := md5.Sum([]byte(input))
     return runtime.NewString(hex.EncodeToString(hash[:])), nil
 })
 
-ns.Function().A1().Add("SHA256", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
+ns.Function().A1().Add("sha256", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
     input := arg.String()
     hash := sha256.Sum256([]byte(input))
     return runtime.NewString(hex.EncodeToString(hash[:])), nil
@@ -83,19 +85,19 @@ Scripts call these as:
 
 {{< code lang="fql" >}}
 return {
-    md5: CRYPTO::MD5("hello"),
-    sha: CRYPTO::SHA256("hello")
+    md5: crypto::md5("hello"),
+    sha: crypto::sha256("hello")
 }
 {{</ code >}}
 
-Namespaces can be nested. A namespace created with `ns.Namespace("SUB")` produces functions accessible as `CRYPTO::SUB::FUNCTION_NAME`.
+Namespaces can be nested. A namespace created with `ns.Namespace("sub")` produces functions accessible as `crypto::sub::function_name`.
 
 ## Argument validation
 
 For variadic functions, use the validation helpers from the `runtime` package to check argument count and types:
 
 {{< code lang="go" >}}
-fns.Var().Add("CONCAT_WITH", func(ctx context.Context, args ...runtime.Value) (runtime.Value, error) {
+fns.Var().Add("concat_with", func(ctx context.Context, args ...runtime.Value) (runtime.Value, error) {
     // At least 2 arguments: separator + one or more values
     if err := runtime.ValidateArgs(args, 2, runtime.MaxArgs); err != nil {
         return nil, err
@@ -141,8 +143,8 @@ If you have a `*runtime.Functions` object built separately, merge it into the en
 
 {{< code lang="go" >}}
 builder := runtime.NewFunctionsBuilder()
-builder.A1().Add("REVERSE", reverseFunc)
-builder.A2().Add("REPEAT", repeatFunc)
+builder.A1().Add("reverse", reverseFunc)
+builder.A2().Add("repeat", repeatFunc)
 
 funcs, err := builder.Build()
 if err != nil {
@@ -174,18 +176,18 @@ import (
 
 func main() {
     lib := runtime.NewLibrary()
-    ns := lib.Namespace("TEXT")
+    ns := lib.Namespace("text")
 
-    ns.Function().A1().Add("TITLE_CASE", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
+    ns.Function().A1().Add("title_case", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
         return runtime.NewString(strings.Title(arg.String())), nil
     })
 
-    ns.Function().A2().Add("WRAP", func(ctx context.Context, text, wrapper runtime.Value) (runtime.Value, error) {
+    ns.Function().A2().Add("wrap", func(ctx context.Context, text, wrapper runtime.Value) (runtime.Value, error) {
         w := wrapper.String()
         return runtime.NewString(w + text.String() + w), nil
     })
 
-    ns.Function().Var().Add("JOIN", func(ctx context.Context, args ...runtime.Value) (runtime.Value, error) {
+    ns.Function().Var().Add("join", func(ctx context.Context, args ...runtime.Value) (runtime.Value, error) {
         if err := runtime.ValidateArgs(args, 1, runtime.MaxArgs); err != nil {
             return nil, err
         }
@@ -210,9 +212,9 @@ func main() {
         context.Background(),
         source.NewAnonymous(`
             return {
-                titled: TEXT::TITLE_CASE("hello world"),
-                wrapped: TEXT::WRAP("content", "**"),
-                joined: TEXT::JOIN("a", "b", "c")
+                titled: text::title_case("hello world"),
+                wrapped: text::wrap("content", "**"),
+                joined: text::join("a", "b", "c")
             }
         `),
     )

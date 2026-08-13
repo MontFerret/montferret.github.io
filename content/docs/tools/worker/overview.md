@@ -37,7 +37,7 @@ Use the `params` object to pass values that the script reads with `@name`:
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "let doc = DOCUMENT(@url) return doc.title",
+    "text": "let doc = web::html::open(@url) return doc.title",
     "params": {
       "url": "https://example.com"
     }
@@ -68,7 +68,7 @@ The HTML module registers two drivers:
 Use `driver: "cdp"` when a script needs browser rendering or browser interaction:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://ferretlang.org", { driver: "cdp" })
 return page.title
 {{< /editor >}}
 

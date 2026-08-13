@@ -15,13 +15,13 @@ In addition to built-in functions, which are available at the top level, Ferret 
 A namespaced function is called by prefixing the function name with the namespace and `::`.
 
 {{< code lang="fql" >}}
-IO::FS::READ("/tmp/data.json")
+io::fs::read("/tmp/data.json")
 {{</ code >}}
 
 Namespaces can be nested. Each `::` separator introduces another level.
 
 {{< code lang="fql" >}}
-IO::NET::HTTP::GET("https://api.example.com/data")
+io::net::http::get("https://api.example.com/data")
 {{</ code >}}
 
 The namespace makes it clear where the function comes from and avoids name conflicts between different providers.
@@ -31,9 +31,9 @@ The namespace makes it clear where the function comes from and avoids name confl
 When a script repeatedly calls functions from the same namespace, `use` can create a shorter local alias. Put the declaration at the start of the script, before the script body.
 
 {{< code lang="fql" >}}
-use IO::FS as FS
+use io::fs as fs
 
-return FS::READ("/tmp/data.json")
+return fs::read("/tmp/data.json")
 {{</ code >}}
 
 `use` is a compile-time alias; it does not load a module or change which functions the runtime provides. See the [`use` statement reference]({{< ref "/docs/language/script-structure/use" >}}) for function aliases, placement rules, and name-resolution behavior.
@@ -42,7 +42,7 @@ return FS::READ("/tmp/data.json")
 
 The set of available namespaced functions depends on the host environment. Functions are registered at engine startup by:
 
-- **The standard library** — built-in functions like `LENGTH`, `CONCAT`, and `FLOOR` are registered at the top level (no namespace needed). Some groups, such as IO, register under a namespace.
+- **The standard library** — built-in functions like `length`, `concat`, and `floor` are registered at the top level (no namespace needed). Some groups, such as `io`, register under a namespace.
 - **Modules** — external modules passed to the engine at startup can register functions under any namespace.
 - **The host application** — an application embedding Ferret can register its own functions and namespaces directly.
 

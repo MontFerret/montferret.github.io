@@ -61,7 +61,7 @@ func main() {
 When the same query runs many times — with different parameters, in different goroutines, or on a schedule — compile it once and create sessions from the resulting plan:
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.New("greeting", `return UPPER(@name)`))
+plan, err := engine.Compile(ctx, source.New("greeting", `return upper(@name)`))
 if err != nil {
     log.Fatal(err)
 }

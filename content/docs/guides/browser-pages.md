@@ -14,7 +14,7 @@ This guide covers when to use a browser, how to set one up, and how to wait for 
 
 ## When to use a browser
 
-Use static extraction (`WEB::HTML::OPEN` without a driver) when the data is in the initial HTML response. Use the `cdp` driver when the page:
+Use static extraction (`web::html::open` without a driver) when the data is in the initial HTML response. Use the `cdp` driver when the page:
 
 - renders content with JavaScript
 - loads data asynchronously after the initial page load
@@ -45,10 +45,10 @@ See [CLI Browser]({{< ref "/docs/tools/cli/browser" >}}) for full details on bro
 
 ## Open a page with a browser
 
-Pass `{ driver: "cdp" }` to `WEB::HTML::OPEN`:
+Pass `{ driver: "cdp" }` to `web::html::open`:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", {
+let page = web::html::open("https://mockery.ferretlang.org", {
     driver: "cdp"
 })
 
@@ -64,7 +64,7 @@ JavaScript-rendered pages may not have all content immediately after the page lo
 ### Wait for an element
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/delayed-rendering/", {
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/delayed-rendering/", {
     driver: "cdp"
 })
 
@@ -81,7 +81,7 @@ return query '[data-testid="delayed-long"]' in page using css
 Use `waitfor value` when you need the result of the check itself:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/delayed/", {
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/dynamic-products/delayed/", {
     driver: "cdp"
 })
 
@@ -97,7 +97,7 @@ return element?.textContent
 After a navigation or interaction, you may want to wait until the page finishes loading resources:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", {
+let page = web::html::open("https://mockery.ferretlang.org", {
     driver: "cdp"
 })
 
@@ -128,12 +128,12 @@ waitfor exists query one ".result" in page using css
 When `waitfor` times out, it returns `false` (or `none` for `waitfor value`). Add `on timeout return` for a custom fallback:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", {
+let page = web::html::open("https://mockery.ferretlang.org", {
     driver: "cdp"
 })
 
 let items = waitfor value query ".product" in page using css
-    when LENGTH(.) > 0
+    when length(.) > 0
     timeout 5s
     on timeout return []
 
@@ -145,7 +145,7 @@ return items
 Once the content is loaded, extraction works the same as with static pages:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
     driver: "cdp"
 })
 
@@ -166,7 +166,7 @@ return for product in grid.children
 Use `NAVIGATE` to go to a different URL within the same browser session:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 let titleBefore = page.title
 let link = query one ":nth(1, nav li)" in page using css
 
@@ -181,7 +181,7 @@ let titleAfter = page.title
 return { titleBefore, titleAfter }
 {{</ editor >}}
 
-`NAVIGATE_BACK(page)` and `NAVIGATE_FORWARD(page)` move through the browser history.
+`web::html::navigate_back(page)` and `web::html::navigate_forward(page)` move through the browser history.
 
 ## Next steps
 

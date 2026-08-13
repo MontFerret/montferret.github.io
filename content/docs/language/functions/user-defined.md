@@ -27,7 +27,7 @@ There are two body forms: arrow and block.
 The arrow form uses `=>` followed by a single expression. The result of the expression is the return value.
 
 {{< editor lang="fql" >}}
-func greet(name) => CONCAT("Hello, ", name, "!")
+func greet(name) => concat("Hello, ", name, "!")
 
 return greet("Ada")
 {{</ editor >}}
@@ -40,9 +40,9 @@ The block form encloses the function body in braces. Use it when the function ne
 
 {{< editor lang="fql" >}}
 func normalizePrice(input) {
-    let cleaned = TRIM(input)
-    let numeric = SUBSTITUTE(cleaned, "$", "")
-    return TO_FLOAT(numeric)
+    let cleaned = trim(input)
+    let numeric = substitute(cleaned, "$", "")
+    return to_float(numeric)
 }
 
 return normalizePrice("  $19.99  ")
@@ -81,7 +81,7 @@ A final standalone loop is not promoted into a function result. It still execute
 Parameters are listed inside parentheses, separated by commas.
 
 {{< editor lang="fql" >}}
-func fullName(first, last) => CONCAT(first, " ", last)
+func fullName(first, last) => concat(first, " ", last)
 
 return fullName("Ada", "Lovelace")
 {{</ editor >}}
@@ -150,7 +150,7 @@ User-defined functions work naturally with `for` loops and other query construct
 {{< editor lang="fql" >}}
 func formatUser(user) {
     return {
-        label: CONCAT(user.name, " (", user.role, ")"),
+        label: concat(user.name, " (", user.role, ")"),
         active: user.active
     }
 }
@@ -180,7 +180,7 @@ func A() => 2
 return a() + A()
 {{</ editor >}}
 
-By convention, built-in functions are written in uppercase, while user-defined function names may use the style preferred by the script author.
+Built-in and host functions are documented with canonical lowercase names. User-defined function names remain case-sensitive and may use the style preferred by the script author.
 
 ## Next steps
 

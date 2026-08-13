@@ -25,7 +25,7 @@ An array is a basic value type. It is also iterable and sortable. These are sepa
 A host database connection is not an array, an object, or a string. It has none of those storage shapes. However, it may be queryable if the host exposes query execution for it.
 
 {{< code lang="fql" >}}
-let db = DB::SQLITE::OPEN("data.db")
+let db = db::sqlite::open("data.db")
 
 return query `
   SELECT name
@@ -146,7 +146,7 @@ Dispatch is effectful: it causes a side effect on the target value without produ
 A measurable value has a defined length.
 
 {{< code lang="fql" >}}
-LENGTH(elements)
+length(elements)
 {{</ code >}}
 
 This capability is used when the runtime needs to know the size of a value, such as for length checks, emptiness tests, or size-based operations. Arrays, objects, strings, and host collections may all be measurable.
@@ -169,7 +169,7 @@ Index-based access uses bracket notation with an integer position:
 
 {{< code lang="fql" >}}
 let first = items[0]
-let last = items[LENGTH(items) - 1]
+let last = items[length(items) - 1]
 {{</ code >}}
 
 Key-based access uses dot notation or bracket notation with a string key:

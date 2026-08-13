@@ -151,7 +151,7 @@ return for u in users {
 }
 {{</ editor >}}
 
-`aggregate` computes values across each group, such as `count`, `SUM`, `MIN`, `MAX`, or `AVERAGE`.
+`aggregate` computes values across each group, such as `count`, `sum`, `min`, `max`, or `average`.
 
 {{< editor lang="fql" >}}
 let users = [
@@ -162,7 +162,7 @@ let users = [
 
 return for u in users {
     collect dept = u.dept
-    aggregate headcount = COUNT(u), avgAge = AVERAGE(u.age)
+    aggregate headcount = count(u), avgAge = average(u.age)
     return { dept, headcount, avgAge }
 }
 {{</ editor >}}

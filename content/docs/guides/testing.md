@@ -28,7 +28,7 @@ See [Lab Installation]({{< ref "/docs/tools/lab/installation" >}}) for all optio
 
 ## Write a test file
 
-A test file is a regular `.fql` script that uses assertion functions from the `TESTING` namespace. Name the file with a `.test.fql` extension:
+A test file is a regular `.fql` script that uses assertion functions from the `testing` namespace. Name the file with a `.test.fql` extension:
 
 ```
 tests/
@@ -36,11 +36,11 @@ tests/
 ```
 
 {{< code lang="fql" title="tests/headings.test.fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let headings = page[~ css`h1, h2`]
 
-TESTING::NOT_EMPTY(headings, "page should have headings")
-TESTING::GT(LENGTH(headings), 0, "at least one heading expected")
+testing::not_empty(headings, "page should have headings")
+testing::gt(length(headings), 0, "at least one heading expected")
 
 return true
 {{</ code >}}
@@ -58,7 +58,7 @@ Lab discovers all `.test.fql` files in the directory and runs them. A test passe
 Name a file with `.fail.fql` to indicate that it *should* fail:
 
 {{< code lang="fql" title="tests/missing-element.fail.fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let el = query one ".does-not-exist" in page using css
 return el.textContent
 {{</ code >}}
@@ -74,16 +74,16 @@ For testing many queries with structured assertions, use `.yaml` test files:
 tests:
   - name: "posts endpoint returns data"
     query: |
-      let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts")
-      let posts = JSON_PARSE(TO_STRING(response))
-      return LENGTH(posts)
+      let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts")
+      let posts = json_parse(to_string(response))
+      return length(posts)
     assert:
       gt: 0
 
   - name: "single post has title"
     query: |
-      let response = IO::NET::HTTP::GET("https://jsonplaceholder.typicode.com/posts/1")
-      let post = JSON_PARSE(TO_STRING(response))
+      let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts/1")
+      let post = json_parse(to_string(response))
       return post.title
     assert:
       not_empty: true
@@ -111,11 +111,11 @@ lab --dir ./tests --static ./tests/fixtures --static-port 8080
 Reference the local server in your test:
 
 {{< code lang="fql" title="tests/products.test.fql" >}}
-let page = WEB::HTML::OPEN("http://localhost:8080/products.html")
+let page = web::html::open("http://localhost:8080/products.html")
 let items = page[~ css`.product-card`]
 
-TESTING::NOT_EMPTY(items, "should find product cards")
-TESTING::EQ(LENGTH(items), 3, "expected 3 products")
+testing::not_empty(items, "should find product cards")
+testing::eq(length(items), 3, "expected 3 products")
 
 return true
 {{</ code >}}

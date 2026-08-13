@@ -25,7 +25,7 @@ let user = {
     roles: ["admin", "editor"]
 }
 
-let isAdmin = CONTAINS(user.roles, "admin")
+let isAdmin = contains(user.roles, "admin")
 
 return {
     name: user.name,
@@ -80,7 +80,7 @@ return (1 + 2) * 3
 Function calls:
 
 {{< editor lang="fql" apiVersion="2" orientation="horizontal" >}}
-return UPPER("hello")
+return upper("hello")
 {{< /editor >}}
 
 Object and array construction:
@@ -105,7 +105,7 @@ let user = {
 
 return {
     name: user.name,
-    roleCount: LENGTH(user.roles)
+    roleCount: length(user.roles)
 }
 {{< /editor >}}
 
@@ -223,7 +223,7 @@ let name2 = "Grace"
 let Name = "Turing"
 {{< /code >}}
 
-Keywords are reserved words with special meaning in FQL. They are case-sensitive and conventionally written in uppercase. The full set of reserved keywords is:
+Keywords are reserved words with special meaning in FQL. They are case-insensitive and conventionally written in lowercase. The full set of reserved keywords is:
 
 {{< code lang="fql" >}}
 use

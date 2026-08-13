@@ -8,7 +8,7 @@ description: "Addition, subtraction, multiplication, division, modulus, and the 
 
 # Arithmetic operators
 
-FQL arithmetic is defined directly over native numbers and temporal values. Operators do not implicitly route arbitrary values through `TO_NUMBER`, `TO_DURATION`, or `TO_DATETIME`.
+FQL arithmetic is defined directly over native numbers and temporal values. Operators do not implicitly route arbitrary values through `to_number`, `to_duration`, or `to_datetime`.
 
 FQL supports:
 
@@ -19,7 +19,7 @@ FQL supports:
 - `%` modulus
 - unary `+` and `-`
 
-For exponentiation, use `POW()`. The syntax `base ** exponent` is not supported.
+For exponentiation, use `pow()`. The syntax `base ** exponent` is not supported.
 
 ## Native numeric arithmetic
 
@@ -47,7 +47,7 @@ Numeric-looking strings are not numbers. Convert them explicitly:
 {{< editor lang="fql" >}}
 let input = "10"
 
-return TO_NUMBER(input) - 2
+return to_number(input) - 2
 {{</ editor >}}
 
 {{< notification type="info" >}}
@@ -94,21 +94,21 @@ DateTime and Duration arithmetic accepts only the native operand pairs below. Co
 | unary `+Duration` or `-Duration` | Duration |
 
 {{< editor lang="fql" >}}
-let start = TO_DATETIME("2024-03-10T06:30:00Z")
+let start = to_datetime("2024-03-10T06:30:00Z")
 
 return {
     combined: 1s + 250ms,
     multiplied: 2.5 * 5s,
     scaled: 5s / 2,
     ratio: 5s / 250ms,
-    later: start + TO_DURATION("90m"),
+    later: start + to_duration("90m"),
     elapsed: (start + 90m) - start
 }
 {{</ editor >}}
 
 All Duration scaling truncates fractional nanoseconds toward zero. Duration and DateTime range overflow raises an error.
 
-String concatenation still takes precedence for `+`. For example, `1s + "1s"` returns the String `"1s1s"`; use `1s + TO_DURATION("1s")` for temporal addition.
+String concatenation still takes precedence for `+`. For example, `1s + "1s"` returns the String `"1s1s"`; use `1s + to_duration("1s")` for temporal addition.
 
 Unsupported temporal pairs include `DateTime + DateTime`, `Duration - DateTime`, reverse division such as `2 / 1s`, Duration modulus, and DateTime multiplication, division, or modulus.
 

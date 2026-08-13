@@ -6,20 +6,20 @@ draft: false
 description: "File system functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/io-fs/
-menuTitle: IO::FS
-menu: [READ,WRITE,]
+menuTitle: io::fs
+menu: [read,write,]
 ---
 
 
 
 {{< header href="read" >}}
 
-IO::FS::READ
+io::fs::read
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/fs/read.go#L14)
 
-READ reads from a given file.
+read reads from a given file.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -33,12 +33,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="write" >}}
 
-IO::FS::WRITE
+io::fs::write
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/io/fs/write.go#L20)
 
-WRITE writes the given data into the file.
+write writes the given data into the file.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

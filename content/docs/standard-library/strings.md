@@ -6,19 +6,19 @@ description: "String functions in the Ferret standard library."
 aliases:
   - /docs/stdlib/strings/
 menuTitle: 
-menu: [CONCAT,CONCAT_SEPARATOR,CONTAINS,DECODE_URI_COMPONENT,ENCODE_URI_COMPONENT,ESCAPE_HTML,FIND_FIRST,FIND_LAST,FMT,FROM_BASE64,JSON_PARSE,JSON_STRINGIFY,LEFT,LIKE,LOWER,LTRIM,MD5,RANDOM_TOKEN,REGEX_MATCH,REGEX_REPLACE,REGEX_SPLIT,REGEX_TEST,RIGHT,RTRIM,SHA1,SHA512,SPLIT,SUBSTITUTE,SUBSTRING,TO_BASE64,TRIM,UNESCAPE_HTML,UPPER,]
+menu: [concat,concat_separator,contains,decode_uri_component,encode_uri_component,escape_html,find_first,find_last,fmt,from_base64,json_parse,json_stringify,left,like,lower,ltrim,md5,random_token,regex_match,regex_replace,regex_split,regex_test,right,rtrim,sha1,sha512,split,substitute,substring,to_base64,trim,unescape_html,upper,]
 ---
 
 
 
 {{< header href="concat" >}}
 
-CONCAT
+concat
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L13)
 
-CONCAT concatenates one or more instances of String, or an Array.
+concat concatenates one or more instances of String, or an Array.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -32,12 +32,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="concat_separator" >}}
 
-CONCAT_SEPARATOR
+concat_separator
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/concat.go#L47)
 
-CONCAT_SEPARATOR concatenates one or more instances of String, or an Array with a given separator.
+concat_separator concatenates one or more instances of String, or an Array with a given separator.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -52,12 +52,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="contains" >}}
 
-CONTAINS
+contains
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/contains.go#L15)
 
-CONTAINS returns a value indicating whether a specified substring occurs within a string.
+contains returns a value indicating whether a specified substring occurs within a string.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -73,12 +73,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="decode_uri_component" >}}
 
-DECODE_URI_COMPONENT
+decode_uri_component
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L36)
 
-DECODE_URI_COMPONENT returns the decoded String of uri.
+decode_uri_component returns the decoded String of uri.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -92,12 +92,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="encode_uri_component" >}}
 
-ENCODE_URI_COMPONENT
+encode_uri_component
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L17)
 
-ENCODE_URI_COMPONENT returns the encoded String of uri.
+encode_uri_component returns the encoded String of uri.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -111,12 +111,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="escape_html" >}}
 
-ESCAPE_HTML
+escape_html
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/escape.go#L16)
 
-"ESCAPE_HTML escapes special characters like \"<\" to become \"&lt;\"\. It escapes only five such characters: <, >, &, ' and \". UnescapeString(EscapeString(s))\\ == s always holds, but the converse isn't always true."
+"escape_html escapes special characters like \"<\" to become \"&lt;\"\. It escapes only five such characters: <, >, &, ' and \". UnescapeString(EscapeString(s))\\ == s always holds, but the converse isn't always true."
 
 
 |          |          |                |
@@ -131,12 +131,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="find_first" >}}
 
-FIND_FIRST
+find_first
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L17)
 
-FIND_FIRST returns the position of the first occurrence of the string search inside the string text. Positions start at 0.
+find_first returns the position of the first occurrence of the string search inside the string text. Positions start at 0.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -153,12 +153,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="find_last" >}}
 
-FIND_LAST
+find_last
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/find.go#L63)
 
-FIND_LAST returns the position of the last occurrence of the string search inside the string text. Positions start at 0.
+find_last returns the position of the last occurrence of the string search inside the string text. Positions start at 0.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -175,12 +175,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="fmt" >}}
 
-FMT
+fmt
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/fmt.go#L18)
 
-FMT formats the template using these arguments.
+fmt formats the template using these arguments.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -195,12 +195,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="from_base64" >}}
 
-FROM_BASE64
+from_base64
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/decode.go#L16)
 
-FROM_BASE64 returns the value of a base64 representation.
+from_base64 returns the value of a base64 representation.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -214,12 +214,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="json_parse" >}}
 
-JSON_PARSE
+json_parse
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L15)
 
-JSON_PARSE returns a value described by the JSON-encoded input string.
+json_parse returns a value described by the JSON-encoded input string.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -233,12 +233,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="json_stringify" >}}
 
-JSON_STRINGIFY
+json_stringify
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/json.go#L36)
 
-JSON_STRINGIFY returns a JSON string representation of the input value.
+json_stringify returns a JSON string representation of the input value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -252,12 +252,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="left" >}}
 
-LEFT
+left
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L61)
 
-LEFT returns the leftmost characters of the string value by index.
+left returns the leftmost characters of the string value by index.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -272,12 +272,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="like" >}}
 
-LIKE
+like
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/like.go#L22)
 
-LIKE checks whether the pattern search is contained in the string text, using wildcard matching.
+like checks whether the pattern search is contained in the string text, using wildcard matching.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -293,12 +293,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="lower" >}}
 
-LOWER
+lower
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L13)
 
-LOWER converts strings to their lower-case counterparts. All other characters are returned unchanged.
+lower converts strings to their lower-case counterparts. All other characters are returned unchanged.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -312,12 +312,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="ltrim" >}}
 
-LTRIM
+ltrim
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L34)
 
-LTRIM returns the string value with whitespace stripped from the start only.
+ltrim returns the string value with whitespace stripped from the start only.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -332,12 +332,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="md5" >}}
 
-MD5
+md5
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L32)
 
-MD5 calculates the MD5 checksum for text and return it in a hexadecimal string representation.
+md5 calculates the md5 checksum for text and return it in a hexadecimal string representation.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -351,12 +351,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="random_token" >}}
 
-RANDOM_TOKEN
+random_token
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/random.go#L26)
 
-RANDOM_TOKEN generates a pseudo-random token string with the specified length. The algorithm for token generation should be treated as opaque.
+random_token generates a pseudo-random token string with the specified length. The algorithm for token generation should be treated as opaque.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -370,12 +370,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="regex_match" >}}
 
-REGEX_MATCH
+regex_match
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L16)
 
-REGEX_MATCH returns the matches in the given string text, using the regex.
+regex_match returns the matches in the given string text, using the regex.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -391,12 +391,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="regex_replace" >}}
 
-REGEX_REPLACE
+regex_replace
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L133)
 
-REGEX_REPLACE replace every substring matched with the regexp with a given string.
+regex_replace replace every substring matched with the regexp with a given string.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -413,12 +413,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="regex_split" >}}
 
-REGEX_SPLIT
+regex_split
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L58)
 
-REGEX_SPLIT splits the given string text into a list of strings, using the separator.
+regex_split splits the given string text into a list of strings, using the separator.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -435,12 +435,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="regex_test" >}}
 
-REGEX_TEST
+regex_test
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/regex.go#L100)
 
-REGEX_TEST test whether the regexp has at least one match in the given text.
+regex_test test whether the regexp has at least one match in the given text.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -456,12 +456,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="right" >}}
 
-RIGHT
+right
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L88)
 
-RIGHT returns the rightmost characters of the string value.
+right returns the rightmost characters of the string value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -476,12 +476,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="rtrim" >}}
 
-RTRIM
+rtrim
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L55)
 
-RTRIM returns the string value with whitespace stripped from the end only.
+rtrim returns the string value with whitespace stripped from the end only.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -496,12 +496,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="sha1" >}}
 
-SHA1
+sha1
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L48)
 
-SHA1 calculates the SHA1 checksum for text and returns it in a hexadecimal string representation.
+sha1 calculates the sha1 checksum for text and returns it in a hexadecimal string representation.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -515,12 +515,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="sha512" >}}
 
-SHA512
+sha512
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L64)
 
-SHA512 calculates the SHA512 checksum for text and returns it in a hexadecimal string representation.
+sha512 calculates the sha512 checksum for text and returns it in a hexadecimal string representation.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -534,12 +534,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="split" >}}
 
-SPLIT
+split
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/split.go#L16)
 
-SPLIT splits the given string value into a list of strings, using the separator.
+split splits the given string value into a list of strings, using the separator.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -555,12 +555,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="substitute" >}}
 
-SUBSTITUTE
+substitute
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substitute.go#L17)
 
-SUBSTITUTE replaces search values in the string value.
+substitute replaces search values in the string value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -577,12 +577,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="substring" >}}
 
-SUBSTRING
+substring
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/substr.go#L15)
 
-SUBSTRING returns a substring of value.
+substring returns a substring of value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -598,12 +598,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="to_base64" >}}
 
-TO_BASE64
+to_base64
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/encode.go#L80)
 
-TO_BASE64 returns the base64 representation of value.
+to_base64 returns the base64 representation of value.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -617,12 +617,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="trim" >}}
 
-TRIM
+trim
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/trim.go#L14)
 
-TRIM returns the string value with whitespace stripped from the start and/or end.
+trim returns the string value with whitespace stripped from the start and/or end.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -637,12 +637,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="unescape_html" >}}
 
-UNESCAPE_HTML
+unescape_html
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/unescape.go#L17)
 
-UNESCAPE_HTML unescapes entities like "&lt;" to become "<". It unescapes a larger range of entities than EscapeString escapes. For example, "&aacute;" unescapes to "á", as does "&#225;" and "&#xE1;". UnescapeString(EscapeString(s)) == s always holds, but the converse isn't always true.
+unescape_html unescapes entities like "&lt;" to become "<". It unescapes a larger range of entities than EscapeString escapes. For example, "&aacute;" unescapes to "á", as does "&#225;" and "&#xE1;". UnescapeString(EscapeString(s)) == s always holds, but the converse isn't always true.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------
@@ -656,12 +656,12 @@ Argument   | Type     | Default value  | Description
 
 {{< header href="upper" >}}
 
-UPPER
+upper
 
 {{</ header >}}
 [Source](https://github.com/MontFerret/ferret/tree/master/pkg/stdlib/strings/case.go#L28)
 
-UPPER converts strings to their upper-case counterparts. All other characters are returned unchanged.
+upper converts strings to their upper-case counterparts. All other characters are returned unchanged.
 
 |          |          |                |
 ---------- | -------- | -------------- | ----------

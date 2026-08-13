@@ -20,7 +20,7 @@ The most common pattern: attach `on error return` to provide a default when an e
 {{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let title = query one ".nonexistent" in page using css on error return none
 return title?.textContent
 '
@@ -29,7 +29,7 @@ return title?.textContent
 
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let title = query one ".nonexistent" in page using css on error return none
 return title?.textContent
 {{< /editor >}}
@@ -50,7 +50,7 @@ Common fallback values:
 The `?.` operator accesses properties on values that may be `none`. Instead of failing, it returns `none`:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let element = query one ".maybe-missing" in page using css on error return none
 
 // Safe — returns NONE if element is NONE
@@ -67,7 +67,7 @@ Without `?.`, accessing a property on `none` is a runtime error.
 Combine optional chaining with `??` when missing data should become a concrete value:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let element = query one ".maybe-missing" in page using css on error return none
 
 return element?.textContent ?? "Unknown"
@@ -82,21 +82,21 @@ See [none-Coalescing Operator]({{< ref "/docs/language/operators/coalescing" >}}
 Use `on error retry` when a transient failure may resolve on a second attempt:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
     on error retry 3
 {{</ code >}}
 
 ### Add a delay between retries
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
     on error retry 3 delay 500ms
 {{</ code >}}
 
 ### Use exponential backoff
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
     on error retry 3 delay 200ms backoff EXPONENTIAL
 {{</ code >}}
 
@@ -105,7 +105,7 @@ The delay doubles on each retry: 200ms, 400ms, 800ms.
 ### Fall back after all retries fail
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
     on error retry 3 delay 500ms backoff EXPONENTIAL
     or return none
 
@@ -117,7 +117,7 @@ return page != none ? page.title : "page unavailable"
 `waitfor` expressions support `on timeout return` for a timeout-specific fallback. This is separate from `on error`:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 
 let result = waitfor value query one ".slow-loading" in page using css
     timeout 5s
@@ -132,7 +132,7 @@ return result?.textContent
 When a site changes its layout, old selectors may stop working. Try multiple selectors and use the first one that matches:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 
 let title = query one ".new-title" in page using css on error return none
 let titleFallback = title == none
@@ -153,8 +153,8 @@ func queryFirst(page, selectors) {
         return result
 }
 
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
-let title = FIRST(queryFirst(page, [".new-title", ".old-title", "h1"]))
+let page = web::html::open("https://mockery.ferretlang.org")
+let title = first(queryFirst(page, [".new-title", ".old-title", "h1"]))
 
 return title?.textContent
 {{</ code >}}
@@ -164,7 +164,7 @@ return title?.textContent
 When iterating over items, a single failure in one item should not stop the entire extraction. Use `on error return` on individual operations, or wrap the whole loop body:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let items = page[~ css`article`]
 
 return for item in items
@@ -182,7 +182,7 @@ return for item in items
 To catch and skip items that fail entirely, wrap the loop body in a grouped expression:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let items = page[~ css`article`]
 
 return for item in items
@@ -200,7 +200,7 @@ return for item in items
 A common pattern for browser-backed extraction: retry on error, provide a timeout fallback, and use optional chaining throughout:
 
 {{< code lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
     on error retry 2 delay 1s backoff EXPONENTIAL
     or return none
 

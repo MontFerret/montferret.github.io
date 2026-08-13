@@ -14,10 +14,10 @@ Static extraction does not need a browser. Ferret fetches the HTML over HTTP and
 
 ## Open a page
 
-Use `WEB::HTML::OPEN` to fetch and parse an HTML page:
+Use `web::html::open` to fetch and parse an HTML page:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 return page.title
 {{< /editor >}}
 
@@ -28,7 +28,7 @@ The function returns an HTML page value. You can read properties like `title` di
 Use the query expression to find elements:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 
 return query "article h2" in page using css
 {{< /editor >}}
@@ -38,7 +38,7 @@ This returns all matching elements as an array.
 To get a single element, use `query one`:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 
 return query one "article h2" in page using css
 {{< /editor >}}
@@ -50,7 +50,7 @@ More about query expressions [see the documentation]({{< ref "/docs/language/con
 Once you have an element, read its properties:
 
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 
 return for link in (query "a" in page using css)
     limit 5
@@ -74,7 +74,7 @@ Common element properties:
 The `[*]` array operator lets you project fields from a list of elements without writing a `for` loop:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let links = query "a" in page using css
 
 return links[*].attributes.href
@@ -83,7 +83,7 @@ return links[*].attributes.href
 You can also filter inline:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 let links = query "a" in page using css
 
 return links[*
@@ -100,7 +100,7 @@ return links[*
 When a page has repeating structures — product cards, table rows, list items — query the container first, then query inside each one:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/")
 let cards = query ".product-card" in page using css
 
 return for card in cards
@@ -119,7 +119,7 @@ The `?.` optional chaining operator returns `none` instead of failing when an el
 Not every page has the elements you expect. Use `query exists` to check before extracting, or `on error return` to provide a fallback:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org")
+let page = web::html::open("https://mockery.ferretlang.org")
 
 let title = query one ".page-title" in page using css
     on error return none
@@ -139,7 +139,7 @@ For more error handling patterns, see [Error handling and resilience]({{< ref "e
 Use `filter`, `sort`, and `limit` inside a `for` loop to shape the output:
 
 {{< editor lang="fql" >}}
-let page = WEB::HTML::OPEN("https://mockery.ferretlang.org/scenarios/ecommerce/")
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/")
 let cards = query '.product-card' in page using css
 
 return for card in cards
@@ -159,7 +159,7 @@ Save a script to a file and pass the URL as a parameter:
 
 {{< terminal command="true" >}}
 echo '
-let page = WEB::HTML::OPEN(@url)
+let page = web::html::open(@url)
 let headers = query 'h1, h2, h3' in page using css
 return headers[*].textContent
 ' > headings.fql
@@ -177,7 +177,7 @@ ferret run headings.fql --param url=https://mockery.ferretlang.org
 {{< tab title="Try in browser" >}}
 
 {{< editor lang="fql" params=`{ "url": "https://mockery.ferretlang.org/"}` >}}
-let page = WEB::HTML::OPEN(@url)
+let page = web::html::open(@url)
 let headers = query 'h1, h2, h3' in page using css
 
 return headers[*].textContent
