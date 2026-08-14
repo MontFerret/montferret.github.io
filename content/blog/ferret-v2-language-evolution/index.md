@@ -83,7 +83,6 @@ func classify(response) {
 or this:
 
 {{< code lang="fql" >}}
-{{< code lang="fql" >}}
 click(submit)
 waitfor exists confirmation
 {{</ code >}}
