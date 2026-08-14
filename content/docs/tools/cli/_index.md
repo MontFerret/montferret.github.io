@@ -13,4 +13,4 @@ The Ferret CLI is the primary tool for working with FQL scripts. Use it to execu
 
 All commands accept `--log-level`, `--log-output`, and `--log-file` flags for controlling log output. Settings can be persisted through the [config](config/) command or environment variables with the `FERRET_` prefix. See [Config](config/) for details.
 
-{{< docs-related tiles="tools-cli-install,tools-cli-run,tools-cli-repl,tools-cli-debug,tools-cli-check,tools-cli-fmt,tools-cli-build,tools-cli-inspect,tools-cli-browser,tools-cli-mod,tools-cli-config" >}}
+{{< docs-related tiles="tools-cli-install,tools-cli-run,tools-cli-repl,tools-cli-debug,tools-cli-check,tools-cli-fmt,tools-cli-build,tools-cli-inspect,tools-cli-browser,tools-cli-mod,tools-cli-migrate,tools-cli-config" >}}

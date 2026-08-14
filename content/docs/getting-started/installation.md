@@ -29,7 +29,7 @@ The official CLI includes the standard modules needed for common web extraction 
 
 > **Looking for Ferret v1?**
 >
-> Ferret v1 remains available for existing projects, but new users should start with Ferret v2. See the migration guide for differences between v1 and v2.
+> Ferret v1 remains available for existing projects, but new users should start with Ferret v2. See the [migration guide]({{< ref "/docs/tools/cli/migrate" >}}) for the supported mechanical migration steps.
 
 ## Install the CLI
 
