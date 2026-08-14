@@ -27,11 +27,7 @@ But over the years, Ferret has grown quite a bit beyond that original model and 
 
 It has functions and pattern matching now. It has mutable state when you need it, synchronization primitives for dealing with asynchronous systems, host-defined and queryable values, and an embedding API that increasingly treats Ferret as a language applications can extend rather than simply a query engine they can call.
 
-And while working on v2, I've increasingly found myself asking a slightly different question. Not *"how would AQL express this?"*, but simply *"how should Ferret express this?"*
-
-That's a small distinction, but I think it's an important one.
-
-At some point, carrying every convention inherited from AQL stops making the language feel familiar and starts obscuring what it has actually become. So with v2, we're letting go of a few of those conventions — while keeping the parts of that declarative foundation that still make Ferret, well, Ferret.
+Somewhere along the way, AQL stopped being the reference point for every language decision. It’s still part of Ferret’s DNA, of course, but these days I’m much more interested in whether something feels right for Ferret itself.
 
 ## Lowercase is now canonical
 
