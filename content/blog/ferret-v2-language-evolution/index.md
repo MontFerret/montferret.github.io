@@ -279,10 +279,6 @@ return for user in users {
 }
 {{</ code >}}
 
-I actually like how this reads:
-
-> return, for every active user, their email.
-
 More importantly, though, `for` now means exactly the same thing wherever it appears.
 
 You can assign it:
