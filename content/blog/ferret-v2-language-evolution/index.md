@@ -15,11 +15,11 @@ That's more or less where Ferret is with v2.
 
 Ferret started life with a pretty strong influence from ArangoDB's AQL, and you can still see that heritage immediately in a traditional Ferret script:
 
-```fql
+{{< code lang="fql" >}}
 FOR user IN users
     FILTER user.active
     RETURN user.email
-```
+{{</ code >}}
 
 That syntax has served Ferret very well. It made data transformations familiar, kept scripts concise, and gave the language the declarative foundation that is still very much at the heart of Ferret today.
 
@@ -37,21 +37,21 @@ At some point, carrying every convention inherited from AQL stops making the lan
 
 Ferret keywords have long been case-insensitive, and that's not changing. Both of these are still perfectly valid:
 
-```fql
+{{< code lang="fql" >}}
 FOR user IN users
     FILTER user.active
     RETURN user
-```
+{{</ code >}}
 
-```fql
+{{< code lang="fql" >}}
 for user in users
     filter user.active
     return user
-```
+{{</ code >}}
 
 Starting with Ferret v2, though, the second form becomes the canonical one. The formatter, documentation, website, and official examples will all use lowercase keywords:
 
-```fql
+{{< code lang="fql" >}}
 let users = query "users" in db
 
 return for user in users {
@@ -62,7 +62,7 @@ return for user in users {
         email: user.email
     }
 }
-```
+{{</ code >}}
 
 On the surface this is obviously a cosmetic change, but I think it changes the first impression of the language quite a bit.
 
@@ -70,7 +70,7 @@ Uppercase keywords carry a very strong association with SQL and other query lang
 
 Ferret is designed to be embedded into applications, and perfectly normal Ferret code now looks like this:
 
-```fql
+{{< code lang="fql" >}}
 func classify(response) {
     return match response.status {
         200 => "ok"
@@ -78,23 +78,24 @@ func classify(response) {
         _ => "error"
     }
 }
-```
+{{</ code >}}
 
 or this:
 
-```fql
+{{< code lang="fql" >}}
+{{< code lang="fql" >}}
 click(submit)
 waitfor exists confirmation
-```
+{{</ code >}}
 
 or this:
 
-```fql
+{{< code lang="fql" >}}
 for request in requests {
     filter request.amount > 1000
     return request.id
 }
-```
+{{</ code >}}
 
 With lowercase keywords, all of these constructs simply look like parts of the same small programming language instead of programming constructs gradually grafted onto something SQL-like.
 
@@ -106,18 +107,18 @@ Changing the visual style doesn't mean changing Ferret's execution philosophy. F
 
 Consider:
 
-```fql
+{{< code lang="fql" >}}
 for user in users {
     filter user.active
     return user.email
 }
-```
+{{</ code >}}
 
 This describes a selection and a transformation. It doesn't tell the runtime to iterate a collection, test a condition, skip an iteration, append a value to an accumulator, and then continue with the next item. That difference is important, and it's something I very much want to preserve.
 
 At the same time, Ferret does have imperative features. Mutable variables and `for while` exist because, well, real-world automation sometimes requires state, and browser automation is probably the easiest place to see why:
 
-```fql
+{{< code lang="fql" >}}
 let previous_count = 0
 var done = false
 
@@ -130,7 +131,7 @@ for while !done {
 
     // ...
 }
-```
+{{</ code >}}
 
 Infinite scrolling, pagination, changing DOM state, asynchronous events, and all the other weird things websites do don't always fit neatly into a purely declarative model, and I don't think Ferret should pretend otherwise.
 
@@ -142,23 +143,23 @@ That philosophy is also why Ferret v2 gained pattern matching rather than conven
 
 For example:
 
-```fql
+{{< code lang="fql" >}}
 let status = match response.status {
     200 => "ok"
     404 => "missing"
     status when status >= 500 => "server-error"
     _ => "unexpected"
 }
-```
+{{</ code >}}
 
 Pattern matching keeps branching value-oriented, and the same idea applies elsewhere in the language. If I want to filter a collection, for example, I don't need an `if` followed by `continue`:
 
-```fql
+{{< code lang="fql" >}}
 return for user in users {
     filter user.active
     return user
 }
-```
+{{</ code >}}
 
 Ferret already has a construct that says exactly what I mean.
 
@@ -174,29 +175,29 @@ For a query language, that makes perfect sense. You run a query because you want
 
 For this, though?
 
-```fql
+{{< code lang="fql" >}}
 click(submit)
 waitfor exists confirmation
-```
+{{</ code >}}
 
 What exactly should it return?
 
 Previously, scripts like this had to manufacture a result even when there wasn't a meaningful one:
 
-```fql
+{{< code lang="fql" >}}
 click(submit)
 waitfor exists confirmation
 
 return none
-```
+{{</ code >}}
 
 In Ferret v2, they don't have to. Reaching the end of a script simply means that it completed successfully with `none`.
 
 You can still write the explicit version:
 
-```fql
+{{< code lang="fql" >}}
 return none
-```
+{{</ code >}}
 
 but there is no reason to require it when the script exists entirely for its effects.
 
@@ -206,39 +207,39 @@ It's a small change, but effect-oriented Ferret programs feel much more natural 
 
 User-defined functions now behave the same way. If a function exists for its effects, it doesn't need a ceremonial `return none` either:
 
-```fql
+{{< code lang="fql" >}}
 func notify(user) {
     send(user.email)
     audit(user.id)
 }
-```
+{{</ code >}}
 
 If execution reaches the end, the function returns `none`.
 
 Functions that actually produce values continue to use `return`:
 
-```fql
+{{< code lang="fql" >}}
 func normalize(user) {
     return {
         name: trim(user.name),
         email: lower(user.email)
     }
 }
-```
+{{</ code >}}
 
 And expression-bodied functions stay nice and concise:
 
-```fql
+{{< code lang="fql" >}}
 func square(x) => x * x
-```
+{{</ code >}}
 
 One thing we're deliberately *not* doing is implicitly returning the last arbitrary expression from a block. So this:
 
-```fql
+{{< code lang="fql" >}}
 func square(x) {
     x * x
 }
-```
+{{</ code >}}
 
 doesn't return `x * x`.
 
@@ -250,18 +251,18 @@ That brings us to one actual breaking change.
 
 Historically, if a `for` loop was the final statement in a Ferret script, its result could implicitly become the result of the whole script:
 
-```fql
+{{< code lang="fql" >}}
 for user in users {
     filter user.active
     return user.email
 }
-```
+{{</ code >}}
 
 This made a lot of sense when Ferret was much more query-shaped, but once scripts are allowed to complete without producing a value, making the final `for` magically special starts looking pretty strange.
 
 A `for` already produces a value in Ferret, and you can capture that value just like any other:
 
-```fql
+{{< code lang="fql" >}}
 let emails = (
     for user in users {
         filter user.active
@@ -270,18 +271,18 @@ let emails = (
 )
 
 return emails
-```
+{{</ code >}}
 
 The fact that the same construct also happened to return from the entire script just because it appeared at the end was really a separate rule, and v2 removes it.
 
 A standalone `for` is still value-producing, but if you don't use that value, it's discarded. If you want the result of the loop to become the result of the script, just say so:
 
-```fql
+{{< code lang="fql" >}}
 return for user in users {
     filter user.active
     return user.email
 }
-```
+{{</ code >}}
 
 I actually like how this reads:
 
@@ -291,29 +292,29 @@ More importantly, though, `for` now means exactly the same thing wherever it app
 
 You can assign it:
 
-```fql
+{{< code lang="fql" >}}
 let emails = (
     for user in users {
         return user.email
     }
 )
-```
+{{</ code >}}
 
 return it:
 
-```fql
+{{< code lang="fql" >}}
 return for user in users {
     return user.email
 }
-```
+{{</ code >}}
 
 or use it standalone when you simply don't care about the produced value:
 
-```fql
+{{< code lang="fql" >}}
 for user in users {
     log(user)
 }
-```
+{{</ code >}}
 
 Its position in a body no longer quietly changes what it means.
 
@@ -331,9 +332,9 @@ For scripts and block-bodied functions:
 
 Expression-bodied functions remain explicitly value-producing:
 
-```fql
+{{< code lang="fql" >}}
 func double(value) => value * 2
-```
+{{</ code >}}
 
 That's pretty much it. We no longer need one rule saying that every script must return something and another special rule promoting a final `for` into the script result.
 
@@ -341,36 +342,36 @@ That's pretty much it. We no longer need one rule saying that every script must 
 
 The good news is that changing the canonical keyword casing doesn't break anything. Uppercase remains perfectly valid:
 
-```fql
+{{< code lang="fql" >}}
 FOR item IN items {
     RETURN item
 }
-```
+{{</ code >}}
 
 The formatter will simply turn it into:
 
-```fql
+{{< code lang="fql" >}}
 for item in items {
     return item
 }
-```
+{{</ code >}}
 
 The change to final `for` semantics, however, is intentionally breaking.
 
 A v1-style script like this:
 
-```fql
+{{< code lang="fql" >}}
 FOR item IN items
     RETURN item
-```
+{{</ code >}}
 
 which relies on the loop becoming the script result needs to become the explicit v2 equivalent:
 
-```fql
+{{< code lang="fql" >}}
 return for item in items {
     return item
 }
-```
+{{</ code >}}
 
 Fortunately, you won't have to go hunting through old Ferret scripts looking for these cases by hand. The CLI migration command will recognize affected constructs and migrate them to their explicit v2 equivalents where possible.
 
@@ -384,36 +385,36 @@ Ferret isn't trying to become a general-purpose programming language, but it isn
 
 It can query:
 
-```fql
+{{< code lang="fql" >}}
 let users = query "active-users" in db
-```
+{{</ code >}}
 
 transform:
 
-```fql
+{{< code lang="fql" >}}
 let names = (
     for user in users {
         return user.name
     }
 )
-```
+{{</ code >}}
 
 make decisions:
 
-```fql
+{{< code lang="fql" >}}
 let action = match request.kind {
     "create" => create(request)
     "update" => update(request)
     _ => none
 }
-```
+{{</ code >}}
 
 and synchronize with the outside world:
 
-```fql
+{{< code lang="fql" >}}
 click(submit)
 waitfor exists confirmation
-```
+{{</ code >}}
 
 And if that's everything the program needed to do, it can simply end. No artificial result required.
 
