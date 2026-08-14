@@ -48,10 +48,10 @@
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-browser" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-let page = WEB::HTML::OPEN(@page, { driver: "cdp" })
+let page = web::html::open(@page, { driver: "cdp" })
 
 let products = waitfor value page[~ `.product-card`]
-    when LENGTH(.) > 0
+    when length(.) > 0
     timeout 5000
     on timeout return []
 
@@ -80,14 +80,13 @@ return for product in products
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-ai" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-let page = WEB::HTML::OPEN(@page)
-
-let model = AI::LLM::MODEL("openai", {
+let page = web::html::open(@page)
+let model = ai::llm::model("openai", {
     model: @model,
     apiKey: @apiKey
 })
 
-return AI::LLM::EXTRACT(model, page.innerHTML, @schema, {
+return ai::llm::extract(model, page.innerHTML, @schema, {
     instructions: "Use the advertised price."
 })
                                         </div>
@@ -109,7 +108,7 @@ return AI::LLM::EXTRACT(model, page.innerHTML, @schema, {
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-api" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-let api = NET::REST::CLIENT(@endpoint)
+let api = net::rest::client(@endpoint)
                                             
 return for order in query @path in api with {
     query: {
@@ -142,7 +141,7 @@ return for order in query @path in api with {
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-database" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-let db = DB::SQLITE::OPEN({ path: @db })
+let db = db::sqlite::open({ path: @db })
 
 return for invoice in query `
     SELECT id, customer, total
@@ -174,8 +173,8 @@ return for invoice in query `
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-document" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-let workbook = DOCUMENT::XLSX::OPEN(@file)
-let sales = DOCUMENT::XLSX::SHEET(workbook, @sheet)
+let workbook = document::xlsx::open(@file)
+let sales = document::xlsx::sheet(workbook, @sheet)
 
 return for row in query "A1:D100" in sales with { headers: true }
     filter row.Active
@@ -203,9 +202,9 @@ return for row in query "A1:D100" in sales with { headers: true }
 
                                     <div class="code-editor-pane">
                                         <div id="hero-query-file" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
-let file = IO::FS::READ(@file)
+let file = io::fs::read(@file)
 
-return for row in CSV::DECODE_ROWS(file)
+return for row in csv::decode_rows(file)
     filter row.status == @status
     return {
         orderId: row.order_id,
