@@ -79,15 +79,17 @@ The returned `error` follows the compiler's diagnostic error behavior. Use `Anal
 
 `Analysis.SyntaxTokens()` returns the non-whitespace lexer tokens captured by the same frontend pass that produced the semantic snapshot. The result includes hidden-channel line and block comments, omits whitespace and newline trivia, and remains available in partial analyses with syntax errors.
 
-Each `SyntaxToken` contains a parser-independent `SyntaxTokenKind` and a source span. Kinds distinguish identifiers, namespace segments, keywords, strings, numbers, durations, comments, operators, punctuation, and otherwise unknown input. Template string text and delimiters are string tokens; embedded-expression delimiters remain punctuation so consumers can combine syntax and semantic classifications without inspecting generated parser types.
+Each `SyntaxToken` contains a parser-independent `SyntaxTokenKind`, an optional canonical `SyntaxWord` identity, and a source span. Kinds distinguish identifiers, namespace segments, keywords, strings, numbers, durations, comments, operators, punctuation, and otherwise unknown input. Word identities distinguish case-insensitive FQL words without exposing generated lexer token numbers; non-word tokens use `SyntaxWordUnknown`. Template string text and delimiters are string tokens; embedded-expression delimiters remain punctuation so consumers can combine syntax and semantic classifications without inspecting generated parser types.
 
 {{< code lang="go" >}}
 for _, token := range analysis.SyntaxTokens() {
-    fmt.Println(token.Kind, token.Span.Start, token.Span.End)
+    fmt.Println(token.Kind, token.Word, token.Span.Start, token.Span.End)
 }
 {{</ code >}}
 
-Token spans use the same zero-based, half-open UTF-8 byte offsets as the other analysis APIs. No ANTLR or generated-parser type is exposed, and callers should depend only on the stable compiler token kinds rather than the grammar's internal token numbers.
+`compiler.SyntaxWords()` returns a deterministic defensive copy of the canonical word metadata. Each entry includes the typed identity, uppercase canonical spelling, and a category that distinguishes keywords, word operators, literals, and contextual parser words. This lets completion and other language tooling obtain spelling and classification from Ferret while choosing which categories make sense in a particular editor context.
+
+Token spans use the same zero-based, half-open UTF-8 byte offsets as the other analysis APIs. No ANTLR or generated-parser type is exposed, and callers should depend only on the stable compiler token kinds and word identities rather than the grammar's internal token numbers.
 
 ## Symbols and references
 
