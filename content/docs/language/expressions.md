@@ -168,7 +168,7 @@ return concat(upper(firstName), " ", upper(lastName))
 
 Function arguments are expressions too. The inner calls to `upper` are evaluated and passed as arguments to `concat`.
 
-For details on function declarations and calls, see the [Functions section]({{% ref "functions" %}}).
+For details on function declarations and calls, see the [Functions section]({{% ref "docs/language/functions" %}}).
 
 ## Collection expressions
 

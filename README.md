@@ -7,7 +7,6 @@ Built with Hugo
 - [Hugo](https://gohugo.io/getting-started/installing/)
 - [Node.js](https://nodejs.org/en/download/)
 - [Mage](https://magefile.org) for building the website.
-- [frep](https://github.com/subchen/frep/releases)(optional) is the tool used for templating the documentation
 
 ## Getting Started
 ### Installing dependencies
@@ -38,12 +37,19 @@ Build the site and search index, then serve the generated static output with Pag
 mage serveSearch
 ```
 
-### Generating API docs
-Generating `stdlib` documentation requires doc rep YAML.
+### Generating the Standard Library reference
+
+The website generates the Standard Library reference from the published Ferret
+Core API selected by `runtime.v2` in `data/versions.yaml`.
 
 ```bash
-mage generate
+mage generateStdlib
 ```
+
+`mage generate` runs the same target. Normal development and production builds
+generate the reference automatically; contributors do not download API files by
+hand. See [Standard Library reference generation](docs/maintainers/standard-library-reference.md)
+for the publication, validation, and generated-file contracts.
 
 ### Deployment
 

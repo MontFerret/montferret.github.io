@@ -429,7 +429,7 @@ return {
 
 Use `is_datetime` to check whether a value is a DateTime. `to_datetime` accepts an existing DateTime or an RFC3339 string. It also accepts an Int or finite Float Unix epoch offset when the unit is explicit: `to_datetime(value, "s")`, `to_datetime(value, "ms")`, `to_datetime(value, "us")`, or `to_datetime(value, "ns")`. Ferret does not infer an epoch unit from numeric magnitude, and numeric strings are not treated as epoch values.
 
-See [the DateTime standard library functions]({{% ref "docs/standard-library/datetime" %}}) for the full list of available operations.
+See [the global Standard Library functions]({{% ref "docs/standard-library/functions" %}}) for the full list of available operations.
 
 ## Binary values
 
@@ -528,7 +528,7 @@ let value = user.email
 return value == none ? "missing" : value
 {{</ editor >}}
 
-See [the Standard Library section]({{% ref "docs/standard-library/types" %}}) for the full list of available type-checking functions.
+See [the global Standard Library functions]({{% ref "docs/standard-library/functions" %}}) for the full list of available type-checking functions.
 
 ## Next steps
 

@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "id": "montferret/core",
+  "version": "2.0.0-alpha.46",
+  "namespaces": [
+    {
+      "name": "",
+      "functions": [
+        {
+          "name": "flatten",
+          "signatures": [
+            {
+              "parameters": [
+                {
+                  "name": "arr",
+                  "type": "Any[]",
+                  "description": "Target array."
+                }
+              ],
+              "description": "flatten turns an array of arrays into a flat array.",
+              "return": {
+                "type": "Any[]",
+                "description": "Flat array."
+              }
+            },
+            {
+              "parameters": [
+                {
+                  "name": "arr",
+                  "type": "Any[]",
+                  "description": "Target array."
+                },
+                {
+                  "name": "depth",
+                  "type": "Int",
+                  "description": "Depth level."
+                }
+              ],
+              "description": "flatten turns an array of arrays into a flat array.",
+              "return": {
+                "type": "Any[]",
+                "description": "Flat array."
+              }
+            }
+          ]
+        },
+        {
+          "name": "to_number",
+          "signatures": [
+            {
+              "parameters": [
+                {
+                  "name": "value",
+                  "type": "Any",
+                  "description": "Value to convert."
+                }
+              ],
+              "description": "to_number converts a value to a number.",
+              "return": {
+                "type": "Int | Float",
+                "description": "Converted number."
+              },
+              "throws": [
+                {
+                  "error": "TypeError",
+                  "description": "The value cannot be converted."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "io::fs",
+      "functions": [
+        {
+          "name": "read",
+          "signatures": [
+            {
+              "parameters": [
+                {
+                  "name": "path",
+                  "type": "String",
+                  "description": "Path to read."
+                }
+              ],
+              "description": "read reads from a file.",
+              "return": {
+                "type": "Binary",
+                "description": "File content."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "io::net::http",
+      "functions": [
+        {
+          "name": "get",
+          "signatures": [
+            {
+              "parameters": [
+                {
+                  "name": "url",
+                  "type": "String",
+                  "description": "URL to request."
+                },
+                {
+                  "name": "options",
+                  "type": "Object",
+                  "description": "Request options."
+                }
+              ],
+              "variadic": true,
+              "description": "get performs an HTTP GET request.",
+              "return": {
+                "type": "Binary",
+                "description": "Response body."
+              },
+              "deprecated": "Use the configured HTTP module when embedding Ferret."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "t",
+      "functions": [
+        {
+          "name": "eq",
+          "signatures": [
+            {
+              "parameters": [
+                {"name": "actual", "type": "Any", "description": "Actual value."},
+                {"name": "expected", "type": "Any", "description": "Expected value."}
+              ],
+              "description": "Tests whether two values are equal.",
+              "return": {"type": "Boolean", "description": "True when the assertion succeeds."}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "t::not",
+      "functions": [
+        {
+          "name": "eq",
+          "signatures": [
+            {
+              "parameters": [
+                {"name": "actual", "type": "Any", "description": "Actual value."},
+                {"name": "expected", "type": "Any", "description": "Expected value."}
+              ],
+              "description": "Tests whether two values are not equal.",
+              "return": {"type": "Boolean", "description": "True when the assertion succeeds."}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

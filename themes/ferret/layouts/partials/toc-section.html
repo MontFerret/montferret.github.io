@@ -10,7 +10,7 @@
 {{ $isTopLevel := eq $rootDir $pageDir }}
 {{ $noLabel := $page.Params.noLabel }}
 {{ $label := default $page.Title $page.Params.sidebarTitle }}
-{{ $children := $page.Pages.ByWeight }}
+{{ $children := where $page.Pages.ByWeight "Params.sidebarHidden" "ne" true }}
 {{ $isLinkable := or $page.IsPage $page.IsSection }}
 {{ $isActive := eq $active.Permalink $page.Permalink }}
 {{ $isAncestor := and (ne $page.Permalink $root.Permalink) (hasPrefix $activeURL.Path $pageURL.Path) }}

@@ -203,7 +203,7 @@ func fullName(user) => user.firstName + " " + user.lastName
 return fullName({ firstName: "Ada", lastName: "Lovelace" })
 {{< /editor >}}
 
-Each of these has its own detailed rules and is covered in its dedicated documentation — `match` and `waitfor` in [Control Flow]({{% ref "control-flow" %}}), and function declarations in [Functions]({{% ref "functions" %}}). This section shows the structural shape only.
+Each of these has its own detailed rules and is covered in its dedicated documentation — `match` and `waitfor` in [Control Flow]({{% ref "control-flow" %}}), and function declarations in [Functions]({{% ref "docs/language/functions" %}}). This section shows the structural shape only.
 
 ## Comments
 

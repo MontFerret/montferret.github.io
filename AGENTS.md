@@ -138,17 +138,19 @@ mage serveSearch
 mage build
 mage clean
 mage install
+mage generateStdlib
 mage generate
 ```
 
 Available Mage targets include:
 
-* mage serve — cleans the output directory and starts the local Hugo server.
-* mage serveSearch — starts the local Hugo server with search enabled.
-* mage build — cleans the output directory and runs the Hugo build.
-* mage clean — removes the generated public directory.
+* mage serve — cleans, generates the Standard Library reference, and starts the local Hugo server.
+* mage serveSearch — generates the site and search bundle, then starts the search preview server.
+* mage build — runs the full clean, Standard Library, Hugo, Pagefind, search verification, and Registry route pipeline.
+* mage clean — removes `public` and `.generated`.
 * mage install — installs dependencies for the Ferret theme.
-* mage generate — generates stdlib documentation from stdlib-docs-rep.yaml.
+* mage generateStdlib — generates the Standard Library reference from the exact published Ferret Core API pinned in `data/versions.yaml`.
+* mage generate — aliases `mage generateStdlib`.
 
 The website is built, tested, and deployed to GitHub Pages by GitHub Actions
 when changes are pushed to `main`. Pull requests targeting `main` build and test

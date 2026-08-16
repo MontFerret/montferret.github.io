@@ -13,46 +13,24 @@ import (
 	"time"
 
 	"github.com/MontFerret/montferret.github.io/internal/registryroutes"
+	"github.com/MontFerret/montferret.github.io/internal/stdlibdocs"
 	"gopkg.in/yaml.v2"
 
-	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
 
 const OUTPUT_DIR = "public"
-const OUTPUT_FILES = "public/*"
 const THEME_DIR = "themes/ferret"
-const CONTENT_DIR = "content"
-const STDLIB_DOCS_DIR = "content/docs/stdlib"
-const STDLIB_AST = "stdlib-docs-rep.yaml"
-const STDLIB_TEMPLATE = "templates/docs/stdlib.template"
+const GENERATED_DIR = ".generated"
+const STDLIB_DOCS_DIR = ".generated/content/docs/standard-library"
+const VERSIONS_DATA = "data/versions.yaml"
+const STDLIB_SEARCH_CHECK = "scripts/verify-stdlib-search.mjs"
 const REGISTRY_BASE_URL = "https://registry.ferretlang.org/"
 
-type ASTModule struct {
-	Name      string `yaml:"name"`
-	Namespace string `yaml:"namespace"`
-}
-
-type AST struct {
-	Modules map[string]ASTModule `yaml:"modules"`
-}
-
-func removeFiles() error {
-	matches, err := filepath.Glob(filepath.Join(OUTPUT_DIR, "*"))
-
-	if err != nil {
-		return err
-	}
-
-	for _, item := range matches {
-		err = os.RemoveAll(item)
-
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+type versionsData struct {
+	Runtime struct {
+		V2 string `yaml:"v2"`
+	} `yaml:"runtime"`
 }
 
 func generateSite() error {
@@ -65,6 +43,9 @@ func generateSite() error {
 	}
 
 	if err := verifySearchIndex(); err != nil {
+		return err
+	}
+	if err := sh.RunV("node", STDLIB_SEARCH_CHECK); err != nil {
 		return err
 	}
 
@@ -105,26 +86,44 @@ var Default = Serve
 
 // Cleans up build directory
 func Clean() error {
-	return os.RemoveAll(OUTPUT_DIR)
+	if err := os.RemoveAll(OUTPUT_DIR); err != nil {
+		return err
+	}
+
+	return os.RemoveAll(GENERATED_DIR)
+}
+
+func prepareBuild() error {
+	if err := Clean(); err != nil {
+		return err
+	}
+
+	return GenerateStdlib()
 }
 
 // Starts local Hugo server
 func Serve() error {
-	mg.Deps(Clean)
+	if err := prepareBuild(); err != nil {
+		return err
+	}
 
 	return sh.RunV("hugo", "server")
 }
 
 // Runs the production Hugo build and generates the search index
 func Build() error {
-	mg.Deps(Clean)
+	if err := prepareBuild(); err != nil {
+		return err
+	}
 
 	return generateSite()
 }
 
 // Builds the website search index and serves the generated static site
 func ServeSearch() error {
-	mg.Deps(Clean)
+	if err := prepareBuild(); err != nil {
+		return err
+	}
 
 	if err := sh.RunV("hugo", "--baseURL", "http://localhost:1414/"); err != nil {
 		return err
@@ -135,6 +134,9 @@ func ServeSearch() error {
 	}
 
 	if err := verifySearchIndex(); err != nil {
+		return err
+	}
+	if err := sh.RunV("node", STDLIB_SEARCH_CHECK); err != nil {
 		return err
 	}
 
@@ -154,39 +156,36 @@ func Install() error {
 	return sh.RunV("npm", "ci")
 }
 
-// Generates documentation
+// Generates all derived documentation.
 func Generate() error {
-	_, err := os.Stat(STDLIB_AST)
+	return GenerateStdlib()
+}
 
+// GenerateStdlib refreshes the unversioned Standard Library reference from the
+// exact Ferret runtime version configured in data/versions.yaml.
+func GenerateStdlib() error {
+	data, err := os.ReadFile(VERSIONS_DATA)
 	if err != nil {
-		fmt.Println("Missing stdlib data source")
-
-		return err
+		return fmt.Errorf("read Ferret version configuration: %w", err)
+	}
+	versions := versionsData{}
+	if err := yaml.Unmarshal(data, &versions); err != nil {
+		return fmt.Errorf("parse Ferret version configuration: %w", err)
 	}
 
-	content, err := os.ReadFile(STDLIB_AST)
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+		CheckRedirect: func(request *http.Request, via []*http.Request) error {
+			if len(via) > 0 && (!strings.EqualFold(request.URL.Scheme, via[0].URL.Scheme) || !strings.EqualFold(request.URL.Host, via[0].URL.Host)) {
+				return fmt.Errorf("Ferret API redirect changed origin")
+			}
 
-	if err != nil {
-		fmt.Println("Failed to read data source")
-
-		return err
+			return nil
+		},
 	}
 
-	ast := AST{}
-
-	if err := yaml.Unmarshal([]byte(content), &ast); err != nil {
-		fmt.Println("Failed to parse data source")
-
-		return err
-	}
-
-	for _, module := range ast.Modules {
-		name := strings.ReplaceAll(module.Name, "/", "-")
-
-		sh.RunWith(map[string]string{
-			"USING_KEY": module.Name,
-		}, "frep", "--load", STDLIB_AST, "--overwrite", fmt.Sprintf("%s:%s/%s.md", STDLIB_TEMPLATE, STDLIB_DOCS_DIR, name))
-	}
-
-	return nil
+	return stdlibdocs.Generate(context.Background(), client, stdlibdocs.Options{
+		Version:   versions.Runtime.V2,
+		OutputDir: STDLIB_DOCS_DIR,
+	})
 }
