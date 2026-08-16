@@ -21,6 +21,7 @@ await pagefind.options({ baseUrl: "/" });
 await pagefind.init();
 
 const expectations = new Map([
+    ["Math", "/docs/standard-library/math/"],
     ["FLATTEN", "/docs/standard-library/functions/flatten/"],
     ["TO_NUMBER", "/docs/standard-library/functions/to_number/"],
     ["IO", "/docs/standard-library/io/"],

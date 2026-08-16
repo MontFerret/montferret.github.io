@@ -3,7 +3,7 @@ module github.com/MontFerret/montferret.github.io
 go 1.25.0
 
 require (
-	github.com/MontFerret/specs v1.9.0
+	github.com/MontFerret/specs v1.10.0
 	github.com/magefile/mage v1.14.0
 	gopkg.in/yaml.v2 v2.4.0
 )

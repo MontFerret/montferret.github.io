@@ -2,6 +2,7 @@ package stdlibdocs
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/MontFerret/specs/pkg/api"
+	apicatalog "github.com/MontFerret/specs/pkg/api/catalog"
 )
 
 const (
@@ -96,7 +98,31 @@ func Generate(ctx context.Context, client httpClient, options Options) error {
 		return fmt.Errorf("Ferret API version is %q, want configured version %q", reference.Version, options.Version)
 	}
 
-	return renderAtomic(options.OutputDir, reference)
+	catalogEndpoint, err := resolveCatalogArtifact(apiEndpoint)
+	if err != nil {
+		return fmt.Errorf("resolve Ferret API Catalog version %q: %w", options.Version, err)
+	}
+
+	catalogData, err := getDocument(ctx, client, indexEndpoint, catalogEndpoint)
+	if err != nil {
+		var statusErr *httpStatusError
+		if errors.As(err, &statusErr) && statusErr.StatusCode == http.StatusNotFound {
+			return renderAtomic(options.OutputDir, reference, nil)
+		}
+
+		return fmt.Errorf("load Ferret API Catalog version %q: %w", options.Version, err)
+	}
+
+	catalog, err := apicatalog.Parse(catalogData)
+	if err != nil {
+		return fmt.Errorf("parse Ferret API Catalog version %q: %w", options.Version, err)
+	}
+
+	if err := validateCatalogAgainstReference(reference, catalog); err != nil {
+		return fmt.Errorf("validate Ferret API Reference and Catalog version %q: %w", options.Version, err)
+	}
+
+	return renderAtomic(options.OutputDir, reference, catalog)
 }
 
 func parseIndexURL(value string) (*url.URL, error) {
@@ -136,12 +162,12 @@ func getDocument(ctx context.Context, client httpClient, origin, endpoint *url.U
 
 	defer response.Body.Close()
 
-	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("GET %s returned %s", endpoint, response.Status)
-	}
-
 	if response.Request != nil && response.Request.URL != nil && !sameOrigin(origin, response.Request.URL) {
 		return nil, fmt.Errorf("GET %s redirected outside the Ferret API origin", endpoint)
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return nil, &httpStatusError{Endpoint: endpoint.String(), StatusCode: response.StatusCode, Status: response.Status}
 	}
 
 	data, err := io.ReadAll(io.LimitReader(response.Body, maxDocumentSize+1))
@@ -154,6 +180,15 @@ func getDocument(ctx context.Context, client httpClient, origin, endpoint *url.U
 	}
 
 	return data, nil
+}
+
+func resolveCatalogArtifact(apiEndpoint *url.URL) (*url.URL, error) {
+	resolved := apiEndpoint.ResolveReference(&url.URL{Path: "catalog.json"})
+	if !sameOrigin(apiEndpoint, resolved) || resolved.User != nil || resolved.RawQuery != "" || resolved.Fragment != "" {
+		return nil, fmt.Errorf("catalog URL derived from %q must stay on the Ferret API origin", apiEndpoint)
+	}
+
+	return resolved, nil
 }
 
 func resolveArtifact(indexURL *url.URL, href string) (*url.URL, error) {
@@ -174,7 +209,7 @@ func sameOrigin(left, right *url.URL) bool {
 	return strings.EqualFold(left.Scheme, right.Scheme) && strings.EqualFold(left.Host, right.Host)
 }
 
-func renderAtomic(outputDir string, reference *api.Reference) error {
+func renderAtomic(outputDir string, reference *api.Reference, catalog *apicatalog.Catalog) error {
 	parent := filepath.Dir(outputDir)
 	if err := os.MkdirAll(parent, 0o755); err != nil {
 		return fmt.Errorf("create generated content parent: %w", err)
@@ -187,7 +222,7 @@ func renderAtomic(outputDir string, reference *api.Reference) error {
 
 	defer os.RemoveAll(staging)
 
-	if err := renderReference(staging, reference); err != nil {
+	if err := renderReference(staging, reference, catalog); err != nil {
 		return err
 	}
 

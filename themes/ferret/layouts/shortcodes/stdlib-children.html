@@ -1,10 +1,15 @@
 {{- $children := .Page.Pages.ByTitle -}}
+{{- if .Page.Params.stdlibOrderByWeight -}}
+    {{- $children = .Page.Pages.ByWeight -}}
+{{- end -}}
+{{- $children = where $children "Params.stdlibLandingHidden" "ne" true -}}
 {{- if eq (len $children) 0 -}}
     {{- errorf "The stdlib-children shortcode requires generated child pages: %s" .Position -}}
 {{- end -}}
 <div class="docs-section-card-grid stdlib-section-card-grid">
     {{- range $children }}
     <a class="docs-section-card" href="{{ .RelPermalink }}">
+        {{- with .Params.stdlibKind }}<span class="stdlib-section-kind">{{ . }}</span>{{ end }}
         <strong>{{ .Title }}</strong>
         {{- with .Description }}<span>{{ . }}</span>{{ end }}
     </a>

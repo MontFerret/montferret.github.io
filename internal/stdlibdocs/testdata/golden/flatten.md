@@ -1,5 +1,5 @@
 ---
-description: "API reference for flatten."
+description: "flatten turns an array of arrays into a flat array."
 draft: false
 sidebarHidden: true
 sidebarTitle: "flatten"
@@ -8,6 +8,11 @@ title: "flatten"
 type: "docs"
 ---
 
+<nav class="stdlib-api-breadcrumbs" aria-label="Breadcrumb">
+  <a href="/docs/standard-library/">Standard Library</a><span aria-hidden="true">/</span>
+  <a href="/docs/standard-library/arrays/">Arrays</a><span aria-hidden="true">/</span>
+  <span aria-current="page">flatten</span>
+</nav>
 <h1 id="api-function-global-flatten">
   <a class="stdlib-api-entity-link" href="#api-function-global-flatten" aria-label="flatten" title="Link to flatten">
     <code>flatten</code><span aria-hidden="true">#</span>
