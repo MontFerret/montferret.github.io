@@ -67,35 +67,36 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 		if menuStart == -1 {
 			t.Fatalf("category %q does not contain its right-side function menu", category.ID)
 		}
-
-		indexEnd := strings.Index(page, "</nav>")
-		if indexEnd == -1 {
-			t.Fatalf("category %q does not contain its function index", category.ID)
+		if strings.Contains(page, "stdlib-category-index") {
+			t.Errorf("category %q contains the obsolete compact function index", category.ID)
 		}
 
-		functionIndex := page[:indexEnd]
-		previousIndex := -1
+		previousFunctionSection := -1
 		previousMenuItem := -1
 		for _, function := range category.Functions {
 			identity := functionIdentity{Namespace: function.Namespace, Name: function.Name}
 			anchor := functionAnchor(identity.Namespace, identity.Name)
-			link := fmt.Sprintf(`href="#%s"><code>%s</code>`, anchor, identity)
-			position := strings.Index(functionIndex, link)
-			if position == -1 {
-				t.Errorf("category %q index does not link %s to #%s", category.ID, identity, anchor)
-			} else if position <= previousIndex {
-				t.Errorf("category %q index does not preserve catalog order at %s", category.ID, identity)
+			functionSection := fmt.Sprintf(`<section class="stdlib-api-function" aria-labelledby="%s">`, anchor)
+			sectionPosition := strings.Index(page, functionSection)
+		
+			if sectionPosition == -1 {
+				t.Errorf("category %q does not contain an inline section for %s", category.ID, identity)
+			} else if sectionPosition <= previousFunctionSection {
+				t.Errorf("category %q inline sections do not preserve catalog order at %s", category.ID, identity)
 			}
-			previousIndex = position
+		
+			previousFunctionSection = sectionPosition
 
 			menuItem := fmt.Sprintf("  - label: %q\n    anchor: %q", identity.String(), anchor)
-			position = strings.Index(page[menuStart:], menuItem)
-			if position == -1 {
+			menuPosition := strings.Index(page[menuStart:], menuItem)
+		
+			if menuPosition == -1 {
 				t.Errorf("category %q right-side menu does not link %s to #%s", category.ID, identity, anchor)
-			} else if position <= previousMenuItem {
+			} else if menuPosition <= previousMenuItem {
 				t.Errorf("category %q right-side menu does not preserve catalog order at %s", category.ID, identity)
 			}
-			previousMenuItem = position
+			
+			previousMenuItem = menuPosition
 
 			if count := strings.Count(page, fmt.Sprintf(`id="%s"`, anchor)); count != 1 {
 				t.Errorf("category %q contains %d headings for anchor %q, want 1", category.ID, count, anchor)
@@ -122,14 +123,6 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 			t.Errorf("Math category does not contain %q", expected)
 		}
 	}
-	mathIndexEnd := strings.Index(mathPage, "</nav>")
-	if mathIndexEnd == -1 {
-		t.Fatal("Math category does not contain its function index")
-	}
-	if strings.Contains(mathPage[:mathIndexEnd], "abs returns the absolute value") {
-		t.Error("Math function index repeats API descriptions instead of remaining compact")
-	}
-
 	arrays := readFile(t, filepath.Join(output, "arrays", "_index.md"))
 	for _, expected := range []string{
 		`href="#global-append"`,
@@ -146,10 +139,6 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 			t.Errorf("Arrays category does not contain %q", expected)
 		}
 	}
-	if strings.Index(arrays, `href="#global-append"`) > strings.Index(arrays, `href="#global-flatten"`) {
-		t.Error("Arrays function index does not preserve catalog order")
-	}
-
 	typesPage := readFile(t, filepath.Join(output, "types", "_index.md"))
 	if !strings.Contains(typesPage, `id="global-to_number"`) || !strings.Contains(typesPage, "<dt>Throws</dt>") || !strings.Contains(typesPage, "TypeError") {
 		t.Error("Types category does not render to_number and its thrown errors")

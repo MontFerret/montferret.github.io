@@ -19,12 +19,6 @@ weight: 10
 
 <p>Global functions for working with arrays.</p>
 
-<nav class="stdlib-category-index" aria-label="Arrays functions">
-  <ul class="stdlib-category-functions">
-    <li><a href="#global-append"><code>append</code></a></li>
-    <li><a href="#global-flatten"><code>flatten</code></a></li>
-  </ul>
-</nav>
 
 <div class="stdlib-category-reference">
 <section class="stdlib-api-function" aria-labelledby="global-append">

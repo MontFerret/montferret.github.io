@@ -60,13 +60,13 @@ presentation concepts; they do not create callable namespaces such as
 `math::abs` or alter callable names.
 
 Each catalog category produces one page beneath `/docs/standard-library/`.
-Functions render as full API sections on that page, and the compact index at
-the top and the right-side "On this page" menu link to identity-qualified
-anchors such as `#global-abs`, `#io-fs-read`, and `#t-not-eq`. The right-side
-menu follows the shared documentation layout and is hidden at narrow widths.
-The generator does not create `/functions/` or namespace-segment function
-pages. Former published I/O and Testing namespace section URLs continue to
-redirect to their catalog categories.
+Functions render as full API sections on that page, and the right-side "On this
+page" menu links to identity-qualified anchors such as `#global-abs`,
+`#io-fs-read`, and `#t-not-eq`. The menu follows the shared documentation
+layout and is hidden at narrow widths. The generator does not create
+`/functions/` or namespace-segment function pages. Former published I/O and
+Testing namespace section URLs continue to redirect to their catalog
+categories.
 
 The importable Mage helpers live in `tools/stdlibdocs` and
 `tools/registryroutes`. They intentionally have no command wrappers.
