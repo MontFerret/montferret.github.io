@@ -86,4 +86,4 @@ The flags cannot be combined. Diagnostics and manual follow-up remain on stderr 
 
 ## Next steps
 
-{{< docs-related tiles="tools-cli-run,embedding-getting-started,tools-cli-mod" >}}
+{{< docs-related tiles="tools-cli-run,embedding-go-getting-started,tools-cli-mod" >}}

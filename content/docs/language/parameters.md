@@ -105,4 +105,4 @@ return doc[@attr][@subattr]
 
 ## Next steps
 
-{{< docs-related tiles="language-functions,embedding-parameters,language-control-flow" >}}
+{{< docs-related tiles="language-functions,embedding-go-parameters,embedding-javascript-parameters,language-control-flow" >}}

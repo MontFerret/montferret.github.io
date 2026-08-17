@@ -102,4 +102,4 @@ Use options documented by the module. This example limits the materialized size 
 
 ## Next steps
 
-{{< docs-related tiles="embedding-modules,runtime-modules-develop,registry" >}}
+{{< docs-related tiles="embedding-go-modules,runtime-modules-develop,registry" >}}

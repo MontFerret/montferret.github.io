@@ -56,4 +56,4 @@ The behavior of such functions depends on the runtime configuration. The same qu
 
 ## Next steps
 
-{{< docs-related tiles="language-use,embedding-modules,stdlib,language-functions" >}}
+{{< docs-related tiles="language-use,embedding-go-modules,stdlib,language-functions" >}}

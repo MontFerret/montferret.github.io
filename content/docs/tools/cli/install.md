@@ -7,9 +7,7 @@ description: "Install, update, and verify the Ferret CLI."
 
 # Install
 
-The Ferret CLI runs on Linux, macOS, and Windows. Full installation instructions, including how to embed Ferret as a Go library and set up browser support, are in the [Installation](../../getting-started/installation/) guide.
-
-This page covers CLI-specific setup.
+The Ferret CLI runs on Linux, macOS, and Windows. This page covers CLI-specific setup. To compare the CLI with Go and JavaScript embedding, see the [Installation chooser]({{< ref "/docs/getting-started/installation" >}}).
 
 ## From a prebuilt binary
 

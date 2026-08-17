@@ -1,9 +1,11 @@
 ---
 title: "Value Encoders"
 sidebarTitle: "Value Encoders"
-weight: 55
+weight: 80
 draft: false
 description: "Understand how output values are encoded, use built-in codecs, and implement custom encoders."
+aliases:
+    - /docs/embedding/value-encoders/
 ---
 
 # Value Encoders
@@ -290,4 +292,4 @@ func main() {
 
 ## Next steps
 
-{{< docs-related tiles="embedding-programs,embedding-modules" >}}
+{{< docs-related tiles="embedding-go-programs,embedding-go-modules" >}}

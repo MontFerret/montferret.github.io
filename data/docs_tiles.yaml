@@ -15,7 +15,7 @@ order:
     - javascript-rendering
     - custom-modules
     - reference
-    - guide-embedding-runtime
+    - embedding-go-application-guide
     - guide-writing-plugins
     - guide-precompiled-programs
 
@@ -30,7 +30,7 @@ tiles:
         page: docs/getting-started/installation
         kicker: Setup
         title: Install Ferret
-        description: Get the CLI, or add Ferret to a Go application.
+        description: Choose the CLI or embed Ferret in Go or JavaScript.
     
     getting-started-quick-start:
         page: docs/getting-started/quick-start
@@ -454,69 +454,117 @@ tiles:
     
     embedding:
         page: docs/embedding
-        kicker: Go library
-        title: Embed Ferret in Go
-        description: Add Ferret to your application and register the capabilities you need.
+        kicker: Host applications
+        title: Embed Ferret
+        description: Run Ferret inside Go and JavaScript applications.
 
-    embedding-overview:
-        page: docs/embedding/overview
-        kicker: Introduction
-        title: Overview
-        description: Understand the Engine, Plan, and Session lifecycle and when embedding makes sense.
-        
-    embedding-getting-started:
-        page: docs/embedding/getting-started
+    embedding-go:
+        page: docs/embedding/go
+        kicker: Native library
+        title: Embed Ferret in Go
+        description: Configure the complete native runtime and its host capabilities.
+
+    embedding-javascript:
+        page: docs/embedding/javascript
+        kicker: JavaScript package
+        title: Embed Ferret in JavaScript
+        description: Run Ferret through WebAssembly in Node.js and modern browsers.
+
+    embedding-go-getting-started:
+        page: docs/embedding/go/getting-started
         kicker: First steps
         title: Getting Started
         description: Install the library, run your first query from Go, and handle the result.
-        
-    embedding-custom-functions:
-        page: docs/embedding/custom-functions
+
+    embedding-go-executing:
+        page: docs/embedding/go/executing
+        kicker: Execution
+        title: Executing Ferret
+        description: Use the Go Engine, Plan, and Session lifecycle.
+
+    embedding-go-custom-functions:
+        page: docs/embedding/go/custom-functions
         kicker: Host functions
         title: Custom Functions
-        description: Register host-defined functions and namespaces that scripts can call.
-        
-    embedding-host-values:
-        page: docs/embedding/host-values
+        description: Register Go functions and namespaces that scripts can call.
+
+    embedding-go-host-values:
+        page: docs/embedding/go/host-values
         kicker: Go types
         title: Host Values
         description: Implement Go types that FQL scripts can hold, access, iterate, query, and dispatch to.
 
-    embedding-parameters:
-        page: docs/embedding/parameters
+    embedding-go-parameters:
+        page: docs/embedding/go/parameters
         kicker: Input data
         title: Parameters
-        description: Pass data into queries at engine and session level.
-        
-    embedding-configuration:
-        page: docs/embedding/configuration
+        description: Pass Go values into queries at engine and session level.
+
+    embedding-go-configuration:
+        page: docs/embedding/go/configuration
         kicker: Runtime setup
-        title: Configuration
+        title: Runtime Configuration
         description: Control the standard library, logging, encoding, concurrency, and file system access.
-        
-    embedding-value-encoders:
-        page: docs/embedding/value-encoders
+
+    embedding-go-value-encoders:
+        page: docs/embedding/go/value-encoders
         kicker: Encoding
         title: Value Encoders
         description: Understand how output values are encoded and implement custom codecs.
 
-    embedding-programs:
-        page: docs/embedding/programs
+    embedding-go-programs:
+        page: docs/embedding/go/programs
         kicker: Artifacts
         title: Programs
         description: Compile queries to binary artifacts, load pre-compiled programs, and work with the artifact format.
 
-    embedding-compiler-analysis:
-        page: docs/embedding/compiler-analysis
+    embedding-go-compiler-analysis:
+        page: docs/embedding/go/compiler-analysis
         kicker: Developer tooling
         title: Compiler Analysis
         description: Inspect resolved symbols, references, calls, diagnostics, and type facts without running a query.
 
-    embedding-modules:
-        page: docs/embedding/modules
+    embedding-go-modules:
+        page: docs/embedding/go/modules
         kicker: Runtime modules
         title: Modules
         description: Install, configure, register, and manage modules in an embedded runtime.
+
+    embedding-go-application-guide:
+        page: docs/embedding/go/application-guide
+        kicker: Guide
+        title: Build a Go service
+        description: Initialize the engine, compile queries, and run them in an HTTP service.
+
+    embedding-javascript-getting-started:
+        page: docs/embedding/javascript/getting-started
+        kicker: First steps
+        title: Getting Started
+        description: Install the package, initialize WASM, and run an FQL program.
+
+    embedding-javascript-executing:
+        page: docs/embedding/javascript/executing
+        kicker: Execution
+        title: Executing Ferret
+        description: Run programs directly or reuse plans and sessions.
+
+    embedding-javascript-parameters:
+        page: docs/embedding/javascript/parameters
+        kicker: Input data
+        title: Parameters
+        description: Pass JavaScript values into FQL and understand conversion rules.
+
+    embedding-javascript-custom-functions:
+        page: docs/embedding/javascript/custom-functions
+        kicker: Host functions
+        title: Custom Functions
+        description: Register synchronous and asynchronous JavaScript functions.
+
+    embedding-javascript-limitations:
+        page: docs/embedding/javascript/limitations
+        kicker: Runtime boundaries
+        title: Runtime and WASM Limitations
+        description: Understand loading, networking, and currently unexposed integrations.
 
     runtime-modules:
         page: docs/modules
@@ -626,12 +674,6 @@ tiles:
         title: Work with iframes
         description: Access and extract data from content inside iframes.
 
-    guide-embedding-runtime:
-        page: docs/guides/embedding-runtime
-        kicker: Guide
-        title: Embed Ferret in Go
-        description: Initialize the engine, compile queries, and run them in a Go service.
-
     guide-writing-plugins:
         page: docs/guides/writing-plugins
         kicker: Guide
@@ -645,7 +687,7 @@ tiles:
         description: Compile scripts to artifacts, store them, and load them without the compiler.
 
     custom-modules:
-        page: docs/embedding/modules
+        page: docs/embedding/go/modules
         kicker: Extensibility
         title: Register modules
         description: Add official, contributed, third-party, or application-defined modules to an embedded runtime.

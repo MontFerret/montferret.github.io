@@ -1,9 +1,11 @@
 ---
 title: "Custom Functions"
 sidebarTitle: "Custom Functions"
-weight: 30
+weight: 40
 draft: false
 description: "Register host-defined functions and namespaces that scripts can call."
+aliases:
+    - /docs/embedding/custom-functions/
 ---
 
 # Custom Functions
@@ -229,4 +231,4 @@ func main() {
 
 ## Next steps
 
-{{< docs-related tiles="embedding-modules,embedding-host-values,embedding-configuration,guide-writing-plugins" >}}
+{{< docs-related tiles="embedding-go-modules,embedding-go-host-values,embedding-go-configuration,guide-writing-plugins" >}}

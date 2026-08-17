@@ -10,7 +10,7 @@ workflow:
     description: "Predictable objects and arrays, ready for scripts, tests, services, or jobs."
   - title: "Move between tools"
     icon: "ENV"
-    description: "Playground, CLI, Go embedding, Worker, or Lab. Same language, no rewrite."
+    description: "Playground, CLI, Go or JavaScript embedding, Worker, or Lab. Same language, no rewrite."
 
 startingPoints:
   - title: "Try in browser"
@@ -28,10 +28,10 @@ startingPoints:
     action: "Install locally"
   - title: "Embed or run remotely"
     eyebrow: "Production path"
-    icon: "HTTP"
-    description: "Go runtime or self-hosted Worker for apps, jobs, and internal tools."
-    url: "docs/tools/worker"
-    action: "Review Worker"
+    icon: "HOST"
+    description: "Embed Ferret in Go or JavaScript, or use a self-hosted Worker."
+    url: "/docs/embedding/"
+    action: "Choose an integration"
 
 ecosystem:
   - name: "Ferret Runtime"
@@ -44,6 +44,15 @@ ecosystem:
     description: "The declarative-first, expression-oriented language, compiler, standard library, and embeddable execution engine for FQL programs."
     url: "https://github.com/MontFerret/ferret"
     action: "Runtime repo"
+  - name: "Ferret for JavaScript"
+    badge: "Runtime binding"
+    group: "Core"
+    category: "Core"
+    size: "component"
+    icon: "JS"
+    description: "The Ferret runtime compiled to WebAssembly and exposed to Node.js and modern browsers through @montferret/ferret."
+    url: "/docs/embedding/javascript/"
+    action: "JavaScript docs"
   - name: "Chromium"
     badge: "Execution image"
     group: "Execution"
@@ -114,9 +123,9 @@ positioning:
   - title: "Capability-based execution"
     icon: "CAP"
     description: "The same program can query a rendered page, an API response, a database row, or a file. FQL adapts to what each value can do."
-  - title: "Embeddable Go runtime"
-    icon: "Go"
-    description: "Run FQL inside your own application. Expose your own modules and functions, and control what scripts can access."
+  - title: "Embeddable runtime"
+    icon: "HOST"
+    description: "Run FQL inside Go or JavaScript applications. Provide host functions and control the capabilities scripts can access."
   - title: "Core plus optional modules"
     icon: "MOD"
     description: "The core runtime stays small. Modules add browsers, documents, databases, protocols, and other integrations when you need them."
@@ -174,15 +183,15 @@ faq:
       answer: |
         Most extraction tools are libraries inside a general-purpose language, or hosted point-and-click services. Ferret is a small language plus a runtime.
 
-        That difference is the point: the same FQL program can run in the playground, from the CLI, inside a Go application, or on a self-hosted Worker without being rewritten. Waiting, timeouts, and error behavior are part of the language rather than glue code around it.
+        That difference is the point: the same FQL program can run in the playground, from the CLI, inside a Go or JavaScript application, or on a self-hosted Worker without being rewritten. Waiting, timeouts, and error behavior are part of the language rather than glue code around it.
 
         If you need arbitrary application logic, a general-purpose language is a better fit. If portable data automation is the product, Ferret keeps the core declarative, testable, and embeddable.
           
     - question: "Can I embed Ferret in my own application?"
       answer: |
-        Yes. Ferret is designed to be embedded in Go applications, and there are also options for remote execution through the self-hosted Worker service.
+        Yes. Ferret can be embedded natively in Go applications or used from Node.js and modern browsers through the @montferret/ferret JavaScript package. Remote execution is also available through the self-hosted Worker service.
 
-        This allows you to integrate Ferret's capabilities into your own applications, jobs, or internal tools while maintaining control over execution boundaries and host-provided modules.
+        This allows you to integrate Ferret into applications, jobs, or internal tools while maintaining control over execution boundaries and the capabilities exposed by the selected host.
           
         That means the same language can be used for local scripts, automation workers, browser-based experiments, and application-specific data workflows.
           

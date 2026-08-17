@@ -1,9 +1,11 @@
 ---
 title: "Host Values"
 sidebarTitle: "Host Values"
-weight: 35
+weight: 60
 draft: false
 description: "Implement Go types that FQL scripts can hold, access, iterate, query, and dispatch to."
+aliases:
+    - /docs/embedding/host-values/
 ---
 
 # Host Values
@@ -488,4 +490,4 @@ proxySlice := sdk.NewProxySlice[*Record](records)
 
 ## Next steps
 
-{{< docs-related tiles="language-types-host,language-types-capabilities,embedding-parameters,embedding-modules" >}}
+{{< docs-related tiles="language-types-host,language-types-capabilities,embedding-go-parameters,embedding-go-modules" >}}

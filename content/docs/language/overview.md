@@ -29,7 +29,7 @@ return {
 }
 {{< /editor >}}
 
-To return a collecting loop's array, write `return for ...`. A script that reaches the end without `return` completes with `none`. A standalone collecting loop executes but discards its array; a returnless braced loop runs only for side effects and creates no array at all. FQL scripts communicate through returned values rather than printed output. That makes the same script usable across different surfaces: a CLI can serialize the result as JSON, an embedded application can receive it as a Go value, and a test runner can assert against it directly. The script does not need to know who is consuming the result.
+To return a collecting loop's array, write `return for ...`. A script that reaches the end without `return` completes with `none`. A standalone collecting loop executes but discards its array; a returnless braced loop runs only for side effects and creates no array at all. FQL scripts communicate through returned values rather than printed output. That makes the same script usable across different surfaces: a CLI can serialize the result as JSON, a Go application can receive encoded output, a JavaScript application can receive a decoded value, and a test runner can assert against it directly. The script does not need to know who is consuming the result.
 
 ## Expressions are the main building block
 

@@ -68,4 +68,4 @@ return [data, get("https://api.example.com/data")]
 
 ## Next steps
 
-{{< docs-related tiles="language-functions-modules,language-structure,embedding-modules" >}}
+{{< docs-related tiles="language-functions-modules,language-structure,embedding-go-modules" >}}

@@ -1,9 +1,11 @@
 ---
 title: "Modules"
 sidebarTitle: "Modules"
-weight: 60
+weight: 70
 draft: false
 description: "Install, configure, register, and manage modules in an embedded Ferret runtime."
+aliases:
+    - /docs/embedding/modules/
 ---
 
 # Modules
@@ -249,4 +251,4 @@ Hooks registered through engine options and modules join the same hook chains. E
 
 ## Next steps
 
-{{< docs-related tiles="runtime-modules-install,runtime-modules-develop,embedding-custom-functions,embedding-configuration" >}}
+{{< docs-related tiles="runtime-modules-install,runtime-modules-develop,embedding-go-custom-functions,embedding-go-configuration" >}}

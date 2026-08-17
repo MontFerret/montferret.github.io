@@ -1,9 +1,11 @@
 ---
 title: "Compiler Analysis"
 sidebarTitle: "Compiler Analysis"
-weight: 58
+weight: 100
 draft: false
 description: "Inspect compiler-resolved symbols, references, calls, diagnostics, and type facts without executing a query."
+aliases:
+    - /docs/embedding/compiler-analysis/
 ---
 
 # Compiler Analysis
@@ -186,4 +188,4 @@ Those features can consume this snapshot, but their protocol, caching, schedulin
 
 ## Next steps
 
-{{< docs-related tiles="embedding-overview,embedding-configuration,embedding-programs,embedding-custom-functions" >}}
+{{< docs-related tiles="embedding-go-executing,embedding-go-configuration,embedding-go-programs,embedding-go-custom-functions" >}}

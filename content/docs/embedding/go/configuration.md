@@ -1,12 +1,14 @@
 ---
-title: "Configuration"
-sidebarTitle: "Configuration"
+title: "Runtime Configuration"
+sidebarTitle: "Runtime Configuration"
 weight: 50
 draft: false
 description: "Control the standard library, logging, encoding, concurrency, and sandboxed host services."
+aliases:
+    - /docs/embedding/configuration/
 ---
 
-# Configuration
+# Runtime Configuration
 
 The engine accepts functional options that control which capabilities are available to scripts, how results are encoded, how execution is logged, and how concurrency is managed.
 
@@ -114,7 +116,7 @@ session, err := plan.NewSession(ctx,
 )
 {{</ code >}}
 
-You can register custom codecs on the engine with `WithEncodingCodec`. See [Value Encoders]({{< ref "value-encoders" >}}) for the codec interfaces, hooks, registry, and a complete custom codec example.
+You can register custom codecs on the engine with `WithEncodingCodec`. See [Value Encoders]({{< ref "/docs/embedding/go/value-encoders" >}}) for the codec interfaces, hooks, registry, and a complete custom codec example.
 
 ## Concurrency control
 
@@ -405,4 +407,4 @@ Debug compilation (`engine.CompileDebug`) always uses `O0` to ensure stable sour
 
 ## Next steps
 
-{{< docs-related tiles="embedding-getting-started,embedding-modules,embedding-value-encoders,embedding-programs" >}}
+{{< docs-related tiles="embedding-go-getting-started,embedding-go-modules,embedding-go-value-encoders,embedding-go-programs" >}}

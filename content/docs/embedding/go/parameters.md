@@ -1,9 +1,11 @@
 ---
 title: "Parameters"
 sidebarTitle: "Parameters"
-weight: 40
+weight: 30
 draft: false
 description: "Pass data into queries at engine and session level."
+aliases:
+    - /docs/embedding/parameters/
 ---
 
 # Parameters
@@ -192,4 +194,4 @@ The `greeting` parameter is set at the engine level but overridden per session f
 
 ## Next steps
 
-{{< docs-related tiles="language-parameters,embedding-configuration,embedding-modules" >}}
+{{< docs-related tiles="language-parameters,embedding-go-configuration,embedding-go-modules" >}}

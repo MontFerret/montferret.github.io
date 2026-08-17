@@ -4,13 +4,15 @@ sidebarTitle: "Embedding the runtime"
 weight: 110
 draft: false
 description: "Initialize the Ferret engine, compile queries, run them with parameters, and handle errors in a Go service."
+aliases:
+    - /docs/guides/embedding-runtime/
 ---
 
 # Embed Ferret in a Go application
 
 Embedding Ferret lets you run FQL queries inside your Go application — useful for user-defined extraction rules, dynamic data pipelines, or sandboxed scripting. This guide walks through building a Go service that accepts queries over HTTP.
 
-For the full API reference, see the [Embedding]({{< ref "/docs/embedding" >}}) section.
+For the full native API reference, see [Go embedding]({{< ref "/docs/embedding/go" >}}).
 
 ## Set up the project
 
@@ -75,7 +77,7 @@ engine, err := ferret.New(
 )
 {{</ code >}}
 
-See [Configuration]({{< ref "/docs/embedding/configuration" >}}) for the full list of groups.
+See [Runtime Configuration]({{< ref "/docs/embedding/go/configuration" >}}) for the full list of groups.
 
 ## Configure the HTML module
 
@@ -106,7 +108,7 @@ engine, err := ferret.New(
 )
 {{</ code >}}
 
-The `memory` driver fetches and parses static HTML without a browser. Ferret modules are installed, configured, and registered explicitly by the host application. See [Modules]({{< ref "/docs/embedding/modules" >}}) for the complete registration and lifecycle model.
+The `memory` driver fetches and parses static HTML without a browser. Ferret modules are installed, configured, and registered explicitly by the host application. See [Modules]({{< ref "/docs/embedding/go/modules" >}}) for the complete registration and lifecycle model.
 
 ### Add browser support
 
@@ -360,7 +362,7 @@ engine, err := ferret.New(
 | `WithMaxVMsPerPlan` | Per-plan cap on total VMs (idle + active). Bounds resource use for hot queries. |
 | `WithMaxIdleVMsPerPlan` | Per-plan idle VM cache size. Trade memory for faster session creation. |
 
-See [Configuration]({{< ref "/docs/embedding/configuration" >}}) for details on how these interact.
+See [Runtime Configuration]({{< ref "/docs/embedding/go/configuration" >}}) for details on how these interact.
 
 ## Shut down cleanly
 
@@ -555,4 +557,4 @@ func main() {
 
 ## Next steps
 
-{{< docs-related tiles="embedding-modules,embedding-configuration,guide-writing-plugins,guide-precompiled-programs" >}}
+{{< docs-related tiles="embedding-go-modules,embedding-go-configuration,guide-writing-plugins,guide-precompiled-programs" >}}

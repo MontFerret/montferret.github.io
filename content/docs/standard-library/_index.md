@@ -1,6 +1,6 @@
 ---
 title: "Standard Library"
-weight: 80
+weight: 30
 type: "docs"
 draft: false
 description: "Built-in Ferret functions and modules."

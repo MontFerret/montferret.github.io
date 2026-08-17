@@ -219,4 +219,4 @@ The behavior of such functions is defined by the module that provides them. When
 
 ## Next steps
 
-{{< docs-related tiles="language-functions-user-defined,language-functions-modules,stdlib,embedding-custom-functions" >}}
+{{< docs-related tiles="language-functions-user-defined,language-functions-modules,stdlib,embedding-go-custom-functions,embedding-javascript-custom-functions" >}}

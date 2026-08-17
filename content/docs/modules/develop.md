@@ -97,4 +97,4 @@ For a complete module implementation, see [Develop a Ferret module]({{< ref "/do
 
 ## Next steps
 
-{{< docs-related tiles="guide-writing-plugins,runtime-modules-publish,embedding-modules" >}}
+{{< docs-related tiles="guide-writing-plugins,runtime-modules-publish,embedding-go-modules" >}}

@@ -194,4 +194,4 @@ Built-in and host functions are documented with canonical lowercase names. User-
 
 ## Next steps
 
-{{< docs-related tiles="language-functions-modules,embedding-custom-functions,stdlib" >}}
+{{< docs-related tiles="language-functions-modules,embedding-go-custom-functions,embedding-javascript-custom-functions,stdlib" >}}

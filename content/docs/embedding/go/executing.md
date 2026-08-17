@@ -1,12 +1,14 @@
 ---
-title: "Overview"
-sidebarTitle: "Overview"
-weight: 10
+title: "Executing Ferret"
+sidebarTitle: "Executing Ferret"
+weight: 20
 draft: false
-description: "The Engine, Plan, and Session lifecycle and when to embed Ferret in a Go application."
+description: "Use the Go Engine, Plan, and Session lifecycle to execute Ferret programs."
+aliases:
+    - /docs/embedding/overview/
 ---
 
-# Overview
+# Executing Ferret
 
 Embedding Ferret means importing the `github.com/MontFerret/ferret/v2` module and using its Go API to compile and execute FQL queries inside your own application.
 
@@ -148,4 +150,4 @@ fmt.Println(string(output.Content))
 
 ## Next steps
 
-{{< docs-related tiles="embedding-getting-started,embedding-programs,language" >}}
+{{< docs-related tiles="embedding-go-getting-started,embedding-go-programs,language" >}}

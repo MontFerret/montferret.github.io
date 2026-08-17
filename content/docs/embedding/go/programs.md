@@ -1,9 +1,11 @@
 ---
 title: "Programs"
 sidebarTitle: "Programs"
-weight: 56
+weight: 90
 draft: false
 description: "Compile queries to portable binary artifacts, load pre-compiled programs, and work with the artifact format."
+aliases:
+    - /docs/embedding/programs/
 ---
 
 # Programs
@@ -263,4 +265,4 @@ func main() {
 
 ## Next steps
 
-{{< docs-related tiles="embedding-custom-functions,embedding-parameters,embedding-modules,embedding-configuration" >}}
+{{< docs-related tiles="embedding-go-custom-functions,embedding-go-parameters,embedding-go-modules,embedding-go-configuration" >}}

@@ -2,7 +2,7 @@
 title: "Installation"
 weight: 30
 draft: false
-description: "Install Ferret as a command-line tool, embed it as a Go library, and configure browser support for dynamic pages."
+description: "Choose the Ferret CLI or embed Ferret in a Go or JavaScript application."
 aliases:
     - /docs/installation/
 relatedTileOverrides:
@@ -14,140 +14,50 @@ relatedTileOverrides:
 
 # Installation
 
-Ferret can be used in two main ways:
-
-- as a command-line tool for running Ferret scripts locally, in shell scripts, or in CI
-- as a Go library for embedding Ferret into your own applications
-
-The official CLI includes the standard modules needed for common web extraction workflows. When embedding Ferret as a library, HTML and browser support are added explicitly by registering the relevant modules.
+Choose how your application will run Ferret. Use the CLI for local scripts and shell workflows, or embed the runtime when a Go or JavaScript application needs to execute FQL directly.
 
 > **Alpha status**
 >
-> Ferret v2 is currently in alpha. It is ready for experimentation, feedback, prototypes, internal tools, and early integration work, but the language, runtime, CLI, modules, and embedding APIs may still change before beta.
->
-> Pin CLI and Go module versions when using Ferret in scripts, CI, or embedded applications.
+> Ferret v2 is currently in alpha. The language, runtime, CLI, modules, and embedding APIs may change before beta. Pin versions for scripts, CI, and application integrations.
 
 > **Looking for Ferret v1?**
 >
 > Ferret v1 remains available for existing projects, but new users should start with Ferret v2. See the [migration guide]({{< ref "/docs/tools/cli/migrate" >}}) for the supported mechanical migration steps.
 
-## Install the CLI
+## Use the CLI
 
-The Ferret CLI is the easiest way to run Ferret from your terminal.
-
-### From a prebuilt binary
-
-Download `v{{< data "versions.cli.v2" >}}` for your platform from the [CLI release page](https://github.com/MontFerret/cli/releases/tag/v{{< data "versions.cli.v2" >}}).
-
-After downloading the binary, make sure it is available in your `PATH`.
-
-You can verify the installation with:
+Choose the CLI to run FQL files and expressions from a terminal, shell script, or CI job.
 
 {{< terminal >}}
 ferret version
 {{< /terminal >}}
 
-### From source
+See [Install the CLI]({{< ref "/docs/tools/cli/install" >}}) for prebuilt binaries, source installation, updates, and verification.
 
-If you already have Go installed, you can build and install a specific Ferret CLI version from source.
+## Embed Ferret in Go
 
-This requires `Go {{< data "versions.cli.go" >}}` or later.
-
-{{< terminal >}}
-go install github.com/MontFerret/cli/v2/ferret@v{{< data "versions.cli.v2" >}}
-{{< /terminal >}}
-
-During the alpha stage, prefer installing a specific tagged version instead of using `@latest`.
-
-Verify the installation with:
-
-{{< terminal >}}
-ferret version
-{{< /terminal >}}
-
-## Add Ferret to a Go project
-
-Ferret can also be embedded into Go applications.
-
-Add the module to your project with:
+Choose native Go embedding when the host needs full control over runtime configuration, modules, host values, codecs, and sandboxed services.
 
 {{< terminal >}}
 go get github.com/MontFerret/ferret/v2@v{{< data "versions.runtime.v2" >}}
 {{< /terminal >}}
 
-This is useful when you want to use Ferret as a data extraction engine inside your own services, workers, tools, or automation pipelines.
+Continue with [Go Embedding: Getting Started]({{< ref "/docs/embedding/go/getting-started" >}}).
 
-## Browser and HTML support
+## Embed Ferret in JavaScript
 
-Ferret’s core runtime is intentionally small. HTML querying, browser automation, and related web capabilities are provided by modules.
-
-The official CLI distribution includes the standard web/HTML modules, so common web extraction workflows work out of the box when using the CLI.
-
-If you embed Ferret as a Go library, you decide which modules to register in your runtime. This lets applications keep their Ferret environment small and capability-oriented, while still enabling HTML, browser, or other integrations when needed.
-
-Use [`ferret mod install`]({{< ref "/docs/modules/install" >}}) to add a registered module to an embedded Go application.
-
-| Use case | Available in core? | Available in CLI? | Notes |
-| --- | --- | --- | --- |
-| General Ferret language runtime | Yes | Yes | Expressions, control flow, values, functions, and execution |
-| Static HTML querying | No | Yes | Provided by the HTML/web module bundled with the CLI |
-| Browser automation | No | Yes | Requires the browser module and a Chrome/Chromium runtime |
-| JavaScript-rendered pages | No | Yes | Requires Chrome or Chromium through CDP |
-| Custom application integrations | Via modules | Depends on distribution | Register only the capabilities your application needs |
-
-## Browser runtime requirements
-
-Ferret does not require a browser for every workflow.
-
-You only need Chrome or Chromium when using browser-backed features, such as querying JavaScript-rendered pages, waiting for page state, or dispatching browser events.
-
-For browser-based workflows, Ferret connects to Chrome or Chromium through the Chrome DevTools Protocol, usually on port `9222`.
-
-## Run Chromium with Docker
-
-For most setups, running Chromium in Docker is the easiest option.
+Choose JavaScript embedding to run Ferret from Node.js or a modern browser through `@montferret/ferret`.
 
 {{< terminal >}}
-docker pull montferret/chromium
-docker run -d -p 9222:9222 montferret/chromium
+npm install @montferret/ferret
 {{< /terminal >}}
 
-This starts a headless Chromium instance with the remote debugging port enabled.
+Continue with [JavaScript Embedding: Getting Started]({{< ref "/docs/embedding/javascript/getting-started" >}}).
 
-You can check that the browser is running with:
+## What to choose next
 
-{{< terminal >}}
-curl http://127.0.0.1:9222/json/version
-{{< /terminal >}}
+- Start with the [Quick Start]({{< ref "/docs/getting-started/quick-start" >}}) when you want to learn FQL from the terminal or playground.
+- Read the [Embedding overview]({{< ref "/docs/embedding" >}}) when an application will own the runtime.
+- Use [Worker]({{< ref "/docs/tools/worker" >}}) when an existing system needs Ferret through a separately deployed HTTP service.
 
-If the command returns browser metadata, Chromium is ready to use.
-
-## Use a local Chrome or Chromium installation
-
-You can also run Chrome or Chromium directly on your machine with remote debugging enabled.
-
-On macOS or Linux:
-
-{{< terminal >}}
-chrome --remote-debugging-port=9222
-{{< /terminal >}}
-
-Depending on your system, the executable may also be named google-chrome, chromium, or chromium-browser.
-
-On Windows:
-
-{{< terminal >}}
-powershell chrome.exe --remote-debugging-port=9222
-{{< /terminal >}}
-
-Once Chrome is running, verify that the debugging endpoint is available:
-
-{{< terminal >}}
-curl http://127.0.0.1:9222/json/version
-{{< /terminal >}}
-
-## Next steps
-
-After installing Ferret, choose where you want to go next.
-
-{{< docs-related tiles="getting-started-quick-start,tools-cli,embedding,tools-lab" >}}
+{{< docs-related tiles="getting-started-quick-start,tools-cli-install,embedding-go,embedding-javascript,tools-worker" >}}

@@ -20,7 +20,7 @@ Ferret is especially useful when data logic should be portable, reviewable, and 
 - how to transform it
 - how to return clean structured output
 
-Ferret can be used as a command-line tool, embedded into Go applications, extended with modules, or used as a small domain-specific language for configuration-driven systems.
+Ferret can be used as a command-line tool, embedded into Go or JavaScript applications, extended with modules, or used as a small domain-specific language for configuration-driven systems.
 
 ## What Ferret is
 Ferret is built around FQL, a declarative-first language designed for data extraction, transformation, and automation workflows. Its core is expression-oriented: `match`, `for`, `filter`, `query`, and `waitfor` compose domain logic and produce values. `var` and `while` add constrained mutable state for workflows that need it.
@@ -40,7 +40,7 @@ Ferret can be used for many kinds of targeted data workflows:
 * extracting structured data from websites, documents, and APIs
 * automating browser-driven workflows, including dynamic content and event-based waits
 * normalizing and transforming external data into predictable structures
-* embedding user-defined extraction logic into Go applications
+* embedding user-defined extraction logic into host applications
 * evaluating filters, mappings, and expressions in configuration-driven systems
 * testing and validating APIs, HTML pages, and browser-driven interfaces
 * and more!
@@ -68,7 +68,7 @@ return for product in products
     }
 {{</ editor >}}
 
-The exact source of `page` depends on how Ferret is being used. It may come from a browser driver, a document loader, an embedded Go application, a test runner, or another runtime integration.
+The exact source of `page` depends on how Ferret is being used. It may come from a browser driver, a document loader, an embedding application, a test runner, or another runtime integration.
 
 The important idea is that the script focuses on the extraction logic, while the host environment provides the values, functions, modules, and capabilities available at runtime.
 
@@ -125,21 +125,21 @@ This is the simplest way to start using Ferret.
 
 ### As an embedded runtime
 
-Ferret can be embedded into Go applications.
+Ferret can be embedded into Go and JavaScript applications.
 
-In this mode, the host application provides input values, parameters, functions, modules, and runtime capabilities. Ferret provides the execution engine and the language used to describe the logic.
+In this mode, the host application provides input values, parameters, functions, and runtime capabilities. Ferret provides the execution engine and the language used to describe the logic. Go exposes the full native runtime configuration surface; `@montferret/ferret` exposes the Ferret WASM build to Node.js and modern browsers.
 
 This is useful when extraction or transformation logic needs to be configurable, versioned, or provided outside the main application code.
 
 ### As an expression engine
 
-Ferret can also be used as a small DSL inside configuration-driven applications. The host application evaluates Ferret expressions or scripts at runtime instead of hard-coding every filter, mapping, or transformation in Go.
+Ferret can also be used as a small DSL inside configuration-driven applications. The host application evaluates Ferret expressions or scripts at runtime instead of hard-coding every filter, mapping, or transformation in its main implementation language.
 
 This is useful when extraction rules, pipeline steps, validation checks, or automation logic need to be user-defined, versioned separately, or changed without redeploying the application.
 
 The host application remains in control: it decides which functions are available, which values are passed into the script, which modules are loaded, and which capabilities the script can use.
 
-For example, a billing service can pass invoice data directly from Go through the `@invoices` parameter. The FQL script selects open invoices and assigns each one to a review queue without loading a web page:
+For example, a billing service can pass invoice data directly from its host application through the `@invoices` parameter. The FQL script selects open invoices and assigns each one to a review queue without loading a web page:
 
 {{< code lang="fql" >}}
 return for invoice in @invoices {
@@ -183,7 +183,7 @@ The ecosystem includes:
 - the Ferret language, runtime, and standard library
 - the Ferret CLI for running, formatting, and debugging scripts
 - optional modules and drivers for additional functions, data formats, and integrations
-- embedding APIs for Go applications that need to control what scripts can see and do
+- embedding APIs for Go and JavaScript applications that need to control what scripts can see and do
 - Lab, a test runner for Ferret scripts
 - Mockery, a safe fake website used in examples, demos, and driver testing
 

@@ -16,7 +16,7 @@ Install Ferret, understand the project shape, and run your first query against s
   </a>
   <a class="docs-section-card" href="{{< ref "installation" >}}">
     <strong>Installation</strong>
-    <span>Install Ferret as a command-line tool or Go library.</span>
+    <span>Choose the CLI or embed Ferret in a Go or JavaScript application.</span>
   </a>
   <a class="docs-section-card" href="{{< ref "quick-start" >}}">
     <strong>First Script</strong>

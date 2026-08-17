@@ -1,9 +1,11 @@
 ---
 title: "Getting Started"
 sidebarTitle: "Getting Started"
-weight: 20
+weight: 10
 draft: false
 description: "Install the library, run your first query from Go, and handle the result."
+aliases:
+    - /docs/embedding/getting-started/
 ---
 
 # Getting Started
@@ -122,7 +124,7 @@ fmt.Println(params)
 // [base_url user_id]
 {{</ code >}}
 
-See [Parameters]({{< ref "parameters" >}}) for the full parameter API.
+See [Parameters]({{< ref "/docs/embedding/go/parameters" >}}) for the full parameter API.
 
 ## Handling errors
 
@@ -161,4 +163,4 @@ The VM observes cancellation at structural execution boundaries rather than poll
 
 ## Next steps
 
-{{< docs-related tiles="embedding-modules,embedding-custom-functions,embedding-configuration,guide-writing-plugins" >}}
+{{< docs-related tiles="embedding-go-executing,embedding-go-modules,embedding-go-custom-functions,embedding-go-configuration" >}}

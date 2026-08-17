@@ -1,6 +1,6 @@
 ---
 title: "Modules"
-weight: 60
+weight: 40
 draft: false
 description: "Discover, install, develop, and publish Ferret modules."
 ---

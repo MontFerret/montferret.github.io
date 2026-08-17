@@ -191,7 +191,7 @@ See [Capability Types]({{< ref "capabilities" >}}) for more about the close capa
 
 Serialization is controlled by the host runtime.
 
-Ferret includes built-in support for JSON and MessagePack encodings. The CLI serializes results as JSON by default. An embedded Go application may convert results into Go values, choose MessagePack for a binary format, or register a custom encoding.
+Ferret includes built-in support for JSON and MessagePack encodings. The CLI serializes results as JSON by default. An embedded Go application may choose MessagePack or register a custom encoding. The current JavaScript package returns JSON-decoded JavaScript values and does not expose codec selection.
 
 FQL defines the value semantics. The host defines how those values are encoded outside the runtime.
 

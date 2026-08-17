@@ -10,7 +10,7 @@ description: "Build a self-contained module with namespaced functions, host valu
 
 A Ferret module bundles namespaced functions, host values, and lifecycle hooks into a single registerable Go package. This guide builds a complete module — a key-value cache that FQL scripts can create, populate, read, and iterate.
 
-For the registration and lifecycle model, see [Modules]({{< ref "/docs/embedding/modules" >}}). For the underlying extension APIs, see [Custom Functions]({{< ref "/docs/embedding/custom-functions" >}}) and [Host Values]({{< ref "/docs/embedding/host-values" >}}).
+For the registration and lifecycle model, see [Modules]({{< ref "/docs/embedding/go/modules" >}}). For the underlying extension APIs, see [Custom Functions]({{< ref "/docs/embedding/go/custom-functions" >}}) and [Host Values]({{< ref "/docs/embedding/go/host-values" >}}).
 
 ## What the module will do
 
@@ -528,4 +528,4 @@ go test ./...
 
 ## Next steps
 
-{{< docs-related tiles="runtime-modules-develop,runtime-modules-publish,embedding-modules,embedding-custom-functions" >}}
+{{< docs-related tiles="runtime-modules-develop,runtime-modules-publish,embedding-go-modules,embedding-go-custom-functions" >}}
