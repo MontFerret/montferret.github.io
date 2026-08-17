@@ -21,6 +21,7 @@ const events = [];
 
 const telemetry = defineModule({
     name: "telemetry",
+    namespace: "OBSERVABILITY::TELEMETRY",
     functions: {
         track: (event) => {
             events.push(event);
@@ -43,13 +44,28 @@ const engine = await create({
 });
 
 try {
-    await engine.run(`return track({ type: "query:run" })`);
+    await engine.run(`
+        return OBSERVABILITY::TELEMETRY::track({ type: "query:run" })
+    `);
 } finally {
     await engine.close();
 }
 {{</ code >}}
 
-The module name identifies the registration; it does not prefix the module's FQL functions. The example therefore calls `track()`, not `telemetry::track()`.
+The module `name` identifies its registration, lifecycle callbacks, and module-level diagnostics. The optional `namespace` independently places its functions under an FQL namespace. It is not inferred from `name`.
+
+Without `namespace`, functions keep their existing top-level behavior:
+
+{{< code lang="javascript" >}}
+const application = defineModule({
+    name: "application",
+    functions: {
+        app_name: () => "inventory",
+    },
+});
+{{</ code >}}
+
+FQL calls this function as `app_name()`. In the first example, FQL calls the namespaced function as `OBSERVABILITY::TELEMETRY::track()`; `track()` is not also registered globally.
 
 Every lifecycle callback may return immediately or return a promise. Ferret waits for the promise before continuing the operation.
 
@@ -78,9 +94,13 @@ const audit: ModuleDefinition = {
 
 Module names are case-sensitive stable identifiers. Two modules named `audit` are rejected, while `audit` and `Audit` are distinct registrations as long as their functions do not conflict.
 
-Engine creation revalidates every definition and snapshots its functions and lifecycle callbacks. Mutating the original objects afterward does not change the engine. Create another engine when the application needs a different module configuration.
+A namespace contains one or more FQL identifier segments separated by `::`, such as `TELEMETRY` or `OBSERVABILITY::TELEMETRY`. Each segment starts with an ASCII letter and may contain ASCII letters, digits, or underscores. Omit `namespace` for top-level functions; an empty or malformed namespace is rejected. Declared spelling is preserved, while FQL resolves namespaces case-insensitively.
 
-Function names continue to use Ferret's case-insensitive canonical resolution. Engine creation rejects conflicts between two modules, a module and the `functions` shorthand, or a user-defined function and the standard library instead of choosing an implementation. Module names do not create an FQL namespace automatically.
+Engine creation revalidates every definition and snapshots its namespace, functions, and lifecycle callbacks. Mutating the original objects afterward does not change the engine. Create another engine when the application needs a different module configuration.
+
+Function names continue to use Ferret's case-insensitive canonical resolution. Collisions use the resulting qualified FQL identity, so two modules may both expose `track` under different namespaces. Engine creation rejects two registrations that resolve to the same qualified function, or a conflicting user-defined function and standard-library function, instead of choosing an implementation.
+
+Qualified function keys are relative to the module namespace. For example, namespace `OBSERVABILITY` with function key `TELEMETRY::flush` exposes `OBSERVABILITY::TELEMETRY::flush()`.
 
 The existing `functions` option remains available for integrations that only need host functions. It can be combined with modules and is registered before the modules:
 
