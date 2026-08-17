@@ -53,6 +53,10 @@ generate the reference automatically; contributors do not download API files by
 hand. See [Standard Library reference generation](docs/maintainers/standard-library-reference.md)
 for the publication, validation, and generated-file contracts.
 
+Published Ferret tool releases update `data/versions.yaml` through a
+website-owned pull-request workflow. See [Release version updates](docs/maintainers/release-version-updates.md)
+for the dispatch contract, manual retry procedure, and GitHub App setup.
+
 ### Deployment
 
 GitHub Actions builds, tests, and deploys the site to GitHub Pages when changes

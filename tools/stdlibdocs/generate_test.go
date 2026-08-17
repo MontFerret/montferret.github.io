@@ -78,24 +78,24 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 			anchor := functionAnchor(identity.Namespace, identity.Name)
 			functionSection := fmt.Sprintf(`<section class="stdlib-api-function" aria-labelledby="%s">`, anchor)
 			sectionPosition := strings.Index(page, functionSection)
-		
+
 			if sectionPosition == -1 {
 				t.Errorf("category %q does not contain an inline section for %s", category.ID, identity)
 			} else if sectionPosition <= previousFunctionSection {
 				t.Errorf("category %q inline sections do not preserve catalog order at %s", category.ID, identity)
 			}
-		
+
 			previousFunctionSection = sectionPosition
 
 			menuItem := fmt.Sprintf("  - label: %q\n    anchor: %q", identity.String(), anchor)
 			menuPosition := strings.Index(page[menuStart:], menuItem)
-		
+
 			if menuPosition == -1 {
 				t.Errorf("category %q right-side menu does not link %s to #%s", category.ID, identity, anchor)
 			} else if menuPosition <= previousMenuItem {
 				t.Errorf("category %q right-side menu does not preserve catalog order at %s", category.ID, identity)
 			}
-			
+
 			previousMenuItem = menuPosition
 
 			if count := strings.Count(page, fmt.Sprintf(`id="%s"`, anchor)); count != 1 {

@@ -1,0 +1,372 @@
+name: Update release version
+
+on:
+  repository_dispatch:
+    types: [ferret-release-published]
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: Source repository, for example MontFerret/cli.
+        required: true
+        type: string
+      tag:
+        description: Published SemVer tag, for example v2.0.0-alpha.41.
+        required: true
+        type: string
+      release_url:
+        description: Canonical GitHub release URL.
+        required: true
+        type: string
+      commit_sha:
+        description: Commit SHA associated with the release.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate release notification
+    runs-on: ubuntu-latest
+    outputs:
+      major: ${{ steps.release.outputs.major }}
+      product: ${{ steps.release.outputs.product }}
+      status: ${{ steps.release.outputs.status }}
+      version: ${{ steps.release.outputs.version }}
+    env:
+      SOURCE_REPOSITORY: ${{ github.event_name == 'workflow_dispatch' && inputs.repository || github.event.client_payload.repository }}
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.event.client_payload.tag }}
+      RELEASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.release_url || github.event.client_payload.release_url }}
+      RELEASE_COMMIT_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha || github.event.client_payload.commit_sha }}
+    steps:
+      - name: Checkout website main branch
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Validate payload and release version
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$SOURCE_REPOSITORY" || -z "$RELEASE_TAG" || -z "$RELEASE_URL" || -z "$RELEASE_COMMIT_SHA" ]]; then
+            echo "::error title=Invalid release notification::repository, tag, release_url, and commit_sha are required."
+            exit 1
+          fi
+          if [[ ! "$RELEASE_COMMIT_SHA" =~ ^([0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$ ]]; then
+            echo "::error title=Invalid release notification::commit_sha must be a 40- or 64-character hexadecimal commit ID."
+            exit 1
+          fi
+
+          expected_release_url="https://github.com/${SOURCE_REPOSITORY}/releases/tag/${RELEASE_TAG}"
+          if [[ "$RELEASE_URL" != "$expected_release_url" ]]; then
+            echo "::error title=Invalid release notification::release_url must be the canonical GitHub release URL for repository and tag."
+            exit 1
+          fi
+
+          temporary_versions="$RUNNER_TEMP/versions.yaml"
+          cp -- data/versions.yaml "$temporary_versions"
+          result="$(go run ./cmd/versions update \
+            --repository "$SOURCE_REPOSITORY" \
+            --tag "$RELEASE_TAG" \
+            --file "$temporary_versions" \
+            --format json)"
+
+          status="$(jq -er '.status | select(. == "updated" or . == "unchanged" or . == "stale")' <<<"$result")"
+          product="$(jq -er '.product | select(type == "string")' <<<"$result")"
+          major="$(jq -er '.major | select(type == "number" and floor == .) | tostring' <<<"$result")"
+          version="$(jq -er '.version | select(type == "string")' <<<"$result")"
+          result_repository="$(jq -er '.repository | select(type == "string")' <<<"$result")"
+          result_path="$(jq -er '.path | select(type == "string")' <<<"$result")"
+
+          if [[ "$result_repository" != "$SOURCE_REPOSITORY" || ! "$product" =~ ^[a-z][a-z0-9-]*$ || ! "$major" =~ ^[0-9]+$ || "$result_path" != "${product}.v${major}" ]]; then
+            echo "::error title=Invalid versions CLI result::The CLI returned inconsistent release metadata."
+            exit 1
+          fi
+
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          echo "product=$product" >> "$GITHUB_OUTPUT"
+          echo "major=$major" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+          if [[ "$status" != "updated" ]]; then
+            echo "Website version update is a successful ${status} no-op."
+          fi
+
+  update:
+    name: Update ${{ needs.validate.outputs.product }}.v${{ needs.validate.outputs.major }}
+    needs: validate
+    if: needs.validate.outputs.status == 'updated'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: automation-versions-${{ needs.validate.outputs.product }}-v${{ needs.validate.outputs.major }}
+      queue: max
+    env:
+      SOURCE_REPOSITORY: ${{ github.event_name == 'workflow_dispatch' && inputs.repository || github.event.client_payload.repository }}
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.event.client_payload.tag }}
+      RELEASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.release_url || github.event.client_payload.release_url }}
+      RELEASE_COMMIT_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.commit_sha || github.event.client_payload.commit_sha }}
+      PRODUCT: ${{ needs.validate.outputs.product }}
+      MAJOR: ${{ needs.validate.outputs.major }}
+      VERSION: ${{ needs.validate.outputs.version }}
+      TARGET_REPOSITORY: MontFerret/montferret.github.io
+      TARGET_BRANCH: main
+      VERSION_FILE: data/versions.yaml
+    steps:
+      - name: Create repository-scoped GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.FERRET_RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.FERRET_RELEASE_APP_PRIVATE_KEY }}
+          owner: MontFerret
+          repositories: montferret.github.io
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout website main branch
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Configure GitHub App Git identity
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+
+          gh auth setup-git
+          git config user.name "ferret-release[bot]"
+          git config user.email "ferret-release[bot]@users.noreply.github.com"
+
+      - name: Resolve automation branch
+        id: metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$PRODUCT" =~ ^[a-z][a-z0-9-]*$ || ! "$MAJOR" =~ ^[0-9]+$ ]]; then
+            echo "::error title=Invalid versions CLI metadata::Refusing to construct an automation branch."
+            exit 1
+          fi
+
+          update_branch="automation/versions/${PRODUCT}-v${MAJOR}"
+          git check-ref-format --branch "$update_branch"
+          product_label="${PRODUCT^}"
+          if [[ "$PRODUCT" == "cli" ]]; then
+            product_label="CLI"
+          fi
+
+          echo "branch=$update_branch" >> "$GITHUB_OUTPUT"
+          echo "label=$product_label" >> "$GITHUB_OUTPUT"
+
+      - name: Recheck current main version
+        id: main-version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          result="$(go run ./cmd/versions update \
+            --repository "$SOURCE_REPOSITORY" \
+            --tag "$RELEASE_TAG" \
+            --file "$VERSION_FILE" \
+            --format json)"
+          status="$(jq -er '.status | select(. == "updated" or . == "unchanged" or . == "stale")' <<<"$result")"
+          product="$(jq -er '.product' <<<"$result")"
+          major="$(jq -er '.major | tostring' <<<"$result")"
+          previous="$(jq -er '.previous' <<<"$result")"
+          version="$(jq -er '.version' <<<"$result")"
+
+          git restore -- "$VERSION_FILE"
+          if [[ "$product" != "$PRODUCT" || "$major" != "$MAJOR" || "$version" != "$VERSION" ]]; then
+            echo "::error title=Inconsistent release metadata::The current CLI result does not match the validated channel."
+            exit 1
+          fi
+
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          echo "previous=$previous" >> "$GITHUB_OUTPUT"
+          if [[ "$status" != "updated" ]]; then
+            echo "Current main makes this release a successful ${status} no-op."
+          fi
+
+      - name: Check existing automation branch
+        id: pending-version
+        if: steps.main-version.outputs.status == 'updated'
+        shell: bash
+        env:
+          UPDATE_BRANCH: ${{ steps.metadata.outputs.branch }}
+          MAIN_PREVIOUS: ${{ steps.main-version.outputs.previous }}
+        run: |
+          set -euo pipefail
+
+          remote_ref="refs/heads/${UPDATE_BRANCH}"
+          remote_line="$(git ls-remote --heads origin "$remote_ref")"
+          remote_sha="${remote_line%%[[:space:]]*}"
+          if [[ -z "$remote_sha" ]]; then
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+            echo "previous=$MAIN_PREVIOUS" >> "$GITHUB_OUTPUT"
+            echo "remote_sha=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ ! "$remote_sha" =~ ^([0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$ ]]; then
+            echo "::error title=Invalid automation branch::Could not resolve a single branch commit."
+            exit 1
+          fi
+
+          pending_versions="$RUNNER_TEMP/pending-versions.yaml"
+          git show "${remote_sha}:${VERSION_FILE}" > "$pending_versions"
+          result="$(go run ./cmd/versions update \
+            --repository "$SOURCE_REPOSITORY" \
+            --tag "$RELEASE_TAG" \
+            --file "$pending_versions" \
+            --format json)"
+          status="$(jq -er '.status | select(. == "updated" or . == "unchanged" or . == "stale")' <<<"$result")"
+          previous="$(jq -er '.previous' <<<"$result")"
+
+          echo "remote_sha=$remote_sha" >> "$GITHUB_OUTPUT"
+          if [[ "$status" == "stale" ]]; then
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            echo "previous=$previous" >> "$GITHUB_OUTPUT"
+            echo "Existing automation branch makes this release a successful stale no-op."
+          else
+            if [[ "$status" == "unchanged" ]]; then
+              previous="$MAIN_PREVIOUS"
+            fi
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+            echo "previous=$previous" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Apply and validate version update
+        id: version-file
+        if: steps.pending-version.outputs.proceed == 'true'
+        shell: bash
+        env:
+          UPDATE_BRANCH: ${{ steps.metadata.outputs.branch }}
+        run: |
+          set -euo pipefail
+
+          git switch -C "$UPDATE_BRANCH" "$TARGET_BRANCH"
+          result="$(go run ./cmd/versions update \
+            --repository "$SOURCE_REPOSITORY" \
+            --tag "$RELEASE_TAG" \
+            --file "$VERSION_FILE" \
+            --format json)"
+          status="$(jq -er '.status' <<<"$result")"
+          product="$(jq -er '.product' <<<"$result")"
+          major="$(jq -er '.major | tostring' <<<"$result")"
+          version="$(jq -er '.version' <<<"$result")"
+          if [[ "$status" != "updated" || "$product" != "$PRODUCT" || "$major" != "$MAJOR" || "$version" != "$VERSION" ]]; then
+            echo "::error title=Unexpected versions CLI result::Expected an updated result for the validated channel."
+            exit 1
+          fi
+
+          changed_files="$(git diff --name-only)"
+          if [[ "$changed_files" != "$VERSION_FILE" ]]; then
+            echo "::error title=Unexpected website changes::Expected only $VERSION_FILE to change."
+            git status --short
+            exit 1
+          fi
+          git diff --check
+
+          unformatted="$(gofmt -l \
+            Magefile.go \
+            cmd/versions/main.go \
+            cmd/versions/main_test.go \
+            internal/versions/update.go \
+            internal/versions/update_test.go)"
+          if [[ -n "$unformatted" ]]; then
+            echo "::error title=Unformatted Go files::$unformatted"
+            exit 1
+          fi
+          go test ./...
+
+          git add -- "$VERSION_FILE"
+          staged_files="$(git diff --cached --name-only)"
+          worktree_status="$(git status --porcelain --untracked-files=all)"
+          if [[ "$staged_files" != "$VERSION_FILE" || "$worktree_status" != "M  ${VERSION_FILE}" ]] || ! git diff --quiet; then
+            echo "::error title=Unexpected website changes::Only $VERSION_FILE may be staged, with no unstaged changes."
+            git status --short
+            exit 1
+          fi
+
+      - name: Commit and push automation branch
+        if: steps.pending-version.outputs.proceed == 'true'
+        shell: bash
+        env:
+          PRODUCT_LABEL: ${{ steps.metadata.outputs.label }}
+          REMOTE_SHA: ${{ steps.pending-version.outputs.remote_sha }}
+          UPDATE_BRANCH: ${{ steps.metadata.outputs.branch }}
+        run: |
+          set -euo pipefail
+
+          title="chore: update ${PRODUCT_LABEL} website version to v${VERSION}"
+          git commit -m "$title"
+
+          remote_ref="refs/heads/${UPDATE_BRANCH}"
+          if [[ -n "$REMOTE_SHA" ]]; then
+            git push --force-with-lease="${remote_ref}:${REMOTE_SHA}" origin "HEAD:${remote_ref}"
+          else
+            git push origin "HEAD:${remote_ref}"
+          fi
+
+      - name: Create or update pull request
+        if: steps.pending-version.outputs.proceed == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PREVIOUS_VERSION: ${{ steps.pending-version.outputs.previous }}
+          PRODUCT_LABEL: ${{ steps.metadata.outputs.label }}
+          UPDATE_BRANCH: ${{ steps.metadata.outputs.branch }}
+        run: |
+          set -euo pipefail
+
+          title="chore: update ${PRODUCT_LABEL} website version to v${VERSION}"
+          body_file="$RUNNER_TEMP/release-version-pr.md"
+          {
+            echo "This pull request was generated automatically from a published Ferret tool release."
+            echo
+            printf -- '- Source repository: `%s`\n' "$SOURCE_REPOSITORY"
+            printf -- '- Previous version: `%s`\n' "$PREVIOUS_VERSION"
+            printf -- '- New version: `%s`\n' "$VERSION"
+            printf -- '- Release: [%s](%s)\n' "$RELEASE_TAG" "$RELEASE_URL"
+            printf -- '- Release commit: `%s`\n' "$RELEASE_COMMIT_SHA"
+          } > "$body_file"
+
+          existing_pr="$(gh pr list \
+            --repo "$TARGET_REPOSITORY" \
+            --state open \
+            --base "$TARGET_BRANCH" \
+            --head "$UPDATE_BRANCH" \
+            --json number \
+            --jq '.[0].number // empty')"
+          if [[ -n "$existing_pr" ]]; then
+            gh pr edit "$existing_pr" \
+              --repo "$TARGET_REPOSITORY" \
+              --title "$title" \
+              --body-file "$body_file"
+          else
+            gh pr create \
+              --repo "$TARGET_REPOSITORY" \
+              --base "$TARGET_BRANCH" \
+              --head "$UPDATE_BRANCH" \
+              --title "$title" \
+              --body-file "$body_file"
+          fi

@@ -14,7 +14,7 @@ import (
 
 	"github.com/MontFerret/montferret.github.io/tools/registryroutes"
 	"github.com/MontFerret/montferret.github.io/tools/stdlibdocs"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 
 	"github.com/magefile/mage/sh"
 )
