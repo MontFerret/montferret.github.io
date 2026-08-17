@@ -8,14 +8,12 @@
 .stdlib-api-value-type { @extend .registry-api-value-type; }
 .stdlib-api-parameter-kind { @extend .registry-api-parameter-kind; }
 
-.stdlib-api-breadcrumbs { @extend .registry-breadcrumbs; }
-
 .stdlib-api-signature {
-    scroll-margin-top: 1.5rem;
-
-    > h2 {
+    > h3 {
+        display: block;
         font-size: 1rem;
-        margin-bottom: .8rem;
+        margin: 0 0 .8rem;
+        scroll-margin-top: 1.5rem;
     }
 }
 
@@ -39,29 +37,33 @@
     text-transform: uppercase;
 }
 
-.stdlib-category-functions {
-    display: grid;
-    gap: .75rem;
-    list-style: none;
+.stdlib-category-index {
     margin: 1.5rem 0 0;
+}
+
+.stdlib-category-index .stdlib-category-functions {
+    display: grid;
+    gap: .45rem .65rem;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    list-style: none;
+    margin: 0;
     padding: 0;
 
     li {
-        border: 1px solid $site-border;
-        border-radius: 9px;
         min-width: 0;
-        padding: 1rem 1.1rem;
     }
 
     a {
+        border: 1px solid $site-border;
+        border-radius: 6px;
         color: $accent-text;
-        display: inline-block;
+        display: block;
         font-family: $family-code;
         font-weight: 600;
         overflow-wrap: anywhere;
+        padding: .45rem .65rem;
 
         &:focus-visible {
-            border-radius: 2px;
             outline: 3px solid rgba($accent, .42);
             outline-offset: 3px;
         }
@@ -73,9 +75,26 @@
         padding: 0;
     }
 
-    p {
-        color: $site-muted;
-        line-height: 1.55;
-        margin: .35rem 0 0;
+}
+
+.stdlib-category-reference {
+    border-top: 1px solid $site-border;
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+}
+
+.stdlib-api-function {
+    + .stdlib-api-function {
+        border-top: 1px solid $site-border;
+        margin-top: 2.5rem;
+        padding-top: 2.5rem;
+    }
+
+    > h2 {
+        border-top: 0;
+        display: block;
+        margin: 0 0 1.25rem;
+        padding-top: 0;
+        scroll-margin-top: 1.5rem;
     }
 }

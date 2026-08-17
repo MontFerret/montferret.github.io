@@ -22,10 +22,10 @@ await pagefind.init();
 
 const expectations = new Map([
     ["Math", "/docs/standard-library/math/"],
-    ["FLATTEN", "/docs/standard-library/functions/flatten/"],
-    ["TO_NUMBER", "/docs/standard-library/functions/to_number/"],
+    ["FLATTEN", "/docs/standard-library/arrays/"],
+    ["TO_NUMBER", "/docs/standard-library/types/"],
     ["IO", "/docs/standard-library/io/"],
-    ["IO::FS::READ", "/docs/standard-library/io/fs/read/"],
+    ["IO::FS::READ", "/docs/standard-library/io/"],
     ["Testing", "/docs/standard-library/testing/"],
 ]);
 

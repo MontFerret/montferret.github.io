@@ -15,22 +15,15 @@ import (
 )
 
 type (
-	functionPage struct {
+	functionView struct {
 		QualifiedName string
 		FunctionID    string
-		Breadcrumb    *breadcrumbView
 		Signatures    []signatureView
 	}
 
-	breadcrumbView struct {
-		CategoryTitle string
-		CategoryURL   string
-		FunctionName  string
-	}
-
-	functionCategory struct {
-		ID    string
-		Title string
+	functionMenuItem struct {
+		Label  string
+		Anchor string
 	}
 
 	categorizedFunction struct {
@@ -53,51 +46,41 @@ type (
 	categoryPage struct {
 		Title       string
 		Description string
-		Functions   []categoryFunctionView
-	}
-
-	categoryFunctionView struct {
-		Name    string
-		URL     string
-		Summary string
+		Functions   []functionView
 	}
 
 	sectionOptions struct {
-		SidebarTitle      string
-		Title             string
-		Description       string
-		Kind              string
-		Aliases           []string
-		Weight            int
-		SidebarHidden     bool
-		StdlibLandingHide bool
-		Body              []byte
+		SidebarTitle string
+		Title        string
+		Description  string
+		Kind         string
+		Aliases      []string
+		FunctionMenu []functionMenuItem
+		Weight       int
+		Body         []byte
 	}
 )
 
-var (
-	functionTemplate = template.Must(template.New("function").Parse(`
-{{ with .Breadcrumb }}<nav class="stdlib-api-breadcrumbs" aria-label="Breadcrumb">
-  <a href="/docs/standard-library/">Standard Library</a><span aria-hidden="true">/</span>
-  <a href="{{ .CategoryURL }}">{{ .CategoryTitle }}</a><span aria-hidden="true">/</span>
-  <span aria-current="page">{{ .FunctionName }}</span>
-</nav>
-{{ end }}<h1 id="{{ .FunctionID }}">
+var categoryTemplate = template.Must(template.New("category").Parse(`<h1>{{ .Title }}</h1>
+{{ with .Description }}
+<p>{{ . }}</p>
+{{ end }}
+
+<div class="stdlib-category-reference">
+{{ range .Functions }}<section class="stdlib-api-function" aria-labelledby="{{ .FunctionID }}">
+  <h2 id="{{ .FunctionID }}">
   <a class="stdlib-api-entity-link" href="#{{ .FunctionID }}" aria-label="{{ .QualifiedName }}" title="Link to {{ .QualifiedName }}">
     <code>{{ .QualifiedName }}</code><span aria-hidden="true">#</span>
   </a>
-</h1>
-{{ range .Signatures }}
-<section class="stdlib-api-signature" aria-labelledby="{{ .ID }}">
-  <h2 id="{{ .ID }}">
+</h2>
+{{ range .Signatures }}  <section class="stdlib-api-signature" aria-labelledby="{{ .ID }}">
+  <h3 id="{{ .ID }}">
     <a class="stdlib-api-entity-link" href="#{{ .ID }}">{{ .Label }}<span aria-hidden="true">#</span></a>
-  </h2>
+  </h3>
   <p class="stdlib-api-signature-code"><code>{{ .Code }}</code></p>
-  {{ if .DeprecatedParagraphs }}
-  <div class="stdlib-api-deprecated"><strong>Deprecated.</strong>{{ range .DeprecatedParagraphs }}<p>{{ range $index, $line := . }}{{ if $index }}<br>{{ end }}{{ $line }}{{ end }}</p>{{ end }}</div>
-  {{ end }}
-  {{ range .DescriptionParagraphs }}<p>{{ range $index, $line := . }}{{ if $index }}<br>{{ end }}{{ $line }}{{ end }}</p>{{ end }}
-  <dl class="stdlib-api-details">
+{{ if .DeprecatedParagraphs }}  <div class="stdlib-api-deprecated"><strong>Deprecated.</strong>{{ range .DeprecatedParagraphs }}<p>{{ range $index, $line := . }}{{ if $index }}<br>{{ end }}{{ $line }}{{ end }}</p>{{ end }}</div>
+{{ end }}{{ range .DescriptionParagraphs }}  <p>{{ range $index, $line := . }}{{ if $index }}<br>{{ end }}{{ $line }}{{ end }}</p>
+{{ end }}  <dl class="stdlib-api-details">
     <div>
       <dt>Parameters</dt>
       <dd>{{ if .Parameters }}<ul>{{ range .Parameters }}<li><span class="stdlib-api-value-heading"><code>{{ .Name }}</code>{{ if .Type }}<code class="stdlib-api-value-type">{{ .Type }}</code>{{ end }}</span>{{ if .Description }}<span>{{ .Description }}</span>{{ end }}</li>{{ end }}</ul>{{ else }}<span>None</span>{{ end }}</dd>
@@ -107,20 +90,9 @@ var (
     {{- if .Throws }}<div><dt>Throws</dt><dd><ul>{{ range .Throws }}<li class="stdlib-api-value"><span class="stdlib-api-value-heading"><code>{{ .Error }}</code></span><span>{{ .Description }}</span></li>{{ end }}</ul></dd></div>{{ end }}
   </dl>
 </section>
-{{ end }}`))
-
-	categoryTemplate = template.Must(template.New("category").Parse(`<h1>{{ .Title }}</h1>
-
-<p>{{ .Description }}</p>
-
-<ul class="stdlib-category-functions">
-{{ range .Functions }}  <li>
-    <a href="{{ .URL }}"><code>{{ .Name }}</code></a>{{ with .Summary }}
-    <p>{{ . }}</p>{{ end }}
-  </li>
-{{ end }}</ul>
+{{ end }}</section>
+{{ end }}</div>
 `))
-)
 
 func renderReference(root string, reference *api.Reference, catalog *apicatalog.Catalog) error {
 	if catalog == nil {
@@ -128,22 +100,6 @@ func renderReference(root string, reference *api.Reference, catalog *apicatalog.
 	}
 
 	paths := make(map[string]string)
-	functionsRoot := filepath.Join(root, "functions")
-	if err := registerRoute(paths, "functions", "global functions"); err != nil {
-		return err
-	}
-
-	compatibilityBody := []byte("# Global functions\n\nGlobal functions are organized by category on the [Standard Library page](/docs/standard-library/).\n")
-	if err := writeSection(functionsRoot, sectionOptions{
-		SidebarTitle:      "Functions",
-		Title:             "Global functions",
-		Description:       "Global functions organized by documentation category.",
-		SidebarHidden:     true,
-		StdlibLandingHide: true,
-		Body:              compatibilityBody,
-	}); err != nil {
-		return err
-	}
 
 	apiFunctions := make(map[functionIdentity]api.Function)
 	for _, namespace := range reference.Namespaces {
@@ -152,7 +108,6 @@ func renderReference(root string, reference *api.Reference, catalog *apicatalog.
 		}
 	}
 
-	functionCategories := make(map[functionIdentity]functionCategory, len(apiFunctions))
 	for index, category := range catalog.Categories {
 		if err := registerRoute(paths, category.ID, "category "+category.ID); err != nil {
 			return err
@@ -174,39 +129,9 @@ func renderReference(root string, reference *api.Reference, catalog *apicatalog.
 			}
 
 			functions = append(functions, categorizedFunction{Identity: identity, Function: function})
-			functionCategories[identity] = functionCategory{ID: category.ID, Title: category.Title}
 		}
 
 		if err := writeCategory(filepath.Join(root, category.ID), category, functions, aliases, (index+1)*10); err != nil {
-			return err
-		}
-	}
-
-	identities := make([]functionIdentity, 0, len(apiFunctions))
-	for identity := range apiFunctions {
-		identities = append(identities, identity)
-	}
-	sort.Slice(identities, func(i, j int) bool {
-		if identities[i].Namespace != identities[j].Namespace {
-			return identities[i].Namespace < identities[j].Namespace
-		}
-
-		return identities[i].Name < identities[j].Name
-	})
-
-	for _, identity := range identities {
-		category, exists := functionCategories[identity]
-		if !exists {
-			return fmt.Errorf("cannot render function %q without a category", identity)
-		}
-
-		route := functionRoute(identity)
-		if err := registerRoute(paths, route, "function "+identity.String()); err != nil {
-			return err
-		}
-
-		filename := filepath.Join(root, filepath.FromSlash(route)) + ".md"
-		if err := writeFunction(filename, identity, apiFunctions[identity], &category); err != nil {
 			return err
 		}
 	}
@@ -218,14 +143,23 @@ func writeCategory(root string, category apicatalog.Category, functions []catego
 	page := categoryPage{
 		Title:       category.Title,
 		Description: category.Description,
-		Functions:   make([]categoryFunctionView, 0, len(functions)),
+		Functions:   make([]functionView, 0, len(functions)),
 	}
+	functionMenu := make([]functionMenuItem, 0, len(functions))
 
+	anchors := make(map[string]string, len(functions))
 	for _, function := range functions {
-		page.Functions = append(page.Functions, categoryFunctionView{
-			Name:    function.Identity.String(),
-			URL:     "/docs/standard-library/" + functionRoute(function.Identity) + "/",
-			Summary: functionSummary(function.Function),
+		view := buildFunctionView(function.Identity, function.Function)
+		key := strings.ToLower(view.FunctionID)
+		if previous, exists := anchors[key]; exists {
+			return fmt.Errorf("cannot render category %q: function anchor %q for %s collides with %s", category.ID, view.FunctionID, function.Identity, previous)
+		}
+
+		anchors[key] = function.Identity.String()
+		page.Functions = append(page.Functions, view)
+		functionMenu = append(functionMenu, functionMenuItem{
+			Label:  view.QualifiedName,
+			Anchor: view.FunctionID,
 		})
 	}
 
@@ -240,6 +174,7 @@ func writeCategory(root string, category apicatalog.Category, functions []catego
 		Description:  category.Description,
 		Kind:         "Category",
 		Aliases:      aliases,
+		FunctionMenu: functionMenu,
 		Weight:       weight,
 		Body:         body.Bytes(),
 	})
@@ -249,10 +184,12 @@ func writeSection(root string, options sectionOptions) error {
 	frontMatter := map[string]any{
 		"title":           options.Title,
 		"sidebarTitle":    options.SidebarTitle,
-		"description":     options.Description,
 		"type":            "docs",
 		"draft":           false,
 		"stdlibGenerated": true,
+	}
+	if options.Description != "" {
+		frontMatter["description"] = options.Description
 	}
 
 	if options.Kind != "" {
@@ -262,53 +199,48 @@ func writeSection(root string, options sectionOptions) error {
 	if len(options.Aliases) > 0 {
 		frontMatter["aliases"] = options.Aliases
 	}
+	if len(options.FunctionMenu) > 0 {
+		frontMatter["functionMenu"] = options.FunctionMenu
+	}
 
 	if options.Weight != 0 {
 		frontMatter["weight"] = options.Weight
 	}
 
-	if options.SidebarHidden {
-		frontMatter["sidebarHidden"] = true
-	}
-
-	if options.StdlibLandingHide {
-		frontMatter["stdlibLandingHidden"] = true
-	}
-
-	body := options.Body
-	if len(body) == 0 {
-		body = []byte(fmt.Sprintf("# `%s`\n\n%s\n\n{{< stdlib-children >}}\n", options.Title, options.Description))
-	}
-
-	return writePage(filepath.Join(root, "_index.md"), frontMatter, body)
+	return writePage(filepath.Join(root, "_index.md"), frontMatter, options.Body)
 }
 
-func writeFunction(filename string, identity functionIdentity, function api.Function, category *functionCategory) error {
+func buildFunctionView(identity functionIdentity, function api.Function) functionView {
 	qualified := identity.String()
 	signatures := sortedSignatures(function.Signatures)
-	page := functionPage{
+	view := functionView{
 		QualifiedName: qualified,
 		FunctionID:    functionAnchor(identity.Namespace, identity.Name),
 		Signatures:    make([]signatureView, 0, len(signatures)),
 	}
 
-	if category != nil {
-		page.Breadcrumb = &breadcrumbView{
-			CategoryTitle: category.Title,
-			CategoryURL:   "/docs/standard-library/" + category.ID + "/",
-			FunctionName:  identity.String(),
-		}
-	}
-
-	for _, signature := range signatures {
+	signatureIDs := make([]string, len(signatures))
+	signatureIDCounts := make(map[string]int, len(signatures))
+	for index, signature := range signatures {
 		kind := "fixed"
 		if signature.Variadic {
 			kind = "variadic"
 		}
 		kind += "-" + strconv.Itoa(len(signature.Parameters))
+		signatureIDs[index] = view.FunctionID + "-signature-" + kind
+		signatureIDCounts[signatureIDs[index]]++
+	}
 
-		page.Signatures = append(page.Signatures, signatureView{
-			ID:                    page.FunctionID + "-signature-" + kind,
+	signatureIDIndexes := make(map[string]int, len(signatureIDs))
+	for index, signature := range signatures {
+		id := signatureIDs[index]
+		if signatureIDCounts[id] > 1 {
+			signatureIDIndexes[id]++
+			id += "-" + strconv.Itoa(signatureIDIndexes[id])
+		}
+
+		view.Signatures = append(view.Signatures, signatureView{
+			ID:                    id,
 			Label:                 signatureLabel(signature),
 			Code:                  signatureCode(qualified, signature),
 			Variadic:              signature.Variadic,
@@ -320,28 +252,7 @@ func writeFunction(filename string, identity functionIdentity, function api.Func
 		})
 	}
 
-	body := bytes.NewBuffer(nil)
-	if err := functionTemplate.Execute(body, page); err != nil {
-		return fmt.Errorf("render function %s: %w", qualified, err)
-	}
-
-	description := functionSummary(function)
-	if description == "" {
-		description = "API reference for " + qualified + "."
-	}
-
-	frontMatter := map[string]any{
-		"title":               qualified,
-		"sidebarTitle":        function.Name,
-		"description":         description,
-		"type":                "docs",
-		"draft":               false,
-		"sidebarHidden":       true,
-		"stdlibLandingHidden": true,
-		"stdlibGenerated":     true,
-	}
-
-	return writePage(filename, frontMatter, body.Bytes())
+	return view
 }
 
 func writePage(filename string, frontMatter map[string]any, body []byte) error {
@@ -369,6 +280,12 @@ func writePage(filename string, frontMatter map[string]any, body []byte) error {
 			fmt.Fprintf(content, "%s:\n", key)
 			for _, item := range typed {
 				fmt.Fprintf(content, "  - %s\n", strconv.Quote(item))
+			}
+		case []functionMenuItem:
+			fmt.Fprintf(content, "%s:\n", key)
+			for _, item := range typed {
+				fmt.Fprintf(content, "  - label: %s\n", strconv.Quote(item.Label))
+				fmt.Fprintf(content, "    anchor: %s\n", strconv.Quote(item.Anchor))
 			}
 		default:
 			return fmt.Errorf("render generated front matter %q: unsupported value %T", key, value)
@@ -447,25 +364,14 @@ func signatureSortKey(signature api.Signature) string {
 	return key.String()
 }
 
-func functionSummary(function api.Function) string {
-	for _, signature := range sortedSignatures(function.Signatures) {
-		description := strings.ReplaceAll(signature.Description, "\r\n", "\n")
-		for _, line := range strings.Split(description, "\n") {
-			if summary := strings.TrimSpace(line); summary != "" {
-				return summary
-			}
-		}
-	}
-
-	return ""
-}
-
 func functionAnchor(namespace, function string) string {
+	segments := []string{"global"}
 	if namespace == "" {
-		return "api-function-global-" + function
+		return strings.ToLower(strings.Join(append(segments, function), "-"))
 	}
 
-	return "api-function-named-" + strings.ReplaceAll(namespace, "::", "-") + "-" + function
+	segments = append(strings.Split(namespace, "::"), function)
+	return strings.ToLower(strings.Join(segments, "-"))
 }
 
 func signatureLabel(signature api.Signature) string {
@@ -517,17 +423,6 @@ func paragraphs(value string) [][]string {
 	}
 
 	return result
-}
-
-func functionRoute(identity functionIdentity) string {
-	if identity.Namespace == "" {
-		return filepath.ToSlash(filepath.Join("functions", identity.Name))
-	}
-
-	segments := strings.Split(identity.Namespace, "::")
-	segments = append(segments, identity.Name)
-
-	return filepath.ToSlash(filepath.Join(segments...))
 }
 
 func categoryAliases(categoryID string) []string {

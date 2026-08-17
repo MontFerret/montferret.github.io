@@ -51,17 +51,22 @@ The handwritten introduction remains at
 sections through Hugo's page tree, without mixing curated prose into generated
 files.
 
-`api.json` remains the authority for function identities, signatures, and
-descriptions. `catalog.json` supplies category grouping, order, titles, and
-descriptions. Its structured members can identify global functions with an
-empty namespace or namespaced functions with their canonical API namespace.
-Categories are presentation concepts; they do not create callable namespaces
-such as `math::abs` or change any function URL.
+`api.json` remains the authority for function identities, signatures,
+parameters, return values, descriptions, failures, and deprecation metadata.
+`catalog.json` supplies category grouping, order, titles, and descriptions. Its
+structured members can identify global functions with an empty namespace or
+namespaced functions with their canonical API namespace. Categories are
+presentation concepts; they do not create callable namespaces such as
+`math::abs` or alter callable names.
 
-The category pages are the only generated Standard Library navigation
-sections. Global function pages remain beneath `/functions/`; namespaced
-function pages retain their namespace-segment paths. Former I/O and Testing
-namespace-section URLs redirect to their catalog categories.
+Each catalog category produces one page beneath `/docs/standard-library/`.
+Functions render as full API sections on that page, and the compact index at
+the top and the right-side "On this page" menu link to identity-qualified
+anchors such as `#global-abs`, `#io-fs-read`, and `#t-not-eq`. The right-side
+menu follows the shared documentation layout and is hidden at narrow widths.
+The generator does not create `/functions/` or namespace-segment function
+pages. Former published I/O and Testing namespace section URLs continue to
+redirect to their catalog categories.
 
 The importable Mage helpers live in `tools/stdlibdocs` and
 `tools/registryroutes`. They intentionally have no command wrappers.

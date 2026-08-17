@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"sort"
 	"strings"
 	"testing"
 
@@ -38,26 +39,67 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 		t.Fatalf("requests = %v, want authoritative sibling artifact requests %v", got, wantRequests)
 	}
 
-	for _, filename := range []string{
+	wantFiles := []string{
 		"arrays/_index.md",
 		"io/_index.md",
 		"math/_index.md",
 		"strings/_index.md",
 		"testing/_index.md",
 		"types/_index.md",
-		"functions/_index.md",
-		"functions/abs.md",
-		"functions/append.md",
-		"functions/concat.md",
-		"functions/flatten.md",
-		"functions/to_number.md",
-		"io/fs/read.md",
-		"io/net/http/get.md",
-		"t/eq.md",
-		"t/not/eq.md",
-	} {
-		if _, err := os.Stat(filepath.Join(output, filename)); err != nil {
-			t.Errorf("generated page %s: %v", filename, err)
+	}
+	generated := snapshot(t, output)
+	gotFiles := make([]string, 0, len(generated))
+	for filename := range generated {
+		gotFiles = append(gotFiles, filename)
+	}
+	sort.Strings(gotFiles)
+	if !reflect.DeepEqual(gotFiles, wantFiles) {
+		t.Fatalf("generated files = %v, want one page per catalog category: %v", gotFiles, wantFiles)
+	}
+
+	catalog, err := apicatalog.Parse([]byte(readFile(t, "testdata/catalog.json")))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, category := range catalog.Categories {
+		page := readFile(t, filepath.Join(output, category.ID, "_index.md"))
+		menuStart := strings.Index(page, "functionMenu:\n")
+		if menuStart == -1 {
+			t.Fatalf("category %q does not contain its right-side function menu", category.ID)
+		}
+
+		indexEnd := strings.Index(page, "</nav>")
+		if indexEnd == -1 {
+			t.Fatalf("category %q does not contain its function index", category.ID)
+		}
+
+		functionIndex := page[:indexEnd]
+		previousIndex := -1
+		previousMenuItem := -1
+		for _, function := range category.Functions {
+			identity := functionIdentity{Namespace: function.Namespace, Name: function.Name}
+			anchor := functionAnchor(identity.Namespace, identity.Name)
+			link := fmt.Sprintf(`href="#%s"><code>%s</code>`, anchor, identity)
+			position := strings.Index(functionIndex, link)
+			if position == -1 {
+				t.Errorf("category %q index does not link %s to #%s", category.ID, identity, anchor)
+			} else if position <= previousIndex {
+				t.Errorf("category %q index does not preserve catalog order at %s", category.ID, identity)
+			}
+			previousIndex = position
+
+			menuItem := fmt.Sprintf("  - label: %q\n    anchor: %q", identity.String(), anchor)
+			position = strings.Index(page[menuStart:], menuItem)
+			if position == -1 {
+				t.Errorf("category %q right-side menu does not link %s to #%s", category.ID, identity, anchor)
+			} else if position <= previousMenuItem {
+				t.Errorf("category %q right-side menu does not preserve catalog order at %s", category.ID, identity)
+			}
+			previousMenuItem = position
+
+			if count := strings.Count(page, fmt.Sprintf(`id="%s"`, anchor)); count != 1 {
+				t.Errorf("category %q contains %d headings for anchor %q, want 1", category.ID, count, anchor)
+			}
 		}
 	}
 
@@ -65,74 +107,69 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 	for _, expected := range []string{
 		`aliases:`,
 		`"/docs/stdlib/math/"`,
+		`description: "Mathematical and numeric global functions."`,
 		`stdlibKind: "Category"`,
 		`weight: 30`,
-		`href="/docs/standard-library/functions/abs/"`,
+		`<h1>Math</h1>`,
+		`href="#global-abs"`,
+		`id="global-abs"`,
+		`abs(value)`,
 		`abs returns the absolute value of a number.`,
+		`<code>value</code><code class="stdlib-api-value-type">Number</code>`,
+		`<dt>Returns</dt>`,
 	} {
 		if !strings.Contains(mathPage, expected) {
 			t.Errorf("Math category does not contain %q", expected)
 		}
 	}
+	mathIndexEnd := strings.Index(mathPage, "</nav>")
+	if mathIndexEnd == -1 {
+		t.Fatal("Math category does not contain its function index")
+	}
+	if strings.Contains(mathPage[:mathIndexEnd], "abs returns the absolute value") {
+		t.Error("Math function index repeats API descriptions instead of remaining compact")
+	}
 
-	flatten := readFile(t, filepath.Join(output, "functions", "flatten.md"))
+	arrays := readFile(t, filepath.Join(output, "arrays", "_index.md"))
 	for _, expected := range []string{
-		`description: "flatten turns an array of arrays into a flat array."`,
-		`class="stdlib-api-breadcrumbs"`,
-		`href="/docs/standard-library/arrays/"`,
-		`id="api-function-global-flatten"`,
-		`id="api-function-global-flatten-signature-fixed-1"`,
-		`id="api-function-global-flatten-signature-fixed-2"`,
+		`href="#global-append"`,
+		`href="#global-flatten"`,
+		`id="global-flatten"`,
+		`id="global-flatten-signature-fixed-1"`,
+		`id="global-flatten-signature-fixed-2"`,
 		`flatten(arr)`,
 		`flatten(arr, depth)`,
 		`<code class="stdlib-api-value-type">Any[]</code>`,
 		`<dt>Returns</dt>`,
 	} {
-		if !strings.Contains(flatten, expected) {
-			t.Errorf("flatten page does not contain %q", expected)
+		if !strings.Contains(arrays, expected) {
+			t.Errorf("Arrays category does not contain %q", expected)
 		}
 	}
-
-	functions := readFile(t, filepath.Join(output, "functions", "_index.md"))
-	for _, expected := range []string{
-		`sidebarHidden: true`,
-		`stdlibLandingHidden: true`,
-		`Global functions are organized by category`,
-	} {
-		if !strings.Contains(functions, expected) {
-			t.Errorf("Functions compatibility page does not contain %q", expected)
-		}
-	}
-	if strings.Contains(functions, "stdlib-children") || strings.Contains(functions, "/docs/stdlib/math/") {
-		t.Error("Functions compatibility page retained the flat listing or category aliases")
+	if strings.Index(arrays, `href="#global-append"`) > strings.Index(arrays, `href="#global-flatten"`) {
+		t.Error("Arrays function index does not preserve catalog order")
 	}
 
-	toNumber := readFile(t, filepath.Join(output, "functions", "to_number.md"))
-	if !strings.Contains(toNumber, "<dt>Throws</dt>") || !strings.Contains(toNumber, "TypeError") {
-		t.Error("to_number page does not render thrown errors")
-	}
-
-	get := readFile(t, filepath.Join(output, "io", "net", "http", "get.md"))
-	for _, expected := range []string{
-		`class="stdlib-api-breadcrumbs"`,
-		`href="/docs/standard-library/io/"`,
-		`aria-current="page">io::net::http::get`,
-		`api-function-named-io-net-http-get-signature-variadic-2`,
-		`io::net::http::get(url, options...)`,
-		`<span class="stdlib-api-parameter-kind">Variadic</span>`,
-		`<strong>Deprecated.</strong>`,
-	} {
-		if !strings.Contains(get, expected) {
-			t.Errorf("namespaced function page does not contain %q", expected)
-		}
+	typesPage := readFile(t, filepath.Join(output, "types", "_index.md"))
+	if !strings.Contains(typesPage, `id="global-to_number"`) || !strings.Contains(typesPage, "<dt>Throws</dt>") || !strings.Contains(typesPage, "TypeError") {
+		t.Error("Types category does not render to_number and its thrown errors")
 	}
 
 	ioCategory := readFile(t, filepath.Join(output, "io", "_index.md"))
 	for _, expected := range []string{
+		`description: "Functions for working with files, networks, and other input/output operations."`,
+		`href="#io-fs-read"`,
+		`href="#io-net-http-get"`,
+		`id="io-fs-read"`,
+		`<code>io::fs::read</code>`,
+		`id="io-net-http-get"`,
+		`<code>io::net::http::get</code>`,
+		`io-net-http-get-signature-variadic-2`,
+		`io::net::http::get(url, options...)`,
+		`<span class="stdlib-api-parameter-kind">Variadic</span>`,
+		`<strong>Deprecated.</strong>`,
 		`stdlibKind: "Category"`,
 		`weight: 20`,
-		`href="/docs/standard-library/io/fs/read/"`,
-		`<code>io::fs::read</code>`,
 		`read reads from a file.`,
 		`"/docs/standard-library/io/fs/"`,
 		`"/docs/standard-library/io/net/http/"`,
@@ -145,9 +182,11 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 
 	testingCategory := readFile(t, filepath.Join(output, "testing", "_index.md"))
 	for _, expected := range []string{
-		`href="/docs/standard-library/t/eq/"`,
+		`href="#t-eq"`,
+		`id="t-eq"`,
 		`<code>t::eq</code>`,
-		`href="/docs/standard-library/t/not/eq/"`,
+		`href="#t-not-eq"`,
+		`id="t-not-eq"`,
 		`<code>t::not::eq</code>`,
 		`"/docs/standard-library/t/"`,
 		`"/docs/standard-library/t/not/"`,
@@ -157,14 +196,55 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 		}
 	}
 
-	for _, filename := range []string{"io/fs/_index.md", "io/net/_index.md", "io/net/http/_index.md", "t/_index.md", "t/not/_index.md"} {
-		if _, err := os.Stat(filepath.Join(output, filename)); !os.IsNotExist(err) {
-			t.Errorf("generated obsolete namespace section %s: %v", filename, err)
-		}
+	if got, want := arrays, readFile(t, "testdata/golden/arrays.md"); got != want {
+		t.Errorf("generated Arrays category does not match its golden file:\n--- got ---\n%s\n--- want ---\n%s", got, want)
+	}
+}
+
+func TestGenerateKeepsCatalogAndAPIMetadataInTheirOwnSections(t *testing.T) {
+	catalog := mutateCatalog(t, func(value *apicatalog.Catalog) {
+		value.Categories[2].Description = "Catalog-owned Math description."
+	})
+	reference := mutateReference(t, func(value *api.Reference) {
+		value.Namespaces[0].Functions[0].Signatures[0].Description = "API-owned abs description."
+	})
+	output := filepath.Join(t.TempDir(), "standard-library")
+	if err := Generate(context.Background(), fixtureClient(t, map[string]string{
+		testAPIPath:     reference,
+		testCatalogPath: catalog,
+	}), Options{IndexURL: testIndexURL, Version: "2.0.0-alpha.46", OutputDir: output}); err != nil {
+		t.Fatal(err)
 	}
 
-	if got, want := flatten, readFile(t, "testdata/golden/flatten.md"); got != want {
-		t.Error("generated flatten page does not match its golden file")
+	mathPage := readFile(t, filepath.Join(output, "math", "_index.md"))
+	for _, expected := range []string{
+		`description: "Catalog-owned Math description."`,
+		`<p>Catalog-owned Math description.</p>`,
+		`<p>API-owned abs description.</p>`,
+	} {
+		if !strings.Contains(mathPage, expected) {
+			t.Errorf("Math category does not contain %q", expected)
+		}
+	}
+}
+
+func TestGenerateOmitsEmptyCategoryDescription(t *testing.T) {
+	output := filepath.Join(t.TempDir(), "math")
+	category := apicatalog.Category{ID: "math", Title: "Math"}
+	functions := []categorizedFunction{{
+		Identity: functionIdentity{Name: "abs"},
+		Function: api.Function{Name: "abs", Signatures: []api.Signature{{Description: "Absolute value."}}},
+	}}
+	if err := writeCategory(output, category, functions, nil, 10); err != nil {
+		t.Fatal(err)
+	}
+
+	mathPage := readFile(t, filepath.Join(output, "_index.md"))
+	if strings.Contains(mathPage, "description:") || strings.Contains(mathPage, "<p></p>") {
+		t.Fatal("Math category rendered an empty catalog description")
+	}
+	if !strings.Contains(mathPage, "functionMenu:\n  - label: \"abs\"\n    anchor: \"global-abs\"") {
+		t.Fatal("single-function Math category does not contain its right-side function menu")
 	}
 }
 
@@ -209,7 +289,7 @@ func TestGenerateIsDeterministicAcrossAPIOrderingAndRepeatedRuns(t *testing.T) {
 	}
 }
 
-func TestGenerateKeepsCanonicalFunctionRoutesAfterRecategorization(t *testing.T) {
+func TestGenerateMovesFunctionsWhenCatalogRecategorizesThem(t *testing.T) {
 	output := filepath.Join(t.TempDir(), "standard-library")
 	catalog := mutateCatalog(t, func(value *apicatalog.Catalog) {
 		value.Categories[0].Functions[0], value.Categories[2].Functions[0] = value.Categories[2].Functions[0], value.Categories[0].Functions[0]
@@ -223,12 +303,17 @@ func TestGenerateKeepsCanonicalFunctionRoutesAfterRecategorization(t *testing.T)
 		t.Fatal(err)
 	}
 
-	abs := readFile(t, filepath.Join(output, "functions", "abs.md"))
-	if !strings.Contains(abs, `href="/docs/standard-library/arrays/"`) {
-		t.Fatal("recategorized abs page does not use its new category breadcrumb")
+	arrays := readFile(t, filepath.Join(output, "arrays", "_index.md"))
+	if !strings.Contains(arrays, `href="#global-abs"`) || !strings.Contains(arrays, `id="global-abs"`) {
+		t.Fatal("recategorized abs function is not rendered on its new Arrays category page")
 	}
-	if _, err := os.Stat(filepath.Join(output, "arrays", "abs.md")); !os.IsNotExist(err) {
-		t.Fatalf("recategorization changed the canonical abs route: %v", err)
+	if strings.Contains(arrays, `global-append`) {
+		t.Fatal("Arrays category retained append after recategorization")
+	}
+
+	mathPage := readFile(t, filepath.Join(output, "math", "_index.md"))
+	if !strings.Contains(mathPage, `href="#global-append"`) || strings.Contains(mathPage, `global-abs`) {
+		t.Fatal("Math category does not reflect recategorized function membership")
 	}
 }
 
@@ -252,19 +337,45 @@ func TestGenerateRequiresCatalogAndPreservesPreviousOutput(t *testing.T) {
 	}
 }
 
-func TestFunctionSummaryUsesDeterministicSignatureOrdering(t *testing.T) {
+func TestBuildFunctionViewUsesUniqueDeterministicSignatureAnchors(t *testing.T) {
 	function := api.Function{Signatures: []api.Signature{
 		{Parameters: []api.Parameter{{Name: "value", Type: "String"}}, Description: "String overload."},
 		{Parameters: []api.Parameter{{Name: "value", Type: "Number"}}, Description: "Number overload."},
 	}}
 
-	if got, want := functionSummary(function), "Number overload."; got != want {
-		t.Fatalf("function summary = %q, want %q", got, want)
+	want := []string{
+		"global-convert-signature-fixed-1-1",
+		"global-convert-signature-fixed-1-2",
+	}
+	view := buildFunctionView(functionIdentity{Name: "convert"}, function)
+	got := []string{view.Signatures[0].ID, view.Signatures[1].ID}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("signature anchors = %v, want %v", got, want)
 	}
 
 	reverse(function.Signatures)
-	if got, want := functionSummary(function), "Number overload."; got != want {
-		t.Fatalf("reversed function summary = %q, want %q", got, want)
+	view = buildFunctionView(functionIdentity{Name: "convert"}, function)
+	got = []string{view.Signatures[0].ID, view.Signatures[1].ID}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("reversed signature anchors = %v, want %v", got, want)
+	}
+}
+
+func TestFunctionAnchorUsesQualifiedIdentity(t *testing.T) {
+	tests := []struct {
+		namespace string
+		name      string
+		want      string
+	}{
+		{name: "ABS", want: "global-abs"},
+		{namespace: "IO::FS", name: "READ", want: "io-fs-read"},
+		{namespace: "T::NOT", name: "EQ", want: "t-not-eq"},
+	}
+
+	for _, test := range tests {
+		if got := functionAnchor(test.namespace, test.name); got != test.want {
+			t.Errorf("functionAnchor(%q, %q) = %q, want %q", test.namespace, test.name, got, test.want)
+		}
 	}
 }
 
@@ -353,7 +464,7 @@ func TestGeneratePreservesPreviousOutputOnCatalogAndRenderFailures(t *testing.T)
 		want      string
 	}{
 		{name: "invalid catalog", overrides: map[string]string{testCatalogPath: `{`}, want: "parse Ferret API Catalog"},
-		{name: "route collision", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.Categories[0].ID = "functions" })}, want: "route collides"},
+		{name: "route collision", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.Categories[0].ID = "t" })}, want: "route collides"},
 	}
 
 	for _, test := range tests {
@@ -437,6 +548,22 @@ func mutateCatalog(t *testing.T, mutate func(*apicatalog.Catalog)) string {
 	mutate(catalog)
 
 	data, err := json.Marshal(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return string(data)
+}
+
+func mutateReference(t *testing.T, mutate func(*api.Reference)) string {
+	t.Helper()
+	reference, err := api.Parse([]byte(readFile(t, "testdata/api.json")))
+	if err != nil {
+		t.Fatal(err)
+	}
+	mutate(reference)
+
+	data, err := json.Marshal(reference)
 	if err != nil {
 		t.Fatal(err)
 	}

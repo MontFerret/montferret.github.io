@@ -1,9 +1,23 @@
+{{- $functionMenu := default (slice) .Params.functionMenu -}}
 {{- $menuItems := default (slice) .Params.menu -}}
 {{- $menuTitle := default "On this page" .Params.menuTitle -}}
 {{- $toc := .TableOfContents -}}
 {{- $tocLinks := findRE "<a\\s" $toc -}}
 
-{{- if gt (len $menuItems) 1 -}}
+{{- if gt (len $functionMenu) 0 -}}
+<aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
+    <div class="docs-toc-title">On this page</div>
+    <nav class="docs-toc-menu">
+        <ul>
+            {{- range $functionMenu }}
+                <li>
+                    <a href="#{{ .anchor }}">{{ .label }}</a>
+                </li>
+            {{- end }}
+        </ul>
+    </nav>
+</aside>
+{{- else if gt (len $menuItems) 1 -}}
 <aside class="docs-toc" aria-label="On this page" data-pagefind-ignore="all">
     <div class="docs-toc-title">{{ $menuTitle }}</div>
     <nav class="docs-toc-menu">
