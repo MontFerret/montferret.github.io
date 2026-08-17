@@ -1,10 +1,10 @@
 # Standard Library reference generation
 
 The website generates its Standard Library reference from the versioned Ferret
-Core API published at `https://ferretlang.org/ferret/index.json`.
-Catalog-bearing publications contain sibling `api.json` and `catalog.json`
-artifacts with the canonical identity `montferret/core`. Their reusable API
-contracts are owned by `github.com/MontFerret/specs`.
+Core API published at `https://ferretlang.org/ferret/index.json`. Selected
+publications must contain sibling `api.json` and `catalog.json` artifacts with
+the canonical identity `montferret/core`. Their reusable API contracts are
+owned by `github.com/MontFerret/specs`.
 
 ## Select the documented Ferret version
 
@@ -32,9 +32,9 @@ artifact manually.
 Generation requires network access to the published index and selected API
 artifacts. A missing version, network failure, malformed document, unsupported
 schema, unexpected identity or version, or API/catalog membership mismatch
-fails the command. Only an HTTP `404` for `catalog.json` invokes the legacy flat
-renderer used by immutable API-only releases. Other catalog failures never
-fall back to stale or incomplete content.
+fails the command. The catalog is required: a `404` or any other catalog
+failure does not fall back to flat, stale, or incomplete content. The prior
+generated tree remains unchanged after any failure.
 
 Requests use a 30-second client timeout and accept at most 4 MiB per document.
 The selected API URL is resolved from the index entry, the catalog is resolved
@@ -52,14 +52,25 @@ sections through Hugo's page tree, without mixing curated prose into generated
 files.
 
 `api.json` remains the authority for function identities, signatures, and
-descriptions. `catalog.json` supplies category grouping, order, titles, and real
-namespace roots. Categories are presentation concepts; they do not create
-callable namespaces such as `math::abs`.
+descriptions. `catalog.json` supplies category grouping, order, titles, and
+descriptions. Its structured members can identify global functions with an
+empty namespace or namespaced functions with their canonical API namespace.
+Categories are presentation concepts; they do not create callable namespaces
+such as `math::abs` or change any function URL.
+
+The category pages are the only generated Standard Library navigation
+sections. Global function pages remain beneath `/functions/`; namespaced
+function pages retain their namespace-segment paths. Former I/O and Testing
+namespace-section URLs redirect to their catalog categories.
+
+The importable Mage helpers live in `tools/stdlibdocs` and
+`tools/registryroutes`. They intentionally have no command wrappers.
 
 ## Version history
 
 Specs must publish the API Catalog package before Ferret can publish a release
 that uses it. Ferret then publishes both sibling artifacts before this site's
 exact `runtime.v2` pin is advanced. Existing API-only alpha releases remain
-immutable and use the flat fallback. Historical and version-aware Standard
-Library documentation remains deferred until after the final 2.0.0 release.
+immutable publication state, but the website cannot select them. Historical
+and version-aware Standard Library documentation remains deferred until after
+the final 2.0.0 release.

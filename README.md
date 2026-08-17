@@ -40,8 +40,9 @@ mage serveSearch
 ### Generating the Standard Library reference
 
 The website generates the Standard Library reference from the published Ferret
-Core API Reference selected by `runtime.v2` in `data/versions.yaml`. When that
-release includes a sibling API Catalog, the site uses its presentation groups.
+Core API Reference selected by `runtime.v2` in `data/versions.yaml`. The
+selected release must include its sibling API Catalog, whose ordered categories
+drive the reference navigation.
 
 ```bash
 mage generateStdlib

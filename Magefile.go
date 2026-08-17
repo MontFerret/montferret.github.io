@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/MontFerret/montferret.github.io/internal/registryroutes"
-	"github.com/MontFerret/montferret.github.io/internal/stdlibdocs"
+	"github.com/MontFerret/montferret.github.io/tools/registryroutes"
+	"github.com/MontFerret/montferret.github.io/tools/stdlibdocs"
 	"gopkg.in/yaml.v2"
 
 	"github.com/magefile/mage/sh"

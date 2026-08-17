@@ -4,6 +4,7 @@ draft: false
 sidebarHidden: true
 sidebarTitle: "flatten"
 stdlibGenerated: true
+stdlibLandingHidden: true
 title: "flatten"
 type: "docs"
 ---

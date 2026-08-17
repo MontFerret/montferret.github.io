@@ -40,8 +40,10 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 
 	for _, filename := range []string{
 		"arrays/_index.md",
+		"io/_index.md",
 		"math/_index.md",
 		"strings/_index.md",
+		"testing/_index.md",
 		"types/_index.md",
 		"functions/_index.md",
 		"functions/abs.md",
@@ -49,15 +51,9 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 		"functions/concat.md",
 		"functions/flatten.md",
 		"functions/to_number.md",
-		"io/_index.md",
-		"io/fs/_index.md",
 		"io/fs/read.md",
-		"io/net/_index.md",
-		"io/net/http/_index.md",
 		"io/net/http/get.md",
-		"t/_index.md",
 		"t/eq.md",
-		"t/not/_index.md",
 		"t/not/eq.md",
 	} {
 		if _, err := os.Stat(filepath.Join(output, filename)); err != nil {
@@ -69,8 +65,8 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 	for _, expected := range []string{
 		`aliases:`,
 		`"/docs/stdlib/math/"`,
-		`stdlibKind: "Global functions"`,
-		`weight: 20`,
+		`stdlibKind: "Category"`,
+		`weight: 30`,
 		`href="/docs/standard-library/functions/abs/"`,
 		`abs returns the absolute value of a number.`,
 	} {
@@ -118,6 +114,9 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 
 	get := readFile(t, filepath.Join(output, "io", "net", "http", "get.md"))
 	for _, expected := range []string{
+		`class="stdlib-api-breadcrumbs"`,
+		`href="/docs/standard-library/io/"`,
+		`aria-current="page">io::net::http::get`,
 		`api-function-named-io-net-http-get-signature-variadic-2`,
 		`io::net::http::get(url, options...)`,
 		`<span class="stdlib-api-parameter-kind">Variadic</span>`,
@@ -128,26 +127,39 @@ func TestGenerateRendersPublishedAPICatalog(t *testing.T) {
 		}
 	}
 
-	ioRoot := readFile(t, filepath.Join(output, "io", "_index.md"))
-	if !strings.Contains(ioRoot, "Namespaces beneath the io Ferret namespace prefix.") || strings.Contains(ioRoot, "Functions in the io Ferret namespace.") {
-		t.Error("synthetic io prefix is presented as a callable API namespace")
-	}
-	if !strings.Contains(ioRoot, `stdlibKind: "Namespace"`) || !strings.Contains(ioRoot, `weight: 50`) {
-		t.Error("io root does not follow catalog navigation ordering")
+	ioCategory := readFile(t, filepath.Join(output, "io", "_index.md"))
+	for _, expected := range []string{
+		`stdlibKind: "Category"`,
+		`weight: 20`,
+		`href="/docs/standard-library/io/fs/read/"`,
+		`<code>io::fs::read</code>`,
+		`read reads from a file.`,
+		`"/docs/standard-library/io/fs/"`,
+		`"/docs/standard-library/io/net/http/"`,
+		`"/docs/stdlib/io-net-http/"`,
+	} {
+		if !strings.Contains(ioCategory, expected) {
+			t.Errorf("I/O category does not contain %q", expected)
+		}
 	}
 
-	testingPage := readFile(t, filepath.Join(output, "t", "_index.md"))
-	if !strings.Contains(testingPage, "/docs/standard-library/testing/") {
-		t.Error("t namespace does not contain the Testing compatibility alias")
+	testingCategory := readFile(t, filepath.Join(output, "testing", "_index.md"))
+	for _, expected := range []string{
+		`href="/docs/standard-library/t/eq/"`,
+		`<code>t::eq</code>`,
+		`href="/docs/standard-library/t/not/eq/"`,
+		`<code>t::not::eq</code>`,
+		`"/docs/standard-library/t/"`,
+		`"/docs/standard-library/t/not/"`,
+	} {
+		if !strings.Contains(testingCategory, expected) {
+			t.Errorf("Testing category does not contain %q", expected)
+		}
 	}
-	filesystem := readFile(t, filepath.Join(output, "io", "fs", "_index.md"))
-	if !strings.Contains(filesystem, "/docs/stdlib/io-fs/") {
-		t.Error("io::fs namespace does not contain its compatibility alias")
-	}
-	httpSection := readFile(t, filepath.Join(output, "io", "net", "http", "_index.md"))
-	for _, alias := range []string{"/docs/standard-library/io/http/", "/docs/stdlib/io-net-http/"} {
-		if !strings.Contains(httpSection, alias) {
-			t.Errorf("io::net::http namespace does not contain compatibility alias %q", alias)
+
+	for _, filename := range []string{"io/fs/_index.md", "io/net/_index.md", "io/net/http/_index.md", "t/_index.md", "t/not/_index.md"} {
+		if _, err := os.Stat(filepath.Join(output, filename)); !os.IsNotExist(err) {
+			t.Errorf("generated obsolete namespace section %s: %v", filename, err)
 		}
 	}
 
@@ -197,28 +209,46 @@ func TestGenerateIsDeterministicAcrossAPIOrderingAndRepeatedRuns(t *testing.T) {
 	}
 }
 
-func TestGenerateFallsBackOnlyForMissingLegacyCatalog(t *testing.T) {
-	client := fixtureClient(t, nil)
-	delete(client.documents, testCatalogPath)
+func TestGenerateKeepsCanonicalFunctionRoutesAfterRecategorization(t *testing.T) {
 	output := filepath.Join(t.TempDir(), "standard-library")
+	catalog := mutateCatalog(t, func(value *apicatalog.Catalog) {
+		value.Categories[0].Functions[0], value.Categories[2].Functions[0] = value.Categories[2].Functions[0], value.Categories[0].Functions[0]
+	})
 
-	if err := Generate(context.Background(), client, Options{IndexURL: testIndexURL, Version: "2.0.0-alpha.46", OutputDir: output}); err != nil {
+	if err := Generate(context.Background(), fixtureClient(t, map[string]string{testCatalogPath: catalog}), Options{
+		IndexURL:  testIndexURL,
+		Version:   "2.0.0-alpha.46",
+		OutputDir: output,
+	}); err != nil {
 		t.Fatal(err)
 	}
 
-	functions := readFile(t, filepath.Join(output, "functions", "_index.md"))
-	for _, alias := range []string{"/docs/standard-library/arrays/", "/docs/stdlib/types/"} {
-		if !strings.Contains(functions, alias) {
-			t.Errorf("flat fallback does not contain legacy alias %q", alias)
-		}
+	abs := readFile(t, filepath.Join(output, "functions", "abs.md"))
+	if !strings.Contains(abs, `href="/docs/standard-library/arrays/"`) {
+		t.Fatal("recategorized abs page does not use its new category breadcrumb")
+	}
+	if _, err := os.Stat(filepath.Join(output, "arrays", "abs.md")); !os.IsNotExist(err) {
+		t.Fatalf("recategorization changed the canonical abs route: %v", err)
+	}
+}
+
+func TestGenerateRequiresCatalogAndPreservesPreviousOutput(t *testing.T) {
+	client := fixtureClient(t, nil)
+	delete(client.documents, testCatalogPath)
+	output := filepath.Join(t.TempDir(), "standard-library")
+	if err := os.MkdirAll(output, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(output, "sentinel"), []byte("previous output"), 0o644); err != nil {
+		t.Fatal(err)
 	}
 
-	if _, err := os.Stat(filepath.Join(output, "math", "_index.md")); !os.IsNotExist(err) {
-		t.Fatalf("legacy fallback generated a category page: %v", err)
+	err := Generate(context.Background(), client, Options{IndexURL: testIndexURL, Version: "2.0.0-alpha.46", OutputDir: output})
+	if err == nil || !strings.Contains(err.Error(), "404 Not Found") {
+		t.Fatalf("Generate error = %v, want required catalog 404", err)
 	}
-
-	if strings.Contains(functions, "stdlibKind") {
-		t.Error("legacy fallback added grouped-navigation labels")
+	if got := readFile(t, filepath.Join(output, "sentinel")); got != "previous output" {
+		t.Fatalf("previous output = %q", got)
 	}
 }
 
@@ -260,10 +290,10 @@ func TestGenerateRejectsInvalidPublication(t *testing.T) {
 		{name: "unsupported catalog schema", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: strings.Replace(validCatalog, `"schemaVersion": 1`, `"schemaVersion": 2`, 1)}, want: "unsupported API Catalog schema version"},
 		{name: "wrong catalog id", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: strings.Replace(validCatalog, `"montferret/core"`, `"montferret/other"`, 1)}, want: "does not match API id"},
 		{name: "catalog version mismatch", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: strings.Replace(validCatalog, `"2.0.0-alpha.46"`, `"2.0.0-alpha.45"`, 1)}, want: "does not match API version"},
-		{name: "unknown catalog function", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: strings.Replace(validCatalog, `"abs"`, `"missing"`, 1)}, want: "unknown global function"},
+		{name: "unknown catalog function", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: strings.Replace(validCatalog, `"abs"`, `"missing"`, 1)}, want: "unknown function"},
+		{name: "unknown catalog namespace", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.Categories[1].Functions[0].Namespace = "io::missing" })}, want: "unknown API namespace"},
 		{name: "uncategorized function", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.Categories = value.Categories[1:] })}, want: "is not assigned"},
-		{name: "missing namespace root", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.NamespaceRoots = []string{"t"} })}, want: `root "io" is not declared`},
-		{name: "unknown namespace root", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.NamespaceRoots = []string{"io", "t", "z"} })}, want: `root "z" does not cover`},
+		{name: "uncategorized namespaced function", version: "2.0.0-alpha.46", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.Categories[1].Functions = value.Categories[1].Functions[1:] })}, want: "io::fs::read"},
 	}
 
 	for _, test := range tests {
@@ -285,7 +315,7 @@ func TestGenerateRejectsHTTPAndRedirectFailures(t *testing.T) {
 
 	tests := []struct {
 		name   string
-		client httpClient
+		client HTTPClient
 		want   string
 	}{
 		{name: "index HTTP status", client: &recordingClient{documents: map[string]string{}}, want: "404 Not Found"},
@@ -323,7 +353,7 @@ func TestGeneratePreservesPreviousOutputOnCatalogAndRenderFailures(t *testing.T)
 		want      string
 	}{
 		{name: "invalid catalog", overrides: map[string]string{testCatalogPath: `{`}, want: "parse Ferret API Catalog"},
-		{name: "route collision", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.Categories[0].ID = "io" })}, want: "route collides"},
+		{name: "route collision", overrides: map[string]string{testCatalogPath: mutateCatalog(t, func(value *apicatalog.Catalog) { value.Categories[0].ID = "functions" })}, want: "route collides"},
 	}
 
 	for _, test := range tests {

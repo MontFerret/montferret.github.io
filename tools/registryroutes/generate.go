@@ -1,3 +1,5 @@
+// Package registryroutes expands the built Registry shell across published
+// Registry routes after search indexing.
 package registryroutes
 
 import (
@@ -18,7 +20,8 @@ const schemaVersion = 1
 
 var routeSegmentPattern = regexp.MustCompile(`^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$`)
 
-type httpClient interface {
+// HTTPClient executes Registry artifact requests for Generate.
+type HTTPClient interface {
 	Do(*http.Request) (*http.Response, error)
 }
 
@@ -51,7 +54,7 @@ type moduleDocumentVersion struct {
 // Generate enumerates the live Registry and copies the built Registry shell to
 // every published owner, module, and version route. Call it after Pagefind so
 // duplicate shells are not added to global search.
-func Generate(ctx context.Context, client httpClient, baseURL, shellPath, outputRoot string) error {
+func Generate(ctx context.Context, client HTTPClient, baseURL, shellPath, outputRoot string) error {
 	base, err := url.Parse(baseURL)
 	if err != nil || base.Scheme != "https" && base.Scheme != "http" || base.Host == "" {
 		return fmt.Errorf("invalid Registry base URL %q", baseURL)
@@ -132,7 +135,7 @@ func Generate(ctx context.Context, client httpClient, baseURL, shellPath, output
 	return nil
 }
 
-func getJSON(ctx context.Context, client httpClient, registryBase, endpoint *url.URL, destination any) error {
+func getJSON(ctx context.Context, client HTTPClient, registryBase, endpoint *url.URL, destination any) error {
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
 	if err != nil {
 		return err

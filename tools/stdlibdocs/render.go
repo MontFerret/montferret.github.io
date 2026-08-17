@@ -15,14 +15,6 @@ import (
 )
 
 type (
-	namespaceNode struct {
-		Name      string
-		Segment   string
-		Real      bool
-		Functions []api.Function
-		Children  map[string]*namespaceNode
-	}
-
 	functionPage struct {
 		QualifiedName string
 		FunctionID    string
@@ -39,6 +31,11 @@ type (
 	functionCategory struct {
 		ID    string
 		Title string
+	}
+
+	categorizedFunction struct {
+		Identity functionIdentity
+		Function api.Function
 	}
 
 	signatureView struct {
@@ -79,27 +76,6 @@ type (
 )
 
 var (
-	legacyFunctionAliases = []string{
-		"/docs/standard-library/arrays/",
-		"/docs/standard-library/collections/",
-		"/docs/standard-library/datetime/",
-		"/docs/standard-library/math/",
-		"/docs/standard-library/objects/",
-		"/docs/standard-library/path/",
-		"/docs/standard-library/strings/",
-		"/docs/standard-library/types/",
-		"/docs/standard-library/utils/",
-		"/docs/stdlib/arrays/",
-		"/docs/stdlib/collections/",
-		"/docs/stdlib/datetime/",
-		"/docs/stdlib/math/",
-		"/docs/stdlib/objects/",
-		"/docs/stdlib/path/",
-		"/docs/stdlib/strings/",
-		"/docs/stdlib/types/",
-		"/docs/stdlib/utils/",
-	}
-
 	functionTemplate = template.Must(template.New("function").Parse(`
 {{ with .Breadcrumb }}<nav class="stdlib-api-breadcrumbs" aria-label="Breadcrumb">
   <a href="/docs/standard-library/">Standard Library</a><span aria-hidden="true">/</span>
@@ -147,86 +123,10 @@ var (
 )
 
 func renderReference(root string, reference *api.Reference, catalog *apicatalog.Catalog) error {
-	rootNode := buildNamespaceTree(reference)
 	if catalog == nil {
-		return renderFlatReference(root, rootNode)
+		return fmt.Errorf("cannot render Standard Library without an API Catalog")
 	}
 
-	return renderCatalogReference(root, rootNode, catalog)
-}
-
-func buildNamespaceTree(reference *api.Reference) *namespaceNode {
-	namespaces := append([]api.Namespace(nil), reference.Namespaces...)
-	sort.Slice(namespaces, func(i, j int) bool { return namespaces[i].Name < namespaces[j].Name })
-
-	rootNode := &namespaceNode{Children: make(map[string]*namespaceNode)}
-	for _, namespace := range namespaces {
-		functions := append([]api.Function(nil), namespace.Functions...)
-		sort.Slice(functions, func(i, j int) bool { return functions[i].Name < functions[j].Name })
-
-		if namespace.Name == "" {
-			rootNode.Functions = functions
-
-			continue
-		}
-
-		node := rootNode
-		segments := strings.Split(namespace.Name, "::")
-		qualified := make([]string, 0, len(segments))
-		for _, segment := range segments {
-			qualified = append(qualified, segment)
-			child := node.Children[segment]
-			if child == nil {
-				child = &namespaceNode{
-					Name:     strings.Join(qualified, "::"),
-					Segment:  segment,
-					Children: make(map[string]*namespaceNode),
-				}
-				node.Children[segment] = child
-			}
-
-			node = child
-		}
-
-		node.Real = true
-		node.Functions = functions
-	}
-
-	return rootNode
-}
-
-func renderFlatReference(root string, rootNode *namespaceNode) error {
-	paths := make(map[string]string)
-	if len(rootNode.Functions) > 0 {
-		functionsRoot := filepath.Join(root, "functions")
-		if err := registerRoute(paths, "functions", "global functions"); err != nil {
-			return err
-		}
-
-		if err := writeSection(functionsRoot, sectionOptions{
-			SidebarTitle: "Functions",
-			Title:        "Global functions",
-			Description:  "Functions in the global Ferret namespace.",
-			Aliases:      legacyFunctionAliases,
-		}); err != nil {
-			return err
-		}
-
-		if err := writeFunctions(functionsRoot, "", rootNode.Functions, paths, "functions", nil); err != nil {
-			return err
-		}
-	}
-
-	for _, segment := range sortedNodeKeys(rootNode.Children) {
-		if err := writeNamespace(root, rootNode.Children[segment], paths, nil, 0, ""); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func renderCatalogReference(root string, rootNode *namespaceNode, catalog *apicatalog.Catalog) error {
 	paths := make(map[string]string)
 	functionsRoot := filepath.Join(root, "functions")
 	if err := registerRoute(paths, "functions", "global functions"); err != nil {
@@ -245,45 +145,68 @@ func renderCatalogReference(root string, rootNode *namespaceNode, catalog *apica
 		return err
 	}
 
-	globalFunctions := make(map[string]api.Function, len(rootNode.Functions))
-	for _, function := range rootNode.Functions {
-		globalFunctions[function.Name] = function
+	apiFunctions := make(map[functionIdentity]api.Function)
+	for _, namespace := range reference.Namespaces {
+		for _, function := range namespace.Functions {
+			apiFunctions[functionIdentity{Namespace: namespace.Name, Name: function.Name}] = function
+		}
 	}
 
-	functionCategories := make(map[string]functionCategory, len(rootNode.Functions))
+	functionCategories := make(map[functionIdentity]functionCategory, len(apiFunctions))
 	for index, category := range catalog.Categories {
 		if err := registerRoute(paths, category.ID, "category "+category.ID); err != nil {
 			return err
 		}
 
-		functions := make([]api.Function, 0, len(category.Functions))
-		for _, name := range category.Functions {
-			function, exists := globalFunctions[name]
-			if !exists {
-				return fmt.Errorf("cannot render category %q: global function %q is missing", category.ID, name)
+		aliases := categoryAliases(category.ID)
+		for _, alias := range aliases {
+			if err := registerRoute(paths, alias, "alias for category "+category.ID); err != nil {
+				return err
 			}
-
-			functions = append(functions, function)
-			functionCategories[name] = functionCategory{ID: category.ID, Title: category.Title}
 		}
 
-		if err := writeCategory(filepath.Join(root, category.ID), category, functions, (index+1)*10); err != nil {
+		functions := make([]categorizedFunction, 0, len(category.Functions))
+		for _, reference := range category.Functions {
+			identity := functionIdentity{Namespace: reference.Namespace, Name: reference.Name}
+			function, exists := apiFunctions[identity]
+			if !exists {
+				return fmt.Errorf("cannot render category %q: function %q is missing", category.ID, identity)
+			}
+
+			functions = append(functions, categorizedFunction{Identity: identity, Function: function})
+			functionCategories[identity] = functionCategory{ID: category.ID, Title: category.Title}
+		}
+
+		if err := writeCategory(filepath.Join(root, category.ID), category, functions, aliases, (index+1)*10); err != nil {
 			return err
 		}
 	}
 
-	if err := writeFunctions(functionsRoot, "", rootNode.Functions, paths, "functions", functionCategories); err != nil {
-		return err
+	identities := make([]functionIdentity, 0, len(apiFunctions))
+	for identity := range apiFunctions {
+		identities = append(identities, identity)
 	}
-
-	for index, rootName := range catalog.NamespaceRoots {
-		node := rootNode.Children[rootName]
-		if node == nil {
-			return fmt.Errorf("cannot render namespace root %q: API namespace tree is missing", rootName)
+	sort.Slice(identities, func(i, j int) bool {
+		if identities[i].Namespace != identities[j].Namespace {
+			return identities[i].Namespace < identities[j].Namespace
 		}
 
-		weight := (len(catalog.Categories) + index + 1) * 10
-		if err := writeNamespace(root, node, paths, nil, weight, "Namespace"); err != nil {
+		return identities[i].Name < identities[j].Name
+	})
+
+	for _, identity := range identities {
+		category, exists := functionCategories[identity]
+		if !exists {
+			return fmt.Errorf("cannot render function %q without a category", identity)
+		}
+
+		route := functionRoute(identity)
+		if err := registerRoute(paths, route, "function "+identity.String()); err != nil {
+			return err
+		}
+
+		filename := filepath.Join(root, filepath.FromSlash(route)) + ".md"
+		if err := writeFunction(filename, identity, apiFunctions[identity], &category); err != nil {
 			return err
 		}
 	}
@@ -291,7 +214,7 @@ func renderCatalogReference(root string, rootNode *namespaceNode, catalog *apica
 	return nil
 }
 
-func writeCategory(root string, category apicatalog.Category, functions []api.Function, weight int) error {
+func writeCategory(root string, category apicatalog.Category, functions []categorizedFunction, aliases []string, weight int) error {
 	page := categoryPage{
 		Title:       category.Title,
 		Description: category.Description,
@@ -300,9 +223,9 @@ func writeCategory(root string, category apicatalog.Category, functions []api.Fu
 
 	for _, function := range functions {
 		page.Functions = append(page.Functions, categoryFunctionView{
-			Name:    function.Name,
-			URL:     "/docs/standard-library/functions/" + function.Name + "/",
-			Summary: functionSummary(function),
+			Name:    function.Identity.String(),
+			URL:     "/docs/standard-library/" + functionRoute(function.Identity) + "/",
+			Summary: functionSummary(function.Function),
 		})
 	}
 
@@ -315,78 +238,11 @@ func writeCategory(root string, category apicatalog.Category, functions []api.Fu
 		SidebarTitle: category.Title,
 		Title:        category.Title,
 		Description:  category.Description,
-		Kind:         "Global functions",
-		Aliases:      []string{"/docs/stdlib/" + category.ID + "/"},
+		Kind:         "Category",
+		Aliases:      aliases,
 		Weight:       weight,
 		Body:         body.Bytes(),
 	})
-}
-
-func writeNamespace(root string, node *namespaceNode, paths map[string]string, parentSegments []string, weight int, kind string) error {
-	segments := append(append([]string(nil), parentSegments...), node.Segment)
-	relative := filepath.Join(segments...)
-	if err := registerRoute(paths, relative, "namespace "+node.Name); err != nil {
-		return err
-	}
-
-	description := "Namespaces beneath the " + node.Name + " Ferret namespace prefix."
-	if node.Real {
-		description = "Functions in the " + node.Name + " Ferret namespace."
-	}
-
-	if err := writeSection(filepath.Join(root, relative), sectionOptions{
-		SidebarTitle: node.Segment,
-		Title:        node.Name,
-		Description:  description,
-		Kind:         kind,
-		Aliases:      namespaceAliases(node.Name),
-		Weight:       weight,
-	}); err != nil {
-		return err
-	}
-
-	if err := writeFunctions(filepath.Join(root, relative), node.Name, node.Functions, paths, relative, nil); err != nil {
-		return err
-	}
-
-	for index, segment := range sortedNodeKeys(node.Children) {
-		childWeight := 0
-		if weight != 0 {
-			childWeight = (index + 1) * 10
-		}
-
-		if err := writeNamespace(root, node.Children[segment], paths, segments, childWeight, kind); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func writeFunctions(root, namespace string, functions []api.Function, paths map[string]string, parentRoute string, categories map[string]functionCategory) error {
-	for _, function := range functions {
-		route := filepath.Join(parentRoute, function.Name)
-		qualified := qualifiedName(namespace, function.Name)
-		if err := registerRoute(paths, route, "function "+qualified); err != nil {
-			return err
-		}
-
-		var category *functionCategory
-		if categories != nil {
-			value, exists := categories[function.Name]
-			if !exists {
-				return fmt.Errorf("cannot render global function %q without a category", function.Name)
-			}
-
-			category = &value
-		}
-
-		if err := writeFunction(filepath.Join(root, function.Name+".md"), namespace, function, category); err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 func writeSection(root string, options sectionOptions) error {
@@ -427,12 +283,12 @@ func writeSection(root string, options sectionOptions) error {
 	return writePage(filepath.Join(root, "_index.md"), frontMatter, body)
 }
 
-func writeFunction(filename, namespace string, function api.Function, category *functionCategory) error {
-	qualified := qualifiedName(namespace, function.Name)
+func writeFunction(filename string, identity functionIdentity, function api.Function, category *functionCategory) error {
+	qualified := identity.String()
 	signatures := sortedSignatures(function.Signatures)
 	page := functionPage{
 		QualifiedName: qualified,
-		FunctionID:    functionAnchor(namespace, function.Name),
+		FunctionID:    functionAnchor(identity.Namespace, identity.Name),
 		Signatures:    make([]signatureView, 0, len(signatures)),
 	}
 
@@ -440,7 +296,7 @@ func writeFunction(filename, namespace string, function api.Function, category *
 		page.Breadcrumb = &breadcrumbView{
 			CategoryTitle: category.Title,
 			CategoryURL:   "/docs/standard-library/" + category.ID + "/",
-			FunctionName:  function.Name,
+			FunctionName:  identity.String(),
 		}
 	}
 
@@ -475,13 +331,14 @@ func writeFunction(filename, namespace string, function api.Function, category *
 	}
 
 	frontMatter := map[string]any{
-		"title":           qualified,
-		"sidebarTitle":    function.Name,
-		"description":     description,
-		"type":            "docs",
-		"draft":           false,
-		"sidebarHidden":   true,
-		"stdlibGenerated": true,
+		"title":               qualified,
+		"sidebarTitle":        function.Name,
+		"description":         description,
+		"type":                "docs",
+		"draft":               false,
+		"sidebarHidden":       true,
+		"stdlibLandingHidden": true,
+		"stdlibGenerated":     true,
 	}
 
 	return writePage(filename, frontMatter, body.Bytes())
@@ -532,25 +389,18 @@ func writePage(filename string, frontMatter map[string]any, body []byte) error {
 }
 
 func registerRoute(paths map[string]string, route, identity string) error {
-	key := strings.ToLower(filepath.ToSlash(route))
+	normalized := filepath.ToSlash(route)
+	if !strings.HasPrefix(normalized, "/") {
+		normalized = "/docs/standard-library/" + strings.Trim(normalized, "/") + "/"
+	}
+	key := strings.ToLower(normalized)
 	if previous, exists := paths[key]; exists {
-		return fmt.Errorf("cannot render %s at %q: route collides with %s", identity, filepath.ToSlash(route), previous)
+		return fmt.Errorf("cannot render %s at %q: route collides with %s", identity, normalized, previous)
 	}
 
 	paths[key] = identity
 
 	return nil
-}
-
-func sortedNodeKeys(nodes map[string]*namespaceNode) []string {
-	keys := make([]string, 0, len(nodes))
-	for key := range nodes {
-		keys = append(keys, key)
-	}
-
-	sort.Strings(keys)
-
-	return keys
 }
 
 func sortedSignatures(signatures []api.Signature) []api.Signature {
@@ -608,14 +458,6 @@ func functionSummary(function api.Function) string {
 	}
 
 	return ""
-}
-
-func qualifiedName(namespace, function string) string {
-	if namespace == "" {
-		return function
-	}
-
-	return namespace + "::" + function
 }
 
 func functionAnchor(namespace, function string) string {
@@ -677,15 +519,35 @@ func paragraphs(value string) [][]string {
 	return result
 }
 
-func namespaceAliases(namespace string) []string {
-	switch namespace {
-	case "io::fs":
-		return []string{"/docs/stdlib/io-fs/"}
-	case "io::net::http":
-		return []string{"/docs/standard-library/io/http/", "/docs/stdlib/io-net-http/"}
-	case "t":
-		return []string{"/docs/standard-library/testing/", "/docs/stdlib/testing/"}
-	default:
-		return nil
+func functionRoute(identity functionIdentity) string {
+	if identity.Namespace == "" {
+		return filepath.ToSlash(filepath.Join("functions", identity.Name))
 	}
+
+	segments := strings.Split(identity.Namespace, "::")
+	segments = append(segments, identity.Name)
+
+	return filepath.ToSlash(filepath.Join(segments...))
+}
+
+func categoryAliases(categoryID string) []string {
+	aliases := []string{"/docs/stdlib/" + categoryID + "/"}
+	switch categoryID {
+	case "io":
+		aliases = append(aliases,
+			"/docs/standard-library/io/fs/",
+			"/docs/stdlib/io-fs/",
+			"/docs/standard-library/io/net/",
+			"/docs/standard-library/io/net/http/",
+			"/docs/standard-library/io/http/",
+			"/docs/stdlib/io-net-http/",
+		)
+	case "testing":
+		aliases = append(aliases,
+			"/docs/standard-library/t/",
+			"/docs/standard-library/t/not/",
+		)
+	}
+
+	return aliases
 }

@@ -25,6 +25,8 @@ const expectations = new Map([
     ["FLATTEN", "/docs/standard-library/functions/flatten/"],
     ["TO_NUMBER", "/docs/standard-library/functions/to_number/"],
     ["IO", "/docs/standard-library/io/"],
+    ["IO::FS::READ", "/docs/standard-library/io/fs/read/"],
+    ["Testing", "/docs/standard-library/testing/"],
 ]);
 
 for (const [term, expectedURL] of expectations) {

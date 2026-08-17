@@ -1,8 +1,9 @@
+// Package stdlibdocs generates static Standard Library reference pages from
+// published Ferret Core API artifacts.
 package stdlibdocs
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -23,7 +24,8 @@ const (
 )
 
 type (
-	httpClient interface {
+	// HTTPClient executes artifact requests for Generate.
+	HTTPClient interface {
 		Do(*http.Request) (*http.Response, error)
 	}
 
@@ -37,7 +39,7 @@ type (
 
 // Generate loads one exact published Ferret Core API and atomically renders its
 // unversioned Hugo content tree.
-func Generate(ctx context.Context, client httpClient, options Options) error {
+func Generate(ctx context.Context, client HTTPClient, options Options) error {
 	if client == nil {
 		return fmt.Errorf("generate Standard Library: HTTP client is required")
 	}
@@ -105,11 +107,6 @@ func Generate(ctx context.Context, client httpClient, options Options) error {
 
 	catalogData, err := getDocument(ctx, client, indexEndpoint, catalogEndpoint)
 	if err != nil {
-		var statusErr *httpStatusError
-		if errors.As(err, &statusErr) && statusErr.StatusCode == http.StatusNotFound {
-			return renderAtomic(options.OutputDir, reference, nil)
-		}
-
 		return fmt.Errorf("load Ferret API Catalog version %q: %w", options.Version, err)
 	}
 
@@ -148,7 +145,7 @@ func exactVersion(index *api.Index, version string) (api.IndexVersion, bool) {
 	return api.IndexVersion{}, false
 }
 
-func getDocument(ctx context.Context, client httpClient, origin, endpoint *url.URL) ([]byte, error) {
+func getDocument(ctx context.Context, client HTTPClient, origin, endpoint *url.URL) ([]byte, error) {
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
 	if err != nil {
 		return nil, err
@@ -167,7 +164,7 @@ func getDocument(ctx context.Context, client httpClient, origin, endpoint *url.U
 	}
 
 	if response.StatusCode != http.StatusOK {
-		return nil, &httpStatusError{Endpoint: endpoint.String(), StatusCode: response.StatusCode, Status: response.Status}
+		return nil, fmt.Errorf("GET %s returned %s", endpoint, response.Status)
 	}
 
 	data, err := io.ReadAll(io.LimitReader(response.Body, maxDocumentSize+1))
