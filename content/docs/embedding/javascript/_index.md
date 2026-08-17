@@ -7,6 +7,6 @@ description: "Embed Ferret in Node.js and browser applications through @montferr
 
 # Embed Ferret in JavaScript
 
-`@montferret/ferret` exposes Ferret to Node.js and modern browsers. It loads the Ferret runtime as WebAssembly and provides JavaScript interfaces for direct execution, reusable plans, parameters, cancellation, and host-defined functions.
+`@montferret/ferret` exposes Ferret to Node.js and modern browsers. It loads the Ferret runtime as WebAssembly and provides JavaScript interfaces for direct execution, reusable plans, parameters, cancellation, host-defined functions, and JavaScript modules with asynchronous lifecycle hooks.
 
-{{< docs-related tiles="embedding-javascript-getting-started,embedding-javascript-executing,embedding-javascript-parameters,embedding-javascript-custom-functions,embedding-javascript-limitations" >}}
+{{< docs-related tiles="embedding-javascript-getting-started,embedding-javascript-executing,embedding-javascript-parameters,embedding-javascript-custom-functions,embedding-javascript-modules,embedding-javascript-limitations" >}}

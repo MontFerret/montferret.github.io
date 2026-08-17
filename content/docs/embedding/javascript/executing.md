@@ -12,7 +12,7 @@ The JavaScript API exposes three runtime objects:
 
 | Object | Responsibility |
 | --- | --- |
-| `Engine` | Owns one Ferret WASM runtime and its registered JavaScript functions. |
+| `Engine` | Owns one Ferret WASM runtime and its registered JavaScript functions and modules. |
 | `Plan` | Holds a compiled FQL program that can be reused. |
 | `Session` | Holds one execution context with captured parameters. |
 
@@ -22,14 +22,14 @@ The package exports TypeScript declarations for the runtime interfaces and their
 
 | API | Input and options |
 | --- | --- |
-| `create(options?: CreateOptions)` | Creates an `Engine`; options cover WASM loading, host functions, and `HTTPOptions`. |
+| `create(options?: CreateOptions)` | Creates an `Engine`; options cover WASM loading, host functions, modules, and `HTTPOptions`. |
 | `Engine.compile(source, options?: CompileOptions)` | Accepts `SourceInput` and an optional cancellation signal. |
 | `Engine.run(source, options?: ExecutionOptions)` | Accepts `SourceInput`, `Params`, and an optional cancellation signal. |
 | `Plan.createSession(options?: SessionOptions)` | Captures `Params` and accepts a signal for session creation. |
 | `Plan.run(options?: ExecutionOptions)` | Runs the plan with parameters and an optional signal. |
 | `Session.run(options?: SessionRunOptions)` | Runs the captured session with an optional signal. |
 
-`SourceInput`, `Params`, `RuntimeFunction`, `HTTPOptions`, and `Version` are also exported. Cancellation options use the standard `AbortSignal` available in supported Node.js and browser environments.
+`SourceInput`, `Params`, `RuntimeFunction`, `HTTPOptions`, and `Version` are also exported. Module integrations can use `ModuleDefinition`, `ModuleLifecycle`, `MaybePromise`, `CompileEvent`, `CompileResultEvent`, `PlanEvent`, `RunEvent`, `RunResultEvent`, and `SessionEvent`. Cancellation options use the standard `AbortSignal` available in supported Node.js and browser environments.
 
 ## Run a one-off program
 
@@ -131,10 +131,11 @@ Invalid source rejects during compilation. Runtime failures reject during execut
 
 - Closing a plan closes its idle sessions.
 - Closing an engine closes its idle plans and sessions.
-- Closing rejects without partial cleanup while compilation or session creation is pending, or while a child session is running.
+- Closing rejects without partial cleanup while compilation or session creation is pending, while a child session is running, or while a child resource is already closing.
+- Once close begins, the resource stays closed even if a lifecycle hook rejects. Remaining cleanup continues, errors are aggregated, and later `close()` calls do not rerun hooks.
 
 Keep the engine alive while the application is using Ferret, then close it in a `finally` block during shutdown.
 
 ## Next steps
 
-{{< docs-related tiles="embedding-javascript-parameters,embedding-javascript-custom-functions,embedding-javascript-limitations" >}}
+{{< docs-related tiles="embedding-javascript-parameters,embedding-javascript-custom-functions,embedding-javascript-modules,embedding-javascript-limitations" >}}

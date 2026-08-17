@@ -1,7 +1,7 @@
 ---
 title: "Runtime and WASM Limitations"
 sidebarTitle: "Runtime and WASM Limitations"
-weight: 50
+weight: 60
 draft: false
 description: "Understand the current environment, loading, networking, and API boundaries of @montferret/ferret."
 ---
@@ -57,10 +57,11 @@ This is a current API limitation, not a claim that WebAssembly can never access 
 
 ## Modules and host integrations
 
-The current JavaScript API can register JavaScript functions. It does not expose APIs for:
+The JavaScript API supports declarative modules made from JavaScript functions and lifecycle callbacks. These modules participate in Ferret Core's engine, plan, and session hooks, but they do not load arbitrary compiled Go modules or expose Go registration machinery.
+
+The package does not expose APIs for:
 
 - registering Go modules or Registry packages
-- adding module lifecycle hooks
 - implementing Ferret host values or capability interfaces in JavaScript
 - registering custom output codecs
 - selecting standard-library groups
@@ -72,7 +73,7 @@ Use native [Go embedding]({{< ref "/docs/embedding/go" >}}) when an application 
 
 ## Browser automation
 
-Running Ferret inside a web browser does not automatically provide Ferret's browser-automation modules. The JavaScript package does not currently expose module registration or a CDP driver, so browser-backed pages, elements, screenshots, and dispatch capabilities are unavailable through this package alone.
+Running Ferret inside a web browser does not automatically provide Ferret's browser-automation modules. JavaScript-defined modules cannot supply the Go host values and CDP driver required for browser-backed pages, elements, screenshots, and dispatch capabilities, so those features remain unavailable through this package alone.
 
 Use a Ferret distribution that registers the appropriate browser modules when an FQL program needs those capabilities.
 
@@ -88,4 +89,4 @@ Multiple engines can exist independently, and plans can create separate sessions
 
 ## Next steps
 
-{{< docs-related tiles="embedding-javascript-getting-started,embedding-javascript-executing,embedding-javascript-custom-functions,embedding-go" >}}
+{{< docs-related tiles="embedding-javascript-getting-started,embedding-javascript-executing,embedding-javascript-custom-functions,embedding-javascript-modules" >}}

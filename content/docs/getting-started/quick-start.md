@@ -102,7 +102,7 @@ return page[~ css`article`]
 
 The `~` operator is FQL’s shorthand query operator. The full query syntax is covered later in the language reference.
 
-HTML support is available in the CLI. When embedding Ferret in a Go application, HTML querying is provided through a module. The current JavaScript package does not expose module registration, so these HTML and browser examples are not available through `@montferret/ferret`.
+HTML support is available in the CLI. When embedding Ferret in a Go application, HTML querying is provided through a module. JavaScript-defined modules cannot supply the Go HTML host values and drivers these examples require, so the HTML and browser examples are not available through `@montferret/ferret`.
 
 ## Drive a browser  
 

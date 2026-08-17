@@ -8,7 +8,7 @@ description: "Register synchronous and asynchronous JavaScript functions for FQL
 
 # Custom Functions
 
-Register JavaScript functions when creating an engine to make application behavior callable from FQL.
+Register JavaScript functions when creating an engine to make application behavior callable from FQL. The `functions` option is the simple shorthand when those functions do not need lifecycle callbacks.
 
 ## Register functions
 
@@ -38,6 +38,12 @@ try {
 Function names are trimmed and canonicalized, including namespace segments. FQL resolution is case-insensitive. Names that normalize to the same function, such as `total` and `TOTAL`, are rejected as duplicates.
 
 The function registry is immutable. Create another engine when an application needs a different set of functions.
+
+## Use modules for lifecycle behavior
+
+Use `defineModule()` and `create({ modules })` when a group of functions also needs to initialize resources, observe compilation or execution, or participate in cleanup. The `functions` shorthand and modules can be used together; Ferret registers the shorthand first and rejects canonical function-name conflicts instead of overriding either implementation.
+
+See [Modules and Lifecycle]({{< ref "/docs/embedding/javascript/modules" >}}) for module validation, asynchronous hooks, lifecycle events, ordering, and error behavior.
 
 ## Arguments and return values
 
@@ -106,4 +112,4 @@ If the underlying operation supports cancellation, capture and use an applicatio
 
 ## Next steps
 
-{{< docs-related tiles="embedding-javascript-parameters,embedding-javascript-executing,embedding-javascript-limitations,language-functions-modules" >}}
+{{< docs-related tiles="embedding-javascript-modules,embedding-javascript-parameters,embedding-javascript-executing,embedding-javascript-limitations" >}}
