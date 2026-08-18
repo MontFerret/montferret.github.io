@@ -35,7 +35,7 @@ return waitfor value loadItems()
     timeout 5s
 {{</ code >}}
 
-The expression is re-evaluated on each attempt, so it can reflect state that changes over time. When the wait runs out, the result reports the timeout rather than raising an error:
+The expression is re-evaluated on every polling cycle, so `waitfor value loadStatus()` may call `loadStatus()` several times before it returns a value other than `none`. When the wait runs out, the result reports the timeout rather than raising an error:
 
 {{< editor lang="fql" >}}
 return waitfor false timeout 50ms every 10ms
@@ -146,6 +146,23 @@ In event mode, `waitfor` subscribes to an event source and waits for a matching 
 let event = waitfor event "navigation" in page timeout 5s
 {{</ code >}}
 
+The conceptual form is `WAITFOR EVENT <expression> IN <expression>`. Both operands are ordinary expressions: the expression after `event` must produce a String event name, and the expression after `in` must produce an observable source. A parameter can be used directly as the source:
+
+{{< code lang="fql" >}}
+return waitfor event "message" in @source
+{{</ code >}}
+
+Operands can also be composed:
+
+{{< code lang="fql" >}}
+return waitfor event @eventName ?? "message" in @source ?? @fallback
+    timeout 5s
+{{</ code >}}
+
+When several top-level `in` operators could be the source delimiter, the parser uses the last viable one. Therefore `waitfor event @a in @b in @source` is interpreted as `waitfor event (@a in @b) in @source`. If the intended source expression itself contains a top-level `in`, group it explicitly: `waitfor event @a in (@b in @source)`. These examples illustrate parsing only; the evaluated source must still be observable.
+
+The event-name and source expressions are each evaluated once while the event wait is being constructed, before the subscription begins. Inspecting several stream messages does not re-evaluate either operand. An explicit recovery retry starts a new operation attempt and evaluates them again. This differs from `waitfor value`, whose watched expression is evaluated on every polling cycle.
+
 Event timeouts use the same Duration conversion and non-negative scheduling policy as condition waits.
 
 A `when` filter accepts only events that match a condition. Inside the filter, the incoming event is available as `.`. Multiple `when` clauses must all pass.
@@ -196,6 +213,8 @@ timeout 10s
 {{</ code >}}
 
 All subscriptions are established concurrently. A timeout, cancellation, setup failure, trigger failure, stream error, or completed wait closes every remaining subscription. `timeout`, `trigger`, `on timeout`, and `on error` apply once to the whole group.
+
+As with a singular event wait, every arm's event-name and source expressions are evaluated once per operation attempt. The resulting subscriptions are then established concurrently.
 
 ### Triggering the event
 
