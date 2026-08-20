@@ -8,7 +8,7 @@ description: "Addition, subtraction, multiplication, division, modulus, and the 
 
 # Arithmetic operators
 
-FQL arithmetic is defined directly over native numbers and temporal values. Operators do not implicitly route arbitrary values through `to_number`, `to_duration`, or `to_datetime`.
+FQL defines native arithmetic directly over numbers and temporal values. Host values can add their own binary operator behavior through Go runtime capabilities. Operators do not implicitly route arbitrary values through `to_number`, `to_duration`, or `to_datetime`.
 
 FQL supports:
 
@@ -51,7 +51,7 @@ return to_number(input) - 2
 {{</ editor >}}
 
 {{< notification type="info" >}}
-Implicit numeric-string, Boolean, <code>none</code>, collection, Binary, and opaque host-value arithmetic is no longer supported. Use an explicit <code>TO_*</code> function when conversion is intended.
+Implicit numeric-string, Boolean, <code>none</code>, collection, Binary, and opaque host-value arithmetic is not supported. Use an explicit <code>TO_*</code> function when conversion is intended. A host value participates only when it implements the matching arithmetic capability.
 {{</ notification >}}
 
 ## String concatenation
@@ -74,6 +74,26 @@ Expressions are evaluated from left to right. A later String does not rescue an 
 {{< code lang="fql" >}}
 true + 1 + " items" // fails at true + 1
 {{</ code >}}
+
+## Host value arithmetic
+
+Go host values can implement binary arithmetic without changing FQL syntax. Ferret checks a separate capability for each operator:
+
+| Operator | Capability | Left-hand method | Right-hand method |
+| --- | --- | --- | --- |
+| `+` | `Addable` | `Add` | `RightAdd` |
+| `-` | `Subtractable` | `Subtract` | `RightSubtract` |
+| `*` | `Multipliable` | `Multiply` | `RightMultiply` |
+| `/` | `Dividable` | `Divide` | `RightDivide` |
+| `%` | `Modulable` | `Mod` | `RightMod` |
+
+For `@host - 10`, Ferret calls the host's `Subtract` method. For `10 - @host`, it calls the host's `RightSubtract` method with `10` as the original left operand. Ferret never substitutes `host.Subtract(10)` for the right-hand form.
+
+Native behavior has precedence. Supported numeric and temporal pairs use their built-in implementation, and an actual String on either side of `+` always triggers String concatenation. Host dispatch begins only when the operand pair would otherwise be invalid.
+
+A host method may return `runtime.ErrUnsupportedOperands` to decline a particular operand arrangement. Ferret then tries the other operand's right-hand method. Any other host error stops evaluation immediately. If neither operand handles the pair, the expression reports the normal invalid-operation diagnostic.
+
+The five capabilities are independent; addition does not imply subtraction, and multiplication does not imply division or modulus. See [Go Host Values]({{< ref "docs/embedding/go/host-values" >}}) for the interface definitions and an implementation example.
 
 ## Temporal arithmetic
 

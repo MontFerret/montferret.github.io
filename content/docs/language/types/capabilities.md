@@ -111,6 +111,16 @@ Built-in types define comparison behavior directly. Host values may compare by i
 
 See [Type Ordering]({{< ref "ordering" >}}) for the full ordering model.
 
+### Arithmetic
+
+Host values can define binary arithmetic with independent capabilities for addition, subtraction, multiplication, division, and modulus. Supporting one operation does not imply support for another.
+
+Each capability explicitly handles both operand positions. For example, `host + value` uses the host's `Add` method, while `value + host` uses its `RightAdd` method. The right-hand method receives the original left operand; Ferret never silently reverses subtraction, division, or modulus.
+
+Native arithmetic runs first, including String-triggered concatenation. Host capability negotiation is used only when the native operand pair is otherwise unsupported. A host implementation can decline one operand arrangement so Ferret can try the other value's right-hand method; genuine host errors stop evaluation immediately.
+
+These capabilities apply only to binary operators. Unary arithmetic and increment or decrement remain defined by native runtime semantics.
+
 ### Sortable
 
 A sortable value can be sorted in place.
@@ -232,6 +242,11 @@ This check happens at runtime, not at parse time. FQL does not statically verify
 | `dispatch ... in value` | Dispatchable |
 | `value == other` / `value != other` | Equatable |
 | `value < other` and other relational comparisons | Comparable |
+| `value + other` | Addable |
+| `value - other` | Subtractable |
+| `value * other` | Multipliable |
+| `value / other` | Dividable |
+| `value % other` | Modulable |
 | `value[index]` | Readable (by index) |
 | `value.key` / `value["key"]` | Readable (by key) |
 | `value[index] = x` | Writable (by index) |

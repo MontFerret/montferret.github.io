@@ -236,6 +236,58 @@ type Query struct {
 }
 {{</ code >}}
 
+### Arithmetic operators
+
+Host values can participate in binary arithmetic by implementing one primitive capability per operator. Each capability has an ordinary method for the host value on the left and an explicit right-hand method for the host value on the right:
+
+| Interface | Left-hand method | Right-hand method | FQL operator |
+|-----------|------------------|-------------------|--------------|
+| `Addable` | `Add(ctx, right)` | `RightAdd(ctx, left)` | `+` |
+| `Subtractable` | `Subtract(ctx, right)` | `RightSubtract(ctx, left)` | `-` |
+| `Multipliable` | `Multiply(ctx, right)` | `RightMultiply(ctx, left)` | `*` |
+| `Dividable` | `Divide(ctx, right)` | `RightDivide(ctx, left)` | `/` |
+| `Modulable` | `Mod(ctx, right)` | `RightMod(ctx, left)` | `%` |
+
+For `host + value`, Ferret calls `host.Add(ctx, value)`. For `value + host`, it calls `host.RightAdd(ctx, value)`. Right-hand methods receive the original left operand; Ferret does not reverse non-commutative operations.
+
+This `Score` value supports addition in both positions. Its ordinary `runtime.Value` methods are omitted here for brevity:
+
+{{< code lang="go" >}}
+var _ runtime.Addable = (*Score)(nil)
+
+func (s *Score) Add(ctx context.Context, right runtime.Value) (runtime.Value, error) {
+    if err := ctx.Err(); err != nil {
+        return runtime.None, err
+    }
+
+    amount, ok := right.(runtime.Int)
+    if !ok {
+        return runtime.None, runtime.ErrUnsupportedOperands
+    }
+
+    return &Score{Value: s.Value + int64(amount)}, nil
+}
+
+func (s *Score) RightAdd(ctx context.Context, left runtime.Value) (runtime.Value, error) {
+    if err := ctx.Err(); err != nil {
+        return runtime.None, err
+    }
+
+    amount, ok := left.(runtime.Int)
+    if !ok {
+        return runtime.None, runtime.ErrUnsupportedOperands
+    }
+
+    return &Score{Value: int64(amount) + s.Value}, nil
+}
+{{</ code >}}
+
+Return `runtime.ErrUnsupportedOperands` when the capability exists but does not accept a particular operand arrangement. Ferret then tries the other operand's right-hand method. Return any other error for a genuine execution failure; Ferret propagates it immediately without trying another implementation. If both operands decline, the expression produces the normal invalid-operation error.
+
+The primitive capabilities are independent. Implementing `Addable` does not imply subtraction, and implementing `Multipliable` does not imply division or modulus. `Additive`, `Multiplicative`, and `Arithmetic` combine primitive interfaces for compile-time assertions, but runtime dispatch never checks these compound interfaces.
+
+Native arithmetic remains authoritative. In particular, if either `+` operand is a native String, Ferret performs String concatenation before checking `Addable`. Unary `+`, unary `-`, `++`, and `--` do not use these binary capabilities.
+
 ### Comparison and other capabilities
 
 | Interface | Method | Purpose |
