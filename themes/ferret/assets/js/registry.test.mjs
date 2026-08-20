@@ -11,6 +11,7 @@ import {
     apiReferenceAnchorIDs,
     apiSignature,
     filterModules,
+    formatAPIType,
     hasAPIReference,
     loadAPIReference,
     modulePath,
@@ -222,6 +223,70 @@ test("Barn API Reference v1 renders structured Ferret metadata", () => {
     assert.match(html, />Throws</);
     assert.ok(html.indexOf("ArchiveError") < html.indexOf("PathError"));
     assert.match(html, /<strong>Deprecated\.<\/strong> Use UNPACK instead\./);
+});
+
+test("the transition reader validates, normalizes, and renders recursive API types", () => {
+    const reference = clone(archiveAPIReference);
+    const signature = reference.namespaces[0].functions[0].signatures[0];
+    signature.parameters[0].type = {
+        kind: "union",
+        types: [
+            { kind: "named", name: "String" },
+            { kind: "named", name: "String" },
+            { kind: "list", element: { kind: "named", name: "Binary" } }
+        ]
+    };
+    signature.parameters[1].type = { kind: "named", name: "Object?" };
+    signature.return.type = {
+        kind: "list",
+        element: {
+            kind: "union",
+            types: [
+                { kind: "named", name: "String" },
+                { kind: "named", name: "String" }
+            ]
+        }
+    };
+
+    const normalized = validateAPIReference(reference, reference.id, reference.version);
+    assert.deepEqual(normalized.namespaces[0].functions[0].signatures[0].parameters[0].type, {
+        kind: "union",
+        types: [
+            { kind: "named", name: "String" },
+            { kind: "list", element: { kind: "named", name: "Binary" } }
+        ]
+    });
+    assert.deepEqual(normalized.namespaces[0].functions[0].signatures[0].return.type, {
+        kind: "list",
+        element: { kind: "named", name: "String" }
+    });
+    assert.equal(formatAPIType(normalized.namespaces[0].functions[0].signatures[0].parameters[0].type), "String | [Binary]");
+
+    const html = renderAPIReference(normalized);
+    assert.match(html, /String \| \[Binary\]/);
+    assert.match(html, /\[String\]/);
+});
+
+test("recursive API type variants are closed and fail on malformed children", () => {
+    const invalidTypes = [
+        { kind: "unknown", name: "Any" },
+        { kind: "named", name: " " },
+        { kind: "named", name: "Any", element: { kind: "named", name: "String" } },
+        { kind: "union", types: [{ kind: "named", name: "Any" }] },
+        { kind: "union", types: [{ kind: "named", name: "Any" }, { kind: "named", name: " " }] },
+        { kind: "union", name: "Any", types: [{ kind: "named", name: "String" }, { kind: "named", name: "Object" }] },
+        { kind: "list" },
+        { kind: "list", name: "Any", element: { kind: "named", name: "String" } }
+    ];
+
+    for (const type of invalidTypes) {
+        const reference = clone(archiveAPIReference);
+        reference.namespaces[0].functions[0].signatures[0].parameters[0].type = type;
+        assert.throws(
+            () => validateAPIReference(reference, reference.id, reference.version),
+            RegistryPayloadError
+        );
+    }
 });
 
 test("API rendering supports global and nested namespaces, overloads, and escaped prose", () => {

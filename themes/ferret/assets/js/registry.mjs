@@ -37,6 +37,81 @@ function nonBlankSingleLine(value) {
     return nonBlankString(value) && !/[\r\n]/.test(value);
 }
 
+function apiTypeKey(value) {
+    switch (value.kind) {
+        case "named":
+            return `named:${JSON.stringify(value.name)}`;
+        case "union":
+            return `union:${value.types.map((member) => apiTypeKey(member)).map((key) => `${key.length}:${key}`).join("")}`;
+        case "list":
+            return `list:${apiTypeKey(value.element)}`;
+        default:
+            return "invalid";
+    }
+}
+
+function validateStructuredAPIType(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value) || typeof value.kind !== "string") {
+        invalidAPIReference("contains an invalid structured type");
+    }
+
+    switch (value.kind) {
+        case "named":
+            if (!objectHasOnly(value, ["kind", "name"]) || !nonBlankSingleLine(value.name)) {
+                invalidAPIReference("contains an invalid named type");
+            }
+            return { kind: "named", name: value.name };
+        case "union": {
+            if (!objectHasOnly(value, ["kind", "types"]) || !Array.isArray(value.types) || value.types.length < 2) {
+                invalidAPIReference("contains an invalid union type");
+            }
+
+            const types = [];
+            const keys = new Set();
+            for (const member of value.types) {
+                const normalized = validateStructuredAPIType(member);
+                const key = apiTypeKey(normalized);
+                if (keys.has(key)) continue;
+                keys.add(key);
+                types.push(normalized);
+            }
+
+            return types.length === 1 ? types[0] : { kind: "union", types };
+        }
+        case "list":
+            if (!objectHasOnly(value, ["kind", "element"])) {
+                invalidAPIReference("contains an invalid list type");
+            }
+            return { kind: "list", element: validateStructuredAPIType(value.element) };
+        default:
+            invalidAPIReference("contains an unknown type kind");
+    }
+}
+
+function validateAPIType(value) {
+    if (typeof value === "string") {
+        if (!nonBlankSingleLine(value)) invalidAPIReference("contains an invalid legacy type");
+        return value;
+    }
+
+    return validateStructuredAPIType(value);
+}
+
+export function formatAPIType(value) {
+    if (typeof value === "string") return value;
+
+    switch (value?.kind) {
+        case "named":
+            return value.name;
+        case "union":
+            return value.types.map((member) => formatAPIType(member)).join(" | ");
+        case "list":
+            return `[${formatAPIType(value.element)}]`;
+        default:
+            throw new RegistryPayloadError("The API Reference contains an invalid type.");
+    }
+}
+
 export function hasAPIReference(versionDocument) {
     return objectHas(versionDocument?.content, "api");
 }
@@ -111,9 +186,10 @@ export function validateAPIReference(document, expectedID, expectedVersion) {
 
                     const hasType = objectHas(parameter, "type");
                     const hasDescription = objectHas(parameter, "description");
-                    if (hasType !== hasDescription || (hasType && (!nonBlankSingleLine(parameter.type) || !nonBlankString(parameter.description)))) {
+                    if (hasType !== hasDescription || (hasDescription && !nonBlankString(parameter.description))) {
                         invalidAPIReference("contains incomplete parameter documentation");
                     }
+                    if (hasType) parameter.type = validateAPIType(parameter.type);
                 }
 
                 if (objectHas(signature, "description") && !nonBlankString(signature.description)) {
@@ -122,9 +198,10 @@ export function validateAPIReference(document, expectedID, expectedVersion) {
 
                 if (objectHas(signature, "return")) {
                     const result = signature.return;
-                    if (!result || typeof result !== "object" || Array.isArray(result) || !objectHasOnly(result, ["type", "description"]) || !nonBlankSingleLine(result.type) || !nonBlankString(result.description)) {
+                    if (!result || typeof result !== "object" || Array.isArray(result) || !objectHasOnly(result, ["type", "description"]) || !objectHas(result, "type") || !nonBlankString(result.description)) {
                         invalidAPIReference("contains an invalid return value");
                     }
+                    result.type = validateAPIType(result.type);
                 }
 
                 if (objectHas(signature, "throws")) {
@@ -301,13 +378,14 @@ function renderAPIParameters(signature) {
 
     return `<ul>${signature.parameters.map((parameter) => `
         <li>
-            <span class="registry-api-value-heading"><code>${escapeHTML(parameter.name)}</code>${parameter.type ? `<code class="registry-api-value-type">${escapeHTML(parameter.type)}</code>` : ""}</span>
+            <span class="registry-api-value-heading"><code>${escapeHTML(parameter.name)}</code>${parameter.type ? `<code class="registry-api-value-type">${escapeHTML(formatAPIType(parameter.type))}</code>` : ""}</span>
             ${parameter.description ? `<span>${escapeHTML(parameter.description)}</span>` : ""}
         </li>`).join("")}</ul>`;
 }
 
 function renderAPIValue(value, key) {
-    return `<span class="registry-api-value-heading"><code>${escapeHTML(value[key])}</code></span><span>${escapeHTML(value.description)}</span>`;
+    const rendered = key === "type" ? formatAPIType(value[key]) : value[key];
+    return `<span class="registry-api-value-heading"><code>${escapeHTML(rendered)}</code></span><span>${escapeHTML(value.description)}</span>`;
 }
 
 function renderAPIDetails(signature) {
