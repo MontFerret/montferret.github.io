@@ -13,19 +13,25 @@
               "parameters": [
                 {
                   "name": "source",
-                  "type": "String|Binary",
+                  "type": {
+                    "kind": "union",
+                    "types": [
+                      {"kind": "named", "name": "String"},
+                      {"kind": "named", "name": "Binary"}
+                    ]
+                  },
                   "description": "Archive content."
                 },
                 {
                   "name": "options",
-                  "type": "Object?",
+                  "type": {"kind": "named", "name": "Object?"},
                   "description": "Extraction options."
                 }
               ],
               "variadic": true,
               "description": "Extract writes eligible archive entries through the configured filesystem.",
               "return": {
-                "type": "Array<String>",
+                "type": {"kind": "named", "name": "Array<String>"},
                 "description": "Extracted archive paths."
               },
               "throws": [

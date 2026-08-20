@@ -328,8 +328,8 @@ func TestGenerateRequiresCatalogAndPreservesPreviousOutput(t *testing.T) {
 
 func TestBuildFunctionViewUsesUniqueDeterministicSignatureAnchors(t *testing.T) {
 	function := api.Function{Signatures: []api.Signature{
-		{Parameters: []api.Parameter{{Name: "value", Type: "String"}}, Description: "String overload."},
-		{Parameters: []api.Parameter{{Name: "value", Type: "Number"}}, Description: "Number overload."},
+		{Parameters: []api.Parameter{{Name: "value", Type: namedType("String")}}, Description: "String overload."},
+		{Parameters: []api.Parameter{{Name: "value", Type: namedType("Number")}}, Description: "Number overload."},
 	}}
 
 	want := []string{
@@ -350,6 +350,49 @@ func TestBuildFunctionViewUsesUniqueDeterministicSignatureAnchors(t *testing.T) 
 	}
 }
 
+func TestRecursiveTypeFormattingAndStructuralSortKeys(t *testing.T) {
+	typeValue := &api.Type{
+		Kind: api.TypeKindList,
+		Element: &api.Type{
+			Kind: api.TypeKindUnion,
+			Types: []api.Type{
+				{Kind: api.TypeKindNamed, Name: "Int"},
+				{Kind: api.TypeKindList, Element: namedType("Float")},
+			},
+		},
+	}
+	if got := formatType(typeValue); got != "[Int | [Float]]" {
+		t.Fatalf("formatType = %q, want recursive list/union display", got)
+	}
+
+	namedExpression := namedType("A | B")
+	unionExpression := &api.Type{
+		Kind:  api.TypeKindUnion,
+		Types: []api.Type{{Kind: api.TypeKindNamed, Name: "A"}, {Kind: api.TypeKindNamed, Name: "B"}},
+	}
+	if formatType(namedExpression) != formatType(unionExpression) {
+		t.Fatal("fixture requires equal display strings for structurally different types")
+	}
+	if typeStructuralKey(namedExpression) == typeStructuralKey(unionExpression) {
+		t.Fatal("kind-tagged structural keys collide for named and union types")
+	}
+
+	function := api.Function{Signatures: []api.Signature{
+		{Parameters: []api.Parameter{{Name: "value", Type: unionExpression, Description: "union"}}},
+		{Parameters: []api.Parameter{{Name: "value", Type: namedExpression, Description: "named"}}},
+	}}
+	view := buildFunctionView(functionIdentity{Name: "convert"}, function)
+	if got := []string{view.Signatures[0].Parameters[0].Description, view.Signatures[1].Parameters[0].Description}; !reflect.DeepEqual(got, []string{"named", "union"}) {
+		t.Fatalf("structural signature order = %v, want named then union", got)
+	}
+
+	reverse(function.Signatures)
+	reversed := buildFunctionView(functionIdentity{Name: "convert"}, function)
+	if !reflect.DeepEqual(reversed.Signatures, view.Signatures) {
+		t.Fatal("structural signature order changed with input order")
+	}
+}
+
 func TestFunctionAnchorUsesQualifiedIdentity(t *testing.T) {
 	tests := []struct {
 		namespace string
@@ -366,6 +409,10 @@ func TestFunctionAnchorUsesQualifiedIdentity(t *testing.T) {
 			t.Errorf("functionAnchor(%q, %q) = %q, want %q", test.namespace, test.name, got, test.want)
 		}
 	}
+}
+
+func namedType(name string) *api.Type {
+	return &api.Type{Kind: api.TypeKindNamed, Name: name}
 }
 
 func TestGenerateRejectsInvalidPublication(t *testing.T) {

@@ -89,17 +89,10 @@ function validateStructuredAPIType(value) {
 }
 
 function validateAPIType(value) {
-    if (typeof value === "string") {
-        if (!nonBlankSingleLine(value)) invalidAPIReference("contains an invalid legacy type");
-        return value;
-    }
-
     return validateStructuredAPIType(value);
 }
 
 export function formatAPIType(value) {
-    if (typeof value === "string") return value;
-
     switch (value?.kind) {
         case "named":
             return value.name;

@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/Masterminds/semver/v3 v3.5.0
-	github.com/MontFerret/specs v1.11.0
+	github.com/MontFerret/specs v1.12.0
 	github.com/magefile/mage v1.14.0
 	gopkg.in/yaml.v3 v3.0.1
 )

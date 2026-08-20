@@ -37,10 +37,21 @@ type (
 		Code                  string
 		Variadic              bool
 		DescriptionParagraphs [][]string
-		Parameters            []api.Parameter
-		Return                *api.Return
+		Parameters            []parameterView
+		Return                *returnView
 		Throws                []api.Throw
 		DeprecatedParagraphs  [][]string
+	}
+
+	parameterView struct {
+		Name        string
+		Type        string
+		Description string
+	}
+
+	returnView struct {
+		Type        string
+		Description string
 	}
 
 	categoryPage struct {
@@ -245,8 +256,8 @@ func buildFunctionView(identity functionIdentity, function api.Function) functio
 			Code:                  signatureCode(qualified, signature),
 			Variadic:              signature.Variadic,
 			DescriptionParagraphs: paragraphs(signature.Description),
-			Parameters:            signature.Parameters,
-			Return:                signature.Return,
+			Parameters:            parameterViews(signature.Parameters),
+			Return:                returnValueView(signature.Return),
 			Throws:                signature.Throws,
 			DeprecatedParagraphs:  paragraphs(signature.Deprecated),
 		})
@@ -341,13 +352,13 @@ func signatureSortKey(signature api.Signature) string {
 	parts := make([]string, 0, 8+len(signature.Parameters)*3+len(signature.Throws)*2)
 	parts = append(parts, signature.Description, signature.Deprecated)
 	for _, parameter := range signature.Parameters {
-		parts = append(parts, parameter.Name, parameter.Type, parameter.Description)
+		parts = append(parts, parameter.Name, typeStructuralKey(parameter.Type), parameter.Description)
 	}
 
 	if signature.Return == nil {
 		parts = append(parts, "0")
 	} else {
-		parts = append(parts, "1", signature.Return.Type, signature.Return.Description)
+		parts = append(parts, "1", typeStructuralKey(signature.Return.Type), signature.Return.Description)
 	}
 
 	for _, thrown := range signature.Throws {
@@ -362,6 +373,78 @@ func signatureSortKey(signature api.Signature) string {
 	}
 
 	return key.String()
+}
+
+func parameterViews(parameters []api.Parameter) []parameterView {
+	result := make([]parameterView, len(parameters))
+	for index, parameter := range parameters {
+		result[index] = parameterView{
+			Name:        parameter.Name,
+			Type:        formatType(parameter.Type),
+			Description: parameter.Description,
+		}
+	}
+
+	return result
+}
+
+func returnValueView(value *api.Return) *returnView {
+	if value == nil {
+		return nil
+	}
+
+	return &returnView{Type: formatType(value.Type), Description: value.Description}
+}
+
+func formatType(value *api.Type) string {
+	if value == nil {
+		return ""
+	}
+
+	switch value.Kind {
+	case api.TypeKindNamed:
+		return value.Name
+	case api.TypeKindUnion:
+		members := make([]string, len(value.Types))
+		for index := range value.Types {
+			members[index] = formatType(&value.Types[index])
+		}
+
+		return strings.Join(members, " | ")
+	case api.TypeKindList:
+		return "[" + formatType(value.Element) + "]"
+	default:
+		return ""
+	}
+}
+
+func typeStructuralKey(value *api.Type) string {
+	if value == nil {
+		return "none"
+	}
+
+	switch value.Kind {
+	case api.TypeKindNamed:
+		return "named:" + lengthPrefixed(value.Name)
+	case api.TypeKindUnion:
+		var key strings.Builder
+		key.WriteString("union:")
+		key.WriteString(strconv.Itoa(len(value.Types)))
+		key.WriteByte(':')
+		for index := range value.Types {
+			key.WriteString(lengthPrefixed(typeStructuralKey(&value.Types[index])))
+		}
+
+		return key.String()
+	case api.TypeKindList:
+		return "list:" + lengthPrefixed(typeStructuralKey(value.Element))
+	default:
+		return "invalid:" + lengthPrefixed(string(value.Kind))
+	}
+}
+
+func lengthPrefixed(value string) string {
+	return strconv.Itoa(len(value)) + ":" + value
 }
 
 func functionAnchor(namespace, function string) string {

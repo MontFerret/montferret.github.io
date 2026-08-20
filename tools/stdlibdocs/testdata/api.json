@@ -13,13 +13,13 @@
               "parameters": [
                 {
                   "name": "value",
-                  "type": "Number",
+                  "type": {"kind": "named", "name": "Number"},
                   "description": "Value to inspect."
                 }
               ],
               "description": "abs returns the absolute value of a number.\nAdditional details stay in the function section.",
               "return": {
-                "type": "Number",
+                "type": {"kind": "named", "name": "Number"},
                 "description": "Absolute value."
               }
             }
@@ -32,18 +32,18 @@
               "parameters": [
                 {
                   "name": "array",
-                  "type": "Any[]",
+                  "type": {"kind": "named", "name": "Any[]"},
                   "description": "Target array."
                 },
                 {
                   "name": "value",
-                  "type": "Any",
+                  "type": {"kind": "named", "name": "Any"},
                   "description": "Value to append."
                 }
               ],
               "description": "append adds a value to an array.",
               "return": {
-                "type": "Any[]",
+                "type": {"kind": "named", "name": "Any[]"},
                 "description": "Updated array."
               }
             }
@@ -56,14 +56,14 @@
               "parameters": [
                 {
                   "name": "values",
-                  "type": "String",
+                  "type": {"kind": "named", "name": "String"},
                   "description": "Values to concatenate."
                 }
               ],
               "variadic": true,
               "description": "concat joins string values.",
               "return": {
-                "type": "String",
+                "type": {"kind": "named", "name": "String"},
                 "description": "Concatenated string."
               }
             }
@@ -76,13 +76,13 @@
               "parameters": [
                 {
                   "name": "arr",
-                  "type": "Any[]",
+                  "type": {"kind": "named", "name": "Any[]"},
                   "description": "Target array."
                 }
               ],
               "description": "flatten turns an array of arrays into a flat array.",
               "return": {
-                "type": "Any[]",
+                "type": {"kind": "named", "name": "Any[]"},
                 "description": "Flat array."
               }
             },
@@ -90,18 +90,18 @@
               "parameters": [
                 {
                   "name": "arr",
-                  "type": "Any[]",
+                  "type": {"kind": "named", "name": "Any[]"},
                   "description": "Target array."
                 },
                 {
                   "name": "depth",
-                  "type": "Int",
+                  "type": {"kind": "named", "name": "Int"},
                   "description": "Depth level."
                 }
               ],
               "description": "flatten turns an array of arrays into a flat array.",
               "return": {
-                "type": "Any[]",
+                "type": {"kind": "named", "name": "Any[]"},
                 "description": "Flat array."
               }
             }
@@ -114,13 +114,19 @@
               "parameters": [
                 {
                   "name": "value",
-                  "type": "Any",
+                  "type": {"kind": "named", "name": "Any"},
                   "description": "Value to convert."
                 }
               ],
               "description": "to_number converts a value to a number.",
               "return": {
-                "type": "Int | Float",
+                "type": {
+                  "kind": "union",
+                  "types": [
+                    {"kind": "named", "name": "Int"},
+                    {"kind": "named", "name": "Float"}
+                  ]
+                },
                 "description": "Converted number."
               },
               "throws": [
@@ -144,13 +150,13 @@
               "parameters": [
                 {
                   "name": "path",
-                  "type": "String",
+                  "type": {"kind": "named", "name": "String"},
                   "description": "Path to read."
                 }
               ],
               "description": "read reads from a file.",
               "return": {
-                "type": "Binary",
+                "type": {"kind": "named", "name": "Binary"},
                 "description": "File content."
               }
             }
@@ -168,19 +174,19 @@
               "parameters": [
                 {
                   "name": "url",
-                  "type": "String",
+                  "type": {"kind": "named", "name": "String"},
                   "description": "URL to request."
                 },
                 {
                   "name": "options",
-                  "type": "Object",
+                  "type": {"kind": "named", "name": "Object"},
                   "description": "Request options."
                 }
               ],
               "variadic": true,
               "description": "get performs an HTTP GET request.",
               "return": {
-                "type": "Binary",
+                "type": {"kind": "named", "name": "Binary"},
                 "description": "Response body."
               },
               "deprecated": "Use the configured HTTP module when embedding Ferret."
@@ -197,11 +203,11 @@
           "signatures": [
             {
               "parameters": [
-                {"name": "actual", "type": "Any", "description": "Actual value."},
-                {"name": "expected", "type": "Any", "description": "Expected value."}
+                {"name": "actual", "type": {"kind": "named", "name": "Any"}, "description": "Actual value."},
+                {"name": "expected", "type": {"kind": "named", "name": "Any"}, "description": "Expected value."}
               ],
               "description": "Tests whether two values are equal.",
-              "return": {"type": "Boolean", "description": "True when the assertion succeeds."}
+              "return": {"type": {"kind": "named", "name": "Boolean"}, "description": "True when the assertion succeeds."}
             }
           ]
         }
@@ -215,11 +221,11 @@
           "signatures": [
             {
               "parameters": [
-                {"name": "actual", "type": "Any", "description": "Actual value."},
-                {"name": "expected", "type": "Any", "description": "Expected value."}
+                {"name": "actual", "type": {"kind": "named", "name": "Any"}, "description": "Actual value."},
+                {"name": "expected", "type": {"kind": "named", "name": "Any"}, "description": "Expected value."}
               ],
               "description": "Tests whether two values are not equal.",
-              "return": {"type": "Boolean", "description": "True when the assertion succeeds."}
+              "return": {"type": {"kind": "named", "name": "Boolean"}, "description": "True when the assertion succeeds."}
             }
           ]
         }

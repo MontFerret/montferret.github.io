@@ -214,7 +214,7 @@ test("Barn API Reference v1 renders structured Ferret metadata", () => {
     assert.match(html, /id="api-function-named-ARCHIVE-EXTRACT"/);
     assert.match(html, /ARCHIVE::EXTRACT\(source, options\)/);
     assert.match(html, /Extract writes eligible archive entries/);
-    assert.match(html, /String\|Binary/);
+    assert.match(html, /String \| Binary/);
     assert.match(html, /Archive content/);
     assert.match(html, />Parameters</);
     assert.match(html, />Variadic</);
@@ -225,7 +225,7 @@ test("Barn API Reference v1 renders structured Ferret metadata", () => {
     assert.match(html, /<strong>Deprecated\.<\/strong> Use UNPACK instead\./);
 });
 
-test("the transition reader validates, normalizes, and renders recursive API types", () => {
+test("the Registry reader validates, normalizes, and renders recursive API types", () => {
     const reference = clone(archiveAPIReference);
     const signature = reference.namespaces[0].functions[0].signatures[0];
     signature.parameters[0].type = {
@@ -289,6 +289,22 @@ test("recursive API type variants are closed and fail on malformed children", ()
     }
 });
 
+test("legacy string-valued API types are rejected after the cutover", () => {
+    const parameterReference = clone(archiveAPIReference);
+    parameterReference.namespaces[0].functions[0].signatures[0].parameters[0].type = "String";
+    assert.throws(
+        () => validateAPIReference(parameterReference, parameterReference.id, parameterReference.version),
+        RegistryPayloadError
+    );
+
+    const returnReference = clone(archiveAPIReference);
+    returnReference.namespaces[0].functions[0].signatures[0].return.type = "Array<String>";
+    assert.throws(
+        () => validateAPIReference(returnReference, returnReference.id, returnReference.version),
+        RegistryPayloadError
+    );
+});
+
 test("API rendering supports global and nested namespaces, overloads, and escaped prose", () => {
     const reference = {
         schemaVersion: 1,
@@ -310,11 +326,11 @@ test("API rendering supports global and nested namespaces, overloads, and escape
                         { parameters: [{ name: "input" }] },
                         {
                             parameters: [
-                                { name: "input", type: "String<script>", description: "Input <value>." },
-                                { name: "optionsValue", type: "Object?", description: "Options & flags." }
+                                { name: "input", type: { kind: "named", name: "String<script>" }, description: "Input <value>." },
+                                { name: "optionsValue", type: { kind: "named", name: "Object?" }, description: "Options & flags." }
                             ],
                             description: "Runs with options.",
-                            return: { type: "String", description: "Output <value>." },
+                            return: { type: { kind: "named", name: "String" }, description: "Output <value>." },
                             throws: [{ error: "Run<script>", description: "Execution & validation fails." }],
                             deprecated: "Use EXECUTE <now>."
                         }
