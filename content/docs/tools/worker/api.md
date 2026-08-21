@@ -123,20 +123,20 @@ When Worker starts with `-no-chrome`, `/health` returns `200` without checking C
 curl http://localhost:8080/info
 {{< /terminal >}}
 
-Response:
+Example response:
 
 ```json
 {
   "ip": "203.0.113.10",
   "version": {
-    "worker": "2.0.0-rc.16",
+    "worker": "{{< data "versions.worker.v2" >}}",
     "chrome": {
       "browser": "Chrome/148.0.7778.178",
       "protocol": "1.3",
       "v8": "14.8.x",
       "webkit": "537.36"
     },
-    "ferret": "2.0.0-alpha.24"
+    "ferret": "{{< data "versions.runtime.v2" >}}"
   }
 }
 ```

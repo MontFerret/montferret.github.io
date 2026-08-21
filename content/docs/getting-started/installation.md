@@ -32,7 +32,7 @@ Choose the CLI to run FQL files and expressions from a terminal, shell script, o
 ferret version
 {{< /terminal >}}
 
-See [Install the CLI]({{< ref "/docs/tools/cli/install" >}}) for prebuilt binaries, source installation, updates, and verification.
+See [CLI Installation]({{< ref "/docs/tools/cli/installation" >}}) for prebuilt binaries, source installation, updates, and verification.
 
 ## Embed Ferret in Go
 
@@ -60,4 +60,4 @@ Continue with [JavaScript Embedding: Getting Started]({{< ref "/docs/embedding/j
 - Read the [Embedding overview]({{< ref "/docs/embedding" >}}) when an application will own the runtime.
 - Use [Worker]({{< ref "/docs/tools/worker" >}}) when an existing system needs Ferret through a separately deployed HTTP service.
 
-{{< docs-related tiles="getting-started-quick-start,tools-cli-install,embedding-go,embedding-javascript,tools-worker" >}}
+{{< docs-related tiles="getting-started-quick-start,tools-cli-installation,embedding-go,embedding-javascript,tools-worker" >}}

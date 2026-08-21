@@ -1,11 +1,13 @@
 ---
-title: "Config"
+title: "Configuration"
 weight: 80
 draft: false
 description: "Manage persistent CLI configuration for runtime, browser, and logging settings."
+aliases:
+  - /docs/tools/cli/config/
 ---
 
-# Config
+# Configuration
 
 The `config` command reads and writes persistent settings that apply to all CLI commands.
 
@@ -94,8 +96,8 @@ ferret version
 
 ```
 Version:
-  Self: 2.0.0-alpha.26
-  Runtime: 2.0.0-alpha.26
+  Self: {{< data "versions.cli.v2" >}}
+  Runtime: {{< data "versions.runtime.v2" >}}
 ```
 
 To check the version of a remote runtime:

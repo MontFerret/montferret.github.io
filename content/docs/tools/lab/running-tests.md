@@ -131,6 +131,6 @@ Lab exits with status `0` when all tests pass. It exits with status `1` when any
 
 If the run is interrupted, Lab cancels the context and prints `Terminated`.
 
-## Related topics
+## Next steps
 
 {{< docs-related tiles="tools-lab-static-serving,tools-lab-mock-api,tools-lab-runners,tools-lab-http-runtime,tools-lab-binary-runtime" >}}

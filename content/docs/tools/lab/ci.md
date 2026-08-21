@@ -61,7 +61,9 @@ jobs:
       - name: Install Lab
         run: |
           mkdir -p "$HOME/.ferret"
-          curl -fsSL https://raw.githubusercontent.com/MontFerret/lab/main/install.sh | sh
+          curl -fsSL https://github.com/MontFerret/lab/releases/download/v{{< data "versions.lab.v2" >}}/lab_linux_x86_64.tar.gz -o lab.tar.gz
+          tar -xzf lab.tar.gz
+          install -m 0755 lab "$HOME/.ferret/lab"
           echo "$HOME/.ferret" >> "$GITHUB_PATH"
 
       - name: Run Lab tests
@@ -72,20 +74,20 @@ jobs:
             --timeout=60
 ```
 
-Use a pinned `VERSION` in the install step when the pipeline must stay on a specific Lab release.
+The release URL uses the version selected in `data/versions.yaml`, so the workflow stays on the same Lab version as these pages.
 
 ## Run with Docker
 
 The Docker image can run tests from a mounted directory:
 
 {{< terminal >}}
-docker run --rm -v "$PWD/tests:/test" montferret/lab:latest
+docker run --rm -v "$PWD/tests:/test" montferret/lab:{{< data "versions.lab.v2" >}}
 {{< /terminal >}}
 
 To pass explicit flags, mount the workspace and call `run`:
 
 {{< terminal >}}
-docker run --rm -v "$PWD:/workspace" montferret/lab:latest \
+docker run --rm -v "$PWD:/workspace" montferret/lab:{{< data "versions.lab.v2" >}} \
   run /workspace/tests \
   --reporter=simple \
   --attempts=3

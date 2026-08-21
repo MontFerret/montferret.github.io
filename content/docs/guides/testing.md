@@ -14,12 +14,14 @@ The selected Ferret runtime still owns FQL execution and module availability. La
 
 ## Install Lab
 
-The install script downloads the Lab release for your platform into `$HOME/.ferret`:
+Download the documented Lab release for your platform. On Linux x86_64:
 
 {{< terminal command="true" >}}
 mkdir -p "$HOME/.ferret"
-curl -fsSL https://raw.githubusercontent.com/MontFerret/lab/main/install.sh | sh
-export PATH="$PATH:$HOME/.ferret"
+curl -fsSL https://github.com/MontFerret/lab/releases/download/v{{< data "versions.lab.v2" >}}/lab_linux_x86_64.tar.gz -o lab.tar.gz
+tar -xzf lab.tar.gz
+install -m 0755 lab "$HOME/.ferret/lab"
+export PATH="$HOME/.ferret:$PATH"
 {{< /terminal >}}
 
 Verify both Lab and its selected Ferret runtime:
@@ -96,15 +98,30 @@ t::not::include(tags, "deprecated")
 
 Assertions accept an optional message as their final argument. Use it to explain the expectation in the failure output. See [Testing]({{< ref "/docs/standard-library/testing" >}}) for every signature and accepted value type.
 
-## Test an expected failure
+## Test an expected runtime error
 
-A file ending in `.fail.fql` passes only when the runtime returns an error. For example, save this as `tests/rejected-input.fail.fql`:
+Use a YAML suite with `expect.error` when a query must fail. Save this as `tests/rejected-input.yaml`:
 
-{{< editor lang="fql" title="tests/rejected-input.fail.fql" >}}
-t::fail("this input should be rejected")
-{{</ editor >}}
+```yaml
+query:
+  text: |
+    return 1 / 0
 
-Lab does not match a particular error type or message. Any compile, runtime, or assertion error satisfies an expected-failure test, and the test fails if the script succeeds. Keep the file focused so an unrelated error cannot produce a false positive.
+expect:
+  error:
+    contains: "division by zero"
+```
+
+Lab passes the test only when the runtime returns an error containing the configured text. Matching a stable part of the message prevents an unrelated runtime failure from accidentally satisfying the test. Only `contains` is supported inside `expect.error`; unknown fields fail during suite construction instead of falling back to an unqualified error expectation. Use an empty object when any runtime error is sufficient:
+
+```yaml
+expect:
+  error: {}
+```
+
+The test fails if the query completes successfully. Do not define `assert` together with `expect.error`; an expected query failure produces no result for an assertion script.
+
+The older `.fail.fql` filename convention remains supported for backward compatibility. It passes on any runtime error and fails when execution succeeds, but Lab emits a deprecation warning. Prefer `expect.error` for new negative tests; Lab does not rewrite legacy files automatically.
 
 ## Separate a query from its assertions
 
@@ -151,25 +168,26 @@ Add a small JSON response to `tests/fixtures/products.json`:
 ]
 ```
 
-Read the fixture URL from the Lab-owned `@lab.static` parameter:
+Keep the script production-oriented by reading its normal `@baseUrl` parameter:
 
 {{< code lang="fql" title="tests/fixture-products.fql" >}}
-let response = io::net::http::get(@lab.static.fixtures + "/products.json")
+let response = io::net::http::get(@baseUrl + "/products.json")
 let products = json_parse(to_string(response))
 
 t::len(products, 2, "expected two fixture products")
 return t::gt(products[0].price, 0, "price must be positive")
 {{</ code >}}
 
-Start the fixture server for the duration of the test run. The explicit `fixtures` alias becomes the property name in `@lab.static.fixtures`:
+Start the fixture server for the duration of the test run, then bind the generated endpoint to `@baseUrl`:
 
 {{< terminal command="true" >}}
 lab run tests/ \
   --serve ./tests/fixtures@fixtures \
+  --param-bind baseUrl=@lab.static.fixtures \
   --policy-http-allow-localhost
 {{< /terminal >}}
 
-Lab assigns a free port automatically. The localhost policy flag permits the builtin runtime's HTTP client to fetch the local fixture. See [Static File Server]({{< ref "/docs/tools/lab/static-serving" >}}) for fixed ports, multiple directories, and runtimes outside the Lab host.
+Lab assigns a free port automatically and resolves the binding after that URL exists. The localhost policy flag permits the builtin runtime's HTTP client to fetch the local fixture. Scripts that deliberately depend on Lab can use `@lab.static.fixtures` directly. See [Static File Server]({{< ref "/docs/tools/lab/static-serving" >}}) for fixed ports, multiple directories, and runtimes outside the Lab host.
 
 ## Control the test run
 
@@ -212,14 +230,16 @@ jobs:
       - name: Install Lab
         run: |
           mkdir -p "$HOME/.ferret"
-          curl -fsSL https://raw.githubusercontent.com/MontFerret/lab/main/install.sh | sh
+          curl -fsSL https://github.com/MontFerret/lab/releases/download/v{{< data "versions.lab.v2" >}}/lab_linux_x86_64.tar.gz -o lab.tar.gz
+          tar -xzf lab.tar.gz
+          install -m 0755 lab "$HOME/.ferret/lab"
           echo "$HOME/.ferret" >> "$GITHUB_PATH"
 
       - name: Run FQL tests
         run: lab run tests/ --reporter=simple
 ```
 
-Pin `VERSION` during installation when the workflow must use a specific Lab release. For waits, fixture services, Docker, and external runtimes, see [CI]({{< ref "/docs/tools/lab/ci" >}}).
+The release URL follows the version selected for this site. For waits, fixture services, Docker, and external runtimes, see [CI]({{< ref "/docs/tools/lab/ci" >}}).
 
 ## Next steps
 

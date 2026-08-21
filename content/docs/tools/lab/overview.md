@@ -41,10 +41,12 @@ Lab accepts these test files:
 | File type | Behavior |
 | --- | --- |
 | `.fql` | Runs the script as a unit test. The test passes when the runtime returns no error. |
-| `.fail.fql` | Runs the script as an expected-failure unit test. The test passes only when the runtime returns an error. |
-| `.yaml`, `.yml` | Runs a suite with a `query` script followed by an `assert` script. |
+| `.fail.fql` | Runs a deprecated expected-failure unit test. It remains supported and passes only when the runtime returns an error. |
+| `.yaml`, `.yml` | Runs a suite with a `query` followed by either an `assert` script or an `expect.error` runtime-error expectation. |
 
 Directories are traversed recursively. Unsupported files are ignored when Lab reads a directory.
+
+Use regular `.fql` files for normal successful execution and in-query assertions. For new negative tests, prefer a YAML suite with `expect.error`; it makes the expected failure explicit and can match a stable part of the error message.
 
 ## Commands
 
@@ -82,7 +84,7 @@ Lab passes parameters into Ferret under two groups:
 
 | Parameter group | Source |
 | --- | --- |
-| User parameters | Values passed with `--param` or suite-level `params`. |
+| User parameters | Values passed with `--param`, copied by `--param-bind`, or supplied through suite-level `params`. |
 | Lab system parameters | Values Lab creates, exposed under `@lab`. |
 
 The system namespace currently includes local service URLs under `@lab.static` and `@lab.mock`, and YAML suite query output under `@lab.data.query`.

@@ -115,7 +115,7 @@ ferret run --runtime http://localhost:8080 script.fql
 
 Remote runtimes cannot run compiled artifacts or debug sessions.
 
-All runtime and browser flags can also be set persistently through the [config](../config/) command or environment variables.
+All runtime and browser flags can also be set persistently through the [`config`](../configuration/) command or environment variables.
 
 ## Next steps
 

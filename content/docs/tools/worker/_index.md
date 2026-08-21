@@ -11,4 +11,6 @@ Ferret Worker runs Ferret as a long-running HTTP service. It accepts FQL scripts
 
 Use Worker when an application, job runner, CI system, or internal service needs to execute Ferret scripts remotely instead of starting a local runtime for each caller.
 
-{{< docs-related tiles="tools-worker-overview,tools-worker-configuration,tools-worker-deployment,tools-worker-api" >}}
+Start with [Deployment]({{< ref "deployment" >}}) to run Worker from a Docker image, release binary, or source build. Then use the [API]({{< ref "api" >}}) page to send queries.
+
+{{< docs-related tiles="tools-worker-overview,tools-worker-deployment,tools-worker-configuration,tools-worker-api" >}}

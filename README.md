@@ -37,6 +37,11 @@ Build the site and search index, then serve the generated static output with Pag
 mage serveSearch
 ```
 
+### Tool documentation
+
+When adding or reorganizing first-party tool pages, follow the
+[tool documentation conventions](docs/development/tool-documentation.md).
+
 ### Generating the Standard Library reference
 
 The website generates the Standard Library reference from the published Ferret

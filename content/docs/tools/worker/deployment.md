@@ -1,6 +1,6 @@
 ---
 title: "Deployment"
-weight: 30
+weight: 20
 draft: false
 description: "Deploy Worker with Docker images, release binaries, source builds, health checks, and reverse proxies."
 ---
@@ -9,25 +9,19 @@ description: "Deploy Worker with Docker images, release binaries, source builds,
 
 Worker can run from a Docker image, a release binary, or a local source build. Docker is the usual deployment path when scripts need the CDP browser driver, because the Worker image includes a Chromium runtime.
 
-## Run with Docker
+## Docker
 
 Worker images are published to Docker Hub and GitHub Container Registry.
 
 {{< terminal >}}
-docker run --rm -p 8080:8080 montferret/worker:latest
+docker run --rm -p 8080:8080 montferret/worker:{{< data "versions.worker.v2" >}}
 {{< /terminal >}}
 
 {{< terminal >}}
-docker run --rm -p 8080:8080 ghcr.io/montferret/worker:latest
+docker run --rm -p 8080:8080 ghcr.io/montferret/worker:{{< data "versions.worker.v2" >}}
 {{< /terminal >}}
 
-Pin a release tag for repeatable deployments:
-
-{{< terminal >}}
-docker run --rm -p 8080:8080 montferret/worker:v2.0.0-rc.16
-{{< /terminal >}}
-
-The release image starts Chromium through the image entrypoint and then starts Worker on port `8080`.
+Both commands pin the documented release for repeatable deployments. The release image starts Chromium through the image entrypoint and then starts Worker on port `8080`.
 
 ## Configure the container
 
@@ -38,32 +32,30 @@ docker run --rm -p 8080:8080 \
   -e LOG_LEVEL=info \
   -e BODY_LIMIT=10M \
   -e REQUEST_LIMIT=10 \
-  montferret/worker:latest
+  montferret/worker:{{< data "versions.worker.v2" >}}
 {{< /terminal >}}
 
 If you need to pass flags instead, keep the Chromium startup command:
 
 {{< terminal >}}
-docker run --rm -p 8080:8080 montferret/worker:latest \
+docker run --rm -p 8080:8080 montferret/worker:{{< data "versions.worker.v2" >}} \
   /bin/sh -c '/entrypoint.sh & /worker -log-level=info -body-limit=10M -request-limit=10'
 {{< /terminal >}}
 
-Mount a directory and set `FS_ROOT` when scripts need filesystem access:
+Mount a directory and set `POLICY_FS_ROOT` when scripts need filesystem access:
 
 {{< terminal >}}
 docker run --rm -p 8080:8080 \
   -v "$PWD/data:/data:ro" \
-  -e FS_ROOT=/data \
-  montferret/worker:latest
+  -e POLICY_FS_ROOT=/data \
+  montferret/worker:{{< data "versions.worker.v2" >}}
 {{< /terminal >}}
 
 Use a read-only mount when scripts only need to read files.
 
-## Run from a release binary
+## Prebuilt binary
 
-Download a Worker release archive from GitHub:
-
-https://github.com/MontFerret/worker/releases
+Download `v{{< data "versions.worker.v2" >}}` from the [Worker release page](https://github.com/MontFerret/worker/releases/tag/v{{< data "versions.worker.v2" >}}).
 
 Release archives follow the GoReleaser platform naming pattern, such as `worker_linux_x86_64.tar.gz`, `worker_darwin_arm64.tar.gz`, or `worker_windows_x86_64.zip`.
 
@@ -78,10 +70,10 @@ Local binary deployments need a reachable Chrome or Chromium process when script
 
 ## Build from source
 
-The Worker source is a Go module at `github.com/MontFerret/worker`. Use the Go version declared in the repository's `go.mod`.
+The Worker source is a Go module at `github.com/MontFerret/worker`. Building `v{{< data "versions.worker.v2" >}}` requires Go `{{< data "versions.worker.go" >}}` or later.
 
 {{< terminal >}}
-git clone https://github.com/MontFerret/worker.git
+git clone --branch v{{< data "versions.worker.v2" >}} --depth 1 https://github.com/MontFerret/worker.git
 cd worker
 make compile
 ./bin/worker -version
@@ -128,6 +120,16 @@ The health endpoint returns an empty body and is skipped by Worker rate limiting
 Worker binds to `0.0.0.0` on the configured port. Put it behind your normal deployment boundary: a private network, reverse proxy, ingress controller, API gateway, or service mesh.
 
 Worker does not include built-in authentication, authorization, TLS termination, request signing, durable queues, scheduling, or tenant isolation. Add those at the deployment layer when Worker is exposed beyond a trusted network.
+
+Ferret HTTP egress is disabled by default. Prefer an exact host allowlist when deployed scripts need outbound access:
+
+{{< terminal >}}
+docker run --rm -p 8080:8080 \
+  -e POLICY_HTTP_ALLOWED_HOSTS=api.example.com \
+  montferret/worker:{{< data "versions.worker.v2" >}}
+{{< /terminal >}}
+
+`HTTP_ALLOW_ALL_HOSTS=true` allows requests to arbitrary hostnames while retaining the configured timeout, size, redirect, blocked-host, blocked-header, and literal-address policies. Hostnames are not DNS-resolved before policy evaluation, so prefer `POLICY_HTTP_ALLOWED_HOSTS` for SSRF-sensitive deployments. See [Configuration]({{< ref "configuration" >}}) for the complete policy surface.
 
 Use body limits and rate limits for public or shared deployments:
 
