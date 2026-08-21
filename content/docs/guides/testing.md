@@ -96,15 +96,30 @@ t::not::include(tags, "deprecated")
 
 Assertions accept an optional message as their final argument. Use it to explain the expectation in the failure output. See [Testing]({{< ref "/docs/standard-library/testing" >}}) for every signature and accepted value type.
 
-## Test an expected failure
+## Test an expected runtime error
 
-A file ending in `.fail.fql` passes only when the runtime returns an error. For example, save this as `tests/rejected-input.fail.fql`:
+Use a YAML suite with `expect.error` when a query must fail. Save this as `tests/rejected-input.yaml`:
 
-{{< editor lang="fql" title="tests/rejected-input.fail.fql" >}}
-t::fail("this input should be rejected")
-{{</ editor >}}
+```yaml
+query:
+  text: |
+    return 1 / 0
 
-Lab does not match a particular error type or message. Any compile, runtime, or assertion error satisfies an expected-failure test, and the test fails if the script succeeds. Keep the file focused so an unrelated error cannot produce a false positive.
+expect:
+  error:
+    contains: "division by zero"
+```
+
+Lab passes the test only when the runtime returns an error containing the configured text. Matching a stable part of the message prevents an unrelated runtime failure from accidentally satisfying the test. Use an empty object when any runtime error is sufficient:
+
+```yaml
+expect:
+  error: {}
+```
+
+The test fails if the query completes successfully. Do not define `assert` together with `expect.error`; an expected query failure produces no result for an assertion script.
+
+The older `.fail.fql` filename convention remains supported for backward compatibility. It passes on any runtime error and fails when execution succeeds, but Lab emits a deprecation warning. Prefer `expect.error` for new negative tests; Lab does not rewrite legacy files automatically.
 
 ## Separate a query from its assertions
 
