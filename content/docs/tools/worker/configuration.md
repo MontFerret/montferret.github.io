@@ -1,6 +1,6 @@
 ---
 title: "Configuration"
-weight: 20
+weight: 30
 draft: false
 description: "Configure Worker flags, environment variables, limits, filesystem access, outbound HTTP, cache size, and Chrome."
 ---
@@ -152,4 +152,4 @@ Parameters do not change the cache key. Put changing values in `params` instead 
 
 ## Next steps
 
-{{< docs-related tiles="tools-worker-deployment,tools-worker-api,tools-cli-config" >}}
+{{< docs-related tiles="tools-worker-deployment,tools-worker-api,tools-cli-configuration" >}}

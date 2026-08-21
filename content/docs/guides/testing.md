@@ -14,12 +14,14 @@ The selected Ferret runtime still owns FQL execution and module availability. La
 
 ## Install Lab
 
-The install script downloads the Lab release for your platform into `$HOME/.ferret`:
+Download the documented Lab release for your platform. On Linux x86_64:
 
 {{< terminal command="true" >}}
 mkdir -p "$HOME/.ferret"
-curl -fsSL https://raw.githubusercontent.com/MontFerret/lab/main/install.sh | sh
-export PATH="$PATH:$HOME/.ferret"
+curl -fsSL https://github.com/MontFerret/lab/releases/download/v{{< data "versions.lab.v2" >}}/lab_linux_x86_64.tar.gz -o lab.tar.gz
+tar -xzf lab.tar.gz
+install -m 0755 lab "$HOME/.ferret/lab"
+export PATH="$HOME/.ferret:$PATH"
 {{< /terminal >}}
 
 Verify both Lab and its selected Ferret runtime:
@@ -227,14 +229,16 @@ jobs:
       - name: Install Lab
         run: |
           mkdir -p "$HOME/.ferret"
-          curl -fsSL https://raw.githubusercontent.com/MontFerret/lab/main/install.sh | sh
+          curl -fsSL https://github.com/MontFerret/lab/releases/download/v{{< data "versions.lab.v2" >}}/lab_linux_x86_64.tar.gz -o lab.tar.gz
+          tar -xzf lab.tar.gz
+          install -m 0755 lab "$HOME/.ferret/lab"
           echo "$HOME/.ferret" >> "$GITHUB_PATH"
 
       - name: Run FQL tests
         run: lab run tests/ --reporter=simple
 ```
 
-Pin `VERSION` during installation when the workflow must use a specific Lab release. For waits, fixture services, Docker, and external runtimes, see [CI]({{< ref "/docs/tools/lab/ci" >}}).
+The release URL follows the version selected for this site. For waits, fixture services, Docker, and external runtimes, see [CI]({{< ref "/docs/tools/lab/ci" >}}).
 
 ## Next steps
 

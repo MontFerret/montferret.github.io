@@ -9,7 +9,7 @@ description: "Understand what Worker runs, where it fits, and which Ferret capab
 
 Worker is an HTTP runtime for Ferret. It receives a FQL script, compiles or reuses a cached plan, runs the script with optional parameters, and writes the serialized Ferret result back to the client.
 
-These pages document Worker `main` at `v{{< data "versions.worker.v2" >}}`.
+These pages document Worker `v{{< data "versions.worker.v2" >}}`.
 
 ## Run a query
 
