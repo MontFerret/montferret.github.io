@@ -75,7 +75,7 @@ expect:
     contains: "division by zero"
 ```
 
-Lab performs a substring match against the runtime error message. Matching a stable part of the message prevents an unrelated runtime failure from accidentally passing the test. Do not define `assert` together with `expect.error`; an expected query failure produces no result for an assertion script.
+Lab performs a substring match against the runtime error message. Matching a stable part of the message prevents an unrelated runtime failure from accidentally passing the test. Only `contains` is supported inside `expect.error`; unknown fields fail during suite construction instead of falling back to an unqualified error expectation. Do not define `assert` together with `expect.error`; an expected query failure produces no result for an assertion script.
 
 The older `.fail.fql` filename convention remains supported for backward compatibility. It passes when the runtime returns any error and fails when execution succeeds, but Lab emits a deprecation warning. Prefer `expect.error` for new negative tests because it makes the expectation explicit and can verify the failure reason.
 

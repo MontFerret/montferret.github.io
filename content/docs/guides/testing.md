@@ -110,7 +110,7 @@ expect:
     contains: "division by zero"
 ```
 
-Lab passes the test only when the runtime returns an error containing the configured text. Matching a stable part of the message prevents an unrelated runtime failure from accidentally satisfying the test. Use an empty object when any runtime error is sufficient:
+Lab passes the test only when the runtime returns an error containing the configured text. Matching a stable part of the message prevents an unrelated runtime failure from accidentally satisfying the test. Only `contains` is supported inside `expect.error`; unknown fields fail during suite construction instead of falling back to an unqualified error expectation. Use an empty object when any runtime error is sufficient:
 
 ```yaml
 expect:
