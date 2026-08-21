@@ -8,161 +8,218 @@ description: "Use Lab to write and run automated tests for FQL scripts."
 
 # Test extraction scripts
 
-As extraction scripts grow, testing helps catch regressions when pages change or scripts are refactored. [Lab]({{< ref "/docs/tools/lab" >}}) is Ferret's test runner — it executes FQL test files and reports pass/fail results.
+[Lab]({{< ref "/docs/tools/lab" >}}) runs FQL test files, applies timeouts and retries, and reports whether each file passed or failed. Assertions come from Ferret's [`t` standard-library namespace]({{< ref "/docs/standard-library/testing" >}}).
 
-This guide walks through the testing workflow. For the complete reference, see the [Lab documentation]({{< ref "/docs/tools/lab" >}}).
+The selected Ferret runtime still owns FQL execution and module availability. Lab's builtin runtime provides Ferret core; Lab does not add runtime-specific modules such as `web::html`. To test a script that uses one, select a [binary]({{< ref "/docs/tools/lab/binary-runtime" >}}) or [HTTP]({{< ref "/docs/tools/lab/http-runtime" >}}) runtime that includes it.
 
 ## Install Lab
 
-{{< terminal command="true" >}}
-go install github.com/nicktomlin/ferret-lab@latest
-{{< /terminal >}}
-
-Or pull the Docker image:
+The install script downloads the Lab release for your platform into `$HOME/.ferret`:
 
 {{< terminal command="true" >}}
-docker pull montferret/lab
+mkdir -p "$HOME/.ferret"
+curl -fsSL https://raw.githubusercontent.com/MontFerret/lab/main/install.sh | sh
+export PATH="$PATH:$HOME/.ferret"
 {{< /terminal >}}
 
-See [Lab Installation]({{< ref "/docs/tools/lab/installation" >}}) for all options.
+Verify both Lab and its selected Ferret runtime:
 
-## Write a test file
+{{< terminal command="true" >}}
+lab version
+{{< /terminal >}}
 
-A test file is a regular `.fql` script that uses assertion functions from the `testing` namespace. Name the file with a `.test.fql` extension:
+See [Lab Installation]({{< ref "/docs/tools/lab/installation" >}}) for release archives, Docker, and source builds.
 
-```
-tests/
-  headings.test.fql
-```
+## Write a FQL unit test
 
-{{< code lang="fql" title="tests/headings.test.fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org")
-let headings = page[~ css`h1, h2`]
+Any `.fql` file can be a Lab unit test. Assertions return `true` when they succeed and raise an assertion error when they fail.
 
-testing::not_empty(headings, "page should have headings")
-testing::gt(length(headings), 0, "at least one heading expected")
+Create `tests/products.fql`:
+
+{{< editor lang="fql" title="tests/products.fql" >}}
+let products = [
+  { name: "Mechanical Keyboard", price: 129 },
+  { name: "USB-C Dock", price: 89 }
+]
+
+t::eq(length(products), 2, "expected two products")
+t::not::empty(products[0].name, "the first product needs a name")
 
 return true
-{{</ code >}}
+{{</ editor >}}
 
-## Run the tests
+Run the directory:
 
 {{< terminal command="true" >}}
-lab --dir ./tests
+lab run tests/
 {{< /terminal >}}
 
-Lab discovers all `.test.fql` files in the directory and runs them. A test passes when it completes without error; it fails when an assertion fails or a runtime error is raised.
+Lab traverses directories recursively and runs `.fql`, `.yaml`, and `.yml` files. Unsupported files are ignored.
 
-## Write expected-failure tests
+### Tests pass on execution, not return values
 
-Name a file with `.fail.fql` to indicate that it *should* fail:
+A `.fql` test passes when the selected runtime executes it without returning an error. Lab does not inspect the returned value, so this file passes:
 
-{{< code lang="fql" title="tests/missing-element.fail.fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org")
-let el = query one ".does-not-exist" in page using css
-return el.textContent
-{{</ code >}}
+{{< editor lang="fql" title="tests/false.fql" >}}
+return false
+{{</ editor >}}
 
-This test passes only if the script produces an error.
+Use a `t` assertion when a false condition should fail the test:
 
-## Write YAML test suites
+{{< editor lang="fql" title="tests/true.fql" >}}
+return t::true(false, "expected the condition to be true")
+{{</ editor >}}
 
-For testing many queries with structured assertions, use `.yaml` test files:
+## Choose an assertion
+
+The `t` namespace groups assertions by the value or relationship they check:
+
+| Check | Assertions |
+| --- | --- |
+| Equality and order | `t::eq`, `t::gt`, `t::gte`, `t::lt`, `t::lte` |
+| Size and content | `t::empty`, `t::len`, `t::include`, `t::match` |
+| Exact values | `t::true`, `t::false`, `t::none` |
+| Value types | `t::string`, `t::int`, `t::float`, `t::datetime`, `t::array`, `t::object`, `t::binary` |
+| Explicit failure | `t::fail` |
+
+Except for `t::fail`, each assertion has a negated form under `t::not`. For example:
+
+{{< editor lang="fql" title="tests/negated-assertions.fql" >}}
+let status = "ready"
+let items = ["Mechanical Keyboard"]
+let tags = ["stable"]
+
+t::not::eq(status, "failed")
+t::not::empty(items)
+t::not::include(tags, "deprecated")
+{{</ editor >}}
+
+Assertions accept an optional message as their final argument. Use it to explain the expectation in the failure output. See [Testing]({{< ref "/docs/standard-library/testing" >}}) for every signature and accepted value type.
+
+## Test an expected failure
+
+A file ending in `.fail.fql` passes only when the runtime returns an error. For example, save this as `tests/rejected-input.fail.fql`:
+
+{{< editor lang="fql" title="tests/rejected-input.fail.fql" >}}
+t::fail("this input should be rejected")
+{{</ editor >}}
+
+Lab does not match a particular error type or message. Any compile, runtime, or assertion error satisfies an expected-failure test, and the test fails if the script succeeds. Keep the file focused so an unrelated error cannot produce a false positive.
+
+## Separate a query from its assertions
+
+Use a YAML suite when the extraction and its assertions should be separate scripts. The `query` runs first; its JSON result is available to the `assert` script as `@lab.data.query.result`.
 
 ```yaml
-# tests/api.test.yaml
-tests:
-  - name: "posts endpoint returns data"
-    query: |
-      let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts")
-      let posts = json_parse(to_string(response))
-      return length(posts)
-    assert:
-      gt: 0
+# tests/products.yaml
+query:
+  text: |
+    let products = [
+      { name: "Mechanical Keyboard", price: 129 },
+      { name: "USB-C Dock", price: 89 }
+    ]
 
-  - name: "single post has title"
-    query: |
-      let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts/1")
-      let post = json_parse(to_string(response))
-      return post.title
-    assert:
-      not_empty: true
+    return products[*].name
+
+assert:
+  text: |
+    let names = @lab.data.query.result
+
+    t::len(names, 2, "expected two product names")
+    return t::include(names, "Mechanical Keyboard")
 ```
 
-## Use fixtures for reproducible tests
+Each `query` and `assert` block must define exactly one of `text` or `ref`. Use `ref` to load FQL from another file, `params` to add user parameters for that script, and the suite's top-level `timeout` field to override the command timeout in seconds. See [Writing Tests]({{< ref "/docs/tools/lab/writing-tests" >}}) for the full suite format.
 
-Testing against live websites is fragile — the page may change at any time. Lab can serve static HTML fixtures locally so tests run against stable content.
+## Serve local fixtures
 
-Create a fixtures directory:
+Stable fixtures avoid test failures caused by live APIs changing or becoming unavailable. Create this structure:
 
-```
+```text
 tests/
-  fixtures/
-    products.html
-  products.test.fql
+├── fixtures/
+│   └── products.json
+└── fixture-products.fql
 ```
 
-Start the fixture server and run tests:
+Add a small JSON response to `tests/fixtures/products.json`:
 
-{{< terminal command="true" >}}
-lab --dir ./tests --static ./tests/fixtures --static-port 8080
-{{< /terminal >}}
+```json
+[
+  { "name": "Mechanical Keyboard", "price": 129 },
+  { "name": "USB-C Dock", "price": 89 }
+]
+```
 
-Reference the local server in your test:
+Read the fixture URL from the Lab-owned `@lab.static` parameter:
 
-{{< code lang="fql" title="tests/products.test.fql" >}}
-let page = web::html::open("http://localhost:8080/products.html")
-let items = page[~ css`.product-card`]
+{{< code lang="fql" title="tests/fixture-products.fql" >}}
+let response = io::net::http::get(@lab.static.fixtures + "/products.json")
+let products = json_parse(to_string(response))
 
-testing::not_empty(items, "should find product cards")
-testing::eq(length(items), 3, "expected 3 products")
-
-return true
+t::len(products, 2, "expected two fixture products")
+return t::gt(products[0].price, 0, "price must be positive")
 {{</ code >}}
 
-See [Static File Server]({{< ref "/docs/tools/lab/static-serving" >}}) for details.
+Start the fixture server for the duration of the test run. The explicit `fixtures` alias becomes the property name in `@lab.static.fixtures`:
+
+{{< terminal command="true" >}}
+lab run tests/ \
+  --serve ./tests/fixtures@fixtures \
+  --policy-http-allow-localhost
+{{< /terminal >}}
+
+Lab assigns a free port automatically. The localhost policy flag permits the builtin runtime's HTTP client to fetch the local fixture. See [Static File Server]({{< ref "/docs/tools/lab/static-serving" >}}) for fixed ports, multiple directories, and runtimes outside the Lab host.
+
+## Control the test run
+
+Use runner options when a suite needs parallelism, repeated passes, or retries:
+
+{{< terminal command="true" >}}
+lab run tests/ \
+  --concurrency=4 \
+  --timeout=30 \
+  --attempts=2 \
+  --times=3 \
+  --reporter=simple
+{{< /terminal >}}
+
+- `--concurrency=4` runs up to four test files at once.
+- `--timeout=30` sets the per-test timeout to 30 seconds.
+- `--attempts=2` allows at most two attempts for a failed required run.
+- `--times=3` requires three successful runs of each test.
+- `--reporter=simple` produces line-oriented output suited to CI logs.
+
+See [Runners]({{< ref "/docs/tools/lab/runners" >}}) for retry and repetition behavior.
 
 ## Run tests in CI
 
-Lab can run in a CI pipeline. A common setup:
+Install Lab and use the simple reporter in GitHub Actions:
 
 ```yaml
 # .github/workflows/test.yml
+name: FQL tests
+
+on:
+  pull_request:
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run FQL tests
+
+      - name: Install Lab
         run: |
-          lab --dir ./tests --static ./tests/fixtures --static-port 8080
+          mkdir -p "$HOME/.ferret"
+          curl -fsSL https://raw.githubusercontent.com/MontFerret/lab/main/install.sh | sh
+          echo "$HOME/.ferret" >> "$GITHUB_PATH"
+
+      - name: Run FQL tests
+        run: lab run tests/ --reporter=simple
 ```
 
-For browser-backed tests, add a Chromium container:
-
-```yaml
-services:
-  chromium:
-    image: montferret/chromium
-    ports:
-      - 9222:9222
-```
-
-See [CI]({{< ref "/docs/tools/lab/ci" >}}) for the full reference.
-
-## Control test execution
-
-Lab supports several options for test execution:
-
-{{< terminal command="true" >}}
-lab --dir ./tests --concurrency 4 --timeout 30s --retries 2
-{{< /terminal >}}
-
-- `--concurrency` — run tests in parallel
-- `--timeout` — maximum time per test
-- `--retries` — retry failed tests
-
-See [Runners]({{< ref "/docs/tools/lab/runners" >}}) for all options.
+Pin `VERSION` during installation when the workflow must use a specific Lab release. For waits, fixture services, Docker, and external runtimes, see [CI]({{< ref "/docs/tools/lab/ci" >}}).
 
 ## Next steps
 
