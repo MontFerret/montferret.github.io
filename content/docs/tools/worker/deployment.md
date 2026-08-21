@@ -21,10 +21,10 @@ docker run --rm -p 8080:8080 montferret/worker:latest
 docker run --rm -p 8080:8080 ghcr.io/montferret/worker:latest
 {{< /terminal >}}
 
-Pin a release tag for repeatable deployments:
+Pin an exact release tag for repeatable deployments:
 
 {{< terminal >}}
-docker run --rm -p 8080:8080 montferret/worker:v2.0.0-rc.16
+docker run --rm -p 8080:8080 montferret/worker:v{{< data "versions.worker.v2" >}}
 {{< /terminal >}}
 
 The release image starts Chromium through the image entrypoint and then starts Worker on port `8080`.
@@ -48,12 +48,12 @@ docker run --rm -p 8080:8080 montferret/worker:latest \
   /bin/sh -c '/entrypoint.sh & /worker -log-level=info -body-limit=10M -request-limit=10'
 {{< /terminal >}}
 
-Mount a directory and set `FS_ROOT` when scripts need filesystem access:
+Mount a directory and set `POLICY_FS_ROOT` when scripts need filesystem access:
 
 {{< terminal >}}
 docker run --rm -p 8080:8080 \
   -v "$PWD/data:/data:ro" \
-  -e FS_ROOT=/data \
+  -e POLICY_FS_ROOT=/data \
   montferret/worker:latest
 {{< /terminal >}}
 
@@ -128,6 +128,16 @@ The health endpoint returns an empty body and is skipped by Worker rate limiting
 Worker binds to `0.0.0.0` on the configured port. Put it behind your normal deployment boundary: a private network, reverse proxy, ingress controller, API gateway, or service mesh.
 
 Worker does not include built-in authentication, authorization, TLS termination, request signing, durable queues, scheduling, or tenant isolation. Add those at the deployment layer when Worker is exposed beyond a trusted network.
+
+Ferret HTTP egress is disabled by default. Prefer an exact host allowlist when deployed scripts need outbound access:
+
+{{< terminal >}}
+docker run --rm -p 8080:8080 \
+  -e POLICY_HTTP_ALLOWED_HOSTS=api.example.com \
+  montferret/worker:latest
+{{< /terminal >}}
+
+`HTTP_ALLOW_ALL_HOSTS=true` allows requests to arbitrary hostnames while retaining the configured timeout, size, redirect, blocked-host, blocked-header, and literal-address policies. Hostnames are not DNS-resolved before policy evaluation, so prefer `POLICY_HTTP_ALLOWED_HOSTS` for SSRF-sensitive deployments. See [Configuration]({{< ref "configuration" >}}) for the complete policy surface.
 
 Use body limits and rate limits for public or shared deployments:
 
