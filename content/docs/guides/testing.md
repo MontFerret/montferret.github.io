@@ -168,25 +168,26 @@ Add a small JSON response to `tests/fixtures/products.json`:
 ]
 ```
 
-Read the fixture URL from the Lab-owned `@lab.static` parameter:
+Keep the script production-oriented by reading its normal `@baseUrl` parameter:
 
 {{< code lang="fql" title="tests/fixture-products.fql" >}}
-let response = io::net::http::get(@lab.static.fixtures + "/products.json")
+let response = io::net::http::get(@baseUrl + "/products.json")
 let products = json_parse(to_string(response))
 
 t::len(products, 2, "expected two fixture products")
 return t::gt(products[0].price, 0, "price must be positive")
 {{</ code >}}
 
-Start the fixture server for the duration of the test run. The explicit `fixtures` alias becomes the property name in `@lab.static.fixtures`:
+Start the fixture server for the duration of the test run, then bind the generated endpoint to `@baseUrl`:
 
 {{< terminal command="true" >}}
 lab run tests/ \
   --serve ./tests/fixtures@fixtures \
+  --param-bind baseUrl=@lab.static.fixtures \
   --policy-http-allow-localhost
 {{< /terminal >}}
 
-Lab assigns a free port automatically. The localhost policy flag permits the builtin runtime's HTTP client to fetch the local fixture. See [Static File Server]({{< ref "/docs/tools/lab/static-serving" >}}) for fixed ports, multiple directories, and runtimes outside the Lab host.
+Lab assigns a free port automatically and resolves the binding after that URL exists. The localhost policy flag permits the builtin runtime's HTTP client to fetch the local fixture. Scripts that deliberately depend on Lab can use `@lab.static.fixtures` directly. See [Static File Server]({{< ref "/docs/tools/lab/static-serving" >}}) for fixed ports, multiple directories, and runtimes outside the Lab host.
 
 ## Control the test run
 

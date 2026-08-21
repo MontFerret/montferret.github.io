@@ -84,7 +84,7 @@ Lab passes parameters into Ferret under two groups:
 
 | Parameter group | Source |
 | --- | --- |
-| User parameters | Values passed with `--param` or suite-level `params`. |
+| User parameters | Values passed with `--param`, copied by `--param-bind`, or supplied through suite-level `params`. |
 | Lab system parameters | Values Lab creates, exposed under `@lab`. |
 
 The system namespace currently includes local service URLs under `@lab.static` and `@lab.mock`, and YAML suite query output under `@lab.data.query`.

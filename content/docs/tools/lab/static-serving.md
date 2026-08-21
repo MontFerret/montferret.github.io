@@ -9,21 +9,30 @@ description: "Serve local static files for Lab tests or standalone fixture acces
 
 Lab can serve local directories over HTTP for tests. Use the static file server for fixture files, generated pages, built frontend assets, or other files that a Ferret script should read through a URL.
 
-During `lab run`, static service URLs are passed to FQL under `@lab.static`.
+During `lab run`, static service URLs are passed to FQL under `@lab.static`. Use `--param-bind` when the script should consume one through an ordinary production parameter instead.
 
 ## Serve static files during a test run
 
 Use `run --serve` to serve a directory while tests run.
 
 {{< terminal >}}
-lab run --serve ./dist@app tests/
+lab run tests/ \
+  --serve ./dist@app \
+  --param-bind baseUrl=@lab.static.app \
+  --policy-http-allow-localhost
 {{< /terminal >}}
 
-The service URL is available as `@lab.static.app`.
+Lab starts the service on its final port and then makes the same URL available as `@baseUrl`.
 
 {{< code lang="fql" >}}
-let doc = web::html::open(@lab.static.app + "/index.html")
+let doc = web::html::open(@baseUrl + "/index.html")
 return doc.title
+{{< /code >}}
+
+For deliberately Lab-aware scripts, direct access remains available:
+
+{{< code lang="fql" >}}
+return @lab.static.app + "/index.html"
 {{< /code >}}
 
 Multiple directories can be served in the same run:

@@ -31,6 +31,7 @@ The current Lab v2 command surface does not include `--cdp` or `LAB_CDP`. Browse
 | `--serve-bind` | | `LAB_SERVE_BIND` | | Host to bind local services to. Must not include a port. |
 | `--serve-host` | | `LAB_SERVE_HOST` | | Host to advertise in local service URLs. Must not include a port. |
 | `--param` | `-p` | `LAB_PARAM` | | User parameter for FQL. Can be repeated. |
+| `--param-bind` | | `LAB_PARAM_BIND` | | Bind a user parameter path to an existing parameter reference. Can be repeated. |
 | `--wait` | `-w` | `LAB_WAIT` | | HTTP resource to wait for before tests run. Can be repeated. |
 | `--wait-timeout` | `--wt` | `LAB_WAIT_TIMEOUT` | `5` | Wait interval in seconds. |
 | `--wait-attempts` | | `LAB_WAIT_ATTEMPTS` | `5` | Number of wait attempts. |
@@ -96,6 +97,17 @@ lab run tests/ \
 {{< /terminal >}}
 
 Strings must be JSON strings. Use shell quoting to keep the inner quotes intact.
+
+`--param-bind` uses `target=@source` syntax. The target is a dot-separated user parameter path without a leading `@`; the source may refer to any parameter that exists after Lab setup and must start with `@`. Paths are case-sensitive. Each segment starts with a letter or underscore and may then contain letters, numbers, underscores, or hyphens. Bracket expressions are not accepted, and `lab` is reserved as a target namespace. This is CLI lookup notation rather than an FQL expression, so an alias such as `api-fixtures` is written as `@lab.static.api-fixtures` in a binding even though direct FQL access uses `@lab.static["api-fixtures"]`.
+
+{{< terminal >}}
+lab run tests/ \
+  --serve ./tests/fixtures@fixtures \
+  --param-bind baseUrl=@lab.static.fixtures \
+  --param-bind config.api.baseUrl=@lab.static.fixtures
+{{< /terminal >}}
+
+Lab resolves every source from one snapshot after local services have published their final URLs. Values retain their original type. Malformed or missing sources, duplicate or overlapping binding targets, and overlaps with `--param` targets are configuration errors; bindings do not use last-value-wins precedence.
 
 ## Runtime param keys
 

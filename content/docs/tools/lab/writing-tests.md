@@ -122,7 +122,7 @@ assert:
     return t::eq(@lab.data.query.result, ["Ada"])
 ```
 
-Script-level `params` are merged into the user parameters for that script. They can be used with values passed by `lab run --param`.
+Script-level `params` are merged into the user parameters for that script. They can be used with values passed by `lab run --param`. The `--param-bind` option can adapt a value that already exists during Lab setup into an ordinary user parameter path before scripts run.
 
 The assertion can also inspect the parameters used for the query:
 
@@ -162,6 +162,7 @@ Lab reserves the `@lab` parameter namespace for values it creates during a test 
 | `@lab.data.query.params` | A YAML suite assertion runs after the query. |
 
 Keep user parameters outside `@lab`; Lab writes that namespace for each test.
+Use direct `@lab.*` access when a script intentionally depends on Lab, or use `--param-bind` to keep the script's parameter names environment-neutral.
 
 ## Next steps
 
