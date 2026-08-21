@@ -311,6 +311,7 @@ jobs:
         if: steps.pending-version.outputs.proceed == 'true'
         shell: bash
         env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PRODUCT_LABEL: ${{ steps.metadata.outputs.label }}
           REMOTE_SHA: ${{ steps.pending-version.outputs.remote_sha }}
           UPDATE_BRANCH: ${{ steps.metadata.outputs.branch }}
