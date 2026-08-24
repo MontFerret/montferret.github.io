@@ -101,6 +101,8 @@ The selected directory itself is scanned even when its name would be excluded as
 
 `ferret migrate run` is a compatibility aid, not a general v1-to-v2 translator. It does not translate arbitrary v1 APIs or application logic, invent replacements for removed packages, or rewrite source in excluded descendant directories.
 
+For an embedded Go application, continue with [Migrate a Go application from Ferret v1]({{< ref "/docs/embedding/go/migrating-from-v1" >}}). The guide covers the temporary compatibility packages and the manual move from v1 compiler, runtime, and driver composition to the native Engine, Plan, Session, and module APIs.
+
 If the project vendors dependencies, run `go mod vendor` after reviewing and applying a migration that changed Go imports.
 
 ## Commands and flags
@@ -117,4 +119,4 @@ The `run` flags cannot be combined. Diagnostics and manual follow-up remain on s
 
 ## Next steps
 
-{{< docs-related tiles="tools-cli-run,embedding-go-getting-started,tools-cli-mod" >}}
+{{< docs-related tiles="embedding-go-migrating-from-v1,tools-cli-run,embedding-go-getting-started,tools-cli-mod" >}}

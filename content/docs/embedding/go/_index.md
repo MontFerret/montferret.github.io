@@ -11,4 +11,4 @@ Use the native Go library when your application needs full control over Ferret's
 
 Start with a minimal query, then move into the API area that matches your integration.
 
-{{< docs-related tiles="embedding-go-getting-started,embedding-go-executing,embedding-go-parameters,embedding-go-safe-fql-construction,embedding-go-custom-functions,embedding-go-configuration,embedding-go-host-values,embedding-go-modules,embedding-go-value-encoders,embedding-go-programs,embedding-go-compiler-analysis,embedding-go-application-guide" >}}
+{{< docs-related tiles="embedding-go-getting-started,embedding-go-migrating-from-v1,embedding-go-executing,embedding-go-parameters,embedding-go-safe-fql-construction,embedding-go-custom-functions,embedding-go-configuration,embedding-go-host-values,embedding-go-modules,embedding-go-value-encoders,embedding-go-programs,embedding-go-compiler-analysis,embedding-go-application-guide" >}}
