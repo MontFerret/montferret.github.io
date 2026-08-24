@@ -12,6 +12,10 @@ aliases:
 
 Parameters let the host application inject values into FQL queries. They are the primary way to pass dynamic data — user IDs, URLs, configuration values, thresholds — from Go into a script without string interpolation or query rewriting.
 
+{{% notification type="warning" %}}
+FQL source is code. Do not insert runtime data with `fmt.Sprintf` or string concatenation. See [Construct FQL safely]({{< ref "/docs/embedding/go/safe-fql-construction" >}}) for URL, selector, HTML, and source-composition examples.
+{{% /notification %}}
+
 ## FQL parameter syntax
 
 In FQL, parameters are referenced with the `@` prefix:

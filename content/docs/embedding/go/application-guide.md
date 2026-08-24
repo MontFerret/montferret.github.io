@@ -14,6 +14,10 @@ Embedding Ferret lets you run FQL queries inside your Go application — useful 
 
 For the full native API reference, see [Go embedding]({{< ref "/docs/embedding/go" >}}).
 
+{{% notification type="warning" %}}
+FQL source is code. Do not insert URLs, selectors, HTML, credentials, request bodies, or other runtime values with `fmt.Sprintf` or string concatenation. Pass them as parameters instead. See [Construct FQL safely]({{< ref "/docs/embedding/go/safe-fql-construction" >}}).
+{{% /notification %}}
+
 ## Set up the project
 
 Create a new Go module and add the Ferret dependency:
@@ -252,12 +256,9 @@ func main() {
         }
         defer plan.Close()
 
-        sessionOpts := make([]ferret.Option, 0, len(req.Params))
-        for k, v := range req.Params {
-            sessionOpts = append(sessionOpts, ferret.WithSessionParam(k, v))
-        }
-
-        session, err := plan.NewSession(ctx, sessionOpts...)
+        session, err := plan.NewSession(ctx,
+            ferret.WithSessionParams(req.Params),
+        )
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
@@ -507,12 +508,9 @@ func main() {
         }
         defer plan.Close()
 
-        sessionOpts := make([]ferret.Option, 0, len(req.Params))
-        for k, v := range req.Params {
-            sessionOpts = append(sessionOpts, ferret.WithSessionParam(k, v))
-        }
-
-        session, err := plan.NewSession(ctx, sessionOpts...)
+        session, err := plan.NewSession(ctx,
+            ferret.WithSessionParams(req.Params),
+        )
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
