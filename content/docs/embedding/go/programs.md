@@ -3,14 +3,20 @@ title: "Programs"
 sidebarTitle: "Programs"
 weight: 90
 draft: false
-description: "Compile queries to portable binary artifacts, load pre-compiled programs, and work with the artifact format."
+description: "Compile queries to binary artifacts, load pre-compiled programs, and work with the artifact format."
 aliases:
     - /docs/embedding/programs/
 ---
 
 # Programs
 
-A compiled Ferret query can be serialized into a binary artifact and loaded later without the compiler. This is useful for distributing pre-compiled queries, skipping compilation at runtime, or caching build output on disk.
+A compiled Ferret query can be serialized into a binary artifact and loaded later without compiling its source again. This is useful for distributing pre-compiled queries, skipping source compilation at runtime, or caching build output on disk. `Engine.Load` bypasses compilation, but the engine itself is still constructed with its compiler.
+
+Artifacts contain bytecode, referenced host-function signatures, and the original FQL source name and text used for diagnostics. They do not contain host-function or module implementations. The engine that loads an artifact must still be configured with the modules and host functions the program uses. Artifacts are not an obfuscation or source-protection mechanism.
+
+## Security
+
+Artifacts are executable program inputs and are neither encrypted nor signed. Load only trusted artifacts, or authenticate them externally before calling `Engine.Load`.
 
 ## Two paths to a Plan
 
@@ -18,24 +24,31 @@ There are two ways to get a `Plan` from the engine:
 
 {{< code lang="go" >}}
 // From FQL source — compiles and returns a plan
-plan, err := engine.Compile(ctx, source.NewAnonymous(`return 1 + 1`))
+sourcePlan, err := engine.Compile(ctx, source.NewAnonymous(`return 1 + 1`))
+if err != nil {
+    log.Fatal(err)
+}
+defer sourcePlan.Close()
 
 // From a pre-compiled artifact — loads and returns a plan
-plan, err := engine.Load(artifactBytes)
+artifactPlan, err := engine.Load(artifactBytes)
+if err != nil {
+    log.Fatal(err)
+}
+defer artifactPlan.Close()
 {{</ code >}}
 
 Both produce the same `*Plan` that you create sessions from and run. The difference is where the bytecode comes from: the compiler or a serialized artifact.
 
 ## Serializing a program
 
-The `artifact` package provides `Marshal` to serialize a compiled program:
+`Plan.Marshal` uses the `artifact` package to serialize a compiled program:
 
 {{< code lang="go" >}}
 import (
+    "log"
     "os"
 
-    "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/artifact"
     "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
@@ -44,6 +57,7 @@ plan, err := engine.Compile(ctx, source.New("query.fql", `return upper(@name)`))
 if err != nil {
     log.Fatal(err)
 }
+defer plan.Close()
 
 // Serialize to bytes
 data, err := plan.Marshal()
@@ -52,7 +66,7 @@ if err != nil {
 }
 
 // Write to file
-err = os.WriteFile("query.fbc", data, 0644)
+err = os.WriteFile("query.fqlc", data, 0o644)
 if err != nil {
     log.Fatal(err)
 }
@@ -61,6 +75,11 @@ if err != nil {
 The default payload format is MessagePack. To use JSON instead, set the format in the options:
 
 {{< code lang="go" >}}
+import (
+    "github.com/MontFerret/ferret/v2"
+    "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
+)
+
 data, err := plan.Marshal(ferret.WithProgramFormat(artifact.FormatJSON))
 {{</ code >}}
 
@@ -69,7 +88,7 @@ data, err := plan.Marshal(ferret.WithProgramFormat(artifact.FormatJSON))
 Load the artifact back into the engine with `engine.Load`:
 
 {{< code lang="go" >}}
-data, err := os.ReadFile("query.fbc")
+data, err := os.ReadFile("query.fqlc")
 if err != nil {
     log.Fatal(err)
 }
@@ -89,7 +108,12 @@ if err != nil {
 defer session.Close()
 
 output, err := session.Run(ctx)
+if err != nil {
+    log.Fatal(err)
+}
 {{</ code >}}
+
+`Session.Run` returns encoded output. With the default JSON codec, a returned FQL string is stored in `output.Content` as a quoted JSON string.
 
 For lower-level access, `ferret.UnmarshalProgram` returns a `*bytecode.Program` without wrapping it in a plan:
 
@@ -134,13 +158,17 @@ type Format interface {
 Use `HasMagic` to quickly check whether a byte slice looks like a Ferret artifact:
 
 {{< code lang="go" >}}
+var plan *ferret.Plan
+
 if artifact.HasMagic(data) {
-    plan, err := engine.Load(data)
-    // ...
+    plan, err = engine.Load(data)
 } else {
-    plan, err := engine.Compile(ctx, source.NewAnonymous(string(data)))
-    // ...
+    plan, err = engine.Compile(ctx, source.NewAnonymous(string(data)))
 }
+if err != nil {
+    log.Fatal(err)
+}
+defer plan.Close()
 {{</ code >}}
 
 `HasMagic` only checks the first 4 bytes. It does not validate the full artifact — use `Load` or `Unmarshal` for that.
@@ -151,8 +179,8 @@ The engine uses a `Loader` to decode artifacts. By default it supports JSON and 
 
 {{< code lang="go" >}}
 loader := artifact.NewLoader(
-    artifact.RegisteredFormat{ID: 1, Format: formatjson.Default},
-    artifact.RegisteredFormat{ID: 2, Format: formatmsgpack.Default},
+    artifact.RegisteredFormat{ID: artifact.FormatJSON, Format: formatjson.Default},
+    artifact.RegisteredFormat{ID: artifact.FormatMsgPack, Format: formatmsgpack.Default},
     artifact.RegisteredFormat{ID: 3, Format: myCustomFormat},
 )
 
@@ -161,7 +189,7 @@ engine, err := ferret.New(
 )
 {{</ code >}}
 
-The format ID in the `RegisteredFormat` must match the format ID written in the artifact header. When loading, the loader reads the header, selects the registered format by ID, and delegates decoding to it.
+The format ID in the `RegisteredFormat` must match the format ID written in the artifact header. When loading, the loader reads the header, selects the registered format by ID, and delegates decoding to it. A custom loader extends `Engine.Load`; `Plan.Marshal` still writes only the built-in JSON and MessagePack formats.
 
 ## Error handling
 
@@ -180,10 +208,14 @@ The `artifact` package defines sentinel errors for each validation failure:
 Use `errors.Is` to check for specific failures:
 
 {{< code lang="go" >}}
-_, err := engine.Load(data)
+plan, err := engine.Load(data)
 if errors.Is(err, artifact.ErrIncompatibleISA) {
     // artifact was compiled with a different bytecode version
 }
+if err != nil {
+    log.Fatal(err)
+}
+defer plan.Close()
 {{</ code >}}
 
 ## Complete example
@@ -200,66 +232,73 @@ import (
     "os"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
-    "github.com/MontFerret/ferret/v2/pkg/compiler"
     "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() error {
     ctx := context.Background()
 
     // --- Build phase ---
 
     engine, err := ferret.New()
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer engine.Close()
 
-    plan, err := engine.Compile(source.New("greeting.fql", `return upper(@name)`))
+    compiledPlan, err := engine.Compile(ctx, source.New("greeting.fql", `return upper(@name)`))
     if err != nil {
-        log.Fatal(err)
+        return err
+    }
+    defer compiledPlan.Close()
+
+    data, err := compiledPlan.Marshal()
+    if err != nil {
+        return err
     }
 
-    data, err := plan.Marshal()
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    if err := os.WriteFile("greeting.fbc", data, 0644); err != nil {
-        log.Fatal(err)
+    if err := os.WriteFile("greeting.fqlc", data, 0o644); err != nil {
+        return err
     }
 
     fmt.Printf("compiled %d bytes\n", len(data))
 
     // --- Load phase ---
 
-    saved, err := os.ReadFile("greeting.fbc")
+    saved, err := os.ReadFile("greeting.fqlc")
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
-    plan, err := engine.Load(saved)
+    loadedPlan, err := engine.Load(saved)
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer plan.Close()
+    defer loadedPlan.Close()
 
-    session, err := plan.NewSession(ctx,
+    session, err := loadedPlan.NewSession(ctx,
         ferret.WithSessionParam("name", "ferret"),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer session.Close()
 
     output, err := session.Run(ctx)
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(output.Content))
     // "FERRET"
+
+    return nil
 }
 {{</ code >}}
 

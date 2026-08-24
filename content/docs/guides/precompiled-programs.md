@@ -3,12 +3,12 @@ title: "Pre-compile and distribute programs"
 sidebarTitle: "Pre-compiled programs"
 weight: 130
 draft: false
-description: "Compile FQL scripts to binary artifacts, store them, and load them at runtime without the compiler."
+description: "Compile FQL scripts to binary artifacts, store them, and load them without compiling the source again."
 ---
 
 # Pre-compile and distribute programs
 
-Ferret can compile FQL scripts into portable binary artifacts. Loading a pre-compiled artifact skips the compilation step entirely — useful for faster startup, distributing scripts without source, or caching build output in CI.
+Ferret can compile FQL scripts into binary artifacts. Loading a pre-compiled artifact skips parsing and source compilation — useful for faster startup, distributing scripts without separate `.fql` files, or caching build output. The loading engine still owns a compiler and must register every module or host function used by the program.
 
 For the artifact format specification and full API, see [Programs]({{< ref "/docs/embedding/go/programs" >}}).
 
@@ -30,53 +30,57 @@ import (
 )
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() error {
     engine, err := ferret.New()
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer engine.Close()
 
+    ctx := context.Background()
     plan, err := engine.Compile(
-        context.Background(),
-        source.New("extract-titles.fql", `
-            let page = web::html::open(@url)
-            return page[~ css` + "`h1, h2`" + `][*].textContent
-        `),
+        ctx,
+        source.New("greeting.fql", `return upper(@name)`),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer plan.Close()
 
     data, err := plan.Marshal()
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
-    if err := os.WriteFile("extract-titles.fbc", data, 0644); err != nil {
-        log.Fatal(err)
+    if err := os.WriteFile("greeting.fqlc", data, 0o644); err != nil {
+        return err
     }
 
     fmt.Printf("compiled %d bytes\n", len(data))
+
+    return nil
 }
 {{</ code >}}
 
-`plan.Marshal()` serializes the bytecode to a self-describing binary artifact with the `.fbc` extension (Ferret Bytecode).
+`plan.Marshal()` serializes the bytecode to a self-describing binary artifact. These examples use the CLI's `.fqlc` extension.
 
 ## Compile from the CLI
 
 The CLI can compile scripts without writing any Go:
 
 {{< terminal command="true" >}}
-ferret build extract-titles.fql -o extract-titles.fbc
+ferret build greeting.fql -o greeting.fqlc
 {{</ terminal >}}
 
 Compile an entire directory:
 
 {{< terminal command="true" >}}
-for f in scripts/*.fql; do
-    ferret build "$f" -o "${f%.fql}.fbc"
-done
+ferret build scripts/*.fql -o dist/
 {{</ terminal >}}
 
 See [CLI Build]({{< ref "/docs/tools/cli/build" >}}) for all options.
@@ -93,19 +97,15 @@ Artifacts support two payload formats:
 To use JSON:
 
 {{< code lang="go" >}}
-import "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
+import (
+    "github.com/MontFerret/ferret/v2"
+    "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
+)
 
 data, err := plan.Marshal(ferret.WithProgramFormat(artifact.FormatJSON))
 {{</ code >}}
 
-JSON artifacts are human-readable — useful for inspecting the compiled output or debugging issues:
-
-{{< terminal command="true" >}}
-ferret build script.fql -o script.fbc --format json
-cat script.fbc | python3 -c "import sys; data=sys.stdin.buffer.read(); print(data[14:].decode())" | jq .
-{{</ terminal >}}
-
-The first 14 bytes are the binary header; the rest is the JSON payload.
+`ferret build` writes the default MessagePack format; it does not expose a payload-format flag. Use the Go API above when you need JSON. In either format, the first 14 bytes are the binary header and the remaining bytes are the encoded payload.
 
 ## Embed artifacts in a Go binary
 
@@ -123,59 +123,71 @@ import (
     "github.com/MontFerret/ferret/v2"
 )
 
-//go:embed scripts/*.fbc
+//go:embed scripts/*.fqlc
 var scripts embed.FS
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() error {
     engine, err := ferret.New()
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer engine.Close()
 
-    data, err := scripts.ReadFile("scripts/extract-titles.fbc")
+    data, err := scripts.ReadFile("scripts/greeting.fqlc")
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     plan, err := engine.Load(data)
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer plan.Close()
 
-    session, err := plan.NewSession(context.Background(),
-        ferret.WithSessionParam("url", "https://mockery.ferretlang.org"),
+    ctx := context.Background()
+    session, err := plan.NewSession(ctx,
+        ferret.WithSessionParam("name", "ferret"),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer session.Close()
 
-    output, err := session.Run(context.Background())
+    output, err := session.Run(ctx)
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(output.Content))
+    // "FERRET"
+
+    return nil
 }
 {{</ code >}}
+
+`output.Content` is encoded output. The default JSON codec includes quotes around the returned FQL string.
 
 Build workflow:
 
 {{< terminal command="true" >}}
-ferret build scripts/extract-titles.fql -o scripts/extract-titles.fbc
+ferret build scripts/greeting.fql -o scripts/greeting.fqlc
 go build -o myservice .
 {{</ terminal >}}
 
-The resulting binary contains the compiled FQL — deploy it without any `.fql` or `.fbc` files.
+The resulting binary contains the compiled FQL — deploy it without any external `.fql` or `.fqlc` files.
 
 ## Load and run at startup
 
 Use `engine.Load` to create a plan from artifact bytes:
 
 {{< code lang="go" >}}
-data, err := os.ReadFile("extract-titles.fbc")
+data, err := os.ReadFile("greeting.fqlc")
 if err != nil {
     log.Fatal(err)
 }
@@ -189,7 +201,7 @@ defer plan.Close()
 
 ### Auto-detect source vs. artifact
 
-When your application accepts both `.fql` source and `.fbc` artifacts, use `artifact.HasMagic` to choose the right path:
+When your application accepts both `.fql` source and `.fqlc` artifacts, use `artifact.HasMagic` to choose the right path:
 
 {{< code lang="go" >}}
 import "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
@@ -206,6 +218,10 @@ if artifact.HasMagic(data) {
 } else {
     plan, err = engine.Compile(ctx, source.New(path, string(data)))
 }
+if err != nil {
+    log.Fatal(err)
+}
+defer plan.Close()
 {{</ code >}}
 
 `HasMagic` checks the first 4 bytes for the `FBC2` magic number. It does not validate the full artifact — `Load` handles that.
@@ -217,57 +233,58 @@ Artifacts encode the bytecode instruction set version (ISA). When the runtime's 
 {{< code lang="go" >}}
 import (
     "errors"
+
     "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
 )
 
 plan, err := engine.Load(data)
+if errors.Is(err, artifact.ErrIncompatibleISA) {
+    log.Println("artifact ISA mismatch, recompiling from source")
+    plan, err = engine.Compile(ctx, source.New(name, sourceText))
+}
+
 if err != nil {
-    if errors.Is(err, artifact.ErrIncompatibleISA) {
-        // Artifact was compiled with a different bytecode version.
-        // Recompile from source.
-        log.Println("artifact ISA mismatch, recompiling from source")
-        plan, err = engine.Compile(ctx, source.New(name, sourceText))
-    } else if errors.Is(err, artifact.ErrUnsupportedSchema) {
+    switch {
+    case errors.Is(err, artifact.ErrUnsupportedSchema):
         log.Fatal("artifact schema version not supported by this runtime")
-    } else if errors.Is(err, artifact.ErrUnknownFormat) {
+    case errors.Is(err, artifact.ErrUnknownFormat):
         log.Fatal("artifact payload format not recognized")
-    } else {
+    default:
         log.Fatal(err)
     }
 }
+defer plan.Close()
 {{</ code >}}
 
-Strategy: always keep the `.fql` source alongside `.fbc` artifacts so you can recompile when the ISA changes.
+Strategy: always keep the `.fql` source alongside `.fqlc` artifacts so you can recompile when the ISA changes.
 
 ## Build a compile-and-cache workflow
 
 Compile on first use and cache the artifact for subsequent runs:
 
 {{< code lang="go" >}}
-func loadOrCompile(engine *ferret.Engine, fqlPath string) (*ferret.Plan, error) {
-    ctx := context.Background()
-    fbcPath := strings.TrimSuffix(fqlPath, ".fql") + ".fbc"
+func loadOrCompile(ctx context.Context, engine *ferret.Engine, fqlPath string) (*ferret.Plan, error) {
+    artifactPath := strings.TrimSuffix(fqlPath, ".fql") + ".fqlc"
 
     fqlInfo, err := os.Stat(fqlPath)
     if err != nil {
         return nil, err
     }
 
-    // Try loading cached artifact
-    if fbcInfo, err := os.Stat(fbcPath); err == nil {
-        if fbcInfo.ModTime().After(fqlInfo.ModTime()) {
-            data, err := os.ReadFile(fbcPath)
-            if err == nil {
-                plan, err := engine.Load(data)
-                if err == nil {
+    // Try the cache first. A read or load failure falls through to compilation.
+    if artifactInfo, statErr := os.Stat(artifactPath); statErr == nil {
+        if artifactInfo.ModTime().After(fqlInfo.ModTime()) {
+            data, readErr := os.ReadFile(artifactPath)
+            if readErr == nil {
+                if plan, loadErr := engine.Load(data); loadErr == nil {
                     return plan, nil
                 }
-                // Fall through to recompile on load error
             }
         }
+    } else if !errors.Is(statErr, os.ErrNotExist) {
+        return nil, statErr
     }
 
-    // Compile from source
     src, err := os.ReadFile(fqlPath)
     if err != nil {
         return nil, err
@@ -278,21 +295,23 @@ func loadOrCompile(engine *ferret.Engine, fqlPath string) (*ferret.Plan, error) 
         return nil, err
     }
 
-    // Cache the artifact
     data, err := plan.Marshal()
-    if err == nil {
-        os.WriteFile(fbcPath, data, 0644)
+    if err != nil {
+        return nil, errors.Join(err, plan.Close())
+    }
+    if err := os.WriteFile(artifactPath, data, 0o644); err != nil {
+        return nil, errors.Join(err, plan.Close())
     }
 
     return plan, nil
 }
 {{</ code >}}
 
-The function checks whether the cached `.fbc` file is newer than the `.fql` source. If it is, it loads the artifact directly. Otherwise, it compiles from source and caches the result.
+The function checks whether the cached `.fqlc` file is newer than the `.fql` source. If it is, it loads the artifact directly. Otherwise, it compiles from source and caches the result. The caller owns the returned plan and must close it.
 
 ## Integrate into CI
 
-Compile artifacts in CI and deploy only the binaries:
+Compile artifacts in CI and deploy only the generated artifacts:
 
 ```yaml
 # .github/workflows/build.yml
@@ -310,19 +329,19 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Ferret CLI
-        run: go install github.com/MontFerret/ferret/v2/cmd/ferret@latest
+        run: go install github.com/MontFerret/cli/v2/ferret@v{{< data "versions.cli.v2" >}}
 
       - name: Compile FQL scripts
         run: |
           for f in scripts/*.fql; do
-            ferret build "$f" -o "${f%.fql}.fbc"
+            ferret build "$f" -o "${f%.fql}.fqlc"
           done
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: fbc-artifacts
-          path: scripts/*.fbc
+          name: fqlc-artifacts
+          path: scripts/*.fqlc
 ```
 
 A downstream deploy job downloads the artifacts and embeds or ships them with the application.
@@ -336,8 +355,8 @@ package main
 
 import (
     "context"
+    "errors"
     "fmt"
-    "log"
     "os"
     "path/filepath"
     "strings"
@@ -348,86 +367,114 @@ import (
 )
 
 func main() {
-    if len(os.Args) < 3 {
-        fmt.Fprintf(os.Stderr, "usage: %s <build|run> <dir>\n", os.Args[0])
+    if err := run(context.Background(), os.Args); err != nil {
+        fmt.Fprintln(os.Stderr, err)
         os.Exit(1)
     }
+}
 
-    cmd, dir := os.Args[1], os.Args[2]
+func run(ctx context.Context, args []string) (err error) {
+    if len(args) < 3 {
+        return fmt.Errorf("usage: %s <build|run> <dir>", args[0])
+    }
+
+    cmd, dir := args[1], args[2]
 
     engine, err := ferret.New()
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer engine.Close()
-
-    ctx := context.Background()
+    defer func() {
+        err = errors.Join(err, engine.Close())
+    }()
 
     switch cmd {
     case "build":
-        files, _ := filepath.Glob(filepath.Join(dir, "*.fql"))
-        for _, f := range files {
-            src, err := os.ReadFile(f)
-            if err != nil {
-                log.Fatal(err)
-            }
-
-            plan, err := engine.Compile(ctx, source.New(filepath.Base(f), string(src)))
-            if err != nil {
-                log.Fatalf("compile %s: %v", f, err)
-            }
-
-            data, err := plan.Marshal()
-            plan.Close()
-            if err != nil {
-                log.Fatal(err)
-            }
-
-            out := strings.TrimSuffix(f, ".fql") + ".fbc"
-            if err := os.WriteFile(out, data, 0644); err != nil {
-                log.Fatal(err)
-            }
-
-            fmt.Printf("compiled %s → %s (%d bytes)\n", f, out, len(data))
-        }
-
+        return forEachFile(dir, "*.fql", func(path string) error {
+            return compileFile(ctx, engine, path)
+        })
     case "run":
-        files, _ := filepath.Glob(filepath.Join(dir, "*.fbc"))
-        for _, f := range files {
-            data, err := os.ReadFile(f)
-            if err != nil {
-                log.Fatal(err)
-            }
-
-            if !artifact.HasMagic(data) {
-                log.Fatalf("%s is not a valid artifact", f)
-            }
-
-            plan, err := engine.Load(data)
-            if err != nil {
-                log.Fatalf("load %s: %v", f, err)
-            }
-
-            session, err := plan.NewSession(ctx)
-            if err != nil {
-                plan.Close()
-                log.Fatal(err)
-            }
-
-            output, err := session.Run(ctx)
-            session.Close()
-            plan.Close()
-
-            if err != nil {
-                log.Fatalf("run %s: %v", f, err)
-            }
-
-            fmt.Printf("--- %s ---\n%s\n", filepath.Base(f), output.Content)
-        }
-
+        return forEachFile(dir, "*.fqlc", func(path string) error {
+            return runArtifact(ctx, engine, path)
+        })
     default:
-        log.Fatalf("unknown command: %s", cmd)
+        return fmt.Errorf("unknown command: %s", cmd)
     }
+}
+
+func forEachFile(dir, pattern string, visit func(string) error) error {
+    files, err := filepath.Glob(filepath.Join(dir, pattern))
+    if err != nil {
+        return err
+    }
+    for _, path := range files {
+        if err := visit(path); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+func compileFile(ctx context.Context, engine *ferret.Engine, path string) (err error) {
+    src, err := os.ReadFile(path)
+    if err != nil {
+        return err
+    }
+
+    plan, err := engine.Compile(ctx, source.New(filepath.Base(path), string(src)))
+    if err != nil {
+        return err
+    }
+    defer func() {
+        err = errors.Join(err, plan.Close())
+    }()
+
+    data, err := plan.Marshal()
+    if err != nil {
+        return err
+    }
+
+    artifactPath := strings.TrimSuffix(path, ".fql") + ".fqlc"
+    if err := os.WriteFile(artifactPath, data, 0o644); err != nil {
+        return err
+    }
+
+    fmt.Printf("compiled %s → %s (%d bytes)\n", path, artifactPath, len(data))
+    return nil
+}
+
+func runArtifact(ctx context.Context, engine *ferret.Engine, path string) (err error) {
+    data, err := os.ReadFile(path)
+    if err != nil {
+        return err
+    }
+    if !artifact.HasMagic(data) {
+        return fmt.Errorf("%s is not a Ferret artifact", path)
+    }
+
+    plan, err := engine.Load(data)
+    if err != nil {
+        return err
+    }
+    defer func() {
+        err = errors.Join(err, plan.Close())
+    }()
+
+    session, err := plan.NewSession(ctx)
+    if err != nil {
+        return err
+    }
+    defer func() {
+        err = errors.Join(err, session.Close())
+    }()
+
+    output, err := session.Run(ctx)
+    if err != nil {
+        return err
+    }
+
+    fmt.Printf("--- %s ---\n%s\n", filepath.Base(path), output.Content)
+    return nil
 }
 {{</ code >}}
 
