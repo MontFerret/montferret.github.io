@@ -12,6 +12,38 @@ aliases:
 
 The engine accepts functional options that control which capabilities are available to scripts, how results are encoded, how execution is logged, and how concurrency is managed.
 
+## Configuration errors
+
+Engine and session options are applied in order. Ferret ignores nil options,
+applies every other option, and joins multiple failures into the returned error.
+Construction returns no engine or session when option application fails, and
+releases any engine-owned services created by those options.
+
+Simple validation failures can be inspected with
+`github.com/ziflex/go-options.ValidationError`. Applications only need this
+import when they want structured error details; ordinary Ferret option calls
+continue to use `ferret.Option`, `ferret.SessionOption`, and the `ferret.With*`
+functions.
+
+{{< code lang="go" >}}
+engine, err := ferret.New(
+    ferret.WithMaxActiveSessions(-1),
+    ferret.WithFSRoot("   "),
+)
+if err != nil {
+    var validationErr gooptions.ValidationError
+    if errors.As(err, &validationErr) {
+        log.Printf("invalid option %s: %s", validationErr.Field, validationErr.Reason)
+    }
+    return err
+}
+defer engine.Close()
+{{</ code >}}
+
+`errors.As` traverses joined validation failures, while `errors.Is` continues
+to find sentinel errors returned by compound options and their underlying
+components.
+
 ## Standard library
 
 By default, the engine loads the full standard library. You can restrict it to a subset of groups or disable it entirely.
@@ -164,7 +196,8 @@ This is a memory-vs-latency trade-off: more idle VMs means faster session creati
 - `WithMaxVMsPerPlan` is a per-plan resource cap — it bounds the VM count for one specific compiled query
 - `WithMaxIdleVMsPerPlan` is a per-plan cache policy — it decides how many idle VMs stay warm
 
-A value of 0 disables the limit for `WithMaxActiveSessions` and `WithMaxVMsPerPlan`.
+A value of 0 disables the limit for `WithMaxActiveSessions` and
+`WithMaxVMsPerPlan`. For `WithMaxIdleVMsPerPlan`, 0 disables idle VM retention.
 
 ## Sandboxed components
 
@@ -263,7 +296,9 @@ By default, the client allows HTTP and HTTPS and follows up to 10 redirects, but
 
 Policy construction is fallible. A zero value passed to a numeric option restores that option's secure default, while a negative value returns `ferrethttp.ErrInvalidPolicyConfiguration`. Disabling the timeout or a body-size limit requires `WithNoTimeout`, `WithUnlimitedRequestSize`, or `WithUnlimitedResponseSize`. Response headers always retain a finite limit. The zero value of `ferrethttp.Policy` is deny-all; call `ferrethttp.NewPolicy` to obtain the standard defaults when reusing a policy with another client.
 
-Configuration errors support both `errors.Is` and `errors.As`:
+Configuration errors support both `errors.Is` and `errors.As`. Use
+`github.com/ziflex/go-options.ValidationError` to inspect the rejected field,
+safe value, and reason:
 
 {{< code lang="go" >}}
 policy, err := ferrethttp.NewPolicy(
@@ -271,9 +306,9 @@ policy, err := ferrethttp.NewPolicy(
 )
 if err != nil {
     if errors.Is(err, ferrethttp.ErrInvalidPolicyConfiguration) {
-        var configurationErr *ferrethttp.PolicyConfigurationError
-        if errors.As(err, &configurationErr) {
-            log.Printf("invalid HTTP option %s: %s", configurationErr.Option, configurationErr.Reason)
+        var validationErr gooptions.ValidationError
+        if errors.As(err, &validationErr) {
+            log.Printf("invalid HTTP option %s: %s", validationErr.Field, validationErr.Reason)
         }
     }
     return err

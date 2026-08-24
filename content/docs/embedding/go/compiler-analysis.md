@@ -37,7 +37,12 @@ RETURN FOR product IN products
     RETURN product.name
 `)
 
-    analysis, err := compiler.New().Analyze(src)
+    compilerInstance, err := compiler.New()
+    if err != nil {
+        panic(err)
+    }
+
+    analysis, err := compilerInstance.Analyze(src)
     if analysis == nil {
         panic("analysis did not produce a snapshot")
     }
