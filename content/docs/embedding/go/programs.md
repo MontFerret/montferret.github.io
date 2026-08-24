@@ -12,7 +12,11 @@ aliases:
 
 A compiled Ferret query can be serialized into a binary artifact and loaded later without compiling its source again. This is useful for distributing pre-compiled queries, skipping source compilation at runtime, or caching build output on disk. `Engine.Load` bypasses compilation, but the engine itself is still constructed with its compiler.
 
-Artifacts contain bytecode and host-function signatures, not host-function or module implementations. The engine that loads an artifact must still be configured with the modules and host functions the program uses.
+Artifacts contain bytecode, referenced host-function signatures, and the original FQL source name and text used for diagnostics. They do not contain host-function or module implementations. The engine that loads an artifact must still be configured with the modules and host functions the program uses. Artifacts are not an obfuscation or source-protection mechanism.
+
+## Security
+
+Artifacts are executable program inputs and are neither encrypted nor signed. Load only trusted artifacts, or authenticate them externally before calling `Engine.Load`.
 
 ## Two paths to a Plan
 

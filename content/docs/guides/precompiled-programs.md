@@ -8,7 +8,7 @@ description: "Compile FQL scripts to binary artifacts, store them, and load them
 
 # Pre-compile and distribute programs
 
-Ferret can compile FQL scripts into binary artifacts. Loading a pre-compiled artifact skips parsing and source compilation — useful for faster startup, distributing scripts without source, or caching build output in CI. The loading engine still owns a compiler and must register every module or host function used by the program.
+Ferret can compile FQL scripts into binary artifacts. Loading a pre-compiled artifact skips parsing and source compilation — useful for faster startup, distributing scripts without separate `.fql` files, or caching build output. The loading engine still owns a compiler and must register every module or host function used by the program.
 
 For the artifact format specification and full API, see [Programs]({{< ref "/docs/embedding/go/programs" >}}).
 
