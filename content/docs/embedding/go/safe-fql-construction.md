@@ -133,7 +133,7 @@ if err != nil {
 fmt.Println(string(output.Content))
 {{</ code >}}
 
-This preserves the HTML exactly as data, including quotes, backticks, and text that resembles FQL syntax.
+This preserves the HTML exactly as input data, including quotes, backticks, and text that resembles FQL syntax. For module setup, structured result decoding, and returning modified markup, see [Process existing HTML]({{< ref "/docs/guides/existing-html" >}}).
 
 ## Compose source only from authored FQL
 
@@ -176,4 +176,4 @@ Here `predicate` is deliberately authored FQL code. `items` and `maxPrice` are r
 
 ## Next steps
 
-{{< docs-related tiles="embedding-go-parameters,embedding-go-executing,embedding-go-application-guide" >}}
+{{< docs-related tiles="embedding-go-parameters,guide-existing-html,embedding-go-executing,embedding-go-application-guide" >}}

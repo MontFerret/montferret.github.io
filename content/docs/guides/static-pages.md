@@ -23,6 +23,17 @@ return page.title
 
 The function returns an HTML page value. You can read properties like `title` directly on it.
 
+## Parse HTML you already have
+
+Use `web::html::parse` instead of `web::html::open` when the host application already has the document:
+
+{{< code lang="fql" >}}
+let page = web::html::parse(@html)
+return page.title
+{{</ code >}}
+
+Pass the HTML as a parameter rather than interpolating it into FQL source. Parsing supplied content does not fetch a URL or require CDP. Go applications can use the in-process memory driver and pass either a string or `[]byte`; see [Process existing HTML]({{< ref "/docs/guides/existing-html" >}}) for a complete example, including structured and HTML result decoding.
+
 ## Query elements
 
 Use the query expression to find elements:
