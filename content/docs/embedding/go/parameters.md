@@ -91,9 +91,9 @@ session, err := plan.NewSession(ctx,
 )
 {{</ code >}}
 
-## Inspecting declared parameters
+## Inspecting referenced parameters
 
-A compiled plan knows which parameters the query declares. Use `plan.Params()` to get the list:
+A compiled plan records the parameters referenced by the query. Use `plan.Params()` to get their names in first-seen order:
 
 {{< code lang="go" >}}
 plan, err := engine.Compile(ctx, source.NewAnonymous(`
@@ -113,18 +113,30 @@ This is useful for validating that all required parameters are provided before c
 
 ## Supported Go types
 
-`WithParams` and `WithParam` accept standard Go types that are converted to runtime values via `runtime.ValueOf`:
+`WithParams`, `WithParam`, and their session equivalents convert Go values through `runtime.ValueOf`:
 
-| Go type | Runtime value |
+| Go input | Runtime value |
 |---------|--------------|
 | `nil` | `None` |
+| An existing `runtime.Value` | The same value, without conversion |
 | `bool` | `Boolean` |
-| `int`, `int32`, `int64` | `Int` |
-| `float64` | `Float` |
 | `string` | `String` |
+| `int`, `int8`, `int16`, `int32`, `int64` | `Int` |
+| `uint`, `uint8`, `uint16`, `uint32`, `uint64` | `Int`, when the value fits in `int64` |
+| `float32`, `float64` | `Float` |
 | `time.Time` | `DateTime` |
+| `time.Duration` | `Duration` |
+| `[]byte` | `Binary` |
+| Slices and arrays | `Array`, with elements converted recursively |
+| Maps | `Object`, with values converted recursively and keys represented as strings |
+| Structs | `Object`, with exported fields converted recursively |
+| Pointers | The pointed-to value converted recursively; a nil pointer becomes `None` |
 
-For complex structures like arrays and objects, build them using `runtime.NewArray()` and `runtime.NewObject()`, then pass them with the runtime param variants.
+Struct field names are used exactly as declared in Go. Unexported fields are skipped, and `runtime.ValueOf` does not read struct tags or flatten embedded fields. The scalar cases above apply to the concrete built-in types; a defined scalar type must implement `runtime.Value` or be converted to a supported Go type first. Unsupported values, nested unsupported values, and unsigned integers larger than `math.MaxInt64` return an error.
+
+`runtime.ValueOf(nil)` returns `None`, so nil entries work in the map-based `WithParams` and `WithSessionParams` options. The single-value `WithParam` and `WithSessionParam` options reject a nil `any`; pass `runtime.None` through the corresponding runtime-value option when you need an explicit `None`.
+
+This conversion produces in-memory `runtime.Value` instances for execution. It is separate from result encoding: `Session.Run` returns a `*ferret.Output`, whose `Content` contains encoded bytes. The default output codec is JSON.
 
 ## Example: parameterized query with per-session overrides
 
@@ -133,6 +145,7 @@ package main
 
 import (
     "context"
+    "errors"
     "fmt"
     "log"
 
@@ -141,12 +154,18 @@ import (
 )
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() error {
     engine, err := ferret.New(
         ferret.WithParam("greeting", "hello"),
         ferret.WithParam("punctuation", "!"),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer engine.Close()
 
@@ -156,7 +175,7 @@ func main() {
         return concat(@greeting, " ", @name, @punctuation)
     `))
     if err != nil {
-        log.Fatal(err)
+        return err
     }
     defer plan.Close()
 
@@ -172,14 +191,13 @@ func main() {
             ferret.WithSessionParam("greeting", u.greeting),
         )
         if err != nil {
-            log.Fatal(err)
+            return err
         }
 
-        output, err := session.Run(ctx)
-        session.Close()
-
-        if err != nil {
-            log.Fatal(err)
+        output, runErr := session.Run(ctx)
+        closeErr := session.Close()
+        if err := errors.Join(runErr, closeErr); err != nil {
+            return err
         }
 
         fmt.Println(string(output.Content))
@@ -187,6 +205,8 @@ func main() {
     // "hello Alice!"
     // "hey Bob!"
     // "hi Carol!"
+
+    return nil
 }
 {{</ code >}}
 
