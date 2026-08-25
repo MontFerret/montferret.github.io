@@ -185,9 +185,10 @@ The ecosystem includes:
 - optional modules and drivers for additional functions, data formats, and integrations
 - embedding APIs for Go and JavaScript applications that need to control what scripts can see and do
 - Lab, a test runner for Ferret scripts
+- the official Visual Studio Code integration for language intelligence, formatting, execution, and debugging
 - Mockery, a safe fake website used in examples, demos, and driver testing
 
-A Ferret daemon is also in development to provide editor integration through the Language Server Protocol, including syntax highlighting, autocomplete, and debugging support.
+The Visual Studio Code integration includes the appropriate Ferret daemon for supported platforms. It uses the daemon for language-server features, execution, and debugging without requiring a separate installation for normal use.
 
 These pieces are designed to work together while keeping the core language and runtime small.
 
@@ -195,4 +196,4 @@ These pieces are designed to work together while keeping the core language and r
 
 If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.
 
-{{< docs-related tiles="getting-started-installation,getting-started-quick-start,language,web-extraction,embedding,tools-lab,tools-worker" >}}
+{{< docs-related tiles="getting-started-installation,getting-started-quick-start,tools-visual-studio-code,language,web-extraction,embedding,tools-lab,tools-worker" >}}

@@ -7,6 +7,6 @@ description: "Ferret ecosystem tools around the language and runtime."
 
 # Tools
 
-Ferret ecosystem tools around the language and runtime: the CLI, Lab, Worker, Playground, Docker images, and editor integrations.
+Ferret ecosystem tools around the language and runtime: the CLI, Lab, Worker, and the official Visual Studio Code integration.
 
-{{< docs-related tiles="tools-cli,tools-lab,tools-worker,tools-playground" >}}
+{{< docs-related tiles="tools-cli,tools-lab,tools-worker,tools-visual-studio-code" >}}

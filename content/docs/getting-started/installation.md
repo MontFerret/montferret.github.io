@@ -2,7 +2,7 @@
 title: "Installation"
 weight: 30
 draft: false
-description: "Choose the Ferret CLI or embed Ferret in a Go or JavaScript application."
+description: "Choose Visual Studio Code, the Ferret CLI, or an embedding API."
 aliases:
     - /docs/installation/
 relatedTileOverrides:
@@ -14,7 +14,7 @@ relatedTileOverrides:
 
 # Installation
 
-Choose how your application will run Ferret. Use the CLI for local scripts and shell workflows, or embed the runtime when a Go or JavaScript application needs to execute FQL directly.
+Choose how you will work with Ferret. Use Visual Studio Code for an editor-based workflow, the CLI for terminal and shell workflows, or embed the runtime when a Go or JavaScript application needs to execute FQL directly.
 
 > **Alpha status**
 >
@@ -23,6 +23,12 @@ Choose how your application will run Ferret. Use the CLI for local scripts and s
 > **Looking for Ferret v1?**
 >
 > Ferret v1 remains available for existing projects, but new users should start with Ferret v2. See the [migration guide]({{< ref "/docs/tools/cli/migrate" >}}) for the supported mechanical migration steps.
+
+## Use Visual Studio Code
+
+Install the official [Ferret Lang extension](https://marketplace.visualstudio.com/items?itemName=ferretlang.ferret-lang), published by `ferretlang`, then open or create a `.fql` file. Use the editor actions to run or debug the current file. The extension includes the matching Ferret daemon, so normal use does not require a separate `ferretd` installation or `PATH` configuration.
+
+See [Visual Studio Code]({{< ref "/docs/tools/visual-studio-code" >}}) for formatting, debugging, configuration, and troubleshooting.
 
 ## Use the CLI
 
@@ -56,8 +62,8 @@ Continue with [JavaScript Embedding: Getting Started]({{< ref "/docs/embedding/j
 
 ## What to choose next
 
-- Start with the [Quick Start]({{< ref "/docs/getting-started/quick-start" >}}) when you want to learn FQL from the terminal or playground.
+- Start with the [Quick Start]({{< ref "/docs/getting-started/quick-start" >}}) when you want to learn FQL in Visual Studio Code, the terminal, or the Playground.
 - Read the [Embedding overview]({{< ref "/docs/embedding" >}}) when an application will own the runtime.
 - Use [Worker]({{< ref "/docs/tools/worker" >}}) when an existing system needs Ferret through a separately deployed HTTP service.
 
-{{< docs-related tiles="getting-started-quick-start,tools-cli-installation,embedding-go,embedding-javascript,tools-worker" >}}
+{{< docs-related tiles="getting-started-quick-start,tools-visual-studio-code,tools-cli-installation,embedding-go,embedding-javascript,tools-worker" >}}

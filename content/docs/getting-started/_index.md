@@ -2,12 +2,12 @@
 title: "Getting Started"
 weight: 10
 draft: false
-description: "Install Ferret and run your first query."
+description: "Choose Visual Studio Code or the CLI and run your first Ferret query."
 ---
 
 # Getting Started
 
-Install Ferret, understand the project shape, and run your first query against static or dynamic content.
+Choose Visual Studio Code or the CLI, understand the project shape, and run your first query against static or dynamic content.
 
 <div class="docs-section-card-grid">
   <a class="docs-section-card" href="{{< ref "overview" >}}">
@@ -16,7 +16,11 @@ Install Ferret, understand the project shape, and run your first query against s
   </a>
   <a class="docs-section-card" href="{{< ref "installation" >}}">
     <strong>Installation</strong>
-    <span>Choose the CLI or embed Ferret in a Go or JavaScript application.</span>
+    <span>Choose Visual Studio Code, the CLI, or an embedding API.</span>
+  </a>
+  <a class="docs-section-card" href="{{< ref "/docs/tools/visual-studio-code" >}}">
+    <strong>Visual Studio Code</strong>
+    <span>Write, format, run, and debug FQL with the official integration.</span>
   </a>
   <a class="docs-section-card" href="{{< ref "quick-start" >}}">
     <strong>First Script</strong>
