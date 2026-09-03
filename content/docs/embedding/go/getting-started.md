@@ -33,7 +33,6 @@ import (
     "log"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
@@ -45,7 +44,7 @@ func main() {
 
     output, err := engine.Run(
         context.Background(),
-        source.NewAnonymous(`return { name: "Ferret", version: 2 }`),
+        ferret.NewAnonymousSource(`return { name: "Ferret", version: 2 }`),
     )
     if err != nil {
         log.Fatal(err)
@@ -56,14 +55,18 @@ func main() {
 }
 {{</ code >}}
 
-`source.NewAnonymous` wraps a query string into a `*source.Source`. For named sources use `source.New(name, text)` — the name appears in error messages and debug output.
+`ferret.NewAnonymousSource` is convenient for one-shot queries. Use `ferret.NewSource(name, content)` when the source name should appear in compilation errors and debugger output. Both constructors return `ferret.Source` values.
+
+Native applications normally use the root `ferret` package for sources, engine and session options, log levels, module contracts, parameter values, program formats, and output. Import a package under `pkg` only when using the specialized API owned by that package.
 
 ## Compiling and reusing a plan
 
 When the same query runs many times — with different parameters, in different goroutines, or on a schedule — compile it once and create sessions from the resulting plan:
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.New("greeting", `return upper(@name)`))
+plan, err := engine.Compile(ctx,
+    ferret.NewSource("greeting.fql", `return upper(@name)`),
+)
 if err != nil {
     log.Fatal(err)
 }
@@ -131,7 +134,9 @@ See [Parameters]({{< ref "/docs/embedding/go/parameters" >}}) for the full param
 Ferret returns standard Go errors. Compilation errors include source location information:
 
 {{< code lang="go" >}}
-_, err := engine.Compile(ctx, source.New("bad.fql", `return @`))
+_, err := engine.Compile(ctx,
+    ferret.NewSource("bad.fql", `return @`),
+)
 if err != nil {
     fmt.Println(err)
     // compilation error with line and column

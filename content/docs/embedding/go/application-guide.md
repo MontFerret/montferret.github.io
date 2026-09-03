@@ -39,7 +39,6 @@ import (
     "log"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
@@ -51,7 +50,7 @@ func main() {
 
     output, err := engine.Run(
         context.Background(),
-        source.NewAnonymous(`return { message: "Ferret is running" }`),
+        ferret.NewAnonymousSource(`return { message: "Ferret is running" }`),
     )
     if err != nil {
         log.Fatal(err)
@@ -99,12 +98,9 @@ import (
     "github.com/MontFerret/contrib/modules/web/html/drivers/memory"
 )
 
-htmlmod, err := html.New(
+htmlmod := html.New(
     html.WithDefaultDriver(memory.New()),
 )
-if err != nil {
-    log.Fatal(err)
-}
 
 engine, err := ferret.New(
     ferret.WithStdlib(stdlib.Safe()),
@@ -125,15 +121,12 @@ import (
     "github.com/MontFerret/contrib/modules/web/html/drivers/memory"
 )
 
-htmlmod, err := html.New(
+htmlmod := html.New(
     html.WithDefaultDriver(memory.New()),
     html.WithDrivers(
         cdp.New(),
     ),
 )
-if err != nil {
-    log.Fatal(err)
-}
 
 engine, err := ferret.New(
     ferret.WithStdlib(stdlib.Safe()),
@@ -155,10 +148,11 @@ Without the `driver` option, the default `memory` driver is used.
 When the same query runs multiple times — with different parameters, in different goroutines, or on a schedule — compile it once and reuse the plan:
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.New("extract-title", `
-    let page = web::html::open(@url)
-    return page.title
-`))
+plan, err := engine.Compile(ctx, ferret.NewSource(
+    "extract-title.fql",
+    `let page = web::html::open(@url)
+return page.title`,
+))
 if err != nil {
     log.Fatal(err)
 }
@@ -205,7 +199,6 @@ import (
     "time"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
     "github.com/MontFerret/ferret/v2/pkg/stdlib"
 
     "github.com/MontFerret/contrib/modules/web/html"
@@ -218,12 +211,9 @@ type QueryRequest struct {
 }
 
 func main() {
-    htmlmod, err := html.New(
+    htmlmod := html.New(
         html.WithDefaultDriver(memory.New()),
     )
-    if err != nil {
-        log.Fatal(err)
-    }
 
     engine, err := ferret.New(
         ferret.WithStdlib(stdlib.Safe()),
@@ -249,7 +239,9 @@ func main() {
         ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
         defer cancel()
 
-        plan, err := engine.Compile(ctx, source.New("api-query", req.Query))
+        plan, err := engine.Compile(ctx,
+            ferret.NewSource("api-query.fql", req.Query),
+        )
         if err != nil {
             http.Error(w, err.Error(), http.StatusUnprocessableEntity)
             return
@@ -297,7 +289,9 @@ For production use, consider caching compiled plans by query hash to avoid recom
 Compilation and runtime errors are separate concerns:
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.New("user-script.fql", query))
+plan, err := engine.Compile(ctx,
+    ferret.NewSource("user-script.fql", query),
+)
 if err != nil {
     // Compilation error — syntax or semantic issue.
     // The error includes source location (line and column).
@@ -389,12 +383,9 @@ import (
 )
 
 func main() {
-    htmlmod, err := html.New(
+    htmlmod := html.New(
         html.WithDefaultDriver(memory.New()),
     )
-    if err != nil {
-        log.Fatal(err)
-    }
 
     engine, err := ferret.New(
         ferret.WithStdlib(stdlib.Safe()),
@@ -449,7 +440,6 @@ import (
     "time"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
     "github.com/MontFerret/ferret/v2/pkg/stdlib"
 
     "github.com/MontFerret/contrib/modules/web/html"
@@ -463,15 +453,12 @@ type QueryRequest struct {
 }
 
 func main() {
-    htmlmod, err := html.New(
+    htmlmod := html.New(
         html.WithDefaultDriver(memory.New()),
         html.WithDrivers(
             cdp.New(),
         ),
     )
-    if err != nil {
-        log.Fatal(err)
-    }
 
     engine, err := ferret.New(
         ferret.WithStdlib(stdlib.Safe()),
@@ -501,7 +488,9 @@ func main() {
         ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
         defer cancel()
 
-        plan, err := engine.Compile(ctx, source.New("api-query", req.Query))
+        plan, err := engine.Compile(ctx,
+            ferret.NewSource("api-query.fql", req.Query),
+        )
         if err != nil {
             http.Error(w, err.Error(), http.StatusUnprocessableEntity)
             return

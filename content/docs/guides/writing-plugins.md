@@ -382,7 +382,6 @@ import (
     kvplugin "github.com/acme/ferret-kvplugin"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
@@ -398,7 +397,7 @@ func main() {
 
     output, err := engine.Run(
         context.Background(),
-        source.NewAnonymous(`
+        ferret.NewAnonymousSource(`
             let cache = kv::open()
 
             kv::set(cache, "language", "FQL")

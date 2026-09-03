@@ -55,7 +55,9 @@ An engine is safe for concurrent use by multiple goroutines.
 A `Plan` is a compiled query. Compiling a query validates the syntax, generates bytecode, and prepares it for execution. A plan can be reused across many sessions without recompilation.
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.NewAnonymous(`return @greeting`))
+plan, err := engine.Compile(ctx,
+    ferret.NewSource("greeting.fql", `return @greeting`),
+)
 
 if err != nil {
     log.Fatal(err)
@@ -109,7 +111,9 @@ if err != nil {
 }
 defer engine.Close()
 
-plan, err := engine.Compile(ctx, src)
+plan, err := engine.Compile(ctx,
+    ferret.NewSource("query.fql", `return 1 + 1`),
+)
 if err != nil {
     log.Fatal(err)
 }
@@ -131,7 +135,7 @@ Closing a plan releases its VM pool. Closing the engine runs all registered clos
 For one-shot queries that do not need plan reuse, the engine provides a `Run` method that compiles, executes, and cleans up in a single call:
 
 {{< code lang="go" >}}
-output, err := engine.Run(ctx, source.NewAnonymous(`return 1 + 1`))
+output, err := engine.Run(ctx, ferret.NewAnonymousSource(`return 1 + 1`))
 if err != nil {
     log.Fatal(err)
 }

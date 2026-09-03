@@ -238,9 +238,7 @@ import (
     "github.com/MontFerret/contrib/modules/web/html/drivers/cdp"
     "github.com/MontFerret/contrib/modules/web/html/drivers/memory"
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/encoding"
     "github.com/MontFerret/ferret/v2/pkg/runtime"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 const query = `let page = document(@url, { driver: @driver })
@@ -307,10 +305,7 @@ func NewApp(ctx context.Context, cdpAddress string) (*App, error) {
         driverName = cdp.DriverName
     }
 
-    htmlModule, err := htmlmodule.New(htmlOptions...)
-    if err != nil {
-        return nil, err
-    }
+    htmlModule := htmlmodule.New(htmlOptions...)
 
     engine, err := ferret.New(
         ferret.WithModules(htmlModule),
@@ -322,7 +317,9 @@ func NewApp(ctx context.Context, cdpAddress string) (*App, error) {
         return nil, err
     }
 
-    plan, err := engine.Compile(ctx, source.New("extract-title.fql", query))
+    plan, err := engine.Compile(ctx,
+        ferret.NewSource("extract-title.fql", query),
+    )
     if err != nil {
         return nil, errors.Join(err, engine.Close())
     }
@@ -334,7 +331,7 @@ func NewApp(ctx context.Context, cdpAddress string) (*App, error) {
     }, nil
 }
 
-func (app *App) Run(ctx context.Context, url string) (*encoding.Output, error) {
+func (app *App) Run(ctx context.Context, url string) (*ferret.Output, error) {
     session, err := app.plan.NewSession(ctx,
         ferret.WithSessionParam("url", url),
         ferret.WithSessionParam("driver", app.driverName),
@@ -383,7 +380,7 @@ For a one-off host function, `WithFunctionsRegistrar` keeps registration close t
 | `compiler.Compile` returning `*runtime.Program` | `engine.Compile` returning `*ferret.Plan` | A Plan is the reusable compiled query and owns its VM pool. |
 | `program.Run(ctx)` | `plan.NewSession(ctx)` then `session.Run(ctx)` | Create a separate Session for each concurrent execution and close it after use. |
 | Cached `*runtime.Program` | Cached `*ferret.Plan` | Plans are safe for concurrent use; Sessions are not. Create one Session per goroutine or request. |
-| Raw JSON `[]byte` | `*encoding.Output` | Read encoded bytes from `Output.Content` and the selected MIME type from `Output.ContentType`. JSON remains the default codec. |
+| Raw JSON `[]byte` | `*ferret.Output` | Read encoded bytes from `Output.Content` and the selected MIME type from `Output.ContentType`. JSON remains the default codec. |
 | Manual driver cleanup | Session, Plan, Engine, and module lifecycle | Close directly created Sessions, then Plans, then the Engine. Modules use lifecycle hooks for resources they own, and runtime-owned HTML values are closed as execution results are materialized. Resources retained by the caller remain the caller's responsibility. |
 | Driver registration and cancellation in one context | Engine composition plus caller execution context | Pass the caller context to Compile, NewSession, and Run. Modules and host functions receive a derived context that preserves cancellation and deadlines. |
 

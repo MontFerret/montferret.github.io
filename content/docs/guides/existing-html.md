@@ -27,7 +27,7 @@ return for product in products
     }
 {{</ code >}}
 
-`web::html::parse` accepts an FQL string or binary value. In Go, `WithSessionParam` converts a `string` to an FQL string and `[]byte` to an FQL binary value. Do not interpolate the HTML into the FQL source.
+`web::html::parse` accepts an FQL string or binary value. In Go, `ferret.WithSessionParam` converts a `string` to an FQL string and `[]byte` to an FQL binary value. Do not interpolate the HTML into the FQL source.
 
 ## Run the workflow from Go
 
@@ -57,7 +57,6 @@ import (
     htmlmodule "github.com/MontFerret/contrib/modules/web/html"
     "github.com/MontFerret/contrib/modules/web/html/drivers/memory"
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
     gohtml "golang.org/x/net/html"
 )
 
@@ -86,12 +85,9 @@ func main() {
 }
 
 func run() (err error) {
-    htmlmod, err := htmlmodule.New(
+    htmlmod := htmlmodule.New(
         htmlmodule.WithDefaultDriver(memory.New()),
     )
-    if err != nil {
-        return err
-    }
 
     engine, err := ferret.New(
         ferret.WithModules(htmlmod),
@@ -105,7 +101,7 @@ func run() (err error) {
 
     ctx := context.Background()
 
-    productsPlan, err := engine.Compile(ctx, source.New("products", `
+    productsPlan, err := engine.Compile(ctx, ferret.NewSource("products.fql", `
         let page = web::html::parse(@html)
         let products = query ".product" in page using css
 
@@ -136,7 +132,7 @@ func run() (err error) {
     }
     fmt.Printf("products (%s): %+v\n", productsOutput.ContentType, products)
 
-    htmlPlan, err := engine.Compile(ctx, source.New("modified-html", `
+    htmlPlan, err := engine.Compile(ctx, ferret.NewSource("modified-html.fql", `
         let page = web::html::parse(@html)
         web::html::attr_set(page.body, "data-processed", "true")
         return page.innerHTML
@@ -188,7 +184,7 @@ func execute(
     output, runErr := session.Run(ctx)
     closeErr := session.Close()
     if err := errors.Join(runErr, closeErr); err != nil {
-        return nil, err
+        return output, err
     }
 
     return output, nil
@@ -203,6 +199,8 @@ go run .
 {{</ terminal >}}
 
 The engine owns runtime-wide configuration, each plan owns compiled code and its VM pool, and each session owns one execution. The example closes all three levels. A real application can reuse the engine and plans while creating a new session for each input document.
+
+The `execute` helper accepts the concrete `*ferret.Plan` returned by both `Engine.Compile` and `Engine.Load`.
 
 ## Decode the output format
 

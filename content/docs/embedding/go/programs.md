@@ -24,7 +24,9 @@ There are two ways to get a `Plan` from the engine:
 
 {{< code lang="go" >}}
 // From FQL source — compiles and returns a plan
-sourcePlan, err := engine.Compile(ctx, source.NewAnonymous(`return 1 + 1`))
+sourcePlan, err := engine.Compile(ctx,
+    ferret.NewSource("query.fql", `return 1 + 1`),
+)
 if err != nil {
     log.Fatal(err)
 }
@@ -38,22 +40,24 @@ if err != nil {
 defer artifactPlan.Close()
 {{</ code >}}
 
-Both produce the same `*Plan` that you create sessions from and run. The difference is where the bytecode comes from: the compiler or a serialized artifact.
+Both produce a `*ferret.Plan` that you create sessions from and run. The difference is where the bytecode comes from: the compiler or a serialized artifact.
 
 ## Serializing a program
 
-`Plan.Marshal` uses the `artifact` package to serialize a compiled program:
+`Plan.Marshal` serializes a compiled program through the root embedding API:
 
 {{< code lang="go" >}}
 import (
     "log"
     "os"
 
-    "github.com/MontFerret/ferret/v2/pkg/source"
+    "github.com/MontFerret/ferret/v2"
 )
 
 // Compile to bytecode
-plan, err := engine.Compile(ctx, source.New("query.fql", `return upper(@name)`))
+plan, err := engine.Compile(ctx,
+    ferret.NewSource("query.fql", `return upper(@name)`),
+)
 if err != nil {
     log.Fatal(err)
 }
@@ -75,12 +79,12 @@ if err != nil {
 The default payload format is MessagePack. To use JSON instead, set the format in the options:
 
 {{< code lang="go" >}}
-import (
-    "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
-)
+import "github.com/MontFerret/ferret/v2"
 
-data, err := plan.Marshal(ferret.WithProgramFormat(artifact.FormatJSON))
+var format ferret.ProgramFormat = ferret.ProgramFormatJSON
+var option ferret.ProgramOption = ferret.WithProgramFormat(format)
+
+data, err := plan.Marshal(option)
 {{</ code >}}
 
 ## Loading a program
@@ -115,11 +119,21 @@ if err != nil {
 
 `Session.Run` returns encoded output. With the default JSON codec, a returned FQL string is stored in `output.Content` as a quoted JSON string.
 
-For lower-level access, `ferret.UnmarshalProgram` returns a `*bytecode.Program` without wrapping it in a plan:
+`Plan.Marshal` and `Engine.Load` are the normal embedding path. For low-level compatibility, `ferret.UnmarshalProgram` returns a `*bytecode.Program` without wrapping it in a plan, and `ferret.MarshalProgram` serializes that raw bytecode value again:
 
 {{< code lang="go" >}}
 program, err := ferret.UnmarshalProgram(data)
+if err != nil {
+    log.Fatal(err)
+}
+
+data, err = ferret.MarshalProgram(
+    program,
+    ferret.WithProgramFormat(ferret.ProgramFormatMsgPack),
+)
 {{</ code >}}
+
+There is intentionally no root alias for `bytecode.Program`; applications that need to name or inspect the raw program are using the specialized bytecode API.
 
 ## Artifact format
 
@@ -140,8 +154,8 @@ All multi-byte fields are little-endian. The header is followed by exactly `Leng
 
 | ID | Constant | Format | Use case |
 |----|----------|--------|----------|
-| 1 | `artifact.FormatJSON` | JSON | Human-readable, debugging |
-| 2 | `artifact.FormatMsgPack` | MessagePack | Compact, production (default) |
+| 1 | `ferret.ProgramFormatJSON` | JSON | Human-readable, debugging |
+| 2 | `ferret.ProgramFormatMsgPack` | MessagePack | Compact, production (default) |
 
 Both formats implement the `format.Format` interface:
 
@@ -163,7 +177,9 @@ var plan *ferret.Plan
 if artifact.HasMagic(data) {
     plan, err = engine.Load(data)
 } else {
-    plan, err = engine.Compile(ctx, source.NewAnonymous(string(data)))
+    plan, err = engine.Compile(ctx,
+        ferret.NewSource("query.fql", string(data)),
+    )
 }
 if err != nil {
     log.Fatal(err)
@@ -232,7 +248,6 @@ import (
     "os"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
@@ -252,7 +267,9 @@ func run() error {
     }
     defer engine.Close()
 
-    compiledPlan, err := engine.Compile(ctx, source.New("greeting.fql", `return upper(@name)`))
+    compiledPlan, err := engine.Compile(ctx,
+        ferret.NewSource("greeting.fql", `return upper(@name)`),
+    )
     if err != nil {
         return err
     }

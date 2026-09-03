@@ -178,7 +178,6 @@ import (
     "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/encoding"
     "github.com/MontFerret/ferret/v2/pkg/runtime"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 type plainTextCodec struct{}
@@ -262,7 +261,7 @@ func main() {
 
     plan, err := engine.Compile(
         context.Background(),
-        source.NewAnonymous(`return "Hello, Ferret!"`),
+        ferret.NewAnonymousSource(`return "Hello, Ferret!"`),
     )
     if err != nil {
         log.Fatal(err)

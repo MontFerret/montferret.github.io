@@ -84,7 +84,6 @@ import (
 
     "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/runtime"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 type Label struct {
@@ -324,13 +323,11 @@ import (
     "context"
     "fmt"
     "hash/fnv"
-    "io"
     "log"
     "strings"
 
     "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/runtime"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 type Record struct {
@@ -411,7 +408,7 @@ func main() {
     }
     defer engine.Close()
 
-    plan, err := engine.Compile(ctx, source.NewAnonymous(`
+    plan, err := engine.Compile(ctx, ferret.NewSource("host-values.fql", `
         let db = db::open()
         return query "SELECT * WHERE age > 18" in db
     `))
@@ -438,7 +435,7 @@ func main() {
 
 ## Passing host values as parameters
 
-Instead of creating a host value inside a function, you can pass one directly as a parameter with `WithRuntimeParam` or `WithSessionRuntimeParam`:
+Instead of creating a host value inside a function, you can pass one directly as a parameter with `WithRuntimeParam` or `WithSessionRuntimeParam`. A type that implements `runtime.Value` also satisfies the root `ferret.Value` alias accepted by these options:
 
 {{< code lang="go" >}}
 store := NewStore()

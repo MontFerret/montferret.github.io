@@ -54,14 +54,17 @@ engine, err := ferret.New(
 
 ### From runtime values
 
-When you already have a `runtime.Value`, use the runtime variants to skip conversion:
+When you already have a `ferret.Value`, use the runtime variants to skip conversion. `ferret.Value` and `ferret.Params` preserve the identity of the corresponding runtime types, while constructors for concrete values remain in `pkg/runtime`:
 
 {{< code lang="go" >}}
+var threshold ferret.Value = runtime.NewFloat(0.95)
+params := ferret.Params{
+    "tag": runtime.NewString("v2"),
+}
+
 engine, err := ferret.New(
-    ferret.WithRuntimeParam("threshold", runtime.NewFloat(0.95)),
-    ferret.WithRuntimeParams(runtime.Params{
-        "tag": runtime.NewString("v2"),
-    }),
+    ferret.WithRuntimeParam("threshold", threshold),
+    ferret.WithRuntimeParams(params),
 )
 {{</ code >}}
 
@@ -90,8 +93,14 @@ session, err := plan.NewSession(ctx,
 ### From runtime values
 
 {{< code lang="go" >}}
+var fallback ferret.Value = runtime.NewString("guest")
+params := ferret.Params{
+    "score": runtime.NewFloat(0.85),
+}
+
 session, err := plan.NewSession(ctx,
-    ferret.WithSessionRuntimeParam("score", runtime.NewFloat(0.85)),
+    ferret.WithSessionRuntimeParams(params),
+    ferret.WithSessionRuntimeParam("fallback", fallback),
 )
 {{</ code >}}
 
@@ -100,10 +109,11 @@ session, err := plan.NewSession(ctx,
 A compiled plan records the parameters referenced by the query. Use `plan.Params()` to get their names in first-seen order:
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.NewAnonymous(`
-    let url = @base_url + "/users/" + to_string(@user_id)
-    return url
-`))
+plan, err := engine.Compile(ctx, ferret.NewSource(
+    "parameters.fql",
+    `let url = @base_url + "/users/" + to_string(@user_id)
+return url`,
+))
 if err != nil {
     log.Fatal(err)
 }
@@ -117,12 +127,12 @@ This is useful for validating that all required parameters are provided before c
 
 ## Supported Go types
 
-`WithParams`, `WithParam`, and their session equivalents convert Go values through `runtime.ValueOf`:
+`WithParams`, `WithParam`, `WithSessionParams`, and `WithSessionParam` convert Go values through `runtime.ValueOf`:
 
 | Go input | Runtime value |
 |---------|--------------|
 | `nil` | `None` |
-| An existing `runtime.Value` | The same value, without conversion |
+| An existing `ferret.Value` | The same value, without conversion |
 | `bool` | `Boolean` |
 | `string` | `String` |
 | `int`, `int8`, `int16`, `int32`, `int64` | `Int` |
@@ -136,11 +146,11 @@ This is useful for validating that all required parameters are provided before c
 | Structs | `Object`, with exported fields converted recursively |
 | Pointers | The pointed-to value converted recursively; a nil pointer becomes `None` |
 
-Struct field names are used exactly as declared in Go. Unexported fields are skipped, and `runtime.ValueOf` does not read struct tags or flatten embedded fields. The scalar cases above apply to the concrete built-in types; a defined scalar type must implement `runtime.Value` or be converted to a supported Go type first. Unsupported values, nested unsupported values, and unsigned integers larger than `math.MaxInt64` return an error.
+Struct field names are used exactly as declared in Go. Unexported fields are skipped, and `runtime.ValueOf` does not read struct tags or flatten embedded fields. The scalar cases above apply to the concrete built-in types; a defined scalar type must implement `ferret.Value` or be converted to a supported Go type first. Unsupported values, nested unsupported values, and unsigned integers larger than `math.MaxInt64` return an error.
 
 `runtime.ValueOf(nil)` returns `None`, so nil entries work in the map-based `WithParams` and `WithSessionParams` options. The single-value `WithParam` and `WithSessionParam` options reject a nil `any`; pass `runtime.None` through the corresponding runtime-value option when you need an explicit `None`.
 
-This conversion produces in-memory `runtime.Value` instances for execution. It is separate from result encoding: `Session.Run` returns a `*ferret.Output`, whose `Content` contains encoded bytes. The default output codec is JSON.
+This conversion produces in-memory `ferret.Value` instances for execution. It is separate from result encoding: `Session.Run` returns a `*ferret.Output` whose `Content` contains encoded bytes. The default output codec is JSON.
 
 ## Example: parameterized query with per-session overrides
 
@@ -154,7 +164,6 @@ import (
     "log"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
@@ -175,9 +184,10 @@ func run() error {
 
     ctx := context.Background()
 
-    plan, err := engine.Compile(ctx, source.NewAnonymous(`
-        return concat(@greeting, " ", @name, @punctuation)
-    `))
+    plan, err := engine.Compile(ctx, ferret.NewSource(
+        "greeting.fql",
+        `return concat(@greeting, " ", @name, @punctuation)`,
+    ))
     if err != nil {
         return err
     }

@@ -106,7 +106,7 @@ Logging is configured at two levels: engine-wide defaults and per-session overri
 {{< code lang="go" >}}
 engine, err := ferret.New(
     ferret.WithLog(os.Stdout),
-    ferret.WithLogLevel(logging.InfoLevel),
+    ferret.WithLogLevel(ferret.LogInfo),
     ferret.WithLogFields(map[string]any{
         "service": "query-engine",
     }),
@@ -120,7 +120,7 @@ Per-session options override the engine defaults for that execution:
 {{< code lang="go" >}}
 session, err := plan.NewSession(ctx,
     ferret.WithSessionLog(os.Stderr),
-    ferret.WithSessionLogLevel(logging.DebugLevel),
+    ferret.WithSessionLogLevel(ferret.LogDebug),
     ferret.WithSessionLogFields(map[string]any{
         "request_id": "abc-123",
     }),
@@ -131,12 +131,30 @@ session, err := plan.NewSession(ctx,
 
 | Level | Constant |
 |-------|----------|
-| Trace | `logging.TraceLevel` |
-| Debug | `logging.DebugLevel` |
-| Info | `logging.InfoLevel` |
-| Warn | `logging.WarnLevel` |
-| Error | `logging.ErrorLevel` |
-| Disabled | `logging.Disabled` |
+| Trace | `ferret.LogTrace` |
+| Debug | `ferret.LogDebug` |
+| Info | `ferret.LogInfo` |
+| Warn | `ferret.LogWarn` |
+| Error | `ferret.LogError` |
+| Fatal | `ferret.LogFatal` |
+| Panic | `ferret.LogPanic` |
+| None | `ferret.LogNone` |
+| Disabled | `ferret.LogDisabled` |
+
+The constants and parsing helpers use the root `ferret.LogLevel` type. Parse a level supplied through configuration before constructing the engine:
+
+{{< code lang="go" >}}
+level, err := ferret.ParseLogLevel(os.Getenv("FERRET_LOG_LEVEL"))
+if err != nil {
+    return err
+}
+
+engine, err := ferret.New(
+    ferret.WithLogLevel(level),
+)
+{{</ code >}}
+
+`ferret.MustParseLogLevel` is available for trusted static configuration and panics when the input is invalid.
 
 ## Output encoding
 
@@ -149,6 +167,8 @@ session, err := plan.NewSession(ctx,
 {{</ code >}}
 
 You can register custom codecs on the engine with `WithEncodingCodec`. See [Value Encoders]({{< ref "/docs/embedding/go/value-encoders" >}}) for the codec interfaces, hooks, registry, and a complete custom codec example.
+
+`ferret.WithEnvironmentOptions` is an advanced escape hatch for applications that integrate directly with VM environment options. Prefer the root session options for parameters, logging, output encoding, and other ordinary embedding configuration.
 
 ## Concurrency control
 
@@ -423,22 +443,21 @@ Both examples have valid Ferret function signatures and can be registered with `
 
 ## Compiler options
 
-The compiler can be configured through `WithCompilerOptions`:
+Set the optimization level for plans compiled by an engine with `WithOptimizationLevel`:
 
 {{< code lang="go" >}}
 engine, err := ferret.New(
-    ferret.WithCompilerOptions(
-        compiler.WithOptimizationLevel(compiler.O1),
-    ),
+    ferret.WithOptimizationLevel(ferret.OptimizationFull),
 )
 {{</ code >}}
 
 | Level | Constant | Description |
 |-------|----------|-------------|
-| None | `compiler.O0` | No optimization |
-| Basic | `compiler.O1` | Basic optimizations (default) |
+| None | `ferret.OptimizationNone` | No optimization |
+| Basic | `ferret.OptimizationBasic` | Basic optimization pipeline |
+| Full | `ferret.OptimizationFull` | Full optimization pipeline (default) |
 
-Debug compilation (`engine.CompileDebug`) always uses `O0` to ensure stable source-level debugging metadata.
+Debug compilation (`engine.CompileDebug`) always uses no optimization to ensure stable source-level debugging metadata.
 
 ## Next steps
 

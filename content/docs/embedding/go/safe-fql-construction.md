@@ -27,12 +27,9 @@ query := fmt.Sprintf(`return web::html::open("%s").title`, url)
 Compile stable FQL that references `@url`, then provide the URL when creating a session:
 
 {{< code lang="go" >}}
-htmlmod, err := html.New(
+htmlmod := html.New(
     html.WithDefaultDriver(memory.New()),
 )
-if err != nil {
-    return err
-}
 
 engine, err := ferret.New(
     ferret.WithModules(htmlmod),
@@ -42,9 +39,9 @@ if err != nil {
 }
 defer engine.Close()
 
-plan, err := engine.Compile(ctx, source.New("page-title", `
-    return web::html::open(@url).title
-`))
+plan, err := engine.Compile(ctx,
+    ferret.NewSource("page-title.fql", `return web::html::open(@url).title`),
+)
 if err != nil {
     return err
 }
@@ -75,10 +72,11 @@ Use engine parameters for stable application-wide values and session parameters 
 A CSS selector is runtime data when it comes from a request, configuration file, database, or another host input. Pass it separately even when the FQL program uses it as a query selector:
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.New("selected-text", `
-    let page = web::html::parse(@html)
-    return web::html::inner_text(page, @selector)
-`))
+plan, err := engine.Compile(ctx, ferret.NewSource(
+    "selected-text.fql",
+    `let page = web::html::parse(@html)
+return web::html::inner_text(page, @selector)`,
+))
 if err != nil {
     return err
 }
@@ -108,10 +106,11 @@ The selector remains a runtime string. It cannot add FQL statements or change th
 When the host already has HTML, pass the content to `web::html::parse` as a parameter instead of embedding it in a string literal:
 
 {{< code lang="go" >}}
-plan, err := engine.Compile(ctx, source.New("parsed-title", `
-    let page = web::html::parse(@html)
-    return page.title
-`))
+plan, err := engine.Compile(ctx, ferret.NewSource(
+    "parsed-title.fql",
+    `let page = web::html::parse(@html)
+return page.title`,
+))
 if err != nil {
     return err
 }
@@ -149,7 +148,9 @@ query := `
     }
 `
 
-plan, err := engine.Compile(ctx, source.New("affordable-products", query))
+plan, err := engine.Compile(ctx,
+    ferret.NewSource("affordable-products.fql", query),
+)
 if err != nil {
     return err
 }

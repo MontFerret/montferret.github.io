@@ -173,7 +173,6 @@ import (
 
     "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/runtime"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
@@ -212,7 +211,7 @@ func main() {
 
     output, err := engine.Run(
         context.Background(),
-        source.NewAnonymous(`
+        ferret.NewAnonymousSource(`
             return {
                 titled: text::title_case("hello world"),
                 wrapped: text::wrap("content", "**"),

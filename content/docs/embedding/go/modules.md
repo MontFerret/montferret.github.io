@@ -56,15 +56,12 @@ Construct modules before creating the engine. Constructors and functional option
 The HTML module requires a driver. This configuration uses the in-process memory driver for static HTML:
 
 {{< code lang="go" >}}
-htmlmod, err := html.New(
+htmlmod := html.New(
     html.WithDefaultDriver(memory.New()),
 )
-if err != nil {
-    log.Fatal(err)
-}
 {{</ code >}}
 
-Handle constructor errors before calling `ferret.New`. At this point, the module has not joined the engine lifecycle yet.
+The HTML constructor returns a module value and applies its options during registration. Check the error from `ferret.New`, which reports invalid HTML options together with other registration failures. If another module constructor returns an error directly, handle it before building the engine.
 
 ## Registering modules
 
@@ -83,12 +80,9 @@ import (
 )
 
 func main() {
-    htmlmod, err := html.New(
+    htmlmod := html.New(
         html.WithDefaultDriver(memory.New()),
     )
-    if err != nil {
-        log.Fatal(err)
-    }
 
     engine, err := ferret.New(
         ferret.WithStdlib(stdlib.Safe()),
@@ -116,6 +110,16 @@ engine, err := ferret.New(
         sqlitemod,
         appmod,
     ),
+)
+{{</ code >}}
+
+Host applications can name the accepted contract without importing `pkg/module`:
+
+{{< code lang="go" >}}
+modules := []ferret.Module{htmlmod, sqlitemod, appmod}
+
+engine, err := ferret.New(
+    ferret.WithModules(modules...),
 )
 {{</ code >}}
 
@@ -151,11 +155,11 @@ A module participates in the engine lifecycle through registration and hooks:
 | Initialization | Engine initialization hooks run in registration order and stop on the first error |
 | Shutdown | `engine.Close()` runs engine close hooks in reverse registration order and aggregates their errors |
 
-The `module.Module` interface does not define a `Close` method. A module that owns engine-scoped resources registers an engine close hook and releases them there. Plan- and session-scoped resources belong in their corresponding close hooks and are released when the host application closes those plans and sessions.
+`ferret.Module` is an alias of `module.Module`, so host and module-authoring code use the same contract without conversion. The interface does not define a `Close` method. A module that owns engine-scoped resources registers an engine close hook and releases them there. Plan- and session-scoped resources belong in their corresponding close hooks and are released when the host application closes those plans and sessions.
 
 ## Writing a custom module
 
-Applications can implement the module contract to expose their own functions, namespaces, host values, codecs, parameters, and lifecycle behavior:
+Module authors implement the contract in `pkg/module` to expose functions, namespaces, host values, codecs, parameters, and lifecycle behavior:
 
 {{< code lang="go" >}}
 type Module interface {
@@ -174,10 +178,10 @@ Lifecycle hooks let modules and host applications react to engine, compilation, 
 
 ### Engine hooks
 
-| Hook | When it runs | Signature |
-| --- | --- | --- |
-| `WithEngineInitHook` | During `ferret.New`, after registration and host construction | `func() error` |
-| `WithEngineCloseHook` | When construction fails or `engine.Close()` is called | `func() error` |
+| Hook option | Root hook type | Signature | When it runs |
+| --- | --- | --- | --- |
+| `WithEngineInitHook` | `ferret.EngineInitHook` | `func() error` | During `ferret.New`, after registration and host construction |
+| `WithEngineCloseHook` | `ferret.EngineCloseHook` | `func() error` | When construction fails or `engine.Close()` is called |
 
 Initialization hooks run in registration order (FIFO) and stop on the first error. Close hooks run in reverse registration order (LIFO), continue after errors, and aggregate those errors.
 
@@ -211,10 +215,10 @@ func (m *Module) Register(boot module.Bootstrap) error {
 
 ### Compilation hooks
 
-| Hook | When it runs | Signature |
-| --- | --- | --- |
-| `WithBeforeCompileHook` | Before compilation begins | `func(ctx context.Context) error` |
-| `WithAfterCompileHook` | After a compilation attempt | `func(ctx context.Context, compileErr error) error` |
+| Hook option | Root hook type | Signature | When it runs |
+| --- | --- | --- | --- |
+| `WithBeforeCompileHook` | `ferret.BeforeCompileHook` | `func(context.Context) error` | Before compilation begins |
+| `WithAfterCompileHook` | `ferret.AfterCompileHook` | `func(context.Context, error) error` | After a compilation attempt |
 
 Before-compile hooks run FIFO and stop on the first error. Once compilation is attempted, after-compile hooks run LIFO and receive the compilation error, if any. They continue after hook errors and aggregate them.
 
@@ -222,10 +226,10 @@ Modules register these hooks with `boot.Hooks().Plan().BeforeCompile(...)` and `
 
 ### Execution hooks
 
-| Hook | When it runs | Signature |
-| --- | --- | --- |
-| `WithBeforeRunHook` | Before `session.Run` begins | `func(ctx context.Context) (context.Context, error)` |
-| `WithAfterRunHook` | After a run attempt | `func(ctx context.Context, runErr error) error` |
+| Hook option | Root hook type | Signature | When it runs |
+| --- | --- | --- | --- |
+| `WithBeforeRunHook` | `ferret.BeforeRunHook` | `func(context.Context) (context.Context, error)` | Before `session.Run` begins |
+| `WithAfterRunHook` | `ferret.AfterRunHook` | `func(context.Context, error) error` | After a run attempt |
 
 Before-run hooks run FIFO and can return a derived context for subsequent hooks and VM execution. They stop on the first error. Once execution is attempted, after-run hooks run LIFO, receive the run error, and aggregate hook errors.
 
@@ -233,10 +237,10 @@ Modules register these hooks with `boot.Hooks().Session().BeforeRun(...)` and `b
 
 ### Cleanup hooks
 
-| Hook | When it runs | Module registrar |
-| --- | --- | --- |
-| `WithPlanCloseHook` | When `plan.Close()` is called | `boot.Hooks().Plan().OnClose(...)` |
-| `WithSessionCloseHook` | When `session.Close()` is called | `boot.Hooks().Session().OnClose(...)` |
+| Hook option | Root hook type | Signature | When it runs | Module registrar |
+| --- | --- | --- | --- | --- |
+| `WithPlanCloseHook` | `ferret.PlanCloseHook` | `func() error` | When `plan.Close()` is called | `boot.Hooks().Plan().OnClose(...)` |
+| `WithSessionCloseHook` | `ferret.SessionCloseHook` | `func() error` | When `session.Close()` is called | `boot.Hooks().Session().OnClose(...)` |
 
 Plan and session close hooks run in LIFO order, continue after errors, and aggregate those errors.
 

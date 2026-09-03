@@ -26,7 +26,6 @@ import (
     "os"
 
     "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
@@ -45,7 +44,7 @@ func run() error {
     ctx := context.Background()
     plan, err := engine.Compile(
         ctx,
-        source.New("greeting.fql", `return upper(@name)`),
+        ferret.NewSource("greeting.fql", `return upper(@name)`),
     )
     if err != nil {
         return err
@@ -67,7 +66,7 @@ func run() error {
 }
 {{</ code >}}
 
-`plan.Marshal()` serializes the bytecode to a self-describing binary artifact. These examples use the CLI's `.fqlc` extension.
+`Engine.Compile` returns a concrete `*ferret.Plan`. `plan.Marshal()` serializes its bytecode to a self-describing binary artifact. These examples use the CLI's `.fqlc` extension.
 
 ## Compile from the CLI
 
@@ -91,18 +90,16 @@ Artifacts support two payload formats:
 
 | Format | Constant | Size | Use case |
 | --- | --- | --- | --- |
-| MessagePack | `artifact.FormatMsgPack` | Smaller | Production (default) |
-| JSON | `artifact.FormatJSON` | Larger | Debugging, inspection |
+| MessagePack | `ferret.ProgramFormatMsgPack` | Smaller | Production (default) |
+| JSON | `ferret.ProgramFormatJSON` | Larger | Debugging, inspection |
 
 To use JSON:
 
 {{< code lang="go" >}}
-import (
-    "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
-)
+import "github.com/MontFerret/ferret/v2"
 
-data, err := plan.Marshal(ferret.WithProgramFormat(artifact.FormatJSON))
+var format ferret.ProgramFormat = ferret.ProgramFormatJSON
+data, err := plan.Marshal(ferret.WithProgramFormat(format))
 {{</ code >}}
 
 `ferret build` writes the default MessagePack format; it does not expose a payload-format flag. Use the Go API above when you need JSON. In either format, the first 14 bytes are the binary header and the remaining bytes are the encoded payload.
@@ -204,7 +201,10 @@ defer plan.Close()
 When your application accepts both `.fql` source and `.fqlc` artifacts, use `artifact.HasMagic` to choose the right path:
 
 {{< code lang="go" >}}
-import "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
+import (
+    "github.com/MontFerret/ferret/v2"
+    "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
+)
 
 data, err := os.ReadFile(path)
 if err != nil {
@@ -216,7 +216,7 @@ var plan *ferret.Plan
 if artifact.HasMagic(data) {
     plan, err = engine.Load(data)
 } else {
-    plan, err = engine.Compile(ctx, source.New(path, string(data)))
+    plan, err = engine.Compile(ctx, ferret.NewSource(path, string(data)))
 }
 if err != nil {
     log.Fatal(err)
@@ -234,13 +234,15 @@ Artifacts encode the bytecode instruction set version (ISA). When the runtime's 
 import (
     "errors"
 
+    "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
 )
 
+var plan *ferret.Plan
 plan, err := engine.Load(data)
 if errors.Is(err, artifact.ErrIncompatibleISA) {
     log.Println("artifact ISA mismatch, recompiling from source")
-    plan, err = engine.Compile(ctx, source.New(name, sourceText))
+    plan, err = engine.Compile(ctx, ferret.NewSource(name, sourceText))
 }
 
 if err != nil {
@@ -290,7 +292,9 @@ func loadOrCompile(ctx context.Context, engine *ferret.Engine, fqlPath string) (
         return nil, err
     }
 
-    plan, err := engine.Compile(ctx, source.New(fqlPath, string(src)))
+    plan, err := engine.Compile(ctx,
+        ferret.NewSource(fqlPath, string(src)),
+    )
     if err != nil {
         return nil, err
     }
@@ -363,7 +367,6 @@ import (
 
     "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/bytecode/artifact"
-    "github.com/MontFerret/ferret/v2/pkg/source"
 )
 
 func main() {
@@ -421,7 +424,9 @@ func compileFile(ctx context.Context, engine *ferret.Engine, path string) (err e
         return err
     }
 
-    plan, err := engine.Compile(ctx, source.New(filepath.Base(path), string(src)))
+    plan, err := engine.Compile(ctx,
+        ferret.NewSource(filepath.Base(path), string(src)),
+    )
     if err != nil {
         return err
     }
