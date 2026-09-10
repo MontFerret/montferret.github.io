@@ -113,7 +113,7 @@ return first(values)
 
 FQL provides built-in functions for common operations on values such as `strings`, `arrays`, `objects`, `numbers`, and `types`.
 
-String, array, numeric, and type functions are available at the top level. Immutable object functions use `object::`; see [Object functions and migration]({{< ref "/docs/language/functions/object-migration" >}}) for the new alpha surface. Serialization and escaping use `encoding::`; digest and secure token functions use `crypto::`. All path functions use `path::`, including `path::base` and `path::join`.
+String, numeric, and type functions are available at the top level. The canonical immutable array library uses `arrays::`; existing global array functions remain temporary migration aliases. See [Array API Migration]({{< ref "/docs/language/functions/array-migration" >}}) for runtime availability, canonical names, and compatibility behavior. Immutable object functions use `object::`; see [Object functions and migration]({{< ref "/docs/language/functions/object-migration" >}}) for the new alpha surface. Serialization and escaping use `encoding::`; digest and secure token functions use `crypto::`. All path functions use `path::`, including `path::base` and `path::join`.
 
 {{< editor lang="fql" >}}
 let tags = ["docs", "fql", "runtime"]
