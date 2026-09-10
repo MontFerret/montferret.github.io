@@ -3,7 +3,7 @@ title: "Object functions and migration"
 sidebarTitle: "Object migration"
 weight: 45
 draft: false
-description: "Use immutable object functions and migrate legacy global calls."
+description: "Use immutable object functions, opt into mutation, and migrate legacy global calls."
 ---
 
 # Object functions and migration
@@ -19,9 +19,10 @@ let result = object::merge(clean, {version: 2})
 return object::entries(result)
 ```
 
-Object transformations return independent containers. Nested values are deep
+Immutable object transformations return independent containers. Nested values are deep
 cloned when supported; other host values follow their shallow-copy contract.
-The source object is unchanged. There is no `object::mut` API yet.
+The source object is unchanged. Explicit mutation is available through
+`object::mut::` in runtime releases containing the mutable object API.
 
 ## Functions
 
@@ -46,6 +47,57 @@ Key filters accept variadic String keys or one list of String keys. At least
 one key argument is required. Missing or repeated keys are harmless.
 `object::keep_keys(value, [])` returns an empty map;
 `object::omit_keys(value, [])` returns an independent copy.
+
+## Explicit mutation
+
+Standard library operations are immutable by default. A `::mut::` subnamespace
+explicitly opts into mutation of an existing value:
+
+```fql
+LET original = {name: "Ferret", internal: true}
+LET clean = object::omit_keys(original, "internal")
+// original still includes internal.
+LET alias = original
+LET result = object::mut::omit_keys(original, "internal")
+RETURN [original, alias, result, clean]
+// All four values are {name: "Ferret"}.
+```
+
+`object::merge(a, b)` returns an independent value without modifying `a`.
+`object::mut::merge(a, b)` modifies `a` and returns that same target. Top-level
+aliases observe the changes, and the returned target can be composed with
+another mutable operation.
+
+| Call | Behavior |
+| --- | --- |
+| `object::mut::merge(target, sources...)` | Merge into the target; later sources win |
+| `object::mut::merge_deep(target, sources...)` | Merge recursively, copying conflicting nested branches before modification |
+| `object::mut::keep_keys(target, keys...)` | Remove every unselected key from the target |
+| `object::mut::omit_keys(target, keys...)` | Remove selected keys from the target |
+
+Mutable merges accept variadic source maps or one list after the target.
+`object::mut::merge(target)` and `object::mut::merge(target, [])` return the
+unchanged target; the same applies to `merge_deep`. The target itself must be a
+map, not a list of maps.
+
+Mutable key filters still require a key argument. An explicit empty list clears
+the target for `keep_keys` and leaves it unchanged for `omit_keys`. Missing and
+repeated keys are harmless. Retained values are not copied.
+
+Deep mutation preserves the target's top-level identity. It copies a conflicting
+nested branch, merges into the copy, and replaces the target's branch after
+success. Source objects and external aliases to the original nested branch stay
+unchanged; untouched branches retain their identity. Incoming values use the
+same clone/copy contracts as immutable merges, including host-value guarantees.
+
+Host-backed targets must implement the runtime map mutation contract. Missing
+capabilities and rejected writes fail the call; there is no fallback to mutating
+a copy of the target. No-op calls do not issue writes to probe a host's policy.
+
+Mutation is not transactional. An error can leave earlier updates applied,
+including a host write that changes state before reporting failure. A failed
+nested merge does not replace its original branch. Iteration, cloning, mutation,
+and cleanup errors propagate to the caller.
 
 ## Entries and constructors
 
