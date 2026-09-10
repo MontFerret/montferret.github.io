@@ -113,7 +113,7 @@ return first(values)
 
 FQL provides built-in functions for common operations on values such as `strings`, `arrays`, `objects`, `numbers`, and `types`.
 
-Built-in functions are available at the top level, without a namespace prefix.
+String, array, numeric, and type functions are available at the top level. Immutable object functions use `object::`; see [Object functions and migration]({{< ref "/docs/language/functions/object-migration" >}}) for the new alpha surface. Serialization and escaping use `encoding::`; digest and secure token functions use `crypto::`. All path functions use `path::`, including `path::base` and `path::join`.
 
 {{< editor lang="fql" >}}
 let tags = ["docs", "fql", "runtime"]
@@ -121,11 +121,13 @@ let tags = ["docs", "fql", "runtime"]
 return {
     count: length(tags),
     first: first(tags),
-    joined: concat_separator(", ", tags)
+    joined: join(tags, ", ")
 }
 {{</ editor >}}
 
 The available built-in functions are documented in [the standard library reference]({{% ref "../../standard-library" %}}).
+
+See [the string API migration guide]({{% ref "string-migration" %}}) for the late-alpha renames, strict argument types, and regex result shapes.
 
 ## Function calls in expressions
 

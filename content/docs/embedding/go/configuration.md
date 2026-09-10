@@ -302,6 +302,16 @@ engine, err := ferret.New(
 )
 {{</ code >}}
 
+A network passed to `WithNetwork` remains caller-owned: Ferret never closes it,
+including when engine construction fails. Ferret owns its default network and
+networks created through `WithNetworkOptions`; it releases their idle connections
+on construction failure or engine shutdown.
+
+Network options apply in order. Replacing an Engine-created network releases its
+idle connections immediately; replacing a borrowed network leaves it untouched.
+The last network-setting option selects the service used by the engine.
+`WithNetworkOptions()` without arguments leaves the current selection unchanged.
+
 The HTTP client supports these policy controls:
 
 | Control | Options |
@@ -457,7 +467,20 @@ engine, err := ferret.New(
 | Basic | `ferret.OptimizationBasic` | Basic optimization pipeline |
 | Full | `ferret.OptimizationFull` | Full optimization pipeline (default) |
 
-Debug compilation (`engine.CompileDebug`) always uses no optimization to ensure stable source-level debugging metadata.
+Use the native `ferret.WithPlanOptimizationLevel` option to override that default for one compilation:
+
+{{< code lang="go" >}}
+plan, err := engine.Compile(ctx,
+    ferret.NewSource("query.fql", `return @value + 1`),
+    ferret.WithPlanOptimizationLevel(ferret.OptimizationNone),
+)
+{{</ code >}}
+
+Omitting the option inherits the engine configuration. Explicit `ferret.OptimizationNone`, `ferret.OptimizationBasic`, and `ferret.OptimizationFull` affect only that plan, including concurrent compilations. Other levels are unsupported.
+
+Debug compilation (`engine.CompileDebug`) accepts omission or explicit `ferret.OptimizationNone` and rejects other levels to preserve source-level debugging metadata. Compilation is synchronous and observes cancellation between phases; it does not preempt a parser already running.
+
+Native `ferret.PlanOption` and `ferret.SessionOption` configure Ferret's runtime directly and are distinct from Universal API functional options. Use the native `ferret.With*` factories for native engines and sessions.
 
 ## Next steps
 

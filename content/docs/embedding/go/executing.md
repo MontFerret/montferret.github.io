@@ -128,6 +128,16 @@ defer session.Close()
 output, err := session.Run(ctx)
 {{</ code >}}
 
+Close directly created children before parents: session, plan, then engine. Callers own these resources; closing a parent does not close descendants. Native Ferret protects each object's state, while the host orchestrates graceful shutdown. Cancel and settle outstanding work before closing resources used by hooks or services. Cancel and wait for ordinary execution before closing its session. Debug session closure terminates and settles active commands.
+
+Engine closure rejects new compilation and loading without waiting for admitted operations. Plan closure rejects new sessions and wakes session creation waiting for capacity, even while close hooks are running. Engine closure does not cancel those waits. Creation that has acquired capacity may finish or fail on local VM pool closure; parent closure does not revoke a successfully returned session. Callers must close any returned resources.
+
+Close is safe to repeat concurrently and retains the completed cleanup result. A close hook must not recursively close its own object. Closing a plan closes idle VMs; borrowed VMs remain with their sessions until returned.
+
+Debugger termination events preserve the execution cause and any retained-resource cleanup failures. Later `Close` calls retain those cleanup failures, including concurrent and repeated calls. Cancellation with successful cleanup does not itself make `Close` fail.
+
+Pass non-nil contexts to compilation, execution, session creation, and debugger commands. Already-canceled contexts fail before options or hooks run; cancellation and deadline identities remain available through `errors.Is`.
+
 Closing a plan releases its VM pool. Closing the engine runs all registered close hooks and releases engine-scoped resources. Close hooks execute in reverse registration order (LIFO) so that resources are torn down in the correct dependency order.
 
 ## Shorthand execution
@@ -143,6 +153,20 @@ if err != nil {
 fmt.Println(string(output.Content))
 // 2
 {{</ code >}}
+
+`Session.Run` returns successful encoded output even when an after-run hook or result cleanup fails. `Engine.Run` preserves that output and joins execution, hook, session cleanup, and plan cleanup errors. Preserve available output before handling the error:
+
+{{< code lang="go" >}}
+output, err := engine.Run(ctx, ferret.NewAnonymousSource(`return 2`))
+if output != nil {
+    fmt.Println(string(output.Content))
+}
+if err != nil {
+    return err
+}
+{{</ code >}}
+
+The returned `Output` contains encoded data and has no `Close` method. Ferret releases the internal VM result after encoding; the returned content remains available after the session, plan, and engine close. Failed execution or encoding returns no output.
 
 ## Thread safety summary
 

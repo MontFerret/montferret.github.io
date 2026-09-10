@@ -60,11 +60,11 @@ Fixed-arity functions (`A0` through `A4`) automatically validate the argument co
 
 ## Namespaces
 
-Use `WithNamespace` with a library builder to create a named group of functions:
+Use `WithNamespace` with a library builder to create a named group of functions. Choose a namespace that does not collide with built-ins such as `crypto::`:
 
 {{< code lang="go" >}}
 lib := runtime.NewLibrary()
-ns := lib.Namespace("crypto")
+ns := lib.Namespace("digest_demo")
 
 ns.Function().A1().Add("md5", func(ctx context.Context, arg runtime.Value) (runtime.Value, error) {
     input := arg.String()
@@ -87,12 +87,12 @@ Scripts call these as:
 
 {{< code lang="fql" >}}
 return {
-    md5: crypto::md5("hello"),
-    sha: crypto::sha256("hello")
+    md5: digest_demo::md5("hello"),
+    sha: digest_demo::sha256("hello")
 }
 {{</ code >}}
 
-Namespaces can be nested. A namespace created with `ns.Namespace("sub")` produces functions accessible as `crypto::sub::function_name`.
+Namespaces can be nested. A namespace created with `ns.Namespace("sub")` produces functions accessible as `digest_demo::sub::function_name`.
 
 ## Argument validation
 
@@ -146,7 +146,7 @@ If you have a `*runtime.Functions` object built separately, merge it into the en
 {{< code lang="go" >}}
 builder := runtime.NewFunctionsBuilder()
 builder.A1().Add("reverse", reverseFunc)
-builder.A2().Add("repeat", repeatFunc)
+builder.A2().Add("repeat_custom", repeatFunc)
 
 funcs, err := builder.Build()
 if err != nil {

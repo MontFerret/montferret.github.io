@@ -19,7 +19,7 @@ Use `io::net::http::get` to fetch data from an API:
 {{< terminal command="true" >}}
 ferret run -e '
 let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts/1")
-let data = json_parse(to_string(response))
+let data = encoding::json_parse(to_string(response))
 return data
 '
 {{< /terminal >}}
@@ -28,13 +28,13 @@ return data
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
 let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts/1")
-let data = json_parse(to_string(response))
+let data = encoding::json_parse(to_string(response))
 return data
 {{< /editor >}}
 {{< /tab >}}
 {{< /tabs >}}
 
-`io::net::http::get` returns raw bytes. Use `to_string` to convert to a string, then `json_parse` to decode JSON.
+`io::net::http::get` returns raw bytes. Use `to_string` to convert to a string, then `encoding::json_parse` to decode JSON.
 
 ## Make a POST request
 
@@ -43,7 +43,7 @@ Use `io::net::http::post` with a body and headers:
 {{< code lang="fql" >}}
 let response = io::net::http::post({
     url: "https://jsonplaceholder.typicode.com/posts",
-    body: to_binary(json_stringify({
+    body: to_binary(encoding::json_stringify({
         title: "Ferret",
         body: "Data extraction",
         userId: 1
@@ -53,7 +53,7 @@ let response = io::net::http::post({
     }
 })
 
-return json_parse(to_string(response))
+return encoding::json_parse(to_string(response))
 {{</ code >}}
 
 ## Iterate over API results
@@ -65,7 +65,7 @@ Fetch a list and process it with `for`:
 {{< terminal command="true" >}}
 ferret run -e '
 let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts")
-let posts = json_parse(to_string(response))
+let posts = encoding::json_parse(to_string(response))
 
 return for post in posts
     limit 5
@@ -80,7 +80,7 @@ return for post in posts
 {{< tab title="Try in browser" >}}
 {{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
 let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts")
-let posts = json_parse(to_string(response))
+let posts = encoding::json_parse(to_string(response))
 
 return for post in posts
     limit 5
@@ -105,7 +105,7 @@ let result = (
         let offset = pageNum * pageSize
         let url = baseURL + to_string(offset) + "&_limit=" + to_string(pageSize)
         let response = io::net::http::get(url)
-        let posts = json_parse(to_string(response))
+        let posts = encoding::json_parse(to_string(response))
 
         for post in posts
             return {
@@ -130,7 +130,7 @@ let response = io::net::http::get({
     }
 })
 
-return json_parse(to_string(response))
+return encoding::json_parse(to_string(response))
 {{</ code >}}
 
 Use a bind parameter (`@token`) so the secret is not hardcoded in the script:
@@ -145,7 +145,7 @@ A powerful pattern: fetch structured data from an API and enrich it with data fr
 
 {{< code lang="fql" >}}
 let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts")
-let posts = json_parse(to_string(response))
+let posts = encoding::json_parse(to_string(response))
 
 return for post in posts
     limit 3
@@ -170,7 +170,7 @@ let response = io::net::http::get("https://api.example.com/data")
     or return none
 
 return response != none
-    ? json_parse(to_string(response))
+    ? encoding::json_parse(to_string(response))
     : { error: "API unavailable" }
 {{</ code >}}
 

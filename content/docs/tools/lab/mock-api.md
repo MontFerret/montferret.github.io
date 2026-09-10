@@ -23,7 +23,7 @@ The service URL is available as `@lab.mock.api`.
 
 {{< code lang="fql" >}}
 let response = io::net::http::get(@lab.mock.api + "/users/123")
-let user = json_parse(to_string(response))
+let user = encoding::json_parse(to_string(response))
 
 return user.id == "123"
 {{< /code >}}

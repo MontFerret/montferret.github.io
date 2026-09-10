@@ -24,6 +24,6 @@ return for product in products
     return {
         brand: product[~? css`.product-brand`].textContent,
         title: product[~? css`.product-title`].textContent,
-        price: TO_FLOAT(SUBSTITUTE(product[~? css`.product-price`], '$', '')) on error return 0
+        price: TO_FLOAT(REPLACE(product[~? css`.product-price`].textContent, '$', '')) on error return 0
     }
 {{</ editor >}}

@@ -727,7 +727,7 @@ For larger functions, the block form gives enough structure without relying on i
 {{< editor lang="fql" >}}
 func normalizePrice(input) {
     let cleaned = TRIM(input)
-    let numeric = SUBSTITUTE(cleaned, "$", "")
+    let numeric = REPLACE(cleaned, "$", "")
     return TO_FLOAT(numeric)
 }
 
@@ -816,7 +816,7 @@ use IO::NET::HTTP::GET as GET
 
 let out = GET("https://mockery.ferretlang.org/api/products/index.json")
 
-return JSON_PARSE(out)
+return ENCODING::JSON_PARSE(out)
 {{</ editor >}}
 
 This keeps module-based scripts readable without pulling an entire module directly into local scope.

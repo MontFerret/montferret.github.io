@@ -41,7 +41,7 @@ The block form encloses the function body in braces. Use it when the function ne
 {{< editor lang="fql" >}}
 func normalizePrice(input) {
     let cleaned = trim(input)
-    let numeric = substitute(cleaned, "$", "")
+    let numeric = replace(cleaned, "$", "")
     return to_float(numeric)
 }
 

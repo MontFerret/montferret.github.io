@@ -231,7 +231,11 @@ Modules register these hooks with `boot.Hooks().Plan().BeforeCompile(...)` and `
 | `WithBeforeRunHook` | `ferret.BeforeRunHook` | `func(context.Context) (context.Context, error)` | Before `session.Run` begins |
 | `WithAfterRunHook` | `ferret.AfterRunHook` | `func(context.Context, error) error` | After a run attempt |
 
-Before-run hooks run FIFO and can return a derived context for subsequent hooks and VM execution. They stop on the first error. Once execution is attempted, after-run hooks run LIFO, receive the run error, and aggregate hook errors.
+Before-run hooks run FIFO and can return a derived context for subsequent hooks and VM execution. They stop on the first error. Once all before-run hooks succeed, after-run hooks run exactly once in LIFO order, even if cancellation or an invalid context prevents execution. They receive the returned hook context, or the original caller context when it is nil, and the same run or validation error. Their failures are joined with that error. Pre-canceled admission and failed before-run hooks do not trigger after-run hooks.
+
+Normal and debug sessions follow the same pairing rules. If a debugger's `Start` aborts after successful before-run hooks but before execution, it settles those after-run hooks immediately and remains available for another `Start`. Closing the session does not repeat the aborted attempt's hooks.
+
+An after-run failure does not discard successful encoded output. Normal sessions run after-run hooks before encoding and result cleanup; hook, encoding, and cleanup failures remain inspectable in the returned error. Check for available output even when a run returns an error.
 
 Modules register these hooks with `boot.Hooks().Session().BeforeRun(...)` and `boot.Hooks().Session().AfterRun(...)`.
 

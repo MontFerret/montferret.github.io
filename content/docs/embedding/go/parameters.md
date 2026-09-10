@@ -90,6 +90,17 @@ session, err := plan.NewSession(ctx,
 )
 {{</ code >}}
 
+Session options are also Universal API options. Import `github.com/MontFerret/api` as `api` to use the portable setters directly:
+
+{{< code lang="go" >}}
+session, err := plan.NewSession(ctx,
+    api.WithParams(map[string]any{"user_id": 42}),
+    api.WithParam("page", 2),
+)
+{{</ code >}}
+
+Non-nil options run once in order against the native session configuration. Later values override earlier ones. Validation failures are joined before resources are acquired. Native-only options, such as runtime-value setters, require a native target.
+
 ### From runtime values
 
 {{< code lang="go" >}}

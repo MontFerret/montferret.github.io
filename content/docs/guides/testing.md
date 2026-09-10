@@ -172,7 +172,7 @@ Keep the script production-oriented by reading its normal `@baseUrl` parameter:
 
 {{< code lang="fql" title="tests/fixture-products.fql" >}}
 let response = io::net::http::get(@baseUrl + "/products.json")
-let products = json_parse(to_string(response))
+let products = encoding::json_parse(to_string(response))
 
 t::len(products, 2, "expected two fixture products")
 return t::gt(products[0].price, 0, "price must be positive")

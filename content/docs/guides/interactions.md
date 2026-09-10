@@ -188,7 +188,7 @@ let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/s
 func PARSE_PRICE(product) {
     let priceNode = query one ".product-price" in product using css
     let priceText = priceNode.attributes["data-price"]
-    let price = to_float(substitute(priceText, "$", ""))
+    let price = to_float(replace(priceText, "$", ""))
     return price
 }
 

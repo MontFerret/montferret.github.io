@@ -77,6 +77,26 @@ The command changes only a structurally recognized final top-level `FOR` when th
 
 Changed FQL files are rendered with the canonical formatter. A second migration leaves the explicit result unchanged.
 
+## Migrate object functions
+
+The object migration rewrites legacy global `KEYS`, `VALUES`, `HAS`, `KEEP_KEYS`,
+`MERGE`, `MERGE_RECURSIVE`, and `ZIP` calls into the lowercase `object::`
+namespace. `HAS` becomes `object::has_key`, and `MERGE_RECURSIVE` becomes
+`object::merge_deep`. User-defined functions and qualified calls are preserved.
+
+`KEYS(value, true)` becomes `sorted(object::keys(value))`; a literal `false`
+argument is removed. Dynamic sorting expressions or shadowed sorting functions
+produce a manual action and leave that file unchanged. Safe files are still
+planned and committed through the existing transaction.
+
+`object::zip` uses the last value for duplicate keys, whereas legacy `ZIP`
+kept the first. Review this intentional alpha behavior change before adopting
+the migrated source. The compatibility checker includes this guidance.
+
+See [Object functions and migration]({{< ref "/docs/language/functions/object-migration" >}})
+for the full API and examples. These rewrites require a CLI release containing
+the object migration and a runtime release containing the new namespace.
+
 ## Go compatibility imports
 
 Documented Ferret v1 imports are rewritten to their Ferret v2 compatibility packages. `go.mod` and `go.sum` are updated only when a Go import is rewritten. FQL-only targets do not require the Go toolchain and do not change Go dependencies.
