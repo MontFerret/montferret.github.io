@@ -14,10 +14,10 @@ description: "Install @montferret/ferret and run an FQL program from JavaScript.
 
 Use one of these environments:
 
-- Node.js 22 or newer
+- Node.js {{< data "versions.ferretjs.node" >}} or newer
 - a modern browser with WebAssembly, `fetch`, and `crypto.getRandomValues`
 
-Building the package from source also requires Go 1.25 or newer. Applications that install the published package do not need Go.
+Building the package from source also requires Go {{< data "versions.ferretjs.go" >}} or newer. Applications that install the published package do not need Go.
 
 ## Install the package
 
