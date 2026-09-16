@@ -122,7 +122,7 @@ for while !done {
 
     waitfor exists page.items
 
-    let current_count = count(page.items)
+    let current_count = collections::count(page.items)
 
     // ...
 }

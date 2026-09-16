@@ -74,6 +74,25 @@ Review these behavior changes as well as names:
 - Base64 decoding returns Binary, including non-text bytes. Query escaping uses
   query-form rules: spaces become `+` and a literal plus becomes `%2B`.
 
+## Collections
+
+Use `collections::` for generic collection operations. The global names remain
+deprecated compatibility aliases with the same signatures and v2 behavior.
+
+| Global call | Canonical call |
+| --- | --- |
+| `count(value)` | `collections::count(value)` |
+| `count_distinct(value)` | `collections::count_distinct(value)` |
+| `includes(value, needle)` | `collections::includes(value, needle)` |
+| `reverse(value)` | `collections::reverse(value)` |
+
+Apply these namespace changes manually. Counting still accepts iterable values,
+membership retains host capabilities and iterable fallback, and reversal supports
+Unicode strings and lists while preserving the list implementation family.
+
+Keep query `COUNT` modifiers and built-in `COLLECT AGGREGATE ... COUNT(...)`
+selectors unchanged; these are language operations rather than collection calls.
+
 ## Arrays
 
 Existing global array functions remain temporary compatibility functions with

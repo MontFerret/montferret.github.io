@@ -117,7 +117,7 @@ blocking implementations must honor the context. Ownership transfers only on
 success. If construction fails, the factory releases partially acquired resources
 and joins cleanup failures with the construction error.
 
-Global `reverse(list)` uses this factory and appends existing element references
+`collections::reverse(list)` uses this factory and appends existing element references
 in reverse index order. Failed reversal closes the incomplete destination when
 closable, preserving both operation and cleanup errors. A successful destination
 passes to normal result lifecycle handling. The source and its elements remain
