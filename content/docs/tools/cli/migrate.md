@@ -10,6 +10,8 @@ description: "Check FQL compatibility and migrate supported Ferret v1 behavior t
 
 The `ferret migrate` command groups the compatibility checker and the supported mechanical Ferret v1 to v2 migration. Running `ferret migrate` without a subcommand displays help and does not modify files.
 
+For the complete project workflow, start with [Ferret v1 → v2]({{< ref "docs/migrations/v1-to-v2" >}}).
+
 ## Check compatibility
 
 Use `check` to inspect a standalone lowercase `.fql` file or recursively scan a directory without modifying source:
@@ -123,9 +125,31 @@ rename, the function name stays the same under the listed namespace.
 | `encoding::` | `json_parse`, `json_stringify`, `encode_uri_component` → `query_escape`, `decode_uri_component` → `query_unescape`, `to_base64` → `base64_encode`, `from_base64` → `base64_decode`, `escape_html` → `html_escape`, `unescape_html` → `html_unescape` |
 | `crypto::` | `md5`, `sha1`, `sha512`, `random_token` |
 | `path::` | `base`, `clean`, `dir`, `ext`, `is_abs`, `separate`, `match` |
+| `arrays::` | `first`, `flatten`, `last`, `sorted`, `unique`, `slice`, `intersection`, `nth` → `at`, `remove_values` → `remove_any`, `minus` → `difference`, `union` → `concat`, `union_distinct` → `union`, `range` |
+| `random::` | Zero-argument `rand()` → `float()` |
 | `object::` | `values`, `has` → `has_key`, `zip`, `keep_keys`, `merge`, `merge_recursive` → `merge_deep`, and one-argument `keys(obj)` |
 | `datetime::` | `now`, `date` → `parse`, `date_dayofweek` → `day_of_week`, `date_dayofyear` → `day_of_year`, `date_leapyear` → `is_leap_year`; `date_year`, `date_month`, `date_day`, `date_hour`, `date_minute`, `date_second`, `date_millisecond`, `date_quarter`, `date_days_in_month`, `date_format`, `date_add`, `date_subtract` lose their `date_` prefix |
 | `math::` | `pi`, `abs`, `acos`, `asin`, `atan`, `atan2`, `ceil`, `cos`, `degrees`, `exp`, `exp2`, `floor`, `log`, `log2`, `log10`, `pow`, `radians`, `round`, `sin`, `sqrt`, `tan` |
+
+Argument-aware replacements also include:
+
+| Legacy call | Replacement |
+| --- | --- |
+| `position(a, v)` or `position(a, v, false)` | `arrays::contains(a, v)` |
+| `position(a, v, true)` | `arrays::index_of(a, v)` |
+| `append(a, v)` / `push(a, v)`, optionally with `false` | `arrays::append(a, v)` |
+| `remove_value(a, v)`, optionally with a negative integer literal | `arrays::remove(a, v)` |
+| `sorted_unique(a)` | `arrays::sorted(arrays::unique(a))` |
+| `shift(a)` | `arrays::slice(a, 1)` |
+| `outersection(a, b)` | `arrays::symmetric_difference(a, b)` |
+| `keys(o, false)` | `object::keys(o)` |
+| `keys(o, true)` | `arrays::sorted(object::keys(o))` |
+| `date_diff(a, b, unit, true)` | `datetime::diff(a, b, unit)` |
+
+Boolean modes and negative integer limits may be parenthesized; arbitrary
+constant expressions are not evaluated. Retained arguments preserve their
+evaluation order and count. Array and object replacements use immutable
+operations, never `arrays::mut::` or `object::mut::`.
 
 Only parsed call targets are matched. Strings, comments, object keys, and
 variable names are not treated as calls. Argument expressions, their order,
@@ -140,33 +164,45 @@ migration produces no further edits; unresolved manual findings remain.
 ### Migrate object functions
 
 Object replacements use immutable `object::` operations, never `object::mut::`.
-Only one-argument `keys(value)` is rewritten. Every other arity, including
-`keys(value, true)` and `keys(value, false)`, remains unchanged for manual review.
+`keys(value)` and `keys(value, false)` become `object::keys(value)`.
+`keys(value, true)` becomes `arrays::sorted(object::keys(value))`. Dynamic modes
+and unsupported arities remain unchanged for manual review.
 
 In v1, `ZIP` kept the first value for duplicate keys. The canonical `object::zip`
 and its deprecated v2 global alias both use the last value. Review code relying
 on the v1 behavior when upgrading the runtime, even before rewriting the call.
 
-See [Object functions and migration]({{< ref "/docs/language/functions/object-migration" >}})
-for the full API and examples.
+See [Object migration]({{< ref "/docs/migrations/v1-to-v2/standard-library" >}}#objects)
+for compatibility changes and the [Objects reference]({{< ref "docs/standard-library/objects" >}})
+for the current API.
 
 ### Calls requiring manual review
 
 Both `check` and `run` explain why a supported call needs review:
 
-- `join` can mean legacy path joining or modern global string joining. Argument
-  shape or a nearby legacy loop does not establish which meaning applies.
-- `keys` with any arity other than one needs argument-aware review.
-- `date_compare` has component-range semantics that differ from `datetime::same`.
-  Legacy `date_diff` integer/floating behavior differs from `datetime::diff`.
+- `join` is ambiguous between legacy path joining and modern global string joining.
+- Dynamic modes in `position`, `keys`, `append`, and `push` need manual review.
+- Unique `append`/`push` suppresses only the incoming duplicate; applying
+  `arrays::unique` would also remove existing duplicates.
+- Zero, positive, and dynamic `remove_value` limits have no canonical limit mode.
+- `outersection` with three or more arrays uses exactly-one-input semantics;
+  canonical symmetric difference uses odd-number-of-inputs semantics.
+- `pop` needs an evaluation-count-preserving replacement; `unshift` must retain
+  argument evaluation order; `remove_nth` retains host-list removal semantics.
+- Parameterized `rand` uses historical rounded/floored calculations rather than
+  canonical continuous or integer bounds.
+- Unsupported arities of argument-aware rules require manual review.
+- `date_compare` has component-range semantics that differ from `datetime::same`;
+  `date_diff` without a literal `true` floating flag may truncate toward zero,
+  whereas `datetime::diff` always returns a Float.
 - `average`, `sum`, `min`, `max`, `median`, `percentile`, `stddev_population`,
   `stddev_sample`, `variance_population`, and `variance_sample` have permissive
-  legacy behavior for heterogeneous collections that differs from strict
-  canonical math.
-- A matching local function declaration or explicit function alias anywhere in
-  the file may change call resolution. Matching is case-insensitive and includes
-  forward and nested declarations. A namespace alias blocks a replacement only
-  when it would redirect the proposed canonical target; unrelated aliases do not.
+  legacy behavior that differs from strict canonical math.
+- A matching function declaration or function alias anywhere in the file may
+  change call resolution. These checks are deliberately conservative, including
+  case variants and declarations in nested scopes. A namespace alias blocks a
+  replacement when it would redirect any introduced namespace, including both
+  `arrays` and `object` for sorted keys.
 
 Each call receives at most one semantic finding, with collision explanations
 taking precedence. `check` reports the original path, line, and column; `run`
@@ -174,8 +210,6 @@ manual actions retain the original path and line.
 
 A manual finding preserves that call and does not prevent other safe calls in
 the same file from migrating. Manual findings alone do not make `run` fail.
-Array migrations and `rand`/`range` receive neither rewrites nor new diagnostics
-in this pass.
 
 ## Go compatibility imports
 
@@ -207,7 +241,7 @@ The selected directory itself is scanned even when its name would be excluded as
 
 `ferret migrate run` is a compatibility aid, not a general v1-to-v2 translator. It does not translate arbitrary v1 APIs or application logic, invent replacements for removed packages, or rewrite source in excluded descendant directories.
 
-For an embedded Go application, continue with [Migrate a Go application from Ferret v1]({{< ref "/docs/embedding/go/migrating-from-v1" >}}). The guide covers the temporary compatibility packages and the manual move from v1 compiler, runtime, and driver composition to the native Engine, Plan, Session, and module APIs.
+For an embedded Go application, continue with [Go embedding migration]({{< ref "/docs/migrations/v1-to-v2/go-embedding" >}}). The guide covers the temporary compatibility packages and the manual move from v1 compiler, runtime, and driver composition to the native Engine, Plan, Session, and module APIs.
 
 If the project vendors dependencies, run `go mod vendor` after reviewing and applying a migration that changed Go imports.
 
@@ -225,4 +259,4 @@ The `run` flags cannot be combined. Diagnostics and manual follow-up remain on s
 
 ## Next steps
 
-{{< docs-related tiles="embedding-go-migrating-from-v1,tools-cli-run,embedding-go-getting-started,tools-cli-mod" >}}
+{{< docs-related tiles="migrations-v1-to-v2,migrations-v1-to-v2-standard-library,migrations-v1-to-v2-go-embedding,tools-cli-run,embedding-go-getting-started,tools-cli-mod" >}}

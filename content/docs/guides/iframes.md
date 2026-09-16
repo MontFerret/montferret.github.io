@@ -44,7 +44,7 @@ let target = (
         return frame
 )
 
-let frame = first(target)
+let frame = arrays::first(target)
 return frame?.title
 {{</ code >}}
 
@@ -55,7 +55,7 @@ Once you have a frame reference, query it the same way you query a page:
 {{< code lang="fql" >}}
 let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 
-let target = first((
+let target = arrays::first((
     for frame in page.frames
         filter contains(frame.URL, "embedded")
         limit 1
@@ -76,7 +76,7 @@ Dispatch events to elements within the frame just as you would on the main page:
 {{< code lang="fql" >}}
 let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 
-let frame = first((
+let frame = arrays::first((
     for f in page.frames
         filter contains(f.URL, "login")
         limit 1
@@ -107,7 +107,7 @@ let frames = (
 )
 
 return length(frames) > 0
-    ? first(frames)[~ css`.data`][*].textContent
+    ? arrays::first(frames)[~ css`.data`][*].textContent
     : []
 {{</ code >}}
 

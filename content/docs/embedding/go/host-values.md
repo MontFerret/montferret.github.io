@@ -131,8 +131,6 @@ Read-only values need only `Value` and `Iterable` for `count` and
 `count_distinct`; they need not implement List or Map. `count` additionally
 uses `Measurable` when present, without creating an iterator or retrying a failed
 length operation. Negative host lengths fail without traversal; zero is valid.
-See [Collection functions]({{< ref "docs/language/functions/collection-functions" >}})
-for traversal, cancellation, and ownership details.
 
 ## Minimal implementation
 

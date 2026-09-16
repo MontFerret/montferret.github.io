@@ -19,7 +19,7 @@ FQL supports:
 - `%` modulus
 - unary `+` and `-`
 
-For exponentiation, use `pow()`. The syntax `base ** exponent` is not supported.
+For exponentiation, use `math::pow()`. The syntax `base ** exponent` is not supported.
 
 ## Native numeric arithmetic
 

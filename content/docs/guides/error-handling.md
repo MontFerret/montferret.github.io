@@ -154,7 +154,7 @@ func queryFirst(page, selectors) {
 }
 
 let page = web::html::open("https://mockery.ferretlang.org")
-let title = first(queryFirst(page, [".new-title", ".old-title", "h1"]))
+let title = arrays::first(queryFirst(page, [".new-title", ".old-title", "h1"]))
 
 return title?.textContent
 {{</ code >}}

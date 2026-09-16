@@ -30,10 +30,12 @@ After a variable is declared with `let`, it cannot be reassigned.
 {{< code lang="fql" >}}
 let a = [1, 2, 3]  // initial assignment
 
-a = push(a, 4)     // syntax error, unexpected identifier
-let a = push(a, 4) // parsing error, variable 'a' is assigned multiple times
-let b = push(a, 4) // allowed, result: [1, 2, 3, 4]
+a = arrays::append(a, 4)     // error: a cannot be reassigned
+let a = arrays::append(a, 4) // error: a is already declared in this scope
+let b = arrays::append(a, 4) // allowed, result: [1, 2, 3, 4]
 {{< /code >}}
+
+`arrays::append` returns a new array and leaves `a` unchanged. The first two lines after the initial binding intentionally demonstrate invalid assignments.
 
 `let` bindings often appear where a query needs to refer to an intermediate value, a subquery result, or another computed expression by name.
 

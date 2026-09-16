@@ -22,7 +22,7 @@ Choose how you will work with Ferret. Use Visual Studio Code for an editor-based
 
 > **Looking for Ferret v1?**
 >
-> Ferret v1 remains available for existing projects, but new users should start with Ferret v2. See the [migration guide]({{< ref "/docs/tools/cli/migrate" >}}) for the supported mechanical migration steps.
+> Ferret v1 remains available for existing projects, but new users should start with Ferret v2. See the [v1 → v2 migration overview]({{< ref "/docs/migrations/v1-to-v2" >}}) for automated changes and manual follow-up.
 
 ## Use Visual Studio Code
 

@@ -1,12 +1,17 @@
 ---
-title: "Migrate from Ferret v1"
-sidebarTitle: "Migrate from v1"
-weight: 15
+title: "Go embedding migration"
+sidebarTitle: "Go embedding"
+weight: 30
 draft: false
 description: "Move a Go application from Ferret v1 compatibility packages to the native Ferret v2 embedding API."
+aliases:
+  - /docs/embedding/go/migrating-from-v1/
 ---
 
 # Migrate a Go application from Ferret v1
+
+Start with the [v1 → v2 migration overview]({{< ref "docs/migrations/v1-to-v2" >}})
+for the project-wide check, preview, and validation workflow.
 
 Moving an embedded Go application to Ferret v2 has three separate parts:
 
@@ -39,9 +44,11 @@ ferret migrate run .
 {{< /terminal >}}
 
 The command can return an implicit final top-level `FOR` explicitly and migrate
-supported encoding, crypto, path, immutable object, datetime, and scalar math
-calls. Calls requiring manual review remain unchanged while other safe calls
-can migrate. It can also rewrite these v1 imports to their v2 compatibility
+supported encoding, crypto, path, immutable array and object, datetime, scalar
+math, range, and zero-argument random calls. Use a CLI release containing these
+rules and a runtime containing the corresponding APIs. Calls requiring manual
+review remain unchanged while other safe calls can migrate. It can also rewrite
+these v1 imports to their v2 compatibility
 equivalents:
 
 | Ferret v1 import | Ferret v2 compatibility import |
@@ -424,4 +431,4 @@ Native composition is complete when the application constructs one Engine with i
 
 ## Next steps
 
-{{< docs-related tiles="tools-cli-migrate,embedding-go-modules,embedding-go-parameters,embedding-go-custom-functions,embedding-go-executing" >}}
+{{< docs-related tiles="migrations-v1-to-v2,tools-cli-migrate,embedding-go-modules,embedding-go-parameters,embedding-go-custom-functions,embedding-go-executing" >}}

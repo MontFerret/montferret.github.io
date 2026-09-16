@@ -402,7 +402,7 @@ Spread is available only while constructing array and object literals. It does n
 
 DateTime values represent a specific point in time.
 
-In runtime releases containing the canonical datetime library, use `datetime::now()` and `datetime::parse()`. Earlier releases expose `now()` and `date()`; these remain deprecated aliases when the namespace is available. The following example requires a runtime containing `datetime::`:
+Use `datetime::now()` for the current instant or `datetime::parse()` to parse a date and time string:
 
 ```fql
 let current = datetime::now()
@@ -413,8 +413,6 @@ return {
     month: datetime::month(current)
 }
 ```
-
-See [DateTime functions and migration]({{< ref "docs/language/functions/datetime-migration" >}}) for precision equality, signed elapsed differences, and compatibility changes.
 
 DateTime values support native instant comparison and checked arithmetic with native Duration values. Adding a Duration in either operand order produces another DateTime. Subtracting a Duration from a DateTime produces another DateTime, and subtracting two DateTime values produces the elapsed Duration between their canonical instants.
 

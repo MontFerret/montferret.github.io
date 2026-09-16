@@ -215,6 +215,12 @@ Prefer language that explains the actual value:
 
 ## Documentation writing rules
 
+Canonical documentation explains how Ferret works now. Migration documentation
+explains how old code becomes current code. Keep historical comparisons,
+before/after examples, and upgrade instructions under `content/docs/migrations`.
+Canonical pages may retain a short note linking supported deprecated behavior to
+its migration guide. CLI command behavior remains under Tools.
+
 When writing Ferret documentation:
 
 - Treat the repository as the source of truth.

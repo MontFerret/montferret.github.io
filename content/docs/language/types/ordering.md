@@ -55,7 +55,7 @@ Use `to_duration` explicitly when the other value should be interpreted as a Dur
 Sorting uses the same relational contract, so a collection that mixes Duration with another type cannot be sorted without first normalizing its values.
 
 {{< code lang="fql" >}}
-sorted([1s, "2s"]) // runtime error
+return arrays::sorted([1s, "2s"]) // runtime error
 {{</ code >}}
 
 ## Equality, membership, and uniqueness

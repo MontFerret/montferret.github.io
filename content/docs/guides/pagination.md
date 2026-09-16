@@ -176,7 +176,7 @@ return for pageNum in 1..totalPages
 
 ## Collect results into a flat array
 
-When each page returns an array of items, the outer loop produces an array of arrays. Use `flatten` to merge them:
+When each page returns an array of items, the outer loop produces an array of arrays. Use `arrays::flatten` to merge them:
 
 {{< code lang="fql" >}}
 let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/?page="
@@ -196,7 +196,7 @@ let result = (
         return items
 )
 
-return flatten(result)
+return arrays::flatten(result)
 {{</ code >}}
 
 Alternatively, use the `[**]` array contraction operator to flatten inline:
@@ -243,7 +243,7 @@ let result = (
         return items
 )
 
-return flatten(result)
+return arrays::flatten(result)
 {{</ code >}}
 
 See [Error handling and resilience]({{< ref "error-handling" >}}) for more patterns.

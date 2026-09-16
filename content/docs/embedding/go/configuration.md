@@ -158,9 +158,7 @@ engine, err := ferret.New(
 
 ## Reproducible randomness
 
-A Session owns the source used by [random functions]({{< ref "/docs/language/functions/random-functions" >}}),
-deprecated `rand`, and `WAITFOR` jitter. In a runtime containing this API, provide
-a seed when reproducible execution is useful:
+In a runtime containing this API, provide a seed when reproducible execution is useful:
 
 {{< code lang="go" >}}
 session, err := plan.NewSession(ctx, ferret.WithSessionRandomSeed(42))

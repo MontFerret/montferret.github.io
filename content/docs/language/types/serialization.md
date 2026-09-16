@@ -112,7 +112,7 @@ In JSON, binary values are encoded as Base64 strings. Other encodings may use a 
 Date and time values are serialized as strings. In JSON, date/time values are encoded using the RFC 3339 format.
 
 {{< editor lang="fql" >}}
-return now()
+return datetime::now()
 {{</ editor >}}
 
 ## Duration values

@@ -68,7 +68,9 @@ More advanced scripts may also use `for`, `filter`, `collect`, `match`, `waitfor
 Any expression is valid as a statement at script scope, inside a block function, or in a `for` body. It is evaluated normally and only its final value is discarded:
 
 {{< code lang="fql" >}}
-log("starting")
+let user = { profile: { name: "Ada" } }
+
+print("starting")
 user.profile
 1 + 2
 
