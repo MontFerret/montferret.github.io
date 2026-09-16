@@ -136,6 +136,8 @@ Close is safe to repeat concurrently and retains the completed cleanup result. A
 
 Debugger termination events preserve the execution cause and any retained-resource cleanup failures. Later `Close` calls retain those cleanup failures, including concurrent and repeated calls. Cancellation with successful cleanup does not itself make `Close` fail.
 
+A direct terminal failure from retained debug execution during `Start` or a resume command settles after-run hooks immediately with the original execution error. Later `Close` releases resources without repeating those hooks or replacing the error with cancellation. A runtime-error stop also settles after-run hooks, but remains paused and inspectable until the next resume or Close.
+
 Pass non-nil contexts to compilation, execution, session creation, and debugger commands. Already-canceled contexts fail before options or hooks run; cancellation and deadline identities remain available through `errors.Is`.
 
 Closing a plan releases its VM pool. Closing the engine runs all registered close hooks and releases engine-scoped resources. Close hooks execute in reverse registration order (LIFO) so that resources are torn down in the correct dependency order.

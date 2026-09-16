@@ -19,7 +19,7 @@ FQL has nine built-in value types:
 | `number` | `42`, `3.14` | Represents numeric values, both integer and floating-point. |
 | `duration` | `250ms`, `1.5s` | Represents a signed length of time with nanosecond precision. |
 | `string` | `"hello"` | Represents text. |
-| `datetime` | `now()` | Represents a point in time. |
+| `datetime` | `to_datetime("2024-01-01T00:00:00Z")` | Represents a point in time. |
 | `array` | `[1, 2, 3]` | Represents an ordered sequence of values. |
 | `object` | `{ name: "Ada" }` | Represents a set of named fields. |
 | `binary` | module-specific | Represents raw bytes. |
@@ -402,17 +402,19 @@ Spread is available only while constructing array and object literals. It does n
 
 DateTime values represent a specific point in time.
 
-They are typically created using standard library functions such as `now()`, `date()`, or `to_datetime()`:
+In runtime releases containing the canonical datetime library, use `datetime::now()` and `datetime::parse()`. Earlier releases expose `now()` and `date()`; these remain deprecated aliases when the namespace is available. The following example requires a runtime containing `datetime::`:
 
-{{< editor lang="fql" >}}
-let now = now()
+```fql
+let current = datetime::now()
 
 return {
-    current: now,
-    year: date_year(now),
-    month: date_month(now)
+    current: current,
+    year: datetime::year(current),
+    month: datetime::month(current)
 }
-{{</ editor >}}
+```
+
+See [DateTime functions and migration]({{< ref "docs/language/functions/datetime-migration" >}}) for precision equality, signed elapsed differences, and compatibility changes.
 
 DateTime values support native instant comparison and checked arithmetic with native Duration values. Adding a Duration in either operand order produces another DateTime. Subtracting a Duration from a DateTime produces another DateTime, and subtracting two DateTime values produces the elapsed Duration between their canonical instants.
 

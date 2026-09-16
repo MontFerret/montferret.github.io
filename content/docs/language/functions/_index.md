@@ -113,7 +113,7 @@ return first(values)
 
 FQL provides built-in functions for common operations on values such as `strings`, `arrays`, `objects`, `numbers`, and `types`.
 
-String, numeric, and type functions are available at the top level. The canonical immutable array library uses `arrays::`; existing global array functions remain temporary migration aliases. See [Array API Migration]({{< ref "/docs/language/functions/array-migration" >}}) for runtime availability, canonical names, and compatibility behavior. Immutable object functions use `object::`; see [Object functions and migration]({{< ref "/docs/language/functions/object-migration" >}}) for the new alpha surface. Serialization and escaping use `encoding::`; digest and secure token functions use `crypto::`. All path functions use `path::`, including `path::base` and `path::join`.
+String, numeric, and type functions are available at the top level. The canonical immutable array library uses `arrays::`; existing global array functions remain temporary migration aliases. See [Array API Migration]({{< ref "/docs/language/functions/array-migration" >}}) for runtime availability, canonical names, and compatibility behavior. Immutable object functions use `object::`; see [Object functions and migration]({{< ref "/docs/language/functions/object-migration" >}}) for the new alpha surface. Serialization and escaping use `encoding::`; digest and secure token functions use `crypto::`. All path functions use `path::`, including `path::base` and `path::join`. Pseudo-random value generation uses `random::`; see [Random functions]({{< ref "/docs/language/functions/random-functions" >}}) for intervals, reproducible Session seeding, and legacy `rand` migration.
 
 {{< editor lang="fql" >}}
 let tags = ["docs", "fql", "runtime"]
@@ -128,6 +128,10 @@ return {
 The available built-in functions are documented in [the standard library reference]({{% ref "../../standard-library" %}}).
 
 See [the string API migration guide]({{% ref "string-migration" %}}) for the late-alpha renames, strict argument types, and regex result shapes.
+
+See [Collection functions]({{< ref "docs/language/functions/collection-functions" >}}) for iterable counting, membership, and reversal.
+
+See [DateTime functions and migration]({{< ref "docs/language/functions/datetime-migration" >}}) for the canonical `datetime::` namespace, calendar precision comparisons, and elapsed differences.
 
 ## Function calls in expressions
 

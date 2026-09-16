@@ -8,9 +8,10 @@ description: "Use immutable object functions, opt into mutation, and migrate leg
 
 # Object functions and migration
 
-The new v2 alpha object library uses the `object::` namespace. Use a runtime
-release containing this namespace when adopting these calls; earlier alpha
-releases expose the legacy global functions.
+The canonical v2 object library uses the `object::` namespace. In runtime
+releases containing the compatibility layer, seven legacy global names remain
+available temporarily as deprecated aliases. They use the canonical signatures
+and behavior; use `object::` for new code.
 
 ```fql
 let base = {name: "Ferret", internal: true}
@@ -42,6 +43,18 @@ The source object is unchanged. Explicit mutation is available through
 Both merge functions accept variadic maps or a single list of maps. An empty
 list returns an empty object; calling either function without arguments fails.
 Deep merge replaces arrays, scalars, and `none` rather than combining them.
+
+For host maps in runtimes containing the collection factory API, both immutable
+merges construct their destination through the first source's `New(ctx)`.
+The empty destination retains that map's implementation family and backend
+configuration; incoming values still follow the clone/copy rules above. After
+construction succeeds, a population or cancellation failure closes the incomplete
+destination when it is closable, preserving both the primary and cleanup errors.
+Successful results stay open until normal result cleanup. Source maps and mutable
+merge targets remain borrowed; this cleanup does not provide rollback. The factory
+remains responsible for cleanup when construction itself fails.
+Host authors should follow the [collection factory migration]({{< ref "docs/embedding/go/host-values" >}}#constructing-an-empty-collection).
+
 
 Key filters accept variadic String keys or one list of String keys. At least
 one key argument is required. Missing or repeated keys are harmless.
@@ -125,12 +138,22 @@ return [
 // Both objects are {a: 2}.
 ```
 
-This intentionally changes the old global `ZIP`, which kept the first value
-for duplicate keys. Review any code relying on that behavior during migration.
+This intentionally changes v1 ZIP, which kept the first value for duplicate
+keys. The deprecated global alias also uses last-key-wins. Review any code
+relying on the v1 behavior, even before rewriting its function name.
 
 ## Migrate global calls
 
-The CLI's object source migration recognizes legacy calls case-insensitively:
+The seven global aliases below are deprecated in generated Core API metadata,
+with a message naming the canonical replacement. This metadata does not produce
+compiler or runtime deprecation warnings. The compatibility layer is temporary;
+no removal release is specified.
+
+There are no global aliases for the new `object::entries`,
+`object::from_entries`, or `object::omit_keys` APIs, or for mutable operations.
+Mutation remains explicit under `object::mut::`.
+
+The CLI migration remains available to rewrite legacy calls case-insensitively:
 
 | Legacy call | Replacement |
 | --- | --- |
@@ -142,12 +165,19 @@ The CLI's object source migration recognizes legacy calls case-insensitively:
 | `MERGE_RECURSIVE(values...)` | `object::merge_deep(values...)` |
 | `ZIP(keys, values)` | `object::zip(keys, values)` |
 
-`KEYS(value, true)` becomes `sorted(object::keys(value))`;
-`KEYS(value, false)` becomes `object::keys(value)`.
-The object expression is evaluated once. Dynamic sorting expressions and
-shadowed sorting functions require manual migration; the CLI reports the
-source location and leaves the file unchanged. It preserves user-defined
-functions and qualified calls.
+The compatibility alias for keys accepts one argument, and the CLI rewrites
+only `KEYS(value)`. Every other arity, including `KEYS(value, true)` and
+`KEYS(value, false)`, remains unchanged and receives a manual-review explanation.
+
+Calls potentially resolved by a local function declaration or explicit function
+alias are also preserved for manual review. These guards are case-insensitive
+and include forward and nested declarations. Namespace aliases block only
+replacements whose canonical targets they would redirect. Already-qualified
+calls are preserved.
+
+Other safe calls in the same file can still migrate. If rewriting or formatting
+fails, the whole file remains unchanged, and previously discovered manual
+actions are reported alongside the file-level failure.
 
 Preview changes with `ferret migrate run --print path/to/query.fql`.
 See [Migrate]({{< ref "/docs/tools/cli/migrate" >}}) for checking, applying,

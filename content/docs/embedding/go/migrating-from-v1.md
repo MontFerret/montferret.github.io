@@ -24,6 +24,12 @@ Run the compatibility check from the Go module root before changing files:
 ferret migrate check --from v1 .
 {{< /terminal >}}
 
+The check reports final collecting `FOR` compatibility and supported legacy
+stdlib calls, including canonical replacement suggestions and manual-review
+findings. Either kind of finding makes the check exit nonzero without modifying
+source. See the [Migrate command]({{< ref "/docs/tools/cli/migrate" >}}) for the
+supported mappings and conservative declaration and alias guards.
+
 Preview the supported changes, then apply them:
 
 {{< terminal command="true" >}}
@@ -32,7 +38,11 @@ ferret migrate run --print .
 ferret migrate run .
 {{< /terminal >}}
 
-The command can update supported FQL behavior, including an implicit final top-level `FOR`, and rewrite these v1 imports to their v2 compatibility equivalents:
+The command can return an implicit final top-level `FOR` explicitly and migrate
+supported encoding, crypto, path, immutable object, datetime, and scalar math
+calls. Calls requiring manual review remain unchanged while other safe calls
+can migrate. It can also rewrite these v1 imports to their v2 compatibility
+equivalents:
 
 | Ferret v1 import | Ferret v2 compatibility import |
 | --- | --- |

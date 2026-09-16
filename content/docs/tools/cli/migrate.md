@@ -24,7 +24,32 @@ ferret migrate check scripts/query.fql
 
 The path defaults to the current directory. `--from` currently defaults to and accepts only `v1`. The check does not require a Go module, run Go tooling, resolve dependencies, or format source.
 
-Compatibility findings and malformed FQL are reported with source locations and make the command exit nonzero after all readable files have been checked. Filesystem, cancellation, and internal failures stop the check immediately.
+The check covers final collecting `FOR` compatibility and the same legacy stdlib
+calls as `run`, including automatic replacement suggestions and calls requiring
+manual review. It uses the same conservative declaration and alias guards.
+A clean result covers these supported rules; it does not establish that every
+v1 API or application behavior is compatible.
+
+For example, save this legacy query as `scripts/query.fql`:
+
+```fql
+return has({ foo: "bar" }, "baz")
+```
+
+Running `ferret migrate check scripts/query.fql` reports:
+
+```text
+scripts/query.fql:1:8: Legacy stdlib call `has` should use `object::has_key`.
+  help: Preview automatic replacements with `ferret migrate run --print`.
+
+Found 1 v1 compatibility issue in 1 of 1 FQL file.
+```
+
+Replacement suggestions, manual-review findings, and malformed FQL are reported
+on stderr with source locations and make the command exit nonzero after all
+readable files have been checked. Filesystem, cancellation, and internal failures
+stop the check immediately. The check does not attempt formatting or verify
+whether a rewrite can preserve the source; use `run --print` to preview edits.
 
 Directory checks include lowercase `.fql` files in `testdata`, hidden and underscore-prefixed directories, and nested Go modules. They skip `.git`, `.hg`, `.svn`, `vendor`, and `node_modules`, and do not follow directory symlinks.
 
@@ -73,29 +98,84 @@ return for item in 1..3 {
 }
 ```
 
-The command changes only a structurally recognized final top-level `FOR` when the program has no explicit terminal `return`. It does not independently wrap nested, assigned, expression-contained, function-contained, non-final, or already-returned loops. Files that need only formatter case or layout changes remain byte-for-byte unchanged.
+For loop migration, the command changes only a structurally recognized final top-level `FOR` when the program has no explicit terminal `return`. It does not independently wrap nested, assigned, expression-contained, function-contained, non-final, or already-returned loops. Files that need only formatter case or layout changes remain byte-for-byte unchanged.
 
 Changed FQL files are rendered with the canonical formatter. A second migration leaves the explicit result unchanged.
 
-## Migrate object functions
+## Migrate standard-library calls
 
-The object migration rewrites legacy global `KEYS`, `VALUES`, `HAS`, `KEEP_KEYS`,
-`MERGE`, `MERGE_RECURSIVE`, and `ZIP` calls into the lowercase `object::`
-namespace. `HAS` becomes `object::has_key`, and `MERGE_RECURSIVE` becomes
-`object::merge_deep`. User-defined functions and qualified calls are preserved.
+Use a CLI release containing these stdlib migrations and a runtime release
+containing the corresponding canonical namespaces.
 
-`KEYS(value, true)` becomes `sorted(object::keys(value))`; a literal `false`
-argument is removed. Dynamic sorting expressions or shadowed sorting functions
-produce a manual action and leave that file unchanged. Safe files are still
-planned and committed through the existing transaction.
+The command recognizes legacy unqualified function calls case-insensitively and
+replaces their targets with canonical lowercase names. For example, the `has`
+query above becomes:
 
-`object::zip` uses the last value for duplicate keys, whereas legacy `ZIP`
-kept the first. Review this intentional alpha behavior change before adopting
-the migrated source. The compatibility checker includes this guidance.
+```fql
+return object::has_key({ foo: "bar" }, "baz")
+```
+
+The table lists every supported automatic mapping. Unless a row describes a
+rename, the function name stays the same under the listed namespace.
+
+| Namespace | Legacy calls migrated automatically |
+| --- | --- |
+| `encoding::` | `json_parse`, `json_stringify`, `encode_uri_component` → `query_escape`, `decode_uri_component` → `query_unescape`, `to_base64` → `base64_encode`, `from_base64` → `base64_decode`, `escape_html` → `html_escape`, `unescape_html` → `html_unescape` |
+| `crypto::` | `md5`, `sha1`, `sha512`, `random_token` |
+| `path::` | `base`, `clean`, `dir`, `ext`, `is_abs`, `separate`, `match` |
+| `object::` | `values`, `has` → `has_key`, `zip`, `keep_keys`, `merge`, `merge_recursive` → `merge_deep`, and one-argument `keys(obj)` |
+| `datetime::` | `now`, `date` → `parse`, `date_dayofweek` → `day_of_week`, `date_dayofyear` → `day_of_year`, `date_leapyear` → `is_leap_year`; `date_year`, `date_month`, `date_day`, `date_hour`, `date_minute`, `date_second`, `date_millisecond`, `date_quarter`, `date_days_in_month`, `date_format`, `date_add`, `date_subtract` lose their `date_` prefix |
+| `math::` | `pi`, `abs`, `acos`, `asin`, `atan`, `atan2`, `ceil`, `cos`, `degrees`, `exp`, `exp2`, `floor`, `log`, `log2`, `log10`, `pow`, `radians`, `round`, `sin`, `sqrt`, `tan` |
+
+Only parsed call targets are matched. Strings, comments, object keys, and
+variable names are not treated as calls. Argument expressions, their order,
+and error operators retain their meaning. Nested calls are considered
+independently, including eligible calls inside already-qualified calls.
+Already-qualified targets themselves are preserved.
+
+Changed files use the canonical formatter, so whitespace and layout can change.
+Files with no automatic edits retain their original bytes. Rerunning a successful
+migration produces no further edits; unresolved manual findings remain.
+
+### Migrate object functions
+
+Object replacements use immutable `object::` operations, never `object::mut::`.
+Only one-argument `keys(value)` is rewritten. Every other arity, including
+`keys(value, true)` and `keys(value, false)`, remains unchanged for manual review.
+
+In v1, `ZIP` kept the first value for duplicate keys. The canonical `object::zip`
+and its deprecated v2 global alias both use the last value. Review code relying
+on the v1 behavior when upgrading the runtime, even before rewriting the call.
 
 See [Object functions and migration]({{< ref "/docs/language/functions/object-migration" >}})
-for the full API and examples. These rewrites require a CLI release containing
-the object migration and a runtime release containing the new namespace.
+for the full API and examples.
+
+### Calls requiring manual review
+
+Both `check` and `run` explain why a supported call needs review:
+
+- `join` can mean legacy path joining or modern global string joining. Argument
+  shape or a nearby legacy loop does not establish which meaning applies.
+- `keys` with any arity other than one needs argument-aware review.
+- `date_compare` has component-range semantics that differ from `datetime::same`.
+  Legacy `date_diff` integer/floating behavior differs from `datetime::diff`.
+- `average`, `sum`, `min`, `max`, `median`, `percentile`, `stddev_population`,
+  `stddev_sample`, `variance_population`, and `variance_sample` have permissive
+  legacy behavior for heterogeneous collections that differs from strict
+  canonical math.
+- A matching local function declaration or explicit function alias anywhere in
+  the file may change call resolution. Matching is case-insensitive and includes
+  forward and nested declarations. A namespace alias blocks a replacement only
+  when it would redirect the proposed canonical target; unrelated aliases do not.
+
+Each call receives at most one semantic finding, with collision explanations
+taking precedence. `check` reports the original path, line, and column; `run`
+manual actions retain the original path and line.
+
+A manual finding preserves that call and does not prevent other safe calls in
+the same file from migrating. Manual findings alone do not make `run` fail.
+Array migrations and `rand`/`range` receive neither rewrites nor new diagnostics
+in this pass.
 
 ## Go compatibility imports
 
@@ -114,6 +194,12 @@ Directory migration scans lowercase `.fql` files within the selected directory. 
 - nested Go modules
 
 Malformed FQL is not modified. The command reports the path, first useful diagnostic, and source line, then continues planning other files. Files that can be migrated are still committed together; a commit failure rolls the transaction back.
+
+If analysis succeeds but applying edits, formatting, or validating the rewritten
+source fails, the entire file remains unchanged. This includes cases where the
+formatter cannot preserve comments. Previously discovered semantic manual
+actions remain in the report alongside the file-level failure, including in
+`--dry-run` and `--print` modes. Other files can still migrate.
 
 The selected directory itself is scanned even when its name would be excluded as a descendant, such as `.tmp` or `testdata`. Explicit symlink targets are rejected, and directory symlinks are not followed. A standalone `.fql` target is migrated directly even when it is located under a directory that recursive migration would exclude.
 

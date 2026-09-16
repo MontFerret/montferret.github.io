@@ -69,6 +69,71 @@ Create a type with `runtime.NewTypeFor`:
 var MyValueType = runtime.NewTypeFor[*MyValue]()
 {{</ code >}}
 
+## Copying a capability value
+
+Use `runtime.Copy` when the caller needs the copied value to preserve a concrete Go type or a capability interface:
+
+{{< code lang="go" >}}
+func copyList(list runtime.List) (runtime.List, error) {
+    next, err := runtime.Copy(list)
+    if err != nil {
+        return nil, err
+    }
+
+    return next, nil
+}
+{{</ code >}}
+
+The helper calls `Value.Copy()` once and checks that its result implements the static type of the argument (`runtime.List` here). A different concrete implementation is accepted if it still implements that interface. An incompatible result produces an error wrapping `runtime.ErrInvalidType`, including the source and returned types, instead of a type-assertion panic.
+
+Copying remains shallow. The host implementation must provide the storage independence required by its capability; this check does not validate that independence or change resource ownership. It does not recover panics inside a host's `Copy` method. The existing `Value.Copy() Value` method stays unchanged.
+
+This helper requires a Ferret runtime containing the checked typed-copy change.
+
+## Constructing an empty collection
+
+In Ferret versions containing the collection factory change, `runtime.List`
+embeds `Factory[List]` and `runtime.Map` embeds `Factory[Map]`:
+
+{{< code lang="go" >}}
+type Factory[T runtime.Collection] interface {
+    New(context.Context) (T, error)
+}
+{{</ code >}}
+
+This intentionally replaces `Spawnable[T].Empty`. Rename custom collection
+methods to `New` and update calls; no compatibility alias is provided.
+
+`New` creates an empty, independently mutable collection of the receiver's
+implementation family. Preserve configuration such as backend, encoding, limits,
+and placement policy without copying elements or changing the source. Collections
+may share a backend service, but must have distinct logical mutable contents.
+A wrapper must override an inherited factory if it would lose that wrapper's
+implementation or configuration.
+
+Unlike `Copy` and `Clone`, `New` contains no source elements. Unlike `Clear`,
+it leaves the existing collection intact. Construction can perform I/O and fail;
+blocking implementations must honor the context. Ownership transfers only on
+success. If construction fails, the factory releases partially acquired resources
+and joins cleanup failures with the construction error.
+
+Global `reverse(list)` uses this factory and appends existing element references
+in reverse index order. Failed reversal closes the incomplete destination when
+closable, preserving both operation and cleanup errors. A successful destination
+passes to normal result lifecycle handling. The source and its elements remain
+borrowed. Immutable object merges also construct through the first source map's
+`New`, retaining their existing clone/copy behavior for inserted values. After
+successful construction, a failed or canceled immutable merge closes its incomplete
+closable destination and joins cleanup errors with the primary error. Success
+transfers the open result; source maps and mutable merge targets remain borrowed.
+
+Read-only values need only `Value` and `Iterable` for `count` and
+`count_distinct`; they need not implement List or Map. `count` additionally
+uses `Measurable` when present, without creating an iterator or retrying a failed
+length operation. Negative host lengths fail without traversal; zero is valid.
+See [Collection functions]({{< ref "docs/language/functions/collection-functions" >}})
+for traversal, cancellation, and ownership details.
+
 ## Minimal implementation
 
 The smallest possible host value — a struct that wraps a string:

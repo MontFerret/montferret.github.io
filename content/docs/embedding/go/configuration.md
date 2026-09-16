@@ -156,6 +156,40 @@ engine, err := ferret.New(
 
 `ferret.MustParseLogLevel` is available for trusted static configuration and panics when the input is invalid.
 
+## Reproducible randomness
+
+A Session owns the source used by [random functions]({{< ref "/docs/language/functions/random-functions" >}}),
+deprecated `rand`, and `WAITFOR` jitter. In a runtime containing this API, provide
+a seed when reproducible execution is useful:
+
+{{< code lang="go" >}}
+session, err := plan.NewSession(ctx, ferret.WithSessionRandomSeed(42))
+if err != nil {
+    return err
+}
+defer session.Close()
+
+output, err := session.Run(ctx)
+{{</ code >}}
+
+The same option works with `Engine.Run` and `Plan.NewDebugSession`. Zero and
+negative seeds are valid; the last seed option wins. Reusing an option creates
+independent sources. Without a seed, the Session obtains fresh operating-system
+entropy once, on its first actual random draw. Construction and queries that never
+draw do not read entropy. Explicit seeds require no entropy read. There is no
+engine-wide RNG state or query-level seed mutation.
+
+Within a Ferret version, the same seed, parameters, relevant inputs, and executed
+control flow produce the same random sequence. Sequential runs of an existing
+Session and debugger resumes continue the sequence. Create another Session with
+the same seed to replay it from the beginning. Exact sequences may change between
+Ferret versions. External I/O and timing can change control flow, including the
+number of jitter draws; a seed does not make those inputs deterministic.
+
+Pseudo-random values are unsuitable for passwords, authentication tokens,
+secrets, keys, or other security-sensitive uses. Use cryptographic functionality
+for those purposes.
+
 ## Output encoding
 
 Query results are encoded before being returned as an `Output`. The default encoding is JSON; MessagePack is also built in. Set the content type at the session level with `WithOutputContentType`:

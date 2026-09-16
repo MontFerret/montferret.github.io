@@ -69,9 +69,71 @@ with `session.Run(ctx)`, and close each session before closing the plan.
 Ordinary sessions also support sequential runs when their environment remains
 unchanged.
 
+`plan.Params()` returns a detached parameter-name snapshot and an error:
+
+{{< code lang="go" >}}
+params, err := plan.Params()
+if err != nil {
+    return err
+}
+{{< /code >}}
+
+The Native adapter can read this metadata after plan closure and returns a nil
+error. Native `ferret.Plan.Params()` still returns only the name slice.
+
 For debugging, use `portable.CompileDebug`, then `plan.NewDebugSession`.
 The returned `api/debugger.Session` supports entry, breakpoints, stepping,
 frames, variables, evaluation, pause, and termination through Native debugging.
+All debugger methods except `Close` take a non-nil context. For example:
+
+{{< code lang="go" >}}
+frames, err := session.Frames(ctx)
+if err != nil {
+    return err
+}
+breakpoints, err := session.Breakpoints(ctx)
+if err != nil {
+    return err
+}
+{{< /code >}}
+
+Inspection checks cancellation before and after waiting for an active command;
+cancellation does not interrupt that wait. Canceled pause requests do not pause
+execution. Breakpoint listing returns a detached snapshot and remains available
+after close with a valid context. Canceling a breakpoint mutation before
+publication leaves the set unchanged and does not cancel the debuggee.
+
+### Replace breakpoints while running
+
+The coordinated live-breakpoint API adds `Session.ReplaceBreakpoints`. Use it to
+replace one source's complete set before execution, while paused, or while running.
+Requests use types from `github.com/MontFerret/api/debugger` and
+`github.com/MontFerret/api/source`:
+
+```go
+breakpoints, err := session.ReplaceBreakpoints(ctx, "query.fql", []debugger.BreakpointRequest{
+    {Position: source.Position{Line: 3}},
+    {Position: source.Position{Line: 8}},
+})
+```
+
+An empty request slice clears that source. Results follow request order and include
+the current resolved location and ID. A valid location that cannot bind returns
+`Bound: false`. Invalid coordinates or binding modes fail the whole operation,
+leaving the previous set intact. Other sources are unchanged.
+
+The replacement becomes active atomically without pausing execution. Unchanged
+requests retain IDs; removed IDs are never reused in that session. A stop already
+decided before removal remains inspectable and may still report the removed ID.
+New breakpoints affect subsequent visits, never instructions already passed.
+
+Cancellation observed before publication leaves the previous set intact. Once
+publication succeeds, later cancellation does not undo it or cancel the debuggee.
+Completed, terminated, and closed sessions reject replacement.
+
+These signatures use API `v1.0.0-alpha.19` and the corresponding Ferret update.
+Live DAP/IDE support additionally requires a later daemon release and matching
+Editorium pin.
 
 ## Configure portable execution
 

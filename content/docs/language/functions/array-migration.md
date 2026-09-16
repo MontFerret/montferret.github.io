@@ -3,7 +3,7 @@ title: "Array API Migration"
 sidebarTitle: "Array API Migration"
 weight: 75
 draft: false
-description: "Use the immutable arrays namespace while preserving legacy global calls during migration."
+description: "Use immutable arrays, opt into explicit mutation, and preserve legacy global calls during migration."
 ---
 
 The canonical v2 array library uses `arrays::`. Use a runtime containing this
@@ -22,13 +22,15 @@ return {
 {{</ code >}}
 
 The results are `[3,1,3,2]`, `[3,1,3,1,2]`, `[3,1,2]`, and `[1,3]`, respectively.
-These functions return new arrays. This change does not add `arrays::mut::*`.
+These functions return new arrays. Explicit mutation is available through
+`arrays::mut::` in runtime releases containing the mutable array API.
 
 ## Choose the canonical operation
 
 | Global call | Canonical operation |
 | --- | --- |
 | `first`, `last`, `flatten`, `slice`, `unique`, `sorted` | Same name under `arrays::` |
+| `range(start, end[, step])` | `arrays::range(start, end[, step])` |
 | `nth(xs, index)` | `arrays::at(xs, index)` |
 | `append(xs, value)` or `push(xs, value)` | `arrays::append(xs, value)` |
 | `union(a, b, ...)` | `arrays::concat(a, b, ...)` |
@@ -52,6 +54,26 @@ set operations require at least two array arguments.
 matching index or `-1`. Indexes are zero-based. `arrays::at` returns `none` for
 negative or missing indexes; `arrays::remove_at` returns an unchanged copy for
 those indexes.
+
+## Construct numeric ranges
+
+In runtimes containing the math namespace migration, use
+`arrays::range(start, end[, step])` to construct an array with inclusive
+endpoints. The default step is positive one; pass a negative step to descend.
+
+{{< code lang="fql" >}}
+RETURN [arrays::range(1, 4), arrays::range(4, 1, -1)]
+// [[1, 2, 3, 4], [4, 3, 2, 1]]
+{{</ code >}}
+
+Arguments must be finite numbers. A step pointing away from the endpoint
+produces an empty array. Zero or non-advancing steps and ranges too large to
+represent raise errors. The generated values retain the legacy floating-point
+behavior.
+
+The deprecated global `range` shares this implementation. It remains available
+in Math-only embeddings; Arrays-only embeddings expose `arrays::range`.
+There is no `math::range`.
 
 ## Compose operations without mode flags
 
@@ -120,6 +142,70 @@ appending, removing, or sorting elements in a slice cannot change its source or
 another slice. Copies remain shallow: nested arrays, objects, and host resources
 retain their identities. Host-provided lists implement their own copy contracts.
 
+## Explicit mutation
+
+Use `arrays::mut::` when you want to change an existing array. Immutable array
+transformations and legacy globals such as `push` and `pop` continue to return
+independent arrays.
+
+{{< code lang="fql" >}}
+LET values = [1, 2]
+LET copied = arrays::append(values, 3)
+LET changed = arrays::mut::push(values, 4)
+LET removed = arrays::mut::pop(values)
+RETURN {values, copied, changed, removed}
+{{</ code >}}
+
+The result is `{values: [1,2], copied: [1,2,3], changed: [1,2], removed: 4}`.
+`changed` is the original array, so it also reflects the later `pop`. A `LET`
+binding prevents reassignment of the binding; it does not freeze its array.
+
+| Call under `arrays::mut::` | Result |
+| --- | --- |
+| `push(array, value)` | Original array with one element appended |
+| `unshift(array, value)` | Original array with one element prepended |
+| `set(array, index, value)` | Original array with an existing element replaced |
+| `insert(array, index, value)` | Original array with an element inserted |
+| `remove(array, value)` | Original array with all matching elements removed |
+| `clear(array)` | Original array with all elements removed |
+| `sort(array)` | Original array, stably sorted in ascending order |
+| `pop(array)` | Removed last value, or `none` when empty |
+| `shift(array)` | Removed first value, or `none` when empty |
+| `remove_at(array, index)` | Removed value |
+
+Indexes must be integers. `set` and mutable `remove_at` require an existing
+index. `insert` accepts zero through the array length, including insertion at
+the end. Negative or missing indexes produce an error; `set` never grows the
+array. Immutable `arrays::remove_at` still returns an unchanged copy for a
+missing index.
+
+`remove` preserves the order of remaining elements and uses the same equality
+as immutable `arrays::remove`. It accepts no removal limit. `sort` uses the
+same stable ordering as `arrays::sorted` and accepts no direction argument.
+
+{{< code lang="fql" >}}
+LET original = [1, 2, 3]
+LET part = arrays::slice(original, 0, 2)
+LET changed = arrays::mut::set(part, 0, 9)
+RETURN {original, part}
+{{</ code >}}
+
+This returns `{original: [1,2,3], part: [9,2]}`. Native slices and copies have
+independent top-level storage. Copying remains shallow: nested arrays, objects,
+and host resources keep their identities. Mutating a nested array can therefore
+be visible through both containers.
+
+Host-provided targets must implement the runtime list mutation contract.
+Missing capabilities, nil targets, invalid indexes, and host mutation refusals
+return errors. Mutable calls never silently copy a read-only target. No-op
+extraction or removal does not test mutability through speculative writes.
+A host, comparison, or cancellation failure can leave earlier changes applied;
+there is no transaction or rollback. Mutation does not clone or close element
+values.
+
+There are no global mutable aliases or `mut::*` shortcuts. Global `push`,
+`pop`, `shift`, and `unshift` keep their legacy immutable behavior.
+
 ## Go callers
 
 The exported functions in `pkg/stdlib/arrays` adopt the canonical v2 names and
@@ -128,3 +214,6 @@ and `Append` and `Remove` accept exactly two values after the context. `Slice`
 rejects extra arguments beyond its optional length. Obsolete Go names and
 mode-bearing wrappers are removed. Migration compatibility applies to global
 FQL registrations, not the old Go functions.
+
+Mutable Go entry points use the `Mutable` suffix, such as `arrays.PushMutable`
+and `arrays.RemoveAtMutable`, and accept custom `runtime.List` implementations.
