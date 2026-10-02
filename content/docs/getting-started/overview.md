@@ -184,6 +184,7 @@ The ecosystem includes:
 - the Ferret CLI for running, formatting, and debugging scripts
 - optional modules and drivers for additional functions, data formats, and integrations
 - embedding APIs for Go and JavaScript applications that need to control what scripts can see and do
+- Wire for compiling, executing, and debugging scripts against an application's hosted runtime from another process
 - Lab, a test runner for Ferret scripts
 - the official Visual Studio Code integration for language intelligence, formatting, execution, and debugging
 - Mockery, a safe fake website used in examples, demos, and driver testing
@@ -196,4 +197,4 @@ These pieces are designed to work together while keeping the core language and r
 
 If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.
 
-{{< docs-related tiles="getting-started-installation,getting-started-quick-start,tools-visual-studio-code,language,web-extraction,embedding,tools-lab,tools-worker" >}}
+{{< docs-related tiles="getting-started-installation,getting-started-quick-start,tools-visual-studio-code,language,web-extraction,embedding,embedding-wire,tools-lab,tools-worker" >}}

@@ -27,6 +27,8 @@ const expectations = new Map([
     ["IO", "/docs/standard-library/io/"],
     ["IO::FS::READ", "/docs/standard-library/io/"],
     ["Testing", "/docs/standard-library/testing/"],
+    ["Wire", "/docs/embedding/wire/"],
+    ["remote runtime", "/docs/embedding/wire/"],
 ]);
 
 for (const [term, expectedURL] of expectations) {

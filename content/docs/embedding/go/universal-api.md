@@ -7,6 +7,8 @@ description: "Expose a Native Ferret engine through the portable Universal API."
 
 # Use the Universal API
 
+The native adapter and [Wire's remote client]({{< ref "docs/embedding/wire" >}}) implement the same runtime contracts. Use Wire when a separate process needs access to an application's configured runtime.
+
 Use `github.com/MontFerret/ferret/v2/uapi`, Ferret's official adapter, when
 your integration accepts `github.com/MontFerret/api` interfaces. For Native
 embedding, use the root `github.com/MontFerret/ferret/v2` package and

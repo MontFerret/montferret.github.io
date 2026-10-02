@@ -59,6 +59,13 @@ jobs:
       - name: Test Go packages
         run: go test ./...
 
+      - name: Test Wire example
+        working-directory: examples/wire
+        env:
+          GOWORK: "off"
+          GOFLAGS: "-mod=readonly"
+        run: go test ./...
+
       - name: Test theme
         run: npm --prefix themes/ferret test
 

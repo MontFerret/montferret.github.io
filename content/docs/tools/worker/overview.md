@@ -9,6 +9,8 @@ description: "Understand what Worker runs, where it fits, and which Ferret capab
 
 Worker is an HTTP runtime for Ferret. It receives a FQL script, compiles or reuses a cached plan, runs the script with optional parameters, and writes the serialized Ferret result back to the client.
 
+If your application already owns a configured Ferret engine and needs to expose it to another process, see [Wire]({{< ref "docs/embedding/wire" >}}). Wire is an integration library around that runtime; Worker is a deployable HTTP execution service.
+
 These pages document Worker `v{{< data "versions.worker.v2" >}}`.
 
 ## Run a query

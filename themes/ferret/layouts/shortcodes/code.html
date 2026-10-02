@@ -14,6 +14,12 @@
 {{ $isCopyable := eq (lower $copyable) "true" }}
 {{ $width := default "100%" ( .Get "height" ) }}
 {{ $source := trim .Inner "\n" }}
+{{- with .Get "file" -}}
+    {{- if strings.TrimSpace $source -}}
+        {{- errorf "The code shortcode accepts either file or inline source, not both: %s" $.Position -}}
+    {{- end -}}
+    {{- $source = trim (readFile .) "\n" -}}
+{{- end -}}
 {{ $name := default "example" ( .Get "name" )}}
 {{ $mode := $lang }}
 

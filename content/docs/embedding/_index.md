@@ -18,4 +18,6 @@ The JavaScript package is not a separate implementation of Ferret. It runs the s
 
 Choose the host environment in which your application runs. FQL syntax and language behavior stay the same, while the available host integrations and configuration APIs depend on that environment.
 
-{{< docs-related tiles="embedding-go,embedding-javascript,language,language-parameters" >}}
+For access from another process, [Wire]({{< ref "docs/embedding/wire" >}}) exposes a hosted runtime through the Universal API. The host still chooses its embedding environment and owns its functions, modules, and configuration.
+
+{{< docs-related tiles="embedding-go,embedding-javascript,embedding-wire,language,language-parameters" >}}
