@@ -7,7 +7,9 @@ description: "Execute FQL scripts from files, inline expressions, stdin, or comp
 
 # Run
 
-The `run` command executes a FQL script and prints the result to stdout. It is also available as `ferret exec`.
+The `run` command executes a FQL script and prints the encoded result to stdout. It is also available as `ferret exec`. Builtin execution is the default; use [Wire]({{< ref "wire" >}}) to execute source against an application-configured host.
+
+Errors and source diagnostics go to stderr. Available output is preserved even when execution also returns an error; successfully produced empty output prints nothing.
 
 ## Run a script file
 
@@ -66,6 +68,7 @@ Values are parsed as JSON when possible, otherwise treated as strings:
 | `--param name=Steve` | String `"Steve"` |
 | `--param age=42` | Number `42` |
 | `--param active=true` | Boolean `true` |
+| `--param value=null` | Null (`none` in FQL) |
 | `--param tags='["admin","editor"]'` | Array `["admin", "editor"]` |
 | `--param user='{"name":"Ada"}'` | Object `{"name": "Ada"}` |
 | `--param code='"123"'` | String `"123"` (quoted to prevent number parsing) |
@@ -74,12 +77,15 @@ The `--param` flag can be repeated to pass multiple parameters.
 
 ## Runtime and browser flags
 
-These flags control where and how scripts execute. They are shared by the `run`, [`repl`](../repl/), and [`debug`](../debug/) commands.
+These flags control where and how scripts execute. They are shared by the `run`, [`repl`](../repl/), and [`debug`](../debug/) commands; debugging requires builtin mode. The `version` command accepts only the runtime selection flags from this table.
 
 | Flag | Default | Description |
 | --- | --- | --- |
-| `-r`, `--runtime` | `builtin` | Runtime type: `builtin` or a remote URL |
-| `--runtime-fs-root` | Current working directory | File system root for the runtime |
+| `-r`, `--runtime` | `builtin` | `builtin`, `wire`, or a legacy Worker-compatible HTTP URL |
+| `--runtime-endpoint` | | Wire endpoint: `tcp://127.0.0.1:<port>` |
+| `--runtime-connect-timeout` | `5s` | Positive Wire connection and handshake timeout |
+| `--policy-fs-root` | Current working directory | Builtin filesystem sandbox root |
+| `--policy-fs-read-only` | `false` | Make the builtin filesystem sandbox read-only |
 | `--proxy` | | Proxy server address |
 | `--user-agent` | | Custom User-Agent header |
 | `-d`, `--browser-address` | `http://127.0.0.1:9222` | Browser remote debugging address |
@@ -107,7 +113,17 @@ ferret run --browser-address http://127.0.0.1:9222 script.fql
 
 ### Remote runtime
 
-To execute against a remote Ferret runtime instead of the local builtin engine:
+Send source to an application-configured Wire host:
+
+{{< terminal >}}
+ferret run --runtime wire --runtime-endpoint tcp://127.0.0.1:54321 script.fql
+{{< /terminal >}}
+
+The host compiles and executes the query using its functions, modules, policies, and filesystem. Explicit builtin policies and browser settings are rejected in Wire mode, including configured or environmental values. See the [Wire runtime guide]({{< ref "wire" >}}) for the development host, endpoint validation, ownership, and diagnostics.
+
+### Legacy HTTP runtime
+
+To execute against a Worker-compatible HTTP runtime:
 
 {{< terminal >}}
 ferret run --runtime http://localhost:8080 script.fql
@@ -119,4 +135,4 @@ All runtime and browser flags can also be set persistently through the [`config`
 
 ## Next steps
 
-{{< docs-related tiles="tools-cli-debug,tools-cli-check,tools-lab" >}}
+{{< docs-related tiles="tools-cli-wire,tools-cli-debug,tools-cli-check,tools-lab" >}}

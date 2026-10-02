@@ -16,7 +16,7 @@ ferret repl
 The shell prints a version banner and presents a `>` prompt:
 
 ```
-Welcome to Ferret REPL v{{< data "versions.cli.v2" >}}
+Welcome to Ferret REPL {{< data "versions.runtime.v2" >}}
 Please use `exit` or `Ctrl-D` to exit this program.
 >
 ```
@@ -76,10 +76,26 @@ The REPL accepts the same runtime and browser flags as [`ferret run`](../run/#ru
 ferret repl --browser-headless
 {{< /terminal >}}
 
+## Wire runtime
+
+Run the shell against an application-configured host:
+
+{{< terminal >}}
+ferret repl --runtime wire --runtime-endpoint tcp://127.0.0.1:54321
+{{< /terminal >}}
+
+The banner identifies the endpoint and the exact version supplied by the host. For the development host:
+
+```text
+Welcome to Ferret REPL (Wire runtime: tcp://127.0.0.1:54321; version: v2.0.0-alpha.57)
+```
+
+The shell reuses one runtime and connection across submissions. Syntax diagnostics go to stderr and allow corrected queries. Transport loss or resource failure ends the shell; it never reconnects or falls back. The host owns browser integrations and filesystem policy, so explicit local browser or policy settings are rejected. See the [Wire runtime guide]({{< ref "wire" >}}) for setup, compatibility, and metadata behavior.
+
 ## Exit
 
-Type `exit` or press `Ctrl-D` to leave the REPL.
+Type `exit` or press `Ctrl-D` to leave the REPL. Ctrl+C stops the shell and interrupts pending input or execution.
 
 ## Next steps
 
-{{< docs-related tiles="language,tools-cli-run,tools-playground" >}}
+{{< docs-related tiles="language,tools-cli-run,tools-cli-wire,tools-playground" >}}

@@ -98,6 +98,18 @@ Both programs handle Ctrl+C and termination signals. The client bounds its opera
 
 Stop the host with Ctrl+C. It uses a fresh five-second shutdown context to settle Wire-owned work before closing the native engine. For a different local port, start `go run ./host -listen 127.0.0.1:50052` and use `go run ./client -address 127.0.0.1:50052`. The `-listen`, `-address`, `-name`, and `-timeout` flags belong to these example programs.
 
+## Connect with the CLI
+
+A Wire-capable Ferret CLI can execute source, open a REPL, and report the host's version against this example:
+
+{{< terminal >}}
+ferret run --runtime wire --runtime-endpoint tcp://127.0.0.1:50051 --eval 'RETURN app::greet(@name)' --param name=Ada
+ferret repl --runtime wire --runtime-endpoint tcp://127.0.0.1:50051
+ferret version --runtime wire --runtime-endpoint tcp://127.0.0.1:50051
+{{< /terminal >}}
+
+The CLI uses the host's functions, modules, policies, and filesystem configuration. It supports source execution through Wire; artifacts and `ferret debug` require the builtin runtime. The [CLI Wire guide]({{< ref "docs/tools/cli/wire" >}}) covers its loopback-only endpoint syntax, timeout, compatibility, diagnostics, and ownership.
+
 ## What crosses the remote boundary
 
 Registered functions and modules, host services, and runtime configuration stay on the host. Wire does not construct that runtime or transfer its configuration to the client.
@@ -134,4 +146,4 @@ Wire is **pre-stable**. Pin a compatible set of Core, Universal API, and Wire ve
 - [Client documentation for the example's Wire version](https://github.com/MontFerret/wire/blob/v1.0.0-alpha.2/docs/client.md)
 - [Protocol reference for the example's Wire version](https://github.com/MontFerret/wire/blob/v1.0.0-alpha.2/docs/protocol.md)
 
-{{< docs-related tiles="embedding-go,embedding-go-custom-functions,tools-worker" >}}
+{{< docs-related tiles="embedding-go,embedding-go-custom-functions,tools-cli-wire,tools-worker" >}}

@@ -46,7 +46,9 @@ Run `ferret <command> --help` for the flags accepted by a specific command.
 
 The CLI uses its builtin Ferret runtime by default. The runtime owns FQL parsing, compilation, module behavior, parameter semantics, execution, and result serialization. The CLI owns command parsing, source selection, runtime selection, persistent settings, logging, and local browser-process management.
 
-[Run]({{< ref "run" >}}) can send source queries to a Worker-compatible HTTP runtime with `--runtime`. Remote runtimes execute source queries; compiled artifacts and interactive debugging require the builtin local runtime.
+[Run]({{< ref "run" >}}), its `exec` alias, and [REPL]({{< ref "repl" >}}) can execute source against an application-configured [Wire runtime]({{< ref "wire" >}}) with `--runtime wire --runtime-endpoint tcp://127.0.0.1:<port>`. The host owns compilation, modules, policies, browser integrations, and FQL filesystem access. The CLI also retains Worker-compatible HTTP URL execution through `--runtime`. Compiled artifacts and interactive debugging require the builtin local runtime.
+
+`ferret version` reports the CLI and selected runtime versions. In Wire mode it reads the hosted Universal API version during the initial handshake; the REPL banner shows that version and endpoint.
 
 Browser-backed FQL also depends on the selected runtime and its registered modules. The [Browser]({{< ref "browser" >}}) commands start and stop managed Chrome or Chromium processes, while runtime and FQL options select how a script uses the browser.
 
@@ -58,4 +60,4 @@ Settings can also come from environment variables with the `FERRET_` prefix. Com
 
 ## Next steps
 
-{{< docs-related tiles="tools-cli-installation,tools-cli-run,tools-cli-repl,tools-cli-migrate" >}}
+{{< docs-related tiles="tools-cli-installation,tools-cli-run,tools-cli-repl,tools-cli-wire,tools-cli-migrate" >}}
