@@ -148,6 +148,11 @@ Use explicit conversion functions when a script needs to turn text into a number
 
 FQL internally distinguishes integers and floats. Most arithmetic and comparison operations work the same for both, but the distinction matters when type-checking functions are used. `is_int` returns true only for integer values, and `is_float` returns true only for floating-point values. Use `to_int` or `to_float` to convert between the two when needed.
 
+Integer values use signed 64-bit precision on both 32-bit and 64-bit hosts.
+Integer literals up to `9223372036854775807` are accepted; larger literals produce
+a compilation error. Integer literals above the exact range of a float are
+preserved exactly as integers.
+
 ## Strings
 
 Strings represent text and can be written as quoted literals:

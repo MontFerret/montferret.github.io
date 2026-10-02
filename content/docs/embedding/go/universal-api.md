@@ -24,7 +24,7 @@ import (
 )
 
 func Run(ctx context.Context) (*api.Output, error) {
-    portable, err := uapi.New(ferret.WithParam("value", 41))
+    portable, err := uapi.New("dev", ferret.WithParam("value", 41))
     if err != nil {
         return nil, err
     }
@@ -37,8 +37,8 @@ func Run(ctx context.Context) (*api.Output, error) {
 The runtime owns the engine created by `New`; closing the runtime closes that
 engine. Pass Native options to configure modules, host services, codecs, and
 defaults. Construction failures return a nil runtime and a projected Native
-error; Native handles rollback. Nil options, including `uapi.New(nil)`,
-are skipped by Native. Call `uapi.New()` to use Native defaults.
+error; Native handles rollback. Nil options, including `uapi.New(version, nil)`,
+are skipped by Native. Call `uapi.New(version)` to use Native defaults.
 
 Use `Wrap` when the caller supplies and owns the Native engine:
 
@@ -49,11 +49,11 @@ if err != nil {
 }
 defer native.Close()
 
-var portable api.Runtime = uapi.Wrap(native)
+var portable api.Runtime = uapi.Wrap(native, "dev")
 {{< /code >}}
 
 `Wrap` acquires no resources and leaves engine cleanup to its caller.
-`uapi.Wrap(nil)` panics. Both constructors return `*uapi.Runtime`,
+`uapi.Wrap(nil, version)` panics. Both constructors return `*uapi.Runtime`,
 which implements `api.Runtime`. Both constructors live in `uapi`; the root
 `ferret` package exposes the Native API.
 
@@ -69,17 +69,24 @@ with `session.Run(ctx)`, and close each session before closing the plan.
 Ordinary sessions also support sequential runs when their environment remains
 unchanged.
 
-`plan.Params()` returns a detached parameter-name snapshot and an error:
+`plan.Params(ctx)` returns a detached parameter-name snapshot and an error:
 
 {{< code lang="go" >}}
-params, err := plan.Params()
+params, err := plan.Params(ctx)
 if err != nil {
     return err
 }
 {{< /code >}}
 
-The Native adapter can read this metadata after plan closure and returns a nil
-error. Native `ferret.Plan.Params()` still returns only the name slice.
+With a valid context, the Native adapter can read this metadata after plan
+closure and returns a nil error. Names retain their first-seen order; an empty
+snapshot with a nil error means the query has no parameters. Mutating the returned
+slice does not change the plan. Native `ferret.Plan.Params()` intentionally
+remains context-free because its metadata is local and immediate.
+
+Both `plan.Params(ctx)` and `portable.Version(ctx)` require a non-nil context.
+They reject an already-canceled or expired context even though retrieval is local,
+and preserve `context.Canceled` and `context.DeadlineExceeded` through `errors.Is`.
 
 For debugging, use `portable.CompileDebug`, then `plan.NewDebugSession`.
 The returned `api/debugger.Session` supports entry, breakpoints, stepping,
@@ -135,6 +142,32 @@ These signatures use API `v1.0.0-alpha.19` and the corresponding Ferret update.
 Live DAP/IDE support additionally requires a later daemon release and matching
 Editorium pin.
 
+## Read the Core runtime version
+
+`portable.Version(ctx)` returns the Ferret Core implementation version supplied
+to `uapi.New(version, options...)` or `uapi.Wrap(native, version)`:
+
+{{< code lang="go" >}}
+version, err := portable.Version(ctx)
+if err != nil {
+    return err
+}
+fmt.Println(version.String())
+{{< /code >}}
+
+The value identifies Ferret Core, independently of the host application, CLI,
+daemon, transport, Universal API package, compiler, or Go version. `api.Version`
+is an opaque string; it is returned without SemVer parsing or normalization.
+
+Both constructors accept `api.Version`. Supply the Core implementation version,
+for example the Core release version in a released build or `dev` in development.
+The adapter stores and returns this value unchanged, including an empty value,
+without discovery or validation. Version metadata remains available after runtime
+closure with a valid context. Retrieval is synchronous and creates no background
+work.
+
+These metadata signatures use Universal API `v1.0.0-alpha.20`.
+
 ## Configure portable execution
 
 | Option | Behavior |
@@ -179,7 +212,8 @@ features through `New` options or before wrapping an existing engine. See [confi
 ## Own the lifetime
 
 For runtimes created by `New`, `Runtime.Close` delegates to the owned Native
-engine. Native releases its resources and rejects subsequent runtime operations.
+engine. Native releases its resources and rejects subsequent execution and
+compilation. Version metadata remains available with a valid context.
 For `Wrap`, Close returns nil and leaves the adapter, engine, and directly created
 plans usable. Multiple adapters may borrow one engine independently. The engine's
 owner remains responsible for closing it; external closure is visible to all

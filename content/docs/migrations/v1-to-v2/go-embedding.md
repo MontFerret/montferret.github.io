@@ -84,6 +84,45 @@ They are not the preferred long-term embedding API. They also do not make old dr
 
 Use the compatibility stage to stabilize supported code, tests, and FQL changes. Then remove `/compat` imports rather than building new application features on them.
 
+## Update integer unwrapping
+
+Unwrapping a Ferret `Int` now produces a Go `int64` on every architecture.
+Although the method signature remains `Unwrap() any`, its concrete return type
+has changed from `int`. This affects small values such as `42` on 64-bit hosts
+too, and the compatibility packages forward the same `int64` representation.
+
+Replace the former assertion:
+
+{{< code lang="go" >}}
+n := value.Unwrap().(int)
+{{</ code >}}
+
+with the full-width value:
+
+{{< code lang="go" >}}
+n := value.Unwrap().(int64)
+{{</ code >}}
+
+Use `runtime.UnwrapAs[int64](value)` when the input type is uncertain and handle
+its `ok` result. `runtime.UnwrapAs[int]` does not narrow an Int.
+
+If a downstream API requires native Go `int`, deliberately check the conversion
+of a known `runtime.Int` and handle failure before using the result:
+
+{{< code lang="go" >}}
+n, ok := runtime.ToNativeInt(value) // value has type runtime.Int
+if !ok {
+    return runtime.ErrRange
+}
+// Pass n to the API that requires a native int.
+{{</ code >}}
+
+Do not replace the check with `int(value)` or `int(value.Unwrap().(int64))`:
+those conversions can silently truncate on a 32-bit host. Apply any additional
+index or size restrictions required by the destination API. See
+[Host Values]({{< ref "/docs/embedding/go/host-values" >}}) for the current
+unwrapping and checked-conversion contracts.
+
 ## Compare the application architectures
 
 The following example compiles one query, caches it, registers one host function, and runs it with a URL parameter. Static HTML is the default. Setting `FERRET_CDP_ADDRESS` selects the optional CDP driver without changing the query or duplicating the application.

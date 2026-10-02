@@ -495,9 +495,9 @@ engine, err := ferret.New(
 
 | Level | Constant | Description |
 |-------|----------|-------------|
-| None | `ferret.OptimizationNone` | No optimization |
-| Basic | `ferret.OptimizationBasic` | Basic optimization pipeline |
-| Full | `ferret.OptimizationFull` | Full optimization pipeline (default) |
+| None | `ferret.OptimizationNone` | No optimizer passes; UDF calls retain caller frames |
+| Basic | `ferret.OptimizationBasic` | Tail-call elimination for proven-safe calls, constant propagation, liveness analysis, and peephole optimization |
+| Full | `ferret.OptimizationFull` | Basic pipeline plus register coalescing (default) |
 
 Use the native `ferret.WithPlanOptimizationLevel` option to override that default for one compilation:
 
@@ -511,6 +511,8 @@ plan, err := engine.Compile(ctx,
 Omitting the option inherits the engine configuration. Explicit `ferret.OptimizationNone`, `ferret.OptimizationBasic`, and `ferret.OptimizationFull` affect only that plan, including concurrent compilations. Other levels are unsupported.
 
 Debug compilation (`engine.CompileDebug`) accepts omission or explicit `ferret.OptimizationNone` and rejects other levels to preserve source-level debugging metadata. Compilation is synchronous and observes cancellation between phases; it does not preempt a parser already running.
+
+Debug compilation retains UDF caller frames, including calls in return position. Tail-call elimination is optional and does not guarantee constant-space recursion: unoptimized and debug execution use stack space proportional to recursive call depth. See [User-defined functions]({{< ref "/docs/language/functions/user-defined" >}}) for the supported tail-call behavior.
 
 Native `ferret.PlanOption` and `ferret.SessionOption` configure Ferret's runtime directly and are distinct from Universal API functional options. Use the native `ferret.With*` factories for native engines and sessions.
 

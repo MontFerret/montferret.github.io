@@ -375,6 +375,14 @@ if db, ok := runtime.UnwrapAs[*sql.DB](arg); ok {
 }
 {{</ code >}}
 
+Native `runtime.Int` unwraps to Go `int64` on every architecture. Use `runtime.UnwrapAs[int64]` when extracting it. To bind an Int into a Go `int`, use `sdk.Decode`, which checks whether the value fits the destination type before assigning it.
+
+For code upgrading from native `int` assertions, see [Update integer unwrapping]({{< ref "/docs/migrations/v1-to-v2/go-embedding#update-integer-unwrapping" >}}).
+
+When a Go API requires a native integer, use `runtime.ToNativeInt(value)`. It returns the exact Go `int` and `true` when the value fits, or `0, false` otherwise. Negative values are accepted; apply any index or size restrictions before calling the destination API.
+
+For optional allocation sizing, use `runtime.CapacityHint(length, multiplier, extra)`. It checks `length*multiplier+extra` and returns zero when the result cannot fit, length or extra is negative, or multiplier is nonpositive. Zero means to omit the hint. This helper performs no allocation, does not validate mandatory sizes, and does not guarantee allocation success.
+
 ## Returning host values from functions
 
 A common pattern is a namespaced function that opens a resource and returns it as a host value. The following example implements a minimal in-memory store that supports `query ... in`:

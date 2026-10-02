@@ -31,6 +31,12 @@ Two codecs are registered by default:
 | `application/json` | JSON (default) | `pkg/encoding/json` |
 | `application/vnd.msgpack` | MessagePack | `pkg/encoding/msgpack` |
 
+MessagePack decodes signed integers and unsigned integers up to `math.MaxInt64`
+as `runtime.Int`, preserving their exact values on both 32-bit and 64-bit
+systems. Unsigned integers above that limit return an overflow error. Values
+encoded as MessagePack floats decode as `runtime.Float`, even when they have
+no fractional part.
+
 ## Selecting the output format
 
 Set the content type when creating a session:

@@ -61,6 +61,10 @@ Basic FQL values have well-defined serialized representations. The exact encodin
 | binary | Base64-encoded string |
 | date/time | RFC 3339 string |
 
+When decoding JSON, integer-form numbers within the signed 64-bit range become `Int` values on both 32-bit and 64-bit hosts, preserving the exact value. Numbers with a fractional or exponent part, and integers outside that range, use the codec's Float conversion. This also applies to numbers nested in arrays and objects.
+
+MessagePack preserves signed 64-bit integer values. Collection lengths must fit both the format's unsigned 32-bit header and the encoder's native integer range; oversized lengths return a range error.
+
 See [Basic Types]({{< ref "basic" >}}) for details on each value type.
 
 ## Arrays and objects

@@ -192,6 +192,23 @@ return a() + A()
 
 Built-in and host functions are documented with canonical lowercase names. User-defined function names remain case-sensitive and may use the style preferred by the script author.
 
+## Recursion and stack space
+
+Functions may call themselves or other functions recursively. Each ordinary call retains its caller's frame until the callee returns.
+
+The native compiler can eliminate proven-safe calls directly returned by another function when `Basic` or `Full` optimization is enabled:
+
+{{< code lang="fql" >}}
+func triple(value) => value * 3
+func double(value) => triple(value * 2)
+
+return double(2)
+{{</ code >}}
+
+Here, the optimized call to `triple` replaces `double`'s frame. Unoptimized and debug compilation retain both frames. The compiler keeps ordinary calls when returning requires additional work, recovery handling, or preserving a mutable cell owned by the caller.
+
+Tail-call elimination is an optional compiler optimization, not a language guarantee of constant-space recursion. Calls inside `match` branches are not covered by this direct-call optimization. Unoptimized and debug recursive execution use stack space proportional to call depth. See [Compiler options]({{< ref "/docs/embedding/go/configuration" >}}) to choose the native optimization level.
+
 ## Next steps
 
 {{< docs-related tiles="language-functions-modules,embedding-go-custom-functions,embedding-javascript-custom-functions,stdlib" >}}
