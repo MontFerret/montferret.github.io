@@ -29,6 +29,11 @@ const expectations = new Map([
     ["Testing", "/docs/standard-library/testing/"],
     ["Wire", "/docs/embedding/wire/"],
     ["remote runtime", "/docs/embedding/wire/"],
+    ["mTLS", "/docs/embedding/wire-security/"],
+    ["Value Encoders", "/docs/embedding/go/value-encoders/"],
+    ["Collect owned content", "/docs/embedding/go/output/"],
+    ["Migrate to consumable output", "/docs/migrations/consumable-output/"],
+    ["Migrate the Encoding API", "/docs/migrations/encoding-api/"],
 ]);
 
 for (const [term, expectedURL] of expectations) {

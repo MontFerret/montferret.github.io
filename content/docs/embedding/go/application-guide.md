@@ -20,15 +20,14 @@ FQL source is code. Do not insert URLs, selectors, HTML, credentials, request bo
 
 ## Set up the project
 
-Create a new Go module and add the Ferret dependency:
+Create a new Go module:
 
 {{< terminal command="true" >}}
 mkdir ferret-service && cd ferret-service
 go mod init ferret-service
-go get github.com/MontFerret/ferret/v2
 {{</ terminal >}}
 
-Run a one-shot query to verify the setup:
+Apply the [development checkout setup]({{< ref "/docs/embedding/go/getting-started#installation" >}}) to use the consumable-output API in this guide. Then run a one-shot query to verify the setup:
 
 {{< code lang="go" >}}
 package main
@@ -55,8 +54,14 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
+    defer output.Close()
 
-    fmt.Println(string(output.Content))
+    content, err := output.Collect(context.Background())
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(content.Data))
 }
 {{</ code >}}
 
@@ -143,6 +148,41 @@ return page.title
 
 Without the `driver` option, the default `memory` driver is used.
 
+## Format source without executing it
+
+Use `pkg/formatter` to format FQL independently of an engine. Formatting checks syntax without resolving host functions or executing the program, so scripts can reference functions unavailable to the formatting application.
+
+{{< code lang="go" >}}
+import (
+    "bytes"
+
+    "github.com/MontFerret/ferret/v2/pkg/formatter"
+    "github.com/MontFerret/ferret/v2/pkg/source"
+)
+
+func formatSource(text string) (string, error) {
+    f, err := formatter.New()
+    if err != nil {
+        return "", err
+    }
+
+    var out bytes.Buffer
+    if err := f.Format(&out, source.New("query.fql", text)); err != nil {
+        return "", err
+    }
+
+    return out.String(), nil
+}
+{{</ code >}}
+
+`formatter.WithSingleQuote(true)` prefers single quotes for ordinary string literals; the default prefers double quotes. Quote conversion preserves the exact string value. If a conversion cannot safely preserve that value, the formatter keeps the original spelling. For example, the default formatter retains `'a"b'`. Literal bodies, including backslashes and embedded line breaks, are preserved, and template chunks keep their original spelling.
+
+`Format` writes directly to its writer. Any failure can leave partial output; use the output only after a nil error. The example buffers at the caller so it can discard incomplete output. A formatter can be reused after a failure and shared across goroutines with separate writers.
+
+Native diagnostic spans are zero-based, half-open UTF-8 byte offsets into the original source. Native positions use one-based lines and byte columns. Convert these coordinates to an editor's coordinate system in the integration layer.
+
+Recovered panics return a structured diagnostic with kind `diagnostics.UnexpectedError`, available through `errors.As`. Ordinary writer errors retain their identity for `errors.Is`. Internal diagnostics can contain panic and stack details; service adapters should classify them and return a generic internal-error response instead of exposing those details.
+
 ## Compile and reuse a plan
 
 When the same query runs multiple times — with different parameters, in different goroutines, or on a schedule — compile it once and reuse the plan:
@@ -163,6 +203,7 @@ urls := []string{
     "https://mockery.ferretlang.org/scenarios/ecommerce/",
 }
 
+// This snippet also imports "errors".
 for _, url := range urls {
     session, err := plan.NewSession(ctx,
         ferret.WithSessionParam("url", url),
@@ -172,19 +213,27 @@ for _, url := range urls {
     }
 
     output, err := session.Run(ctx)
-    session.Close()
-
     if err != nil {
+        session.Close()
         log.Fatal(err)
     }
 
-    fmt.Println(string(output.Content))
+    content, collectErr := output.Collect(ctx)
+    output.Close()
+    closeErr := session.Close()
+    if err := errors.Join(collectErr, closeErr); err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(content.Data))
 }
 {{</ code >}}
 
 The plan manages an internal pool of virtual machines. Sessions borrow a VM from the pool and return it on close, so reusing a plan avoids recompilation and reduces allocation overhead.
 
 ## Build an HTTP handler
+
+Collect before writing response headers or bytes so terminal failures can still produce an error status. For forwarding to a writer without HTTP status handling, see [Output]({{< ref "/docs/embedding/go/output#consume-borrowed-bytes" >}}).
 
 The following handler accepts a JSON body with `query` and optional `params`, compiles and runs the query, and returns the result:
 
@@ -263,8 +312,21 @@ func main() {
             return
         }
 
-        w.Header().Set("Content-Type", "application/json")
-        w.Write(output.Content)
+        defer output.Close()
+        content, err := output.Collect(ctx)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        if content == nil {
+            w.WriteHeader(http.StatusNoContent)
+            return
+        }
+
+        w.Header().Set("Content-Type", content.Metadata.ContentType)
+        if _, err := w.Write(content.Data); err != nil {
+            log.Printf("write response: %v", err)
+        }
     })
 
     log.Println("listening on :8080")
@@ -301,16 +363,24 @@ if err != nil {
 }
 {{</ code >}}
 
-Runtime errors come from `session.Run`:
+Handle preparation errors from `session.Run`, then runtime and encoding errors from consumption:
 
 {{< code lang="go" >}}
 output, err := session.Run(ctx)
 if err != nil {
-    // Runtime error — execution failure, context timeout, etc.
-    // May be context.DeadlineExceeded if the timeout was hit.
+    // Preparation failed, possibly before VM entry due to cancellation.
     http.Error(w, err.Error(), http.StatusInternalServerError)
     return
 }
+defer output.Close()
+
+content, err := output.Collect(ctx)
+if err != nil {
+    // Execution, encoding, hooks, cancellation, or cleanup failed.
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+}
+_ = content // write only after the terminal error check
 {{</ code >}}
 
 Runtime error identities remain available through diagnostic wrapping. Use the public runtime sentinels with `errors.Is` when the host needs to distinguish zero-divisor failures:
@@ -335,7 +405,7 @@ ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 defer cancel()
 {{</ code >}}
 
-The VM checks cancellation at structural execution boundaries. Native work between those boundaries completes atomically. Any blocking or remote host operation receives the execution context and is responsible for observing cancellation while it retains control. A returned `context.Canceled` or `context.DeadlineExceeded`, including a wrapped error, bypasses FQL recovery and propagates from `Session.Run`.
+The VM checks cancellation at structural execution boundaries. Native work between those boundaries completes atomically. Any blocking or remote host operation receives the execution context and is responsible for observing cancellation while it retains control. A returned `context.Canceled` or `context.DeadlineExceeded`, including a wrapped error, bypasses FQL recovery. Cancellation before VM admission can fail `Session.Run`; after admission it is reported by output consumption, with recorded failures preserved.
 
 ## Control concurrency
 
@@ -512,8 +582,21 @@ func main() {
             return
         }
 
-        w.Header().Set("Content-Type", "application/json")
-        w.Write(output.Content)
+        defer output.Close()
+        content, err := output.Collect(ctx)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        if content == nil {
+            w.WriteHeader(http.StatusNoContent)
+            return
+        }
+
+        w.Header().Set("Content-Type", content.Metadata.ContentType)
+        if _, err := w.Write(content.Data); err != nil {
+            log.Printf("write response: %v", err)
+        }
     })
 
     srv := &http.Server{

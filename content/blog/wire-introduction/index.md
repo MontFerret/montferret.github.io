@@ -23,12 +23,12 @@ The idea is simple: bring the tools to your runtime, instead of rebuilding your 
 
 Imagine an inventory service that embeds Ferret and registers an `inventory` namespace. A query might look like this:
 
-{{< editor lang="fql" >}}
-return inventory::search({
+{{< code lang="fql" >}}
+RETURN inventory::search({
     category: @category,
     available: true
 })
-{{< /editor >}}
+{{< /code >}}
 
 `inventory::search` is not a built-in Ferret function. In this example, it is something your application provides, backed by its own services and business logic. This ability to expose application-specific functionality is part of Ferret's library-first design.
 
@@ -48,7 +48,7 @@ Wire builds on the Universal Ferret API, which defines shared contracts for runt
 
 These contracts describe how a consumer uses a runtime without prescribing how the host constructs it. A consumer can compile a query into a reusable plan, create a session with parameters, and execute it through the same interfaces.
 
-On the server side, Wire accepts an `api.Runtime`. On the client side, `client.New(ctx, conn)` returns a remote implementation of that same interface. There is no separate public Wire execution model that every consumer has to learn.
+On the server side, Wire accepts an `api.Runtime`. On the client side, `client.New(ctx, target, options...)` returns a remote implementation of that same interface. There is no separate public Wire execution model that every consumer has to learn.
 
 For native Ferret, the ferret/uapi adapter connects the engine to those shared contracts. Wire then carries operations across the process boundary.
 
@@ -56,16 +56,18 @@ That separation is useful for tool authors. Query-running code can depend on `ap
 
 A remote call is still a remote call, of course. Latency, cancellation, and connection failures matter. Sharing an interface does not make those differences disappear; it keeps them from requiring an entirely different way to describe and execute a query.
 
+The examples in this introduction follow the published releases pinned in the [runnable Wire guide]({{< ref "docs/embedding/wire" >}}): Wire `v{{< data "versions.wire.v1" >}}`, Core `v{{< data "versions.wire.core" >}}`, and Universal API `v{{< data "versions.wire.api" >}}`. Execution returns [consumable output]({{< ref "docs/embedding/go/output" >}}); the client collects it before releasing its runtime.
+
 ### Connecting to our inventory service
 
 Let's return to the inventory query:
 
-{{< editor lang="fql" >}}
-return inventory::search({
+{{< code lang="fql" >}}
+RETURN inventory::search({
     category: @category,
     available: true
 })
-{{< /editor >}}
+{{< /code >}}
 
 In our example, the inventory service already embeds Ferret and registers `inventory::search`, backed by the application's inventory data. We now want to execute that query from a separate development tool.
 
@@ -75,13 +77,12 @@ There are two sides to that connection: the application exposes its existing run
 
 We do not need to build another engine or register the inventory function again. We take the engine the application already uses and adapt it to the Universal API with `uapi.Wrap`. This adapter borrows the engine without taking ownership of it.
 
-The following function accepts that configured engine and exposes it through Wire on `127.0.0.1:50051`. The `coreVersion` argument identifies the embedded Ferret Core version. `server.New` constructs the server; `Serve` starts serving the listener we provide.
+The following function accepts that configured engine and exposes it through Wire on `127.0.0.1:50051`. The `coreVersion` argument identifies the embedded Ferret Core version. `server.New` constructs the server; blocking `Run` opens the TCP listener and manages shutdown.
 
-{{< editor lang="go" >}}
+{{< code lang="go" >}}
 import (
     "context"
     "errors"
-    "net"
 
     "github.com/MontFerret/api"
     "github.com/MontFerret/ferret/v2/pkg/engine"
@@ -94,12 +95,6 @@ func serveInventory(
     eng *engine.Engine,
     coreVersion api.Version,
 ) (err error) {
-    listener, err := net.Listen("tcp", "127.0.0.1:50051")
-    if err != nil {
-        return err
-    }
-    defer listener.Close()
-
     // eng already contains the application's inventory::search function.
     hostRuntime := uapi.Wrap(eng, coreVersion)
 
@@ -113,11 +108,11 @@ func serveInventory(
         err = errors.Join(err, srv.Shutdown(context.Background()))
     }()
 
-    return srv.Serve(ctx, listener)
+    return srv.Run(ctx, "127.0.0.1:50051")
 }
-{{< /editor >}}
+{{< /code >}}
 
-The inventory service runs this function as part of its application lifecycle. Canceling `ctx` initiates shutdown, and the deferred call waits for Wire's cleanup. The application still owns its engine: stopping the Wire endpoint does not close it.
+The inventory service runs this function as part of its application lifecycle. Canceling `ctx` initiates shutdown with `Run`'s default 30-second cleanup budget. If that wait expires, the deferred call still waits for retained cleanup to settle before the caller can release the engine. The application still owns its engine: stopping the Wire endpoint does not close it.
 
 *This example uses unencrypted localhost TCP for development. It does not authenticate connecting processes. The host must choose appropriate transport protection and access controls before exposing its runtime; Wire does not supply that security policy.* 
 
@@ -125,35 +120,22 @@ The inventory service runs this function as part of its application lifecycle. C
 
 With the inventory service running, our development tool connects to the same address: `127.0.0.1:50051`.
 
-This time, we do not create a Ferret engine. We create a gRPC connection and pass it to `client.New`, which returns a remote implementation of `api.Runtime`. The client owns the transport connection and closes it after closing the remote runtime.
+This time, we do not create a Ferret engine. `client.New` creates and owns a channel and returns a remote implementation of `api.Runtime`. We explicitly select plaintext for this loopback example; the default is verified TLS with no plaintext fallback. For a caller-owned gRPC channel, `client.From(ctx, conn)` borrows it instead.
 
-{{< editor lang="go" >}}
+{{< code lang="go" >}}
 import (
     "context"
     "errors"
 
     "github.com/MontFerret/api"
     "github.com/MontFerret/wire/client"
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials/insecure"
 )
 
 func searchInventory(
     ctx context.Context,
     category string,
-) (output *api.Output, err error) {
-    conn, err := grpc.NewClient(
-        "127.0.0.1:50051",
-        grpc.WithTransportCredentials(insecure.NewCredentials()),
-    )
-    if err != nil {
-        return nil, err
-    }
-    defer func() {
-        err = errors.Join(err, conn.Close())
-    }()
-
-    remote, err := client.New(ctx, conn)
+) (content *api.Content, err error) {
+    remote, err := client.New(ctx, "127.0.0.1:50051", client.WithInsecure())
     if err != nil {
         return nil, err
     }
@@ -161,10 +143,10 @@ func searchInventory(
         err = errors.Join(err, remote.Close())
     }()
 
-    return remote.Run(
+    output, err := remote.Run(
         ctx,
         api.NewSource("inventory.fql", `
-            return inventory::search({
+            RETURN inventory::search({
                 category: @category,
                 available: true
             })
@@ -172,10 +154,16 @@ func searchInventory(
         api.WithParam("category", category),
         api.WithOutputContentType("application/json"),
     )
-}
-{{< /editor >}}
+    if err != nil {
+        return nil, err
+    }
+    defer func() { err = errors.Join(err, output.Close()) }()
 
-Calling `searchInventory(ctx, "camping")` sends our original query and its category parameter to the inventory service. Wire invokes the hosted runtime's `Run` operation and returns its encoded output. Compilation and execution happen against the engine we exposed in the first example—the one where `inventory::search` is registered. 
+    return output.Collect(ctx)
+}
+{{< /code >}}
+
+Calling `searchInventory(ctx, "camping")` sends our original query and its category parameter to the inventory service. Wire invokes the hosted runtime's `Run` operation. The client collects its encoded output, settles cleanup, and returns detached content. Available content may accompany a terminal error; callers should inspect both. Compilation and execution happen against the engine we exposed in the first example—the one where `inventory::search` is registered.
 
 Notice what is absent from the client: no inventory function registration, no inventory database configuration, and no duplicate Ferret engine. Those belong to the application. The tool supplies the query and parameters; the application supplies the execution environment.
 
@@ -199,11 +187,11 @@ This is debugging of the FQL program, not a replacement for debugging the host a
 
 Wire follows the same ownership principle as Ferret itself.
 
-It does not construct a replacement engine or take over the application. The host supplies the runtime and the listener. Wire manages its own server-side resources without assuming ownership of the configured runtime. Shutting down Wire does not shut down the engine that the application supplied.
+It does not construct a replacement engine or take over the application. The host supplies the runtime and chooses an endpoint: `Run` opens a TCP listener, or `Serve` accepts one created by the host. Wire manages its own server-side resources without assuming ownership of the configured runtime. Shutting down Wire does not shut down the engine that the application supplied.
 
 “Remote” also does not have to mean another machine. A development tool and an application can communicate through a private Unix socket on the same computer. The host still chooses and secures that endpoint.
 
-That security responsibility matters. Wire does not provide an authentication, authorization, or TLS policy on the application's behalf. The host must decide who can connect and which runtime capabilities those clients should be allowed to exercise.
+That security responsibility matters. Wire does not provide an authentication, authorization, or TLS policy on the application's behalf. The host must decide who can connect and which runtime capabilities those clients should be allowed to exercise. The [Wire security guide]({{< ref "docs/embedding/wire-security" >}}) shows paired TLS, mTLS, and token-middleware configurations.
 
 If a query can invoke a powerful host function, exposing query execution also exposes a route to that function. A Wire endpoint should therefore be treated as access to an application's execution environment—not merely a convenient place to upload query text.
 
@@ -217,7 +205,7 @@ The next question is how to make that foundation useful in everyday workflows. A
 
 That is the direction Wire is intended to support—not by becoming a larger application framework, but by giving those tools a shared connection point.
 
-The Wire repository contains the host and client examples, protocol documentation, and current limitations for anyone interested in trying it.
+The [runnable Wire guide]({{< ref "docs/embedding/wire" >}}) contains the host and client programs. The [Wire repository](https://github.com/MontFerret/wire/tree/v{{< data "versions.wire.v1" >}}) contains protocol documentation and current limitations for anyone interested in trying it.
 
 For me, the motivation comes back to the original library-first idea: embedding a language should not mean giving up useful development tools, and using those tools should not require rebuilding the application around them.
 

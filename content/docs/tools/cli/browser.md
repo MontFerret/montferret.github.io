@@ -11,6 +11,17 @@ The `browser` command manages Chrome or Chromium instances for scripts that need
 
 Most users do not need this command directly. When you pass `--browser-open` or `--browser-headless` to `ferret run`, the CLI starts and stops a browser automatically. The `browser` command is useful when you want a long-lived browser that multiple script runs can share.
 
+## Select CDP in the script
+
+The HTML module defaults to a memory driver for static HTML. Select the CDP driver when the script needs Chrome or Chromium:
+
+{{< code lang="fql" >}}
+LET page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
+RETURN page.title
+{{< /code >}}
+
+Save this as `script.fql` for the commands below. The CLI's browser flags manage startup and the debugger address; they do not select the HTML driver. With Wire, configure the browser integration on the runtime host instead.
+
 ## Open a browser
 
 {{< terminal >}}

@@ -13,8 +13,6 @@ import (
 
 	"github.com/MontFerret/api"
 	"github.com/MontFerret/wire/client"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
@@ -35,19 +33,13 @@ func main() {
 
 func run(ctx context.Context, address, name string) (resultErr error) {
 	// Plaintext transport is for local development only.
-	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		return err
-	}
-	defer func() { resultErr = errors.Join(resultErr, conn.Close()) }()
-
-	remote, err := client.New(ctx, conn)
+	remote, err := client.New(ctx, address, client.WithInsecure())
 	if err != nil {
 		return err
 	}
 	defer func() { resultErr = errors.Join(resultErr, remote.Close()) }()
 
-	plan, err := remote.Compile(ctx, api.NewSource("greeting.fql", "return app::greet(@name)"))
+	plan, err := remote.Compile(ctx, api.NewSource("greeting.fql", "RETURN app::greet(@name)"))
 	if err != nil {
 		return err
 	}
@@ -63,10 +55,17 @@ func run(ctx context.Context, address, name string) (resultErr error) {
 	defer func() { resultErr = errors.Join(resultErr, session.Close()) }()
 
 	output, err := session.Run(ctx)
-	// Available output can accompany an execution or cleanup error.
-	if output != nil {
-		_, writeErr := fmt.Printf("Content-Type: %s\n%s\n", output.ContentType, output.Content)
+	if err != nil {
+		return err
+	}
+	defer func() { resultErr = errors.Join(resultErr, output.Close()) }()
+
+	// Collect observes completion and may preserve content alongside an error.
+	content, err := output.Collect(ctx)
+	if content != nil {
+		_, writeErr := fmt.Printf("Content-Type: %s\n%s\n", content.Metadata.ContentType, content.Data)
 		err = errors.Join(err, writeErr)
 	}
+
 	return err
 }

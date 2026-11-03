@@ -9,6 +9,8 @@ description: "Understand the Ferret CLI workflow, command groups, runtime select
 
 The Ferret CLI provides the local command-line workflow around FQL. It can run source scripts, open an interactive shell, check and format code, debug execution, build and inspect bytecode, manage browser processes, and work with Ferret modules.
 
+These guides describe current CLI `main`. The [installation guide]({{< ref "installation" >}}) separates source-checkout builds from published v2 releases, which may have fewer features.
+
 Run an expression without creating a file:
 
 {{< terminal >}}
@@ -48,7 +50,7 @@ The CLI uses its builtin Ferret runtime by default. The runtime owns FQL parsing
 
 [Run]({{< ref "run" >}}), its `exec` alias, and [REPL]({{< ref "repl" >}}) can execute source against an application-configured [Wire runtime]({{< ref "wire" >}}) with `--runtime wire --runtime-endpoint tcp://127.0.0.1:<port>`. The host owns compilation, modules, policies, browser integrations, and FQL filesystem access. The CLI also retains Worker-compatible HTTP URL execution through `--runtime`. Compiled artifacts and interactive debugging require the builtin local runtime.
 
-`ferret version` reports the CLI and selected runtime versions. In Wire mode it reads the hosted Universal API version during the initial handshake; the REPL banner shows that version and endpoint.
+`ferret version` reports the CLI and selected runtime versions. In Wire mode it reads the hosted runtime version through the Universal API during the initial handshake; the REPL banner shows that version and endpoint.
 
 Browser-backed FQL also depends on the selected runtime and its registered modules. The [Browser]({{< ref "browser" >}}) commands start and stop managed Chrome or Chromium processes, while runtime and FQL options select how a script uses the browser.
 

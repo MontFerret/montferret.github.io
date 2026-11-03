@@ -115,9 +115,15 @@ output, err := session.Run(ctx)
 if err != nil {
     log.Fatal(err)
 }
+defer output.Close()
+
+content, err := output.Collect(ctx)
+if err != nil {
+    log.Fatal(err)
+}
 {{</ code >}}
 
-`Session.Run` returns encoded output. With the default JSON codec, a returned FQL string is stored in `output.Content` as a quoted JSON string.
+`Session.Run` returns an output handle; `Collect` returns owned encoded content. With the default JSON codec, a returned FQL string is stored in `content.Data` as a quoted JSON string.
 
 `Plan.Marshal` and `Engine.Load` are the normal embedding path. For low-level compatibility, `ferret.UnmarshalProgram` returns a `*bytecode.Program` without wrapping it in a plan, and `ferret.MarshalProgram` serializes that raw bytecode value again:
 
@@ -311,8 +317,14 @@ func run() error {
     if err != nil {
         return err
     }
+    defer output.Close()
 
-    fmt.Println(string(output.Content))
+    content, err := output.Collect(ctx)
+    if err != nil {
+        return err
+    }
+
+    fmt.Println(string(content.Data))
     // "FERRET"
 
     return nil

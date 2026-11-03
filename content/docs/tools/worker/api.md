@@ -136,7 +136,7 @@ Example response:
       "v8": "14.8.x",
       "webkit": "537.36"
     },
-    "ferret": "{{< data "versions.runtime.v2" >}}"
+    "ferret": "{{< data "versions.core.v2" >}}"
   }
 }
 ```

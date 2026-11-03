@@ -28,7 +28,7 @@ The main packages in Lab mirror that flow:
 | Sources | Read test files from local paths, HTTP URLs, or Git repositories. |
 | Testing | Interpret `.fql`, `.yaml`, and `.yml` test files. |
 | Runner | Apply timeouts, concurrency, retries, repeated runs, and result aggregation. |
-| Runtime | Execute FQL through the builtin runtime, an HTTP runtime, or a binary runtime. |
+| Runtime | Execute FQL through the builtin runtime, an HTTP runtime, or a Wire/UAPI runtime over gRPC. |
 | Local services | Serve static directories and OpenAPI-backed mock APIs. |
 | Reporters | Print progress and summary output. |
 
@@ -76,7 +76,7 @@ Inspect the runtime version:
 lab version
 {{< /terminal >}}
 
-Use `lab version --runtime=...` when you need the version reported by a remote or binary runtime.
+Use `lab version --runtime=...` when you need the version reported by an HTTP or Wire runtime.
 
 ## Runtime boundaries
 

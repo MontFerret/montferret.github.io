@@ -54,9 +54,11 @@ When formatting multiple files with `--dry-run`, each file's output is preceded 
 | `--dry-run` | `false` | Print to stdout instead of overwriting files |
 | `--print-width` | `80` | Maximum line length |
 | `--tab-width` | `4` | Indentation size in spaces |
-| `--single-quote` | `false` | Use single quotes instead of double quotes |
+| `--single-quote` | `false` | Prefer single quotes when conversion preserves the string value |
 | `--bracket-spacing` | `true` | Add spaces inside object brackets |
 | `--case-mode` | `lower` | Keyword case: canonical `lower`, or compatibility/preference modes `upper` and `ignore` |
+
+Quote style is a preference. The formatter keeps a literal's original spelling when changing its quotes could change its value. For example, the default double-quote preference retains `'a"b'`. Backslashes and embedded line breaks in ordinary literals are preserved, and template chunks keep their original spelling.
 
 ### Examples
 

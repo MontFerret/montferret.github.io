@@ -53,6 +53,10 @@ lab run --times=5 tests/
 
 The default is `1`. Lab increments the run count only after a successful execution. If a run fails, Lab retries according to `--attempts`; if attempts are exhausted, the test fails.
 
+Lab uses one-shot execution by default. With `--times` or `--attempts` greater than one, the built-in and Wire runtimes compile each unit, query, or assertion on first use and reuse successful plans within that case. Every invocation receives fresh parameters, a fresh session, and a fresh output. Lab resolves referenced scripts on each attempt; changed names or text select another plan. Failed compilations are not cached. HTTP transparently continues using one-shot execution because compilation is unsupported.
+
+The case executor settles each output and closes its session before the attempt finishes. Lab releases all cached plans before reporting the final case result, including after failure or cancellation. Cleanup failures cannot satisfy expected-error tests and remain final case failures even if a later retry succeeds. Plans are never shared between test cases. The command closes the shared runtime after all cases finish.
+
 Use `--times-interval` to wait between repeated runs or retry attempts:
 
 {{< terminal >}}

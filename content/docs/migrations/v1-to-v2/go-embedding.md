@@ -334,17 +334,17 @@ func run() (err error) {
     runCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
     defer cancel()
 
-    output, err := app.Run(runCtx, "https://example.com")
+    content, err := app.Run(runCtx, "https://example.com")
     if err != nil {
         return err
     }
 
     var result Result
-    if err := json.Unmarshal(output.Content, &result); err != nil {
+    if err := json.Unmarshal(content.Data, &result); err != nil {
         return err
     }
 
-    fmt.Printf("%s: %s (%s)\n", result.Title, result.URL, output.ContentType)
+    fmt.Printf("%s: %s (%s)\n", result.Title, result.URL, content.Metadata.ContentType)
     return nil
 }
 
@@ -387,7 +387,7 @@ func NewApp(ctx context.Context, cdpAddress string) (*App, error) {
     }, nil
 }
 
-func (app *App) Run(ctx context.Context, url string) (*ferret.Output, error) {
+func (app *App) Run(ctx context.Context, url string) (*ferret.Content, error) {
     session, err := app.plan.NewSession(ctx,
         ferret.WithSessionParam("url", url),
         ferret.WithSessionParam("driver", app.driverName),
@@ -397,9 +397,14 @@ func (app *App) Run(ctx context.Context, url string) (*ferret.Output, error) {
     }
 
     output, runErr := session.Run(ctx)
-    closeErr := session.Close()
+    if runErr != nil {
+        return nil, errors.Join(runErr, session.Close())
+    }
 
-    return output, errors.Join(runErr, closeErr)
+    content, collectErr := output.Collect(ctx)
+    outputErr := output.Close()
+    closeErr := session.Close()
+    return content, errors.Join(collectErr, outputErr, closeErr)
 }
 
 func (app *App) Close() error {
@@ -419,6 +424,8 @@ func normalize(_ context.Context, arg runtime.Value) (runtime.Value, error) {
 }
 {{</ code >}}
 
+The v2 example targets the [Core development checkout]({{< ref "/docs/embedding/go/getting-started#installation" >}}) with consumable output. The application helper collects inside the Run context lifetime before closing its session, and returns detached Content. Preparation errors arrive from Run; terminal execution, encoding, and output cleanup failures arrive from collection. See [the output migration]({{< ref "/docs/migrations/consumable-output" >}}).
+
 The memory driver is always registered as the default. When `FERRET_CDP_ADDRESS` is set, the application registers CDP as an additional named driver and passes `cdp` as the per-session `driver` parameter. The URL remains data rather than being interpolated into FQL source.
 
 For a one-off host function, `WithFunctionsRegistrar` keeps registration close to engine construction. If the application exposes a related set of functions, values, services, or lifecycle hooks, implement an application [module]({{< ref "/docs/embedding/go/modules" >}}) and register it with `WithModules` instead.
@@ -436,7 +443,7 @@ For a one-off host function, `WithFunctionsRegistrar` keeps registration close t
 | `compiler.Compile` returning `*runtime.Program` | `engine.Compile` returning `*ferret.Plan` | A Plan is the reusable compiled query and owns its VM pool. |
 | `program.Run(ctx)` | `plan.NewSession(ctx)` then `session.Run(ctx)` | Create a separate Session for each concurrent execution and close it after use. |
 | Cached `*runtime.Program` | Cached `*ferret.Plan` | Plans are safe for concurrent use; Sessions are not. Create one Session per goroutine or request. |
-| Raw JSON `[]byte` | `*ferret.Output` | Read encoded bytes from `Output.Content` and the selected MIME type from `Output.ContentType`. JSON remains the default codec. |
+| Raw JSON `[]byte` | `ferret.Output` collected into `*ferret.Content` | Read encoded bytes from `Content.Data` and the MIME type from `Content.Metadata.ContentType`. JSON remains the default codec. |
 | Manual driver cleanup | Session, Plan, Engine, and module lifecycle | Close directly created Sessions, then Plans, then the Engine. Modules use lifecycle hooks for resources they own, and runtime-owned HTML values are closed as execution results are materialized. Resources retained by the caller remain the caller's responsibility. |
 | Driver registration and cancellation in one context | Engine composition plus caller execution context | Pass the caller context to Compile, NewSession, and Run. Modules and host functions receive a derived context that preserves cancellation and deadlines. |
 
@@ -450,9 +457,10 @@ Registration no longer travels through the execution context, but cancellation s
 
 The host owns every Engine, Plan, and Session it constructs directly. Close children before parents:
 
-1. Close each Session to return its VM and run session hooks.
-2. Close the reusable Plan to release its VM pool and run plan hooks.
-3. Close the Engine to run module and engine close hooks and release engine-scoped services.
+1. Collect or consume each Output to observe terminal failures, or close it to abandon unread content.
+2. Close each Session to return its VM and run session hooks.
+3. Close the reusable Plan to release its VM pool and run plan hooks.
+4. Close the Engine to run module and engine close hooks and release engine-scoped services.
 
 `Engine.Run` is different: it owns and closes the temporary Plan and Session it creates for a one-shot execution. Use the explicit Plan and Session path when caching compiled work.
 
@@ -464,7 +472,7 @@ Before removing the v1 dependency:
 - replace every v1 driver import and context registration
 - run the same Plan through multiple Sessions with representative parameters
 - test caller cancellation, deadlines, and cleanup on both success and failure
-- check `Output.ContentType` before assuming a result encoding other than the JSON default
+- check `Content.Metadata.ContentType` after collection before assuming a result encoding other than the JSON default
 
 Native composition is complete when the application constructs one Engine with its functions and modules, caches reusable Plans, creates Sessions for individual executions, and no longer imports Ferret v1 or v2 compatibility packages.
 

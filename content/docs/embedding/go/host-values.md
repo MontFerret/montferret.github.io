@@ -137,15 +137,11 @@ length operation. Negative host lengths fail without traversal; zero is valid.
 The smallest possible host value — a struct that wraps a string:
 
 {{< code lang="go" >}}
-package main
+package example
 
 import (
-    "context"
-    "fmt"
     "hash/fnv"
-    "log"
 
-    "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/pkg/runtime"
 )
 
@@ -169,7 +165,7 @@ func (l *Label) Copy() runtime.Value {
 }
 {{</ code >}}
 
-Register a function that returns it:
+Register a function that returns it. This snippet also imports `context` and the root `ferret` package:
 
 {{< code lang="go" >}}
 engine, err := ferret.New(
@@ -498,8 +494,14 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
+    defer output.Close()
 
-    fmt.Println(string(output.Content))
+    content, err := output.Collect(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(content.Data))
     // [{"age":25,"name":"Carol"},{"age":30,"name":"Alice"}]
 }
 {{</ code >}}
@@ -536,9 +538,9 @@ The runtime automatically tracks values that implement `io.Closer`:
 
 1. During execution, any `io.Closer` value encountered in the result is added to a tracked closer set.
 2. After encoding the output, the runtime calls `Close()` on every tracked closer.
-3. Errors from `Close()` are propagated to the caller of `Session.Run`.
+3. Result cleanup errors are retained by the returned `Output` and reported by `Collect` or `Consume`. `Output.Close` also retains the cleanup outcome; it does not report execution or encoding failures.
 
-This means a host value returned by a function inside a script is encoded first, then closed. The host receives the encoded output; the value is already closed by the time `Run` returns.
+This means a host value returned by a function inside a script is encoded first, then closed. The host receives a handle to the encoded content; the value is already closed by the time `Run` returns. Consume or collect the handle to observe execution, encoding, and cleanup failures. Direct calls to a codec borrow values and leave source and child-resource cleanup to the caller. See [Value Encoders]({{< ref "/docs/embedding/go/value-encoders#context-and-buffering" >}}).
 
 For values referenced multiple times, implement the `Resource` interface to prevent double-closing:
 

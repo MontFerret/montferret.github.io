@@ -115,9 +115,9 @@ Some pages need JavaScript to render their content. For those cases, Ferret can 
 {{< tabs >}} 
 {{< tab title="Terminal" >}} 
 {{< terminal command="true" >}}
-ferret run -e '
-let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
-return page.title
+ferret run --browser-headless -e '
+LET page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
+RETURN page.title
 '
 {{< /terminal >}}
 {{< /tab >}}
@@ -129,7 +129,8 @@ return page.title
 {{< /tab >}}
 {{< /tabs >}}
 
-This example uses the `cdp` driver, which talks to a browser through the Chrome DevTools Protocol.  
+The terminal command starts a headless browser for this run and closes it afterward. Its script selects the `cdp` driver, which talks to that browser through the Chrome DevTools Protocol. The CLI's startup flag and the script's driver selection are separate; see [Browser]({{< ref "/docs/tools/cli/browser" >}}).
+
 Use the `cdp` driver when the page depends on JavaScript, client-side rendering, delayed content, user interaction, or browser APIs. 
 
 For static HTML pages, the non-browser mode is usually simpler and faster.  

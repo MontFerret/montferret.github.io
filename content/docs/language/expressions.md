@@ -309,6 +309,31 @@ return (left + right) * scale
 
 Some boundaries require grouping even when precedence alone would not: an embedded `for`, a compound `query` payload, a compound member source, or an expression that owns a recovery tail. Parentheses containing comments are retained when removing them would lose or relocate the comment.
 
+If a return value starts with a variable named `DISTINCT`, group it so the parser can distinguish the variable from the `return distinct` modifier. The formatter keeps the required parentheses.
+
+{{< editor lang="fql" >}}
+let DISTINCT = { values: [1, 1, 2] }
+return (DISTINCT.values)
+{{</ editor >}}
+
+A line comment ends at a line break. The formatter keeps the closing parenthesis on a later line, even when the surrounding array would fit on one line. It also keeps line breaks inside multiline block comments.
+
+{{< editor lang="fql" >}}
+return [
+    (
+        { value: 3 }
+        // Keep the object as the source of .value.
+    ).value
+]
+{{</ editor >}}
+
+A recovery value can also need parentheses. Here the range starts at the result of the call and ends at `3`. The program returns `[1, 2, 3]`. Removing the parentheses around `1` would move the range inside the error handler.
+
+{{< editor lang="fql" >}}
+func f() => 1
+return f() on error return (1)..3
+{{</ editor >}}
+
 ## Evaluation
 
 Expressions are evaluated when the surrounding statement or expression is evaluated.

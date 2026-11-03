@@ -11,6 +11,8 @@ aliases:
 
 The Ferret CLI runs on Linux, macOS, and Windows. This page covers CLI-specific setup. To compare the CLI with Go and JavaScript embedding, see the [Installation chooser]({{< ref "/docs/getting-started/installation" >}}).
 
+These CLI guides describe current `main`. [Build a source checkout](#build-from-source) to use that implementation. The tagged downloads below are published v2 releases and may not include changes added after their tag. Choose a v2 release explicitly; GitHub's latest stable release and the shell installer can select the v1 CLI.
+
 ## Prebuilt binary
 
 Download `v{{< data "versions.cli.v2" >}}` for your platform from the [CLI release page](https://github.com/MontFerret/cli/releases/tag/v{{< data "versions.cli.v2" >}}).
@@ -38,11 +40,24 @@ On Windows, extract `ferret.exe` from the zip file and place it in a directory i
 
 ## Build from source
 
-Requires `Go {{< data "versions.cli.go" >}}` or later:
+Build current `main` with Go {{< data "versions.cli.go" >}} or later and `make`:
+
+{{< terminal >}}
+git clone --branch main https://github.com/MontFerret/cli.git
+cd cli
+make compile
+export PATH="$PWD/bin:$PATH"
+{{< /terminal >}}
+
+The binary is written to `bin/ferret`. The `export` command adds this checkout's binary directory to `PATH` for the current shell; you can also run `./bin/ferret` directly.
+
+To install source from the published v2 tag instead:
 
 {{< terminal >}}
 go install github.com/MontFerret/cli/v2/ferret@v{{< data "versions.cli.v2" >}}
 {{< /terminal >}}
+
+For the tagged Go installation, ensure Go's binary installation directory is on `PATH`.
 
 ## Verify installation
 
@@ -54,7 +69,7 @@ This prints the CLI version and the runtime version.
 
 ## Update
 
-These docs track the Ferret v2 prerelease channel. To update within that channel, install the newer tagged archive or rerun `go install` with the newer v2 tag.
+To update a published v2 installation, install the newer tagged archive or rerun `go install` with the newer v2 tag. For a source checkout, update `main` and rerun `make compile`.
 
 The `ferret update self` command checks GitHub's latest non-prerelease release, so it does not advance between v2 prereleases. It also cannot install the Windows zip release. Do not use it as the v2 prerelease update path.
 

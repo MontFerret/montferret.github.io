@@ -15,15 +15,17 @@ ferret run --runtime wire --runtime-endpoint tcp://127.0.0.1:54321 --eval 'RETUR
 
 Replace the endpoint with the one printed by your host. Wire source execution is available in `run`, its `exec` alias, and `repl`. Builtin execution remains the default. Worker-compatible HTTP URLs in `--runtime` retain their existing behavior.
 
-These commands require a CLI build with Wire support. Check `ferret run --help` for `wire` in the runtime flag. The host dependency versions below do not identify a CLI release.
+This guide describes current CLI `main`. Follow the [source-checkout instructions]({{< ref "installation" >}}#build-from-source) for that implementation. Published CLI releases are listed separately; the compatible host dependency pins below describe the runtime the CLI connects to.
 
 ## Start a development host
 
-The [CLI development example](https://github.com/MontFerret/cli/tree/master/examples/wire-host) exposes a configured native engine through the Universal API and Wire. It adds a host-only `DEMO::IDENTITY(value)` function and prints an ephemeral IPv4 loopback endpoint.
+The [CLI development example](https://github.com/MontFerret/cli/tree/main/examples/wire-host) exposes a configured native engine through the Universal API and Wire. It adds a host-only `DEMO::IDENTITY(value)` function and prints an ephemeral IPv4 loopback endpoint.
 
-In terminal 1, from a CLI source checkout containing this integration, build the CLI and start the host:
+In terminal 1, check out CLI `main`, then build the CLI and start the host:
 
 {{< terminal >}}
+git clone --branch main https://github.com/MontFerret/cli.git
+cd cli
 GOFLAGS=-mod=mod make compile
 go run -mod=mod ./examples/wire-host
 {{< /terminal >}}
@@ -50,12 +52,14 @@ This integration uses the following compatible dependency set:
 
 | Dependency | Version |
 | --- | --- |
-| Ferret Core | `v2.0.0-alpha.57` |
-| Universal API | `v1.0.0-alpha.20` |
-| Wire | `v1.0.0-alpha.2` |
-| gRPC | `v1.84.0` |
+| Ferret Core | `v{{< data "versions.wire.core" >}}` |
+| Universal API | `v{{< data "versions.wire.api" >}}` |
+| Wire | `v{{< data "versions.wire.v1" >}}` |
+| gRPC | `v{{< data "versions.wire.grpc" >}}` |
 
-The host must implement the alpha.2 handshake, including hosted runtime version metadata. Alpha.1 hosts are incompatible. Pin a compatible set when building a host; Wire is pre-stable.
+The host must provide runtime version metadata and support output framing version **1**, introduced in Wire alpha.3. Alpha.1 and alpha.2 hosts are incompatible. The CLI verifies metadata and framing during the startup handshake, before executing source, with no buffered-output fallback.
+
+The alpha.4 host in the compatible set above preserves preparation diagnostics, including syntax errors, so the REPL can recover and accept the next query. Pin a compatible set; Wire remains pre-stable.
 
 ## Run files, stdin, and parameters
 
@@ -84,7 +88,7 @@ ferret repl --runtime wire --runtime-endpoint tcp://127.0.0.1:54321
 For the example host, the banner and a submission look like:
 
 ```text
-Welcome to Ferret REPL (Wire runtime: tcp://127.0.0.1:54321; version: v2.0.0-alpha.57)
+Welcome to Ferret REPL (Wire runtime: tcp://127.0.0.1:54321; version: v{{< data "versions.wire.core" >}})
 Please use `exit` or `Ctrl-D` to exit this program.
 > RETURN DEMO::IDENTITY(42)
 42
@@ -105,7 +109,7 @@ The command preserves the normal output format:
 ```text
 Version:
   Self: <cli-version>
-  Runtime: v2.0.0-alpha.57
+  Runtime: v{{< data "versions.wire.core" >}}
 ```
 
 `Self` identifies the CLI. `Runtime` and the Wire REPL banner use the exact version supplied by the hosted Universal API runtime. The value is opaque and is preserved without parsing or normalization, including an empty value. The development example derives it from its Ferret dependency's Go build information. Builtin execution uses the CLI's injected runtime version, or `unknown` in a build without version injection.
@@ -148,13 +152,15 @@ The host owns its functions, modules, filesystem, HTTP policy, and browser integ
 
 Wire mode rejects explicitly supplied builtin filesystem/HTTP policies and browser settings, including values in config files or environment variables. Even an explicit default-valued flag such as `--browser-headless=false` counts as configuration. Untouched defaults remain acceptable. Configure those capabilities on the host, and remove incompatible client settings before connecting.
 
-Each command owns one logical runtime and transport. Active calls settle before cleanup closes the runtime, then the transport. Closing the CLI connection leaves the host engine usable. After cancellation, Wire uses bounded detached cleanup; cleanup failures remain part of the reported error.
+Each command owns one logical runtime and transport. Active calls settle before cleanup closes the runtime, then the transport. Closing the CLI connection leaves the host engine usable. After cancellation, Wire uses detached cleanup bounded by its 30-second cleanup timeout; cleanup failures remain part of the reported error.
 
 This CLI transport uses **plaintext loopback for trusted local development**, without authentication or TLS. Local access does not authenticate the client or host. HTTP headers and policy flags are not Wire credentials.
 
 ## Output and diagnostics
 
-`run` prints the host's encoded result bytes to stdout without decoding or re-encoding them and adds no connection banner. Available output is written even when execution also returns an error. Successfully produced empty output emits nothing. Errors and source diagnostics go to stderr and cause a failing command exit.
+`run` consumes the host's encoded output and writes its chunks to stdout without decoding or re-encoding them, collecting the whole result, or adding a connection banner. It waits for consumption to finish and checks terminal execution, delivery, and cleanup errors before reporting success. Available output is written even when execution also returns an error. Successfully produced empty output emits nothing. Errors and source diagnostics go to stderr and cause a failing command exit.
+
+Chunks are delivered synchronously, so stdout provides backpressure. The REPL finishes each query's output before starting another. Streaming encoded bytes does not imply incremental FQL evaluation.
 
 To inspect an intentionally invalid query, run:
 

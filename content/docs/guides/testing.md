@@ -10,7 +10,7 @@ description: "Use Lab to write and run automated tests for FQL scripts."
 
 [Lab]({{< ref "/docs/tools/lab" >}}) runs FQL test files, applies timeouts and retries, and reports whether each file passed or failed. Assertions come from Ferret's [`t` standard-library namespace]({{< ref "/docs/standard-library/testing" >}}).
 
-The selected Ferret runtime still owns FQL execution and module availability. Lab's builtin runtime provides Ferret core; Lab does not add runtime-specific modules such as `web::html`. To test a script that uses one, select a [binary]({{< ref "/docs/tools/lab/binary-runtime" >}}) or [HTTP]({{< ref "/docs/tools/lab/http-runtime" >}}) runtime that includes it.
+The selected Ferret runtime still owns FQL execution and module availability. Lab's builtin runtime provides Ferret core; Lab does not add runtime-specific modules such as `web::html`. To test a script that uses one, select an [HTTP]({{< ref "/docs/tools/lab/http-runtime" >}}) or [Wire]({{< ref "/docs/tools/lab/wire-runtime" >}}) runtime that includes it.
 
 ## Install Lab
 

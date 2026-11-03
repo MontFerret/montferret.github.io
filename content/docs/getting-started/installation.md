@@ -44,11 +44,7 @@ See [CLI Installation]({{< ref "/docs/tools/cli/installation" >}}) for prebuilt 
 
 Choose native Go embedding when the host needs full control over runtime configuration, modules, host values, codecs, and sandboxed services.
 
-{{< terminal >}}
-go get github.com/MontFerret/ferret/v2@v{{< data "versions.runtime.v2" >}}
-{{< /terminal >}}
-
-Continue with [Go Embedding: Getting Started]({{< ref "/docs/embedding/go/getting-started" >}}).
+Follow [Go Embedding: Getting Started]({{< ref "/docs/embedding/go/getting-started#installation" >}}) for the exact Core checkout and module replacement used by these examples. That checkout requires **Go 1.26 or later** and includes the current Encoding and Output APIs. The generated Standard Library reference has its own published-version pin; use the Go embedding setup when following Go examples.
 
 ## Embed Ferret in JavaScript
 

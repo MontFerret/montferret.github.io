@@ -13,7 +13,7 @@ The `config` command reads and writes persistent settings that apply to all CLI 
 
 ## Config file
 
-Settings are stored in `~/.ferret/config.yaml`. The file is created automatically the first time you run any `ferret` command.
+Settings are stored in `~/.ferret/config.yaml`, inside the resolved user home directory on every supported platform. The file is created automatically the first time you run any `ferret` command.
 
 ## Configuration priority
 
@@ -46,11 +46,23 @@ ferret config set runtime builtin
 ferret config set browser-address http://127.0.0.1:9333
 {{< /terminal >}}
 
+`config set` validates the complete persisted filesystem and HTTP policy before writing. Invalid values or conflicting policy controls leave the config file unchanged.
+
 ## Get a value
 
 {{< terminal >}}
 ferret config get runtime
 {{< /terminal >}}
+
+## Unset a value
+
+Remove a persisted value and restore its implicit default:
+
+{{< terminal >}}
+ferret config unset policy-http-allowed-hosts
+{{< /terminal >}}
+
+This leaves environment variables and explicit command-line flags unchanged.
 
 ## List all values
 
@@ -64,8 +76,8 @@ The `list` command (alias `ls`) prints every configurable key and its current va
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `log-level` | `info` | Logging level: `debug`, `info`, `warn`, `error` |
-| `log-output` | `stderr` | Log output destination: `stderr`, `file` |
+| `log-level` | `info` | Logging level: `trace`, `debug`, `info`, `warn`, `error`, `fatal` |
+| `log-output` | `stderr` | Log output destination: `stderr`, `file`, `none` |
 | `log-file` | `ferret.log` | Log file path (when `log-output` is `file`) |
 | `runtime` | `builtin` | `builtin`, `wire`, or a legacy Worker-compatible HTTP URL |
 | `runtime-endpoint` | | Required Wire endpoint: `tcp://127.0.0.1:<port>` |
@@ -78,6 +90,60 @@ The `list` command (alias `ls`) prints every configurable key and its current va
 | `browser-headless` | `false` | Open browser in headless mode |
 | `proxy` | | Proxy server address |
 | `user-agent` | | Custom User-Agent header |
+
+## Filesystem policy
+
+Filesystem and HTTP execution policies apply to the builtin runtime on `run`, `repl`, and `debug`. Supplying them with a remote runtime is a configuration error. The `version` command has no execution-policy flags.
+
+The builtin filesystem is writable and rooted at the CLI's current working directory by default. Choose a narrower relative or absolute root, and optionally make it read-only:
+
+{{< terminal >}}
+ferret run --policy-fs-root ./fixtures --policy-fs-read-only script.fql
+{{< /terminal >}}
+
+The config keys are `policy-fs-root` and `policy-fs-read-only`; their environment variables are `FERRET_POLICY_FS_ROOT` and `FERRET_POLICY_FS_READ_ONLY`.
+
+## HTTP policy
+
+Ferret's HTTP client blocks localhost, loopback, private-network, and link-local access by default. These controls apply to integrations using that client, such as `io::net::http` and `net::rest`. They do not govern requests made by Chrome itself. The `proxy` and `user-agent` options configure HTML/browser drivers separately.
+
+For a script that intentionally uses a local development service:
+
+{{< terminal >}}
+ferret run --policy-http-allow-localhost --policy-http-default-headers='{"X-Trace":"local"}' script.fql
+{{< /terminal >}}
+
+Each key below is also a `--flag` on `run`, `repl`, and `debug`:
+
+| Flag and config key | Environment variable | Default | Behavior |
+| --- | --- | --- | --- |
+| `policy-http-allowed-schemes` | `FERRET_POLICY_HTTP_ALLOWED_SCHEMES` | `http,https` | Allowed URL schemes |
+| `policy-http-allowed-methods` | `FERRET_POLICY_HTTP_ALLOWED_METHODS` | `GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS` | Allowed HTTP methods |
+| `policy-http-allowed-hosts` | `FERRET_POLICY_HTTP_ALLOWED_HOSTS` | unrestricted | Exact allowed hosts or `host:port` values |
+| `policy-http-blocked-hosts` | `FERRET_POLICY_HTTP_BLOCKED_HOSTS` | none | Exact blocked hosts or `host:port` values |
+| `policy-http-allow-localhost` | `FERRET_POLICY_HTTP_ALLOW_LOCALHOST` | `false` | Allow localhost and loopback addresses |
+| `policy-http-allow-private-networks` | `FERRET_POLICY_HTTP_ALLOW_PRIVATE_NETWORKS` | `false` | Allow private-network addresses |
+| `policy-http-allow-link-local` | `FERRET_POLICY_HTTP_ALLOW_LINK_LOCAL` | `false` | Allow link-local addresses |
+| `policy-http-default-headers` | `FERRET_POLICY_HTTP_DEFAULT_HEADERS` | none | Default request headers as a JSON string map |
+| `policy-http-blocked-request-headers` | `FERRET_POLICY_HTTP_BLOCKED_REQUEST_HEADERS` | none | Block requests containing these header names |
+| `policy-http-timeout` | `FERRET_POLICY_HTTP_TIMEOUT` | `30s` | Overall HTTP timeout |
+| `policy-http-no-timeout` | `FERRET_POLICY_HTTP_NO_TIMEOUT` | `false` | Explicitly disable the overall timeout |
+| `policy-http-max-request-size` | `FERRET_POLICY_HTTP_MAX_REQUEST_SIZE` | `16777216` | Maximum request-body size in bytes |
+| `policy-http-unlimited-request-size` | `FERRET_POLICY_HTTP_UNLIMITED_REQUEST_SIZE` | `false` | Explicitly disable the request-body limit |
+| `policy-http-max-response-size` | `FERRET_POLICY_HTTP_MAX_RESPONSE_SIZE` | `16777216` | Maximum response-body size in bytes |
+| `policy-http-unlimited-response-size` | `FERRET_POLICY_HTTP_UNLIMITED_RESPONSE_SIZE` | `false` | Explicitly disable the response-body limit |
+| `policy-http-max-response-header-size` | `FERRET_POLICY_HTTP_MAX_RESPONSE_HEADER_SIZE` | `1048576` | Maximum response-header size in bytes |
+| `policy-http-follow-redirects` | `FERRET_POLICY_HTTP_FOLLOW_REDIRECTS` | `true` | Follow HTTP redirects |
+| `policy-http-max-redirects` | `FERRET_POLICY_HTTP_MAX_REDIRECTS` | `10` | Maximum redirects to follow |
+
+Only explicitly supplied flags, environment variables, and config values override Ferret's defaults. Numeric zero retains the Ferret default. Use `no-timeout`, `unlimited-request-size`, or `unlimited-response-size` to disable those limits. Enabling one conflicts with explicitly setting its corresponding timeout or size limit.
+
+List flags accept repeated or comma-separated values. For `config set`, use a comma-separated string. Default headers require a JSON object with string values:
+
+{{< terminal >}}
+ferret config set policy-http-allowed-hosts api.example.com,cdn.example.com
+ferret config set policy-http-default-headers '{"X-Trace":"local"}'
+{{< /terminal >}}
 
 ## Wire settings
 
@@ -125,8 +191,8 @@ ferret version
 
 ```
 Version:
-  Self: {{< data "versions.cli.v2" >}}
-  Runtime: {{< data "versions.runtime.v2" >}}
+  Self: <cli-version>
+  Runtime: <runtime-version>
 ```
 
 To read a Wire host's version:
@@ -135,7 +201,7 @@ To read a Wire host's version:
 ferret version --runtime wire --runtime-endpoint tcp://127.0.0.1:54321
 {{< /terminal >}}
 
-`Self` remains the CLI version. `Runtime` is the exact hosted Universal API version, including an empty value. Connection establishment and metadata retrieval share the Wire handshake timeout. This command accepts runtime selection flags; it has no browser or policy flags. Configured or environmental builtin settings are still rejected in Wire mode. The [Wire guide]({{< ref "wire" >}}#read-the-hosted-version) explains metadata behavior and the REPL banner.
+`Self` remains the CLI version. `Runtime` is the exact hosted runtime version supplied through the Universal API, including an empty value. Connection establishment and metadata retrieval share the Wire handshake timeout. This command accepts runtime selection flags; it has no browser or policy flags. Configured or environmental builtin settings are still rejected in Wire mode. The [Wire guide]({{< ref "wire" >}}#read-the-hosted-version) explains metadata behavior and the REPL banner.
 
 To check a legacy HTTP runtime's version:
 

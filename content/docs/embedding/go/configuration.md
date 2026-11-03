@@ -168,6 +168,13 @@ if err != nil {
 defer session.Close()
 
 output, err := session.Run(ctx)
+if err != nil {
+    return err
+}
+defer output.Close()
+if err := output.Consume(ctx, func(context.Context, []byte) error { return nil }); err != nil {
+    return err
+}
 {{</ code >}}
 
 The same option works with `Engine.Run` and `Plan.NewDebugSession`. Zero and
@@ -197,6 +204,8 @@ session, err := plan.NewSession(ctx,
     ferret.WithOutputContentType("application/vnd.msgpack"),
 )
 {{</ code >}}
+
+Encoding remains eager, before the output handle is returned. Read the actual codec media type from output metadata; consume or collect to observe encoding failures. Session options reject blank output content types. Codec availability is checked during result encoding, after the query has run. An unavailable codec is a terminal output error; query side effects may already have occurred. See [Output]({{< ref "/docs/embedding/go/output" >}}) for content ownership.
 
 You can register custom codecs on the engine with `WithEncodingCodec`. See [Value Encoders]({{< ref "/docs/embedding/go/value-encoders" >}}) for the codec interfaces, hooks, registry, and a complete custom codec example.
 

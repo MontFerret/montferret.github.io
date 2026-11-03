@@ -59,8 +59,14 @@ output, err := session.Run(ctx)
 if err != nil {
     return err
 }
+defer output.Close()
 
-fmt.Println(string(output.Content))
+content, err := output.Collect(ctx)
+if err != nil {
+    return err
+}
+
+fmt.Println(string(content.Data))
 {{</ code >}}
 
 The engine owns the configured HTML module. The plan contains compiled FQL code, and each session supplies the data for one execution.
@@ -95,8 +101,14 @@ output, err := session.Run(ctx)
 if err != nil {
     return err
 }
+defer output.Close()
 
-fmt.Println(string(output.Content))
+content, err := output.Collect(ctx)
+if err != nil {
+    return err
+}
+
+fmt.Println(string(content.Data))
 {{</ code >}}
 
 The selector remains a runtime string. It cannot add FQL statements or change the structure of the compiled plan.
@@ -128,8 +140,14 @@ output, err := session.Run(ctx)
 if err != nil {
     return err
 }
+defer output.Close()
 
-fmt.Println(string(output.Content))
+content, err := output.Collect(ctx)
+if err != nil {
+    return err
+}
+
+fmt.Println(string(content.Data))
 {{</ code >}}
 
 This preserves the HTML exactly as input data, including quotes, backticks, and text that resembles FQL syntax. For module setup, structured result decoding, and returning modified markup, see [Process existing HTML]({{< ref "/docs/guides/existing-html" >}}).
@@ -169,8 +187,14 @@ output, err := session.Run(ctx)
 if err != nil {
     return err
 }
+defer output.Close()
 
-fmt.Println(string(output.Content))
+content, err := output.Collect(ctx)
+if err != nil {
+    return err
+}
+
+fmt.Println(string(content.Data))
 {{</ code >}}
 
 Here `predicate` is deliberately authored FQL code. `items` and `maxPrice` are runtime data and remain parameters.

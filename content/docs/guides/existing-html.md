@@ -31,13 +31,17 @@ return for product in products
 
 ## Run the workflow from Go
 
-Create a module and install Ferret, the HTML module, and the small HTML parser used at the end of the example:
+Create a module:
 
 {{< terminal command="true" >}}
 mkdir ferret-existing-html && cd ferret-existing-html
 go mod init example.com/ferret-existing-html
-go get github.com/MontFerret/ferret/v2 \
-  github.com/MontFerret/contrib/modules/web/html \
+{{</ terminal >}}
+
+Apply the [Core development checkout setup]({{< ref "/docs/embedding/go/getting-started#installation" >}}), then install the HTML module and the small HTML parser used at the end of the example:
+
+{{< terminal command="true" >}}
+go get github.com/MontFerret/contrib/modules/web/html \
   golang.org/x/net/html
 {{</ terminal >}}
 
@@ -118,19 +122,19 @@ func run() (err error) {
         err = errors.Join(err, productsPlan.Close())
     }()
 
-    productsOutput, err := execute(ctx, productsPlan, htmlSource)
+    productsContent, err := execute(ctx, productsPlan, htmlSource)
     if err != nil {
         return err
     }
-    if productsOutput.ContentType != "application/json" {
-        return fmt.Errorf("unexpected products content type %q", productsOutput.ContentType)
+    if productsContent.Metadata.ContentType != "application/json" {
+        return fmt.Errorf("unexpected products content type %q", productsContent.Metadata.ContentType)
     }
 
     var products []Product
-    if err := json.Unmarshal(productsOutput.Content, &products); err != nil {
+    if err := json.Unmarshal(productsContent.Data, &products); err != nil {
         return fmt.Errorf("decode products: %w", err)
     }
-    fmt.Printf("products (%s): %+v\n", productsOutput.ContentType, products)
+    fmt.Printf("products (%s): %+v\n", productsContent.Metadata.ContentType, products)
 
     htmlPlan, err := engine.Compile(ctx, ferret.NewSource("modified-html.fql", `
         let page = web::html::parse(@html)
@@ -144,16 +148,16 @@ func run() (err error) {
         err = errors.Join(err, htmlPlan.Close())
     }()
 
-    htmlOutput, err := execute(ctx, htmlPlan, []byte(htmlSource))
+    htmlContent, err := execute(ctx, htmlPlan, []byte(htmlSource))
     if err != nil {
         return err
     }
-    if htmlOutput.ContentType != "application/json" {
-        return fmt.Errorf("unexpected HTML content type %q", htmlOutput.ContentType)
+    if htmlContent.Metadata.ContentType != "application/json" {
+        return fmt.Errorf("unexpected HTML content type %q", htmlContent.Metadata.ContentType)
     }
 
     var renderedHTML string
-    if err := json.Unmarshal(htmlOutput.Content, &renderedHTML); err != nil {
+    if err := json.Unmarshal(htmlContent.Data, &renderedHTML); err != nil {
         return fmt.Errorf("decode HTML: %w", err)
     }
     if !strings.Contains(renderedHTML, `data-processed="true"`) {
@@ -165,7 +169,7 @@ func run() (err error) {
         return fmt.Errorf("parse returned HTML: %w", err)
     }
 
-    fmt.Printf("html (%s): %s\n", htmlOutput.ContentType, renderedHTML)
+    fmt.Printf("html (%s): %s\n", htmlContent.Metadata.ContentType, renderedHTML)
     return nil
 }
 
@@ -173,7 +177,7 @@ func execute(
     ctx context.Context,
     plan *ferret.Plan,
     htmlInput any,
-) (*ferret.Output, error) {
+) (*ferret.Content, error) {
     session, err := plan.NewSession(ctx,
         ferret.WithSessionParam("html", htmlInput),
     )
@@ -182,12 +186,14 @@ func execute(
     }
 
     output, runErr := session.Run(ctx)
-    closeErr := session.Close()
-    if err := errors.Join(runErr, closeErr); err != nil {
-        return output, err
+    if runErr != nil {
+        return nil, errors.Join(runErr, session.Close())
     }
 
-    return output, nil
+    content, collectErr := output.Collect(ctx)
+    outputErr := output.Close()
+    closeErr := session.Close()
+    return content, errors.Join(collectErr, outputErr, closeErr)
 }
 {{</ code >}}
 
@@ -200,20 +206,22 @@ go run .
 
 The engine owns runtime-wide configuration, each plan owns compiled code and its VM pool, and each session owns one execution. The example closes all three levels. A real application can reuse the engine and plans while creating a new session for each input document.
 
+The `execute` helper collects within the original Run context before closing its session and returns detached `*ferret.Content`. Preparation errors arrive from Run; terminal errors arrive from collection. Collected content remains available alongside errors and survives cleanup. See [Output]({{< ref "/docs/embedding/go/output" >}}).
+
 The `execute` helper accepts the concrete `*ferret.Plan` returned by both `Engine.Compile` and `Engine.Load`.
 
 ## Decode the output format
 
-`Session.Run` returns an `Output` with two fields:
+`Session.Run` returns a consumable handle. Collect it to obtain `Content`:
 
-- `Output.Content` contains encoded bytes, not a raw Ferret runtime value.
-- `Output.ContentType` identifies the codec that produced those bytes.
+- `Content.Data` contains encoded bytes, not a raw Ferret runtime value.
+- `Content.Metadata.ContentType` identifies the codec that produced those bytes.
 
 JSON is the default output format. Objects and arrays therefore decode into Go structs, slices, maps, or other JSON targets with `json.Unmarshal`.
 
-A returned FQL string is also JSON-encoded. For example, returned HTML begins and ends with JSON quotes and may contain escaped characters in `Output.Content`. Decode it into a Go `string` before writing it to a file, returning it as HTML, or passing it to another library.
+A returned FQL string is also JSON-encoded. For example, returned HTML begins and ends with JSON quotes and may contain escaped characters in `Content.Data`. Decode it into a Go `string` before writing it to a file, returning it as HTML, or passing it to another library.
 
-The example checks `Output.ContentType` before using `json.Unmarshal`. Keep that check when the application allows [configurable output codecs]({{< ref "/docs/embedding/go/value-encoders" >}}); do not assume every result is JSON.
+The example checks `Content.Metadata.ContentType` before using `json.Unmarshal`. Keep that check when the application allows [configurable output codecs]({{< ref "/docs/embedding/go/value-encoders" >}}); do not assume every result is JSON.
 
 ## Work with the returned markup
 

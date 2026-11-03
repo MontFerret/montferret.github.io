@@ -82,11 +82,11 @@ lab version
 
 The output includes the Lab binary version and the Ferret version reported by the selected runtime.
 
-To verify a remote or binary runtime:
+To verify an HTTP or Wire runtime:
 
 {{< terminal >}}
 lab version --runtime=http://localhost:8080
-lab version --runtime=bin:/usr/local/bin/ferret
+lab version --runtime=wire+tcp://127.0.0.1:50051
 {{< /terminal >}}
 
 ## Update

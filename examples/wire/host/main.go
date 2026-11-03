@@ -49,8 +49,8 @@ func run(ctx context.Context, address string) (resultErr error) {
 	defer func() { resultErr = errors.Join(resultErr, native.Close()) }()
 
 	// Wrap and Wire borrow this engine; the host remains its owner.
-	hosted := uapi.Wrap(native, "v2.0.0-alpha.57")
-	wireServer, err := server.NewServer(hosted)
+	hosted := uapi.Wrap(native, "v2.0.0-alpha.62")
+	wireServer, err := server.New(hosted)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,13 @@ func run(ctx context.Context, address string) (resultErr error) {
 	defer func() {
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		resultErr = errors.Join(resultErr, wireServer.Shutdown(shutdownCtx))
+		shutdownErr := wireServer.Shutdown(shutdownCtx)
+		resultErr = errors.Join(resultErr, shutdownErr)
+		if errors.Is(shutdownErr, context.DeadlineExceeded) || errors.Is(shutdownErr, context.Canceled) {
+			// A timeout bounds waiting, not hosted cleanup. Keep the engine alive
+			// until the retained shutdown lifecycle actually settles.
+			resultErr = errors.Join(resultErr, wireServer.Shutdown(context.Background()))
+		}
 		if !serveReturned {
 			select {
 			case err := <-served:

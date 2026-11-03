@@ -13,7 +13,7 @@ In current Lab v2, there is no `--cdp` flag and no `LAB_CDP` environment variabl
 
 ## Browser-backed tests
 
-A browser-backed test is still a normal Lab test file:
+A browser-backed test is still a normal Lab test file. The external host must register the `web::html` module and the CDP driver used by this example:
 
 {{< code lang="fql" >}}
 let doc = web::html::open("https://example.com", {
@@ -23,10 +23,10 @@ let doc = web::html::open("https://example.com", {
 return doc.title
 {{< /code >}}
 
-Run it with Lab:
+Start an external host with those capabilities, then select it in Lab:
 
 {{< terminal >}}
-lab run browser.fql
+lab run --runtime=wire+tcp://127.0.0.1:50051 browser.fql
 {{< /terminal >}}
 
 If the runtime expects an existing browser endpoint, start that browser separately and make sure the runtime can reach it.
@@ -37,6 +37,7 @@ Use `--wait` when a browser endpoint is started outside Lab and may not be ready
 
 {{< terminal >}}
 lab run browser-tests/ \
+  --runtime=wire+tcp://127.0.0.1:50051 \
   --wait=http://127.0.0.1:9222/json/version \
   --wait-timeout=5 \
   --wait-attempts=12
@@ -46,13 +47,11 @@ The wait happens before tests execute. It does not configure the runtime; it onl
 
 ## Builtin runtime
 
-With the builtin runtime, Ferret runs inside the Lab process. Browser endpoints such as `127.0.0.1:9222` are resolved from the same host where Lab runs.
+The builtin runtime runs Ferret core and its standard library inside the Lab process. It does not register optional browser modules or a CDP driver. Use an HTTP or Wire host configured with the required module and driver for browser-backed tests. Lab passes user parameters and `@lab` system parameters into that host without rewriting browser options.
 
-Use FQL and Ferret runtime configuration for browser driver details. Lab passes user parameters and `@lab` system parameters into the runtime, but it does not rewrite browser options.
+## HTTP and Wire runtimes
 
-## HTTP and binary runtimes
-
-When you use `--runtime=http(s)://...` or `--runtime=bin:...`, browser connectivity is evaluated from that runtime's environment.
+When you use `--runtime=http(s)://...` or `--runtime=wire+tcp://127.0.0.1:<port>`, browser connectivity is evaluated from that runtime's environment.
 
 For example, if Lab runs on your laptop but the HTTP runtime runs in a container, `127.0.0.1:9222` inside the query refers to the runtime container, not your laptop. Expose or advertise the browser endpoint in a way that the runtime can reach.
 
@@ -70,10 +69,11 @@ A common CI shape is:
 
 {{< terminal >}}
 lab run browser-tests/ \
+  --runtime=wire+tcp://127.0.0.1:50051 \
   --wait=http://127.0.0.1:9222/json/version \
   --reporter=simple
 {{< /terminal >}}
 
 ## Next steps
 
-{{< docs-related tiles="tools-lab-http-runtime,tools-lab-binary-runtime,tools-lab-running-tests" >}}
+{{< docs-related tiles="tools-lab-http-runtime,tools-lab-wire-runtime,tools-lab-running-tests" >}}

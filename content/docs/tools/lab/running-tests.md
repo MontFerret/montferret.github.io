@@ -133,4 +133,4 @@ If the run is interrupted, Lab cancels the context and prints `Terminated`.
 
 ## Next steps
 
-{{< docs-related tiles="tools-lab-static-serving,tools-lab-mock-api,tools-lab-runners,tools-lab-http-runtime,tools-lab-binary-runtime" >}}
+{{< docs-related tiles="tools-lab-static-serving,tools-lab-mock-api,tools-lab-runners,tools-lab-http-runtime,tools-lab-wire-runtime" >}}

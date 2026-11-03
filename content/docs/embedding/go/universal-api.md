@@ -7,7 +7,7 @@ description: "Expose a Native Ferret engine through the portable Universal API."
 
 # Use the Universal API
 
-The native adapter and [Wire's remote client]({{< ref "docs/embedding/wire" >}}) implement the same runtime contracts. Use Wire when a separate process needs access to an application's configured runtime.
+This page targets the Core development adapter and Universal API `v1.0.0-alpha.21`. Use the [development checkout setup](../getting-started/#installation). [Wire's remote client]({{< ref "docs/embedding/wire" >}}) uses the same portable runtime and consumable-output interfaces. Use the published dependency set in its [compatibility table]({{< ref "docs/embedding/wire#run-a-host-and-client" >}}).
 
 Use `github.com/MontFerret/ferret/v2/uapi`, Ferret's official adapter, when
 your integration accepts `github.com/MontFerret/api` interfaces. For Native
@@ -19,20 +19,27 @@ package example
 
 import (
     "context"
+    "errors"
 
     "github.com/MontFerret/api"
     "github.com/MontFerret/ferret/v2"
     "github.com/MontFerret/ferret/v2/uapi"
 )
 
-func Run(ctx context.Context) (*api.Output, error) {
+func Run(ctx context.Context) (content *api.Content, err error) {
     portable, err := uapi.New("dev", ferret.WithParam("value", 41))
     if err != nil {
         return nil, err
     }
-    defer portable.Close()
+    defer func() { err = errors.Join(err, portable.Close()) }()
 
-    return portable.Run(ctx, api.NewAnonymousSource("RETURN @value + 1"))
+    output, err := portable.Run(ctx, api.NewAnonymousSource("RETURN @value + 1"))
+    if err != nil {
+        return nil, err
+    }
+    defer func() { err = errors.Join(err, output.Close()) }()
+
+    return output.Collect(ctx)
 }
 {{< /code >}}
 
@@ -67,9 +74,9 @@ and Universal option types remain separate.
 
 `portable.Compile(ctx, source, options...)` returns an `api.Plan`.
 Create independent sessions with `plan.NewSession(ctx, options...)`, run them
-with `session.Run(ctx)`, and close each session before closing the plan.
+with `session.Run(ctx)`, consume or collect each output, and close each session before closing the plan.
 Ordinary sessions also support sequential runs when their environment remains
-unchanged.
+unchanged. Settle each output before the next run.
 
 `plan.Params(ctx)` returns a detached parameter-name snapshot and an error:
 
@@ -140,7 +147,7 @@ Cancellation observed before publication leaves the previous set intact. Once
 publication succeeds, later cancellation does not undo it or cancel the debuggee.
 Completed, terminated, and closed sessions reject replacement.
 
-These signatures use API `v1.0.0-alpha.19` and the corresponding Ferret update.
+These signatures are included in the current API `v1.0.0-alpha.21` contract.
 Live DAP/IDE support additionally requires a later daemon release and matching
 Editorium pin.
 
@@ -168,7 +175,7 @@ without discovery or validation. Version metadata remains available after runtim
 closure with a valid context. Retrieval is synchronous and creates no background
 work.
 
-These metadata signatures use Universal API `v1.0.0-alpha.20`.
+These metadata signatures are included in Universal API `v1.0.0-alpha.21`.
 
 ## Configure portable execution
 
@@ -196,7 +203,7 @@ session validation.
 
 The portable contract allows runtime-specific validation at the point of use.
 Native checks output codec availability during result encoding, after the query
-has run. An unavailable codec therefore returns an operation error even though
+has run. An unavailable codec therefore reports an operation error through output consumption even though
 callbacks and session creation succeeded and query side effects may have occurred.
 The adapter preserves Native result and session cleanup on this path.
 
@@ -234,7 +241,7 @@ coordinating descendant cleanup. Callers coordinate cleanup when descendants use
 parent-owned resources.
 `Runtime.Run` delegates temporary session and plan cleanup to Native.
 
-Settle ordinary Run calls before closing their session. Debug Close terminates
+Settle ordinary Run calls and their output before closing their session. Debug Close terminates
 and waits for active commands. Repeated and concurrent Close calls preserve the
 Native cleanup result and diagnostic information; projected error wrappers need
 not have identical pointers. Close hooks must not recursively close their own
@@ -242,27 +249,28 @@ Native object. Context arguments must be non-nil.
 
 ## Preserve output and diagnostics
 
-`Runtime.Run` and `Session.Run` return `(*api.Output, error)`. A nil output
-means no output was produced. A non-nil output represents a produced value,
-including empty output, and may accompany an error from a hook or cleanup step.
-A zero-valued `Output` is not an absence sentinel. Inspect output independently
-of the error:
+`Runtime.Run` and `Session.Run` return `(api.Output, error)`. `api.Output`, `api.Content`, `api.Metadata`, and `api.Consumer` have the same identity as the corresponding Native façade types. Preparation errors arrive from Run; after VM admission, a usable handle reports terminal execution, encoding, hook, context, and cleanup failures through consumption.
 
 {{< code lang="go" >}}
 output, err := portable.Run(ctx, api.NewAnonymousSource("RETURN 42"))
-if output != nil {
-    fmt.Printf("%s: %s\n", output.ContentType, output.Content)
+if err != nil {
+    return err
+}
+defer output.Close()
+
+content, err := output.Collect(ctx)
+if content != nil {
+    fmt.Printf("%s: %s\n", content.Metadata.ContentType, content.Data)
 }
 if err != nil {
     return err
 }
 {{< /code >}}
 
-Output bytes belong to the caller, survive cleanup, and need no Close call.
-Debugger commands can likewise return a completion event and output alongside
-an error.
+A nil `*api.Content` means content is absent. A non-nil pointer represents present content even with nil or empty data. Collected bytes are recipient-owned and survive cleanup. The thin UAPI wrapper delegates metadata, content, the original consumer, and lifecycle to Native without copying payloads; it projects errors from `Consume`, `Collect`, and `Close`.
 
-Use `errors.As` to obtain `github.com/MontFerret/api/diagnostics.Diagnostics`.
-The projection preserves source identity and byte coordinates, while
-`errors.Is` and `errors.As` still reach Native errors and cancellation causes.
-See [executing queries](../executing/) for Native output and lifecycle details.
+Keep the original Run context alive through consumption. Invocation cancellation preserves recorded failures even when consumption reuses that canceled context or uses a separately canceled context with another cause. A rejected consumption call leaves the handle unclaimed; a fresh context can retry only while the invocation remains live. Repeated Close returns cleanup failures only. See [Output](../output/) for the complete admission and closure rules.
+
+Debugger completion retains materialized `*api.Content`, rather than a one-shot output handle. Commands can return a completion event with available content alongside an error; retained content remains detached after debugger and parent cleanup.
+
+Use `errors.As` to obtain `github.com/MontFerret/api/diagnostics.Diagnostics` from preparation or terminal method errors. The projection preserves source identity and byte coordinates, while `errors.Is` and `errors.As` still reach Native errors, joined cleanup failures, and distinct cancellation causes. Output sentinels retain the canonical API identities. Serialize materialized Content with nested `metadata` and standard byte-slice `data`, as described in [Output](../output/#serialize-materialized-content).

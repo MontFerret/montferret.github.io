@@ -222,8 +222,14 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
+    defer output.Close()
 
-    fmt.Println(string(output.Content))
+    content, err := output.Collect(context.Background())
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(content.Data))
     // {"joined":"abc","titled":"Hello World","wrapped":"**content**"}
 }
 {{</ code >}}

@@ -16,14 +16,14 @@ ferret repl
 The shell prints a version banner and presents a `>` prompt:
 
 ```
-Welcome to Ferret REPL {{< data "versions.runtime.v2" >}}
+Welcome to Ferret REPL <runtime-version>
 Please use `exit` or `Ctrl-D` to exit this program.
 >
 ```
 
 ## Evaluate expressions
 
-Type any FQL expression at the prompt. The result prints as soon as evaluation finishes:
+Submit an FQL expression with a terminal `RETURN`. Output is written as encoded chunks arrive. Each submission finishes consumption before the shell starts the next query:
 
 ```
 > return 1 + 2
@@ -70,7 +70,7 @@ The `--param` flag follows the same format as the [run](../run/) command.
 
 ## Runtime and browser flags
 
-The REPL accepts the same runtime and browser flags as [`ferret run`](../run/#runtime-and-browser-flags). For example, to start a REPL with a headless browser available:
+The REPL accepts the same runtime and browser flags as [`ferret run`](../run/#runtime-and-browser-flags). Scripts must [select the CDP driver]({{< ref "browser" >}}#select-cdp-in-the-script) to use Chrome or Chromium. For example, to start a REPL with a headless browser available:
 
 {{< terminal >}}
 ferret repl --browser-headless
@@ -87,10 +87,16 @@ ferret repl --runtime wire --runtime-endpoint tcp://127.0.0.1:54321
 The banner identifies the endpoint and the exact version supplied by the host. For the development host:
 
 ```text
-Welcome to Ferret REPL (Wire runtime: tcp://127.0.0.1:54321; version: v2.0.0-alpha.57)
+Welcome to Ferret REPL (Wire runtime: tcp://127.0.0.1:54321; version: v{{< data "versions.wire.core" >}})
 ```
 
 The shell reuses one runtime and connection across submissions. Syntax diagnostics go to stderr and allow corrected queries. Transport loss or resource failure ends the shell; it never reconnects or falls back. The host owns browser integrations and filesystem policy, so explicit local browser or policy settings are rejected. See the [Wire runtime guide]({{< ref "wire" >}}) for setup, compatibility, and metadata behavior.
+
+## Output and errors
+
+The shell consumes each query's encoded output directly and preserves available bytes if a terminal error follows. Nonempty output receives a trailing newline when needed, including partial output while stdout remains writable. Empty output adds no result newline. Streaming describes encoded delivery; evaluation remains the runtime's responsibility.
+
+Structured query diagnostics, including those reported during consumption, go to stderr and allow a corrected submission. Writer, transport, cancellation, and cleanup failures end the shell. The [HTTP Worker adapter]({{< ref "run" >}}#legacy-http-runtime) prints response bodies as raw output; HTTP statuses do not become query diagnostics.
 
 ## Exit
 

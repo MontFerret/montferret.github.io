@@ -13,7 +13,7 @@ By default, Lab runs tests with its builtin Ferret runtime. Use an HTTP runtime 
 lab run --runtime=http://localhost:8080 tests/
 {{< /terminal >}}
 
-Runtime selection is per Lab run. The runner, sources, local services, parameters, and reporters still run in the Lab process.
+Lab uses the Universal Ferret API's one-shot `api.Runtime.Run` for HTTP execution, including repetitions and retries. Its case executor remembers that HTTP compilation is unsupported and falls back without issuing a compilation request. HTTP keeps the request protocol described below. Runtime selection is per Lab run. The runner, sources, local services, parameters, and reporters still run in the Lab process.
 
 ## Run request
 
@@ -28,7 +28,7 @@ For each query, Lab sends a `POST` request to the runtime endpoint with JSON:
 }
 ```
 
-The runtime response body is treated as the query output. Non-`2xx` HTTP responses fail the test with the response status.
+A successful request returns a one-shot Universal API output as soon as the response headers arrive. Its metadata records the response content type and the length when known. Go callers can stream the body with `Consume` or use `Collect` to retain the bytes received, including a prefix delivered before an error. Lab checks completion before passing a test. YAML suites decode successful query output as JSON, with an empty response yielding a null result. Non-`2xx` HTTP responses fail the test with the response status.
 
 By default, Lab sends these request headers:
 
@@ -48,22 +48,22 @@ If the runtime URL includes a path, Lab uses that path for `run` requests:
 lab run --runtime=https://ferret.example.com/v1/run tests/
 {{< /terminal >}}
 
-Use `runtime-param=path` to override the run endpoint:
+Use `runtime-option=path` to override the run endpoint:
 
 {{< terminal >}}
 lab run \
   --runtime=https://ferret.example.com \
-  --runtime-param='path:"/v1/run"' \
+  --runtime-option='path:"/v1/run"' \
   tests/
 {{< /terminal >}}
 
 `path` overrides only query execution. `lab version --runtime=...` uses the runtime URL path and appends `info`, or requests `/info` when the URL has no path.
 
-## Runtime params
+## Runtime options
 
-Pass runtime-specific settings with `--runtime-param`. Values are parsed as JSON.
+Pass adapter-specific settings with `--runtime-option`. Values are parsed as JSON.
 
-| Param | Type | Meaning |
+| Option | Type | Meaning |
 | --- | --- | --- |
 | `headers` | object of strings | Extra headers to add to runtime requests. |
 | `path` | string | Run endpoint override. |
@@ -74,20 +74,22 @@ Example:
 {{< terminal >}}
 lab run \
   --runtime=https://ferret.example.com \
-  --runtime-param='headers:{"Authorization":"Bearer token"}' \
-  --runtime-param='cookies:{"session":"abc123"}' \
-  --runtime-param='path:"/v1/run"' \
+  --runtime-option='headers:{"Authorization":"Bearer token"}' \
+  --runtime-option='cookies:{"session":"abc123"}' \
+  --runtime-option='path:"/v1/run"' \
   tests/
 {{< /terminal >}}
 
-Invalid runtime param types are rejected before tests run.
+Unknown options, settings for another adapter, and invalid types or values are rejected before external setup. FQL values use `--param`, bindings, or YAML query/assertion parameters. Ordinary FQL names `headers` and `path` do not configure the HTTP adapter; adapter options never become FQL inputs. See [Configuration](../configuration/) for quoting and precedence rules.
 
 ## Version request
 
 Use `lab version --runtime=...` to inspect the Ferret version reported by an HTTP runtime.
 
 {{< terminal >}}
-lab version --runtime=https://ferret.example.com
+lab version \
+  --runtime=https://ferret.example.com/api \
+  --runtime-option='headers:{"Authorization":"Bearer token123"}'
 {{< /terminal >}}
 
 Lab expects the runtime info response to include `version.ferret`:
@@ -99,6 +101,14 @@ Lab expects the runtime info response to include `version.ferret`:
   }
 }
 ```
+
+The version value is opaque and printed unchanged.
+
+## Capabilities and ownership
+
+The HTTP protocol supports one-shot execution and version reporting. Reusable compilation and debugging, per-session filesystem roots, and output-codec selection are unsupported by this adapter. Go callers receive errors matching `errors.ErrUnsupported` without an HTTP request. A canceled context takes precedence.
+
+The output owns the response body until consumption completes, the caller closes it, or the invocation is canceled. The version request reads and closes its body before returning. Both paths preserve cleanup errors. The adapter borrows the shared HTTP client, so its own close operation leaves that client usable. Filesystem and outbound HTTP execution policies belong to the host; Lab rejects local `--policy-fs-*` and `--policy-http-*` settings for HTTP runtimes.
 
 ## Local services with remote runtimes
 
@@ -118,6 +128,8 @@ lab run \
   tests/
 {{< /terminal >}}
 
+See [Migrate Lab runtime configuration]({{< ref "/docs/migrations/lab-runtime-configuration" >}}) when upgrading an earlier v2 configuration.
+
 ## Next steps
 
-{{< docs-related tiles="tools-lab-binary-runtime,tools-lab-running-tests,tools-worker" >}}
+{{< docs-related tiles="tools-lab-wire-runtime,tools-lab-running-tests,tools-worker" >}}

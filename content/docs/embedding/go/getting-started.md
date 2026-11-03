@@ -14,15 +14,24 @@ This page walks through installing Ferret as a Go dependency, running a query, a
 
 ## Installation
 
-Add the module to your project:
+These Go embedding pages target the **Core development API**, using Universal API `v1.0.0-alpha.21` and consumable output. The website's Standard Library version listing retains its separate release pin. The [Wire example's compatibility table]({{< ref "docs/embedding/wire#run-a-host-and-client" >}}) lists its published dependency set for remote runtimes.
+
+The documented checkout requires **Go 1.26 or later**. It includes both the reader/writer Encoding API and consumable Output API. Use this checkout as a local module replacement. From the directory containing your Go application (with its own `go.mod`), clone Core into a sibling directory and select the revision documented here:
 
 {{< terminal >}}
+git clone https://github.com/MontFerret/ferret.git ../ferret-core
+git -C ../ferret-core checkout 3dcc1849b08685e9cdc71021fd2b6dd9d4003077
+go mod edit -replace=github.com/MontFerret/ferret/v2=../ferret-core
 go get github.com/MontFerret/ferret/v2
 {{</ terminal >}}
 
+After adding the Go source below, run `go mod tidy`. Initialize a new application's module first with `go mod init example.com/myapp`. The replacement resolves Core locally at the exact revision above; it does not depend on the version selected by an unpinned `go get`. Remove it when upgrading to a compatible published release.
+
+For an existing integration, follow the [consumable output migration]({{< ref "/docs/migrations/consumable-output" >}}) and the [Encoding API migration]({{< ref "/docs/migrations/encoding-api" >}}).
+
 ## Running a query
 
-The simplest way to execute a query is `engine.Run`. It compiles the source, runs it in a fresh session, and returns the encoded output.
+The simplest way to execute a query is `engine.Run`. It compiles the source, runs it in a fresh session, and returns a one-shot output handle. Collect it to obtain owned encoded bytes.
 
 {{< code lang="go" >}}
 package main
@@ -49,8 +58,14 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
+    defer output.Close()
 
-    fmt.Println(string(output.Content))
+    content, err := output.Collect(context.Background())
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(content.Data))
     // {"name":"Ferret","version":2}
 }
 {{</ code >}}
@@ -74,6 +89,7 @@ defer plan.Close()
 
 names := []string{"alice", "bob", "carol"}
 
+// This snippet also imports "errors".
 for _, name := range names {
     session, err := plan.NewSession(ctx,
         ferret.WithSessionParam("name", name),
@@ -83,13 +99,19 @@ for _, name := range names {
     }
 
     output, err := session.Run(ctx)
-    session.Close()
-
     if err != nil {
+        session.Close()
         log.Fatal(err)
     }
 
-    fmt.Println(string(output.Content))
+    content, collectErr := output.Collect(ctx)
+    output.Close()
+    closeErr := session.Close()
+    if err := errors.Join(collectErr, closeErr); err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(content.Data))
 }
 // "ALICE"
 // "BOB"
@@ -143,13 +165,21 @@ if err != nil {
 }
 {{</ code >}}
 
-Runtime errors from query execution are returned by `session.Run`:
+Preparation failures are returned by `Run`. Once execution enters the VM, execution, encoding, hooks, and output cleanup failures are reported by `Collect` or `Consume`:
 
 {{< code lang="go" >}}
 output, err := session.Run(ctx)
 if err != nil {
-    // handle runtime error
+    return err // preparation failed
 }
+defer output.Close()
+
+content, err := output.Collect(ctx)
+if err != nil {
+    // Inspect available content independently, then handle the terminal error.
+    return err
+}
+_ = content
 {{</ code >}}
 
 Context cancellation and timeouts work as expected:
@@ -160,12 +190,21 @@ defer cancel()
 
 output, err := session.Run(ctx)
 if err != nil {
-    // may be context.DeadlineExceeded
+    return err // cancellation may prevent VM admission
+}
+defer output.Close()
+
+_, err = output.Collect(ctx)
+if err != nil {
+    // errors.Is(err, context.DeadlineExceeded) detects an expired deadline.
+    return err
 }
 {{</ code >}}
+
+Keep the original Run context alive until output consumption completes. A new consumption context cannot revive a canceled invocation. See [Output]({{< ref "/docs/embedding/go/output" >}}) for borrowing, cancellation, and closure.
 
 The VM observes cancellation at structural execution boundaries rather than polling every native operation. Blocking host functions, iterators, queries, streams, and other context-aware capabilities receive this same context and must observe it while they retain control. Cancellation and deadline errors propagate to the caller and cannot be suppressed by FQL error recovery.
 
 ## Next steps
 
-{{< docs-related tiles="embedding-go-executing,embedding-go-modules,embedding-go-custom-functions,embedding-go-configuration" >}}
+{{< docs-related tiles="embedding-go-output,embedding-go-executing,embedding-go-modules,embedding-go-custom-functions,embedding-go-configuration" >}}

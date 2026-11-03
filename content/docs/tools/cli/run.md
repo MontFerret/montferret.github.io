@@ -53,13 +53,13 @@ Use `--param` (or `-p`) to pass named values into a script. Parameters are acces
 ferret run script.fql --param url=https://example.com --param limit=50
 {{< /terminal >}}
 
-{{< editor lang="fql" >}}
-let page = web::html::open(@url)
+{{< code lang="fql" >}}
+LET page = web::html::open(@url)
 
-return for item in page[~ css`.result`]
-    limit @limit
-    return item.textContent
-{{< /editor >}}
+RETURN FOR item IN page[~ css`.result`]
+    LIMIT @limit
+    RETURN item.textContent
+{{< /code >}}
 
 Values are parsed as JSON when possible, otherwise treated as strings:
 
@@ -93,9 +93,13 @@ These flags control where and how scripts execute. They are shared by the `run`,
 | `-b`, `--browser-headless` | `false` | Open a headless browser for script execution |
 | `-c`, `--browser-cookies` | `false` | Persist cookies between queries |
 
+Builtin filesystem and HTTP execution policies are shared by `run`, `repl`, and `debug`. See [Filesystem policy]({{< ref "configuration" >}}#filesystem-policy) and [HTTP policy]({{< ref "configuration" >}}#http-policy) for their flags, config keys, environment variables, and defaults. They do not configure remote hosts.
+
 ### Browser modes
 
-Scripts that do not use browser-backed features run without a browser. When a script needs a browser, choose one of:
+Scripts that do not use browser-backed features run without a browser. The HTML module defaults to its memory driver; [select `{ driver: "cdp" }` in the script]({{< ref "browser" >}}#select-cdp-in-the-script) when it needs Chrome or Chromium. Browser flags do not change the selected HTML driver.
+
+For a CDP script, choose one of:
 
 **Automatic browser** — the CLI starts and stops a browser for each run:
 
@@ -129,9 +133,25 @@ To execute against a Worker-compatible HTTP runtime:
 ferret run --runtime http://localhost:8080 script.fql
 {{< /terminal >}}
 
-Remote runtimes cannot run compiled artifacts or debug sessions.
+The Worker adapter sends source text and parameters with `POST /` and reads the hosted Ferret version with `GET /info`. Execution responses stream unchanged regardless of HTTP status: an error status alone does not fail the command, and the body is not interpreted as structured query diagnostics. Request, body-read, writer, cancellation, and cleanup failures still fail the command.
+
+Remote runtimes cannot run compiled artifacts or CLI debug sessions. Worker does not expose reusable Universal API compilation, output codec selection, or per-session filesystem-root selection.
 
 All runtime and browser flags can also be set persistently through the [`config`](../configuration/) command or environment variables.
+
+## Output delivery
+
+The CLI consumes encoded output directly, writing each chunk completely before accepting the next. Slow stdout applies backpressure. Bytes are not decoded, re-encoded, or collected into a complete response by the command.
+
+Available bytes remain on stdout if execution or delivery later fails. A successful empty result prints nothing. Terminal execution, read, write, cancellation, and cleanup failures cause a failing exit. HTTP response delivery uses a bounded buffer. Streaming encoded output does not imply incremental FQL evaluation.
+
+## Go execution helpers
+
+The CLI's Go helpers `runtime.Run`, `RunSource`, `RunArtifact`, `Builtin.RunArtifact`, and `run.Execute` return `(api.Output, error)`. A returned handle is one-shot: `Consume` processes borrowed, read-only chunks, while `Collect` returns detached `Content.Data`. Copy callback bytes you retain. Non-nil collected content may accompany an error and contain partial output.
+
+`runtime.Run`, `RunArtifact`, and `run.Execute` transfer their invocation-owned runtime and transport resources to the output. `RunSource` borrows its supplied `Resources`. `Builtin.RunArtifact` borrows its receiver and transfers its temporary session and plan to the output. Consume or close output before releasing borrowed parents; callers remain responsible for closing those parents.
+
+Keep the invocation context alive until consumption or closure finishes. `Consume` and `Collect` observe terminal execution, delivery, and cleanup failures. `Close` abandons unread output without certifying success. See [Output]({{< ref "/docs/embedding/go/output" >}}) for the shared lifecycle contract.
 
 ## Next steps
 

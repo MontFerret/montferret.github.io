@@ -235,7 +235,7 @@ Before-run hooks run FIFO and can return a derived context for subsequent hooks 
 
 Normal and debug sessions follow the same pairing rules. If a debugger's `Start` aborts after successful before-run hooks but before execution, it settles those after-run hooks immediately and remains available for another `Start`. Closing the session does not repeat the aborted attempt's hooks.
 
-An after-run failure does not discard successful encoded output. Normal sessions run after-run hooks before encoding and result cleanup; hook, encoding, and cleanup failures remain inspectable in the returned error. Check for available output even when a run returns an error.
+An after-run failure does not discard available encoded content. Normal sessions run after-run hooks before encoding and result cleanup. After VM admission, Run returns a handle with a nil error; hook, encoding, and cleanup failures are reported by Collect or Consume. Inspect collected content independently of the terminal error. The original Run context bounds the output lifetime; a hook replacement context affects execution only. See [Output]({{< ref "/docs/embedding/go/output" >}}).
 
 Modules register these hooks with `boot.Hooks().Session().BeforeRun(...)` and `boot.Hooks().Session().AfterRun(...)`.
 

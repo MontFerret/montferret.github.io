@@ -46,6 +46,8 @@ cd kvplugin
 go mod tidy
 {{</ terminal >}}
 
+Apply the [Core development checkout replacement]({{< ref "/docs/embedding/go/getting-started#installation" >}}) in the generated module before using the consumable-output examples below; the initializer may select an older published Core dependency.
+
 The initializer creates the module manifest, Go module, starter registration, documentation, and package directories. Replace the starter registration and add the implementation and test files as you follow the guide:
 
 ```text
@@ -413,12 +415,20 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
+    defer output.Close()
 
-    fmt.Println(string(output.Content))
+    content, err := output.Collect(context.Background())
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(content.Data))
 }
 {{</ code >}}
 
 ## Test through the SDK harness
+
+These examples use the [Core development checkout]({{< ref "/docs/embedding/go/getting-started#installation" >}}). The harness returns consumable output too: collect before decoding, and assert runtime failures from consumption rather than Run. Construction and preparation errors remain immediate.
 
 Use `sdktest` for black-box tests that exercise registration, compilation, runtime argument checks, lifecycle hooks, and result encoding together:
 
@@ -456,6 +466,12 @@ func TestCache(t *testing.T) {
     if err != nil {
         t.Fatal(err)
     }
+    defer output.Close()
+
+    content, err := output.Collect(t.Context())
+    if err != nil {
+        t.Fatal(err)
+    }
 
     var result struct {
         Size int      `json:"size"`
@@ -463,7 +479,7 @@ func TestCache(t *testing.T) {
         Keys []string `json:"keys"`
     }
 
-    if err := json.Unmarshal(output.Content, &result); err != nil {
+    if err := json.Unmarshal(content.Data, &result); err != nil {
         t.Fatal(err)
     }
 
@@ -475,8 +491,13 @@ func TestCache(t *testing.T) {
 func TestCacheRejectsWrongArgumentType(t *testing.T) {
     harness := newHarness(t)
 
-    if _, err := harness.Run(t.Context(), `return kv::get("not a cache", "key")`); err == nil {
-        t.Fatal("expected a cache argument error")
+    output, err := harness.Run(t.Context(), `return kv::get("not a cache", "key")`)
+    if err != nil {
+        t.Fatal(err) // preparation should succeed
+    }
+    defer output.Close()
+    if _, err := output.Collect(t.Context()); err == nil {
+        t.Fatal("expected a cache argument error during consumption")
     }
 }
 
@@ -492,17 +513,28 @@ func TestCacheCapacity(t *testing.T) {
     if err != nil {
         t.Fatal(err)
     }
-    if string(output.Content) != "2" {
-        t.Fatalf("expected overwrite result 2, got %s", output.Content)
+    defer output.Close()
+
+    content, err := output.Collect(t.Context())
+    if err != nil {
+        t.Fatal(err)
+    }
+    if string(content.Data) != "2" {
+        t.Fatalf("expected overwrite result 2, got %s", content.Data)
     }
 
-    if _, err := harness.Run(t.Context(), `
+    failed, err := harness.Run(t.Context(), `
         let cache = kv::open()
         kv::set(cache, "first", 1)
         kv::set(cache, "second", 2)
         return true
-    `); err == nil {
-        t.Fatal("expected the second key to exceed capacity")
+    `)
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer failed.Close()
+    if _, err := failed.Collect(t.Context()); err == nil {
+        t.Fatal("expected the second key to exceed capacity during consumption")
     }
 }
 

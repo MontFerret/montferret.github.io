@@ -161,7 +161,7 @@ Struct field names are used exactly as declared in Go. Unexported fields are ski
 
 `runtime.ValueOf(nil)` returns `None`, so nil entries work in the map-based `WithParams` and `WithSessionParams` options. The single-value `WithParam` and `WithSessionParam` options reject a nil `any`; pass `runtime.None` through the corresponding runtime-value option when you need an explicit `None`.
 
-This conversion produces in-memory `ferret.Value` instances for execution. It is separate from result encoding: `Session.Run` returns a `*ferret.Output` whose `Content` contains encoded bytes. The default output codec is JSON.
+This conversion produces in-memory `ferret.Value` instances for execution. It is separate from result encoding: `Session.Run` returns a `ferret.Output` handle. Collect it to obtain `*ferret.Content` with encoded bytes in `Data`. The default output codec is JSON.
 
 ## Example: parameterized query with per-session overrides
 
@@ -220,12 +220,18 @@ func run() error {
         }
 
         output, runErr := session.Run(ctx)
+        if runErr != nil {
+            return errors.Join(runErr, session.Close())
+        }
+
+        content, collectErr := output.Collect(ctx)
+        outputErr := output.Close()
         closeErr := session.Close()
-        if err := errors.Join(runErr, closeErr); err != nil {
+        if err := errors.Join(collectErr, outputErr, closeErr); err != nil {
             return err
         }
 
-        fmt.Println(string(output.Content))
+        fmt.Println(string(content.Data))
     }
     // "hello Alice!"
     // "hey Bob!"

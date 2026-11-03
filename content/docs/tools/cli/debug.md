@@ -135,7 +135,7 @@ Type `quit` (alias `q`) or press `Ctrl-D` to end the debug session.
 
 ## Runtime and browser flags
 
-The debug command accepts the same runtime and browser flags as [`ferret run`](../run/#runtime-and-browser-flags). The `--runtime` flag is ignored since debugging requires the builtin runtime.
+The debug command accepts the same runtime, browser, parameter, and builtin policy flags as [`ferret run`](../run/#runtime-and-browser-flags). Debugging requires the builtin runtime: selecting Wire or an HTTP runtime is rejected before connecting or starting a browser.
 
 ## Next steps
 

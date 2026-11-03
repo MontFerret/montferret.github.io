@@ -10,6 +10,8 @@ description: "Compile FQL scripts to binary artifacts, store them, and load them
 
 Ferret can compile FQL scripts into binary artifacts. Loading a pre-compiled artifact skips parsing and source compilation — useful for faster startup, distributing scripts without separate `.fql` files, or caching build output. The loading engine still owns a compiler and must register every module or host function used by the program.
 
+The Go examples target the [Core development checkout]({{< ref "/docs/embedding/go/getting-started#installation" >}}) and collect consumable output.
+
 For the artifact format specification and full API, see [Programs]({{< ref "/docs/embedding/go/programs" >}}).
 
 ## Compile from Go
@@ -160,15 +162,21 @@ func run() error {
     if err != nil {
         return err
     }
+    defer output.Close()
 
-    fmt.Println(string(output.Content))
+    content, err := output.Collect(ctx)
+    if err != nil {
+        return err
+    }
+
+    fmt.Println(string(content.Data))
     // "FERRET"
 
     return nil
 }
 {{</ code >}}
 
-`output.Content` is encoded output. The default JSON codec includes quotes around the returned FQL string.
+`content.Data` is encoded output. The default JSON codec includes quotes around the returned FQL string.
 
 Build workflow:
 
@@ -477,8 +485,14 @@ func runArtifact(ctx context.Context, engine *ferret.Engine, path string) (err e
     if err != nil {
         return err
     }
+    defer output.Close()
 
-    fmt.Printf("--- %s ---\n%s\n", filepath.Base(path), output.Content)
+    content, err := output.Collect(ctx)
+    if err != nil {
+        return err
+    }
+
+    fmt.Printf("--- %s ---\n%s\n", filepath.Base(path), content.Data)
     return nil
 }
 {{</ code >}}

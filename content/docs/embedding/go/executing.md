@@ -25,10 +25,10 @@ Embedding is useful when:
 
 ## The execution lifecycle
 
-Every embedded execution follows the same four-step lifecycle:
+Every embedded execution follows the same lifecycle, with collection when the caller needs owned bytes:
 
 ```
-Engine  →  Plan  →  Session  →  Output
+Engine  →  Plan  →  Session  →  Output  →  Content
 ```
 
 ### Engine
@@ -70,7 +70,7 @@ Plans are safe for concurrent use. They manage an internal pool of virtual machi
 
 ### Session
 
-A `Session` is a single execution of a plan. It holds the VM state, per-run parameters, and encoding configuration. Sessions are not safe for concurrent use — each goroutine should create its own session.
+A `Session` holds the VM state, parameters, and encoding configuration for a plan. It supports sequential runs; settle each output before the next run. Sessions are not safe for concurrent use — each goroutine should create its own session.
 
 {{< code lang="go" >}}
 session, err := plan.NewSession(ctx,
@@ -91,18 +91,24 @@ if err != nil {
 
 ### Output
 
-The `Output` contains the encoded result of the execution. By default, the result is encoded as JSON.
+The `Output` is a caller-owned handle. `Collect` returns detached `*ferret.Content`; by default its data is JSON. Terminal execution and cleanup failures arrive during consumption.
 
 {{< code lang="go" >}}
-fmt.Println(string(output.Content))
+defer output.Close()
+content, err := output.Collect(ctx)
+if err != nil {
+    log.Fatal(err)
+}
+
+fmt.Println(string(content.Data))
 // "hello"
-fmt.Println(output.ContentType)
+fmt.Println(content.Metadata.ContentType)
 // application/json
 {{</ code >}}
 
 ## Resource management
 
-Every level of the lifecycle — Engine, Plan, and Session — must be closed when no longer needed. Use `defer` to ensure cleanup:
+Close every directly created Engine, Plan, and Session when no longer needed. Consume or collect each Output to observe completion, or close it to abandon unread content. Use `defer` to ensure cleanup:
 
 {{< code lang="go" >}}
 engine, err := ferret.New()
@@ -126,6 +132,11 @@ if err != nil {
 defer session.Close()
 
 output, err := session.Run(ctx)
+if err != nil {
+    return err
+}
+defer output.Close()
+return output.Consume(ctx, func(context.Context, []byte) error { return nil })
 {{</ code >}}
 
 Close directly created children before parents: session, plan, then engine. Callers own these resources; closing a parent does not close descendants. Native Ferret protects each object's state, while the host orchestrates graceful shutdown. Cancel and settle outstanding work before closing resources used by hooks or services. Cancel and wait for ordinary execution before closing its session. Debug session closure terminates and settles active commands.
@@ -152,23 +163,36 @@ if err != nil {
     log.Fatal(err)
 }
 
-fmt.Println(string(output.Content))
+defer output.Close()
+content, err := output.Collect(ctx)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(string(content.Data))
 // 2
 {{</ code >}}
 
-`Session.Run` returns successful encoded output even when an after-run hook or result cleanup fails. `Engine.Run` preserves that output and joins execution, hook, session cleanup, and plan cleanup errors. Preserve available output before handling the error:
+`Run` returns immediate preparation errors, including compilation, options, session construction, before-run hooks, and context validation before VM entry. After VM admission it returns a usable handle with a nil error, even when eager execution or encoding fails. Consumption preserves available content alongside the terminal error:
 
 {{< code lang="go" >}}
 output, err := engine.Run(ctx, ferret.NewAnonymousSource(`return 2`))
-if output != nil {
-    fmt.Println(string(output.Content))
+if err != nil {
+    return err
+}
+defer output.Close()
+
+content, err := output.Collect(ctx)
+if content != nil {
+    fmt.Println(string(content.Data))
 }
 if err != nil {
     return err
 }
 {{</ code >}}
 
-The returned `Output` contains encoded data and has no `Close` method. Ferret releases the internal VM result after encoding; the returned content remains available after the session, plan, and engine close. Failed execution or encoding returns no output.
+Native execution and encoding remain eager. Ferret closes the VM result immediately after materialization. `Engine.Run` also closes its temporary session and plan before returning the handle, recording their cleanup failures for consumption. An unread output retains bytes and outcomes, not those execution resources or their capacity permits.
+
+Caller-created sessions remain caller-owned. Collected content survives output, session, plan, and engine closure. See [Output]({{< ref "/docs/embedding/go/output" >}}) for partial content, context lifetime, and close semantics.
 
 ## Thread safety summary
 
@@ -176,8 +200,9 @@ The returned `Output` contains encoded data and has no `Close` method. Ferret re
 |------|---------------|-------|
 | `Engine` | Safe | Shared across goroutines |
 | `Plan` | Safe | VM pool handles concurrent session creation |
-| `Session` | Not safe | One session per goroutine |
+| `Session` | Not safe | One session per goroutine; sequential reuse after settlement |
+| `Output` | Coordinated | One terminal consumer; concurrent metadata and Close |
 
 ## Next steps
 
-{{< docs-related tiles="embedding-go-getting-started,embedding-go-programs,language" >}}
+{{< docs-related tiles="embedding-go-output,embedding-go-getting-started,embedding-go-programs,language" >}}

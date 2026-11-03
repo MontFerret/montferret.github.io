@@ -2,7 +2,7 @@
 title: "Configuration"
 weight: 100
 draft: false
-description: "Reference Lab command flags, defaults, environment variables, and runtime params."
+description: "Reference Lab command flags, defaults, environment variables, and runtime options."
 ---
 
 # Configuration
@@ -20,8 +20,8 @@ The current Lab v2 command surface does not include `--cdp` or `LAB_CDP`. Browse
 | `--files` | `-f` | `LAB_FILES` | | Location of test files to run. Can be repeated. |
 | `--timeout` | `-t` | `LAB_TIMEOUT` | `30` | Per-test timeout in seconds. |
 | `--reporter` | | `LAB_REPORTER` | `console` | Reporter: `console` or `simple`. |
-| `--runtime` | `-r` | `LAB_RUNTIME` | | Runtime selector. Empty means builtin. Use `http(s)://...` or `bin:...` for adapters. |
-| `--runtime-param` | `--rp` | `LAB_RUNTIME_PARAM` | | Runtime adapter parameter. Can be repeated. |
+| `--runtime` | `-r` | `LAB_RUNTIME` | Builtin | Complete target: `builtin`, HTTP/HTTPS URL, or `wire+tcp://127.0.0.1:<port>`. |
+| `--runtime-option` | | `LAB_RUNTIME_OPTION` | | Repeatable adapter setting: `name:<JSON value>`. |
 | `--concurrency` | `-c` | `LAB_CONCURRENCY` | `1` | Number of tests to run at once. |
 | `--times` | | `LAB_TIMES` | `1` | Required successful runs per test. |
 | `--attempts` | `-a` | `LAB_ATTEMPTS` | `1` | Maximum attempts per required run. |
@@ -74,19 +74,20 @@ For service-specific examples, see [Static File Server]({{< ref "static-serving"
 
 | Flag | Alias | Env var | Default | Meaning |
 | --- | --- | --- | --- | --- |
-| `--runtime` | `-r` | `LAB_RUNTIME` | | Runtime selector to inspect. Empty means builtin. |
+| `--runtime` | `-r` | `LAB_RUNTIME` | Builtin | Complete target: `builtin`, HTTP/HTTPS URL, or `wire+tcp://127.0.0.1:<port>`. |
+| `--runtime-option` | | `LAB_RUNTIME_OPTION` | | Repeatable adapter setting: `name:<JSON value>`. |
 
 Examples:
 
 {{< terminal >}}
 lab version
 lab version --runtime=http://localhost:8080
-lab version --runtime=bin:/usr/local/bin/ferret
+lab version --runtime=wire+tcp://127.0.0.1:50051
 {{< /terminal >}}
 
 ## Parameter syntax
 
-`--param` and `--runtime-param` use `name:value` syntax. The value must be valid JSON.
+`--param` and `--runtime-option` use `name:value` syntax. The value must be valid JSON.
 
 {{< terminal >}}
 lab run tests/ \
@@ -109,22 +110,31 @@ lab run tests/ \
 
 Lab resolves every source from one snapshot after local services have published their final URLs. Values retain their original type. Malformed or missing sources, duplicate or overlapping binding targets, and overlaps with `--param` targets are configuration errors; bindings do not use last-value-wins precedence.
 
-## Runtime param keys
+## Runtime options
 
-HTTP runtimes support:
+`run` and `version` accept the same runtime target and adapter options. Omitted/empty targets and `builtin` select the built-in runtime. Malformed targets and unsupported schemes fail. HTTP paths are preserved; Wire retains its IPv4 loopback-only restriction.
 
-| Key | Type | Meaning |
+| Adapter | Option | JSON value and meaning |
 | --- | --- | --- |
-| `headers` | object of strings | Extra request headers. |
-| `path` | string | Run endpoint override. |
-| `cookies` | object of strings | Cookies sent to the runtime. |
+| Builtin | None | Adapter options are rejected. |
+| HTTP/HTTPS | `headers` | Object of strings added to request headers. |
+| HTTP/HTTPS | `cookies` | Object of strings sent as request cookies. |
+| HTTP/HTTPS | `path` | String URL reference overriding execution only; an empty string retains the runtime URL path. |
+| Wire TCP | `connect-timeout` | Positive duration string; default `"5s"`, connection and handshake only. |
 
-Binary runtimes support:
+Quote each whole `name:<JSON value>` shell argument. Repeat `--runtime-option` or separate entries with commas outside JSON strings, objects, and arrays. `LAB_RUNTIME_OPTION` accepts the same comma-separated entries. Spaces, colons, quoted commas, and JSON punctuation are retained. Any CLI occurrence replaces the environment option list; later duplicate names replace the whole earlier value, including objects, without merging. Unknown names, wrong-adapter settings, and invalid types or values fail before external setup.
 
-| Key | Type | Meaning |
-| --- | --- | --- |
-| `flags` | array of strings | Raw command-line flags passed to the binary before generated `--param` values. |
-| Any other key | JSON value | Shared parameter forwarded as `--param=<key>:<json>`. |
+{{< terminal >}}
+LAB_RUNTIME=wire+tcp://127.0.0.1:50051 \
+LAB_RUNTIME_OPTION='connect-timeout:"10s"' \
+lab run tests/
+{{< /terminal >}}
+
+FQL inputs use `--param`, `--param-bind`, or YAML query/assertion parameters. Runtime options never become FQL inputs. Ordinary parameters named `headers`, `path`, `cookies`, or `flags` remain valid. CLI parameter occurrences replace the `LAB_PARAM` list; later duplicate keys win. Query and assertion manifest parameters override common user values independently, while assertion `@lab.data.query` retains the query result and effective query parameters. `lab` remains reserved for system values.
+
+Local filesystem/HTTP execution policies apply only to the built-in runtime; hosted runtimes configure those capabilities themselves. External CLI binary runtimes remain unsupported.
+
+See [Migrate Lab runtime configuration]({{< ref "/docs/migrations/lab-runtime-configuration" >}}) when upgrading an earlier v2 configuration.
 
 ## Local service entry syntax
 
