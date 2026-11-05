@@ -28,9 +28,9 @@ const STDLIB_SEARCH_CHECK = "scripts/verify-stdlib-search.mjs"
 const REGISTRY_BASE_URL = "https://registry.ferretlang.org/"
 
 type versionsData struct {
-	Runtime struct {
+	Core struct {
 		V2 string `yaml:"v2"`
-	} `yaml:"runtime"`
+	} `yaml:"core"`
 }
 
 func generateSite() error {
@@ -185,7 +185,7 @@ func GenerateStdlib() error {
 	}
 
 	return stdlibdocs.Generate(context.Background(), client, stdlibdocs.Options{
-		Version:   versions.Runtime.V2,
+		Version:   versions.Core.V2,
 		OutputDir: STDLIB_DOCS_DIR,
 	})
 }
