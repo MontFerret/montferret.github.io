@@ -1,6 +1,6 @@
 ---
 title: "Blog"
-slug: "/blog/"
+slug: "blog"
 type: "blog"
 draft: false
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Try it!"
-slug: "/try/"
+slug: "try"
 type: "repl"
 draft: false
 ---

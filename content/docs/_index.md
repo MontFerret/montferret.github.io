@@ -1,6 +1,6 @@
 ---
 title: "Docs"
-slug: "/docs/"
+slug: "docs"
 type: "docs"
 draft: false
 noLabel: true

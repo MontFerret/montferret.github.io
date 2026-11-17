@@ -4,7 +4,7 @@ Built with Hugo
 
 ## Prerequisites
 - [Go](https://golang.org/doc/install)
-- [Hugo](https://gohugo.io/getting-started/installing/)
+- [Hugo Extended 0.169.0](https://gohugo.io/getting-started/installing/), the tested version used in CI
 - [Node.js](https://nodejs.org/en/download/)
 - [Mage](https://magefile.org) for building the website.
 

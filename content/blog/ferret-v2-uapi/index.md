@@ -9,83 +9,37 @@ authorLink: "https://github.com/ziflex"
 
 Hello, friends!
 
-One of the ideas I've emphasized throughout Ferret's development is that **Ferret is a library first**.
+One of the ideas I've emphasized throughout Ferret's development is that [Ferret is a library first]({{< ref "blog/ferret-v2-lib-first" >}}). Applications embed the engine, configure its capabilities, register their own functions and modules, and define how queries interact with the surrounding environment.
 
-You embed it into your application, configure the engine, register your own functions and modules, and decide how queries interact with the surrounding environment.
+That model worked well while Ferret was primarily an execution engine, but the surrounding ecosystem gradually became much broader. The project expanded to include a CLI, a test runner, a debugger, IDE integrations, and support for executing queries against runtimes hosted by other applications.
 
-This approach has worked well. But as Ferret's ecosystem grew, it introduced a problem I hadn't needed to worry about in the early days.
+All of these components need access to the same core capabilities: compiling source, executing queries, managing sessions and results, and debugging running programs. Allowing each of them to depend directly on Ferret Core would tightly couple the tooling ecosystem to the engine's implementation and make support for different runtime environments increasingly difficult.
 
-We were no longer building just an execution engine.
+To provide a stable boundary between runtimes and their consumers, we introduced the **Universal Ferret API (UAPI)**. It is a standalone module that defines a common set of interfaces and types for interacting with Ferret runtimes independently of their underlying implementations.
 
-We were building a CLI, a test runner, a debugger, IDE integrations, and eventually a way to execute queries in a runtime hosted by another application.
-
-All of these components needed to interact with Ferret. But should every one of them depend directly on the internals of Ferret Core?
-
-I didn't think so.
-
-That's why we introduced the **Universal Ferret API**, or UAPI: a standalone set of interfaces and types that describes how to interact with a Ferret runtime without depending on a particular engine implementation.
-
-It's a relatively small piece of the architecture, but it changes how the rest of the ecosystem fits together.
+This separation gives the ecosystem a consistent integration model while allowing Ferret Core, alternative runtime implementations, and the tools built around them to evolve more independently.
 
 ## The problem wasn't executing queries
 
-Running a query through Ferret's native Go API is straightforward.
+Ferret's native Go API makes it straightforward to embed and execute FQL within an application. The application creates an engine, configures its environment, and executes queries using the capabilities it needs. While this level of control is valuable for embedding, it isn't necessarily appropriate for development tools that interact with the runtime.
 
-Create an engine, configure it, provide some FQL, and execute it. For applications embedding Ferret directly, that's exactly what we want.
+A test runner primarily needs to execute queries and inspect their results. An editor needs compilation and diagnostics, while a debugger needs to control execution and inspect program state. None of these tools should depend on how Ferret Core initializes its compiler, manages execution contexts, or represents internal data structures.
 
-But consider a development tool.
+Initially, using Ferret Core's existing Go API throughout the ecosystem seemed like a reasonable approach. However, it would also couple every consumer to the engine's implementation. Changes to internal APIs could affect multiple tools, and supporting alternative execution environments would require additional integration logic.
 
-A test runner shouldn't need to know how Ferret allocates VM registers, constructs execution contexts, or manages internal engine components.
+This becomes particularly relevant when a tool supports both local and remote runtimes. For example, the CLI may execute a query using an embedded Ferret engine or delegate execution to a runtime hosted by another application. Although these environments differ in how they operate, the CLI still performs essentially the same tasks: submitting source code, supplying parameters, and processing results.
 
-An editor doesn't need to know how a compiler is assembled just to compile a query and display its diagnostics.
+Supporting each environment through a separate execution API would introduce unnecessary duplication, not only in the CLI but also in Lab, IDE integrations, and other tools. As the ecosystem continued to grow, maintaining these parallel integrations would become increasingly difficult.
 
-And a debugger shouldn't have to understand the engine's private data structures to inspect a running program.
-
-These tools need capabilities, not implementation details.
-
-Originally, the obvious solution was to use Ferret Core's Go API everywhere. After all, it already existed and provided everything we needed.
-
-But that creates coupling.
-
-When the engine's internal architecture changes, tools may need to change with it. When a new execution environment appears, every consumer needs another integration path.
-
-That becomes especially problematic when the engine isn't running inside the same process.
-
-Imagine a CLI that can execute FQL using either an embedded Ferret engine or a runtime exposed by another application.
-
-If the CLI has to understand two entirely different execution APIs, we've duplicated a significant part of its execution logic.
-
-Now multiply that problem by the number of tools in the ecosystem.
-
-The issue isn't that any individual integration is particularly difficult. It's that **the same integration problem keeps appearing in different places**.
+What we needed was a common interface that allowed tools to interact with different runtime implementations without coupling their execution logic to the underlying engine.
 
 ## Separating the engine from its consumers
 
-The solution was to establish a boundary between two responsibilities:
+The Universal API addresses this by establishing a clear separation between runtime implementations and the tools that consume them. Ferret Core remains responsible for implementing the language, including parsing, compilation, optimization, VM execution, native values, and integration with host applications. Consumers, on the other hand, interact with the runtime at a higher level, using its capabilities to compile queries, create execution sessions, supply parameters, retrieve results, and debug running programs.
 
-**Implementing a runtime** and **using a runtime**.
+These interactions are defined through a set of interfaces in the standalone [`github.com/MontFerret/api`](https://github.com/MontFerret/api) module. The central `api.Runtime` interface provides operations for executing source code, compiling reusable plans, preparing programs for debugging, and retrieving runtime version information. Additional interfaces describe compiled plans, execution sessions, and debugging operations, giving consumers a consistent way to interact with the runtime throughout the execution lifecycle.
 
-Ferret Core is responsible for implementing the language: parsing, compilation, optimization, VM execution, native values, and the host integrations that make queries useful.
-
-A consumer has a different set of concerns.
-
-It needs to submit source code, compile it, create execution sessions, provide parameters, retrieve results, and perhaps debug a running query.
-
-Those operations don't inherently require access to Ferret Core's internal machinery.
-
-They require a contract.
-
-This is what the Universal API provides.
-
-At its center is the `api.Runtime` interface, defined in the standalone [`github.com/MontFerret/api`](https://github.com/MontFerret/api) module.
-
-The interface exposes operations for executing source, compiling reusable plans, preparing programs for debugging, and retrieving runtime version information.
-
-The important part is what it doesn't expose: a particular compiler implementation, VM, storage strategy, or transport.
-
-Those decisions belong to the runtime implementation.
-
-A consumer works with the contract, not the machinery behind it.
+Importantly, these contracts make no assumptions about the underlying compiler, virtual machine, or communication transport. Each runtime implementation remains free to manage its internal architecture and resources, provided it satisfies the shared contracts. This allows Ferret Core to evolve independently while giving development tools a stable integration boundary that can accommodate different runtime implementations.
 
 ## One contract, several ways to execute
 
@@ -109,71 +63,39 @@ Here's the basic idea:
                                 Hosted Runtime
 ```
 
-From the consumer's perspective, both paths expose `api.Runtime`.
+From a consumer's perspective, both local and remote execution are represented through the same `api.Runtime` contract. A local implementation may adapt Ferret Core directly through UAPI, while a remote implementation may communicate with a runtime exposed through [Wire]({{< ref "docs/embedding/wire" >}}). The underlying behavior differs in important ways, including ownership, latency, resource management, and failure handling, but those differences do not require consumers to adopt separate execution models.
 
-One path operates locally, using Ferret Core through its Universal API adapter.
+This structure follows a dependency-inversion approach: tools depend on the shared API, while runtime implementations adapt themselves to it. Because the Universal API is defined independently of Ferret Core, consumers are not coupled to the engine's implementation packages or internal architecture.
 
-The other communicates with a runtime hosted elsewhere, using Wire.
-
-They have different implementations, ownership arrangements, performance characteristics, and failure modes.
-
-But the consumer doesn't need a separate execution model for each one.
-
-This is a form of dependency inversion: tools depend on the shared contract, while implementations adapt themselves to that contract.
-
-And because UAPI exists independently of Ferret Core, the dependency doesn't point back into the engine's implementation packages.
-
-That distinction matters.
-
-It gives us room to change the internals of Ferret Core without making every tool part of the same refactoring exercise.
-
-It also means the interface isn't exclusive to Ferret Core. Another implementation can satisfy the same contracts, provided it implements the required behavior.
+That separation allows Ferret Core to evolve without forcing corresponding changes throughout the tooling ecosystem. It also keeps the contract open to other runtime implementations, provided they satisfy the same behavioral requirements.
 
 ## Why Ferret has two APIs
 
-This raises a reasonable question.
+The `Native API` and the `Universal API` are intentionally separate because they serve different roles within the architecture.
 
-*Why not make the Universal API the only API?*
+The Native API is designed for applications that embed and configure Ferret Core directly. It exposes engine-specific capabilities and gives the host access to the parts of the runtime that are necessary for configuring modules, functions, services, codecs, and other implementation-specific behavior.
 
-Because the two APIs serve different purposes.
+The Universal API operates at a different level. It defines the contracts used by tools and other consumers that need to execute, compile, or debug FQL without depending on how the underlying runtime was constructed.
 
-The **Native API** is designed for applications embedding and configuring Ferret Core. It exposes engine-specific capabilities and integrates directly with Ferret's Go implementation.
+Combining these responsibilities into a single API would weaken that separation. A sufficiently rich shared interface would gradually become coupled to Ferret Core's implementation details, while a sufficiently generic Native API would have to omit capabilities that are useful to embedding applications. Keeping the two APIs distinct allows each one to remain focused on its intended use case.
 
-The **Universal API** is designed for consumers that need to interact with a runtime without depending on how it was constructed.
-
-Trying to combine both responsibilities into a single interface would create an awkward compromise.
-
-Either the shared API would become increasingly coupled to Ferret Core's implementation, or the Native API would lose useful capabilities to remain sufficiently generic.
-
-Neither outcome is desirable.
-
-Instead, Ferret provides an adapter.
-
-If your application owns an existing native engine, you can expose it through UAPI:
+Ferret connects them through an adapter. An application that already owns a native engine can expose it through UAPI without creating another runtime:
 
 {{< code lang="go" >}}
 portable := uapi.Wrap(native, "dev")
 {{< /code >}}
 
-`Wrap` doesn't create another engine. It adapts the one you already have.
+`uapi.Wrap` adapts the existing engine to the `api.Runtime` contract while leaving ownership with the application. The host continues to manage the engine's lifetime, configuration, registered functions, modules, and other native capabilities.
 
-The application remains responsible for the native engine's lifetime, configuration, functions, and modules. The adapter provides the common interface.
+For cases where the Universal API runtime should own the underlying engine, `uapi.New` constructs and manages one directly.
 
-Alternatively, `uapi.New` can construct and own a native engine when that ownership model is more convenient.
-
-Both approaches produce a runtime that implements `api.Runtime`.
-
-The engine remains specialized. Its consumers gain a common way to interact with it.
+Both approaches expose the same `api.Runtime` interface to consumers while preserving the distinction between the specialized Native API and the portable contracts defined by UAPI.
 
 ## What using the Universal API looks like
 
-Let's make this a little more concrete.
+Consider an application that exposes a custom `reports::generate` function through its Ferret runtime. A separate component can execute a query against that runtime without needing to know how the engine was configured or where it is running.
 
-Suppose an application exposes a custom `REPORTS::GENERATE` function through its Ferret runtime.
-
-A separate component wants to execute a query against that runtime.
-
-With UAPI, its execution code can look like this:
+With UAPI, the execution code depends only on `api.Runtime`:
 
 {{< code lang="go" >}}
 func runReport(
@@ -185,7 +107,7 @@ func runReport(
         ctx,
         api.NewSource(
             "report.fql",
-            "RETURN REPORTS::GENERATE(@period)",
+            "return reports::generate(@period)",
         ),
         api.WithParam("period", period),
     )
@@ -201,191 +123,93 @@ func runReport(
 }
 {{< /code >}}
 
-The function accepts an `api.Runtime`. It doesn't construct a native engine, configure the reports module, or establish a network connection.
+The function receives a runtime from its caller and uses the shared execution contract directly. It does not construct a native engine, configure the reports module, or establish a transport connection. Those responsibilities remain outside the execution logic.
 
-It simply uses a runtime provided by its caller.
+The supplied runtime may be a local Ferret Core instance exposed through the UAPI adapter, or a remote runtime provided by Wire. In either case, the consumer uses the same `api.Runtime` interface and follows the same execution flow.
 
-That runtime might be a local Ferret engine wrapped by UAPI. It might be a remote runtime obtained from Wire.
+This does not imply that all runtimes provide identical application-specific capabilities. The runtime used in this example must still expose `reports::generate`, along with any other functions or modules required by the query. UAPI standardizes how consumers interact with the runtime; it does not standardize the runtime's domain-specific configuration.
 
-The execution code remains the same.
-
-Of course, the supplied runtime must actually provide `REPORTS::GENERATE`. A shared interface doesn't mean every runtime exposes identical application-specific functions.
-
-But that is precisely the separation we want.
-
-The application defines the execution environment. The consumer provides the query.
+This keeps the responsibilities clearly separated: the host defines the execution environment and its available capabilities, while the consumer operates against that environment through a common API.
 
 ### Reusable plans and execution sessions
 
-Not every query should be compiled from scratch on every execution.
+For workloads that execute the same query multiple times, recompiling the source for every invocation would be unnecessary. UAPI therefore exposes compiled plans and execution sessions in addition to the convenience `Run` method.
 
-UAPI therefore defines more than a one-shot `Run` method.
+A runtime can compile source into an `api.Plan`, which represents a reusable compiled program. The plan can then create independent `api.Session` instances, each with its own execution configuration, such as parameters and supported filesystem settings.
 
-A runtime can compile source into an `api.Plan`. The plan represents a compiled program and can be reused to create independent execution sessions.
+This allows consumers to separate compilation from execution and reuse the same compiled plan across multiple invocations with different inputs. At the same time, they remain independent of the runtime's internal representation of compiled code or session state.
 
-Each `api.Session` receives its own execution configuration, including parameters and supported filesystem settings.
+Plans are not consumed when executed, and sessions manage their own lifecycles. The result is a common model for repeated execution that gives consumers predictable semantics while leaving each runtime implementation free to manage compilation and execution resources internally.
 
-This lets a consumer compile a query once and execute it repeatedly with different inputs without assuming anything about the engine's internal representation of a compiled program.
+## Results are part of the contract
 
-Plans aren't consumed by execution, and independently created sessions have their own lifetimes.
+Execution output is another important part of the Universal API contract. Earlier Ferret APIs returned fully buffered results, which works well for many cases but is less suitable when consumers need to process or forward large outputs without materializing them entirely in memory.
 
-That gives tools a useful common model for repeated execution while leaving the implementation free to manage compilation and execution resources appropriately.
+Different consumers also have different requirements. A CLI may stream encoded output directly to the terminal, an HTTP service may forward it to another connection, while a test runner may need to collect the complete result for inspection and assertions. These use cases should not require separate execution models.
 
-## Results are part of the contract, too
+UAPI addresses this through a consumable output abstraction. Execution returns an `api.Output` handle, and the caller decides how to process it:
 
-One aspect of the Universal API that deserves particular attention is execution output.
+- `Collect` materializes the available result as caller-owned content.
+- `Consume` delivers encoded data incrementally to a callback, allowing it to be forwarded or processed without retaining the complete payload.
+- `Close` abandons the remaining output and releases resources owned by the handle.
 
-Historically, Ferret's execution APIs returned buffered results. That was convenient for small queries, but not every consumer wants to accumulate an entire result in memory.
+The output handle also defines the lifecycle of an execution result. Successfully obtaining an `api.Output` means that execution has been admitted and a usable handle has been created; it does not mean the query has already completed successfully. Errors that occur during execution, encoding, delivery, or output cleanup may therefore surface when the output is consumed or collected. Even executions performed primarily for side effects must settle their output in order to observe their final outcome.
 
-A CLI may want to print output.
-
-An HTTP service may want to forward it.
-
-A test runner may need to collect and inspect it.
-
-These are different consumption patterns, but they shouldn't require different execution APIs.
-
-The current UAPI uses a **consumable output** model.
-
-Execution returns an `api.Output` handle. The caller can then choose how to receive the encoded result:
-
-- `Collect` materializes available content into caller-owned memory.
-- `Consume` delivers chunks to a callback, allowing output to be forwarded without retaining the complete payload.
-- `Close` abandons output and releases its owned resources.
-
-There's an important lifecycle detail here: obtaining an output handle doesn't mean execution has completed successfully.
-
-Execution, encoding, delivery, and cleanup errors can become visible during consumption. Even a query run only for its side effects must settle its output to observe completion.
-
-The output contract gives local and remote implementations a common way to describe result ownership, completion, cancellation, and errors.
-
-It doesn't promise that every implementation evaluates queries incrementally or eliminates buffering internally.
-
-It gives consumers a reliable way to receive results without forcing every runtime into the same execution strategy.
+By including these semantics in the shared contract, UAPI gives both local and remote runtime implementations a consistent model for ownership, cancellation, completion, and error reporting. It does not require every implementation to evaluate queries incrementally or avoid buffering internally; those remain implementation details. What it standardizes is how consumers receive and manage execution results.
 
 ## Debugging without exposing the engine
 
-Execution is only part of the story.
+The same separation applies to debugging. Ferret's tooling needs source-level capabilities such as breakpoints, stepping, stack inspection, variable access, and expression evaluation, but exposing the native debugger directly would couple every integration to the VM's internal representation of execution state.
 
-A useful language ecosystem needs tools that can inspect programs while they're running.
+UAPI defines portable debugger contracts for these operations instead. Tools can manage breakpoints, inspect frames and variables, evaluate expressions, and control execution through shared interfaces without depending on how Ferret Core represents stack frames, locals, or paused execution internally.
 
-For Ferret, that means source-level debugging: breakpoints, stepping, stack frames, variables, and expression evaluation.
+Ferret Core implements these contracts using its native debugger, while Wire can expose the same debugging operations across a process boundary. Structured source locations and diagnostics are part of the shared model as well, allowing clients to associate runtime state and errors with the corresponding FQL source.
 
-The tempting approach would be to expose the native debugger directly and let every integration adapt it to its needs.
-
-But that would bring us back to the original problem.
-
-An IDE shouldn't need to understand the VM's internal representation of a stack frame. Nor should a debugger client depend on the exact storage structures used for local variables.
-
-UAPI defines portable debugger contracts instead.
-
-A tool can request breakpoints, inspect frames, retrieve variables, evaluate expressions, and control execution through the shared debugger interface.
-
-Ferret Core implements those operations through its native debugger. Wire can carry the same operations across a process boundary.
-
-The interface also provides structured source locations and diagnostics, allowing tools to associate errors and execution state with the original FQL source.
-
-This doesn't remove all the complexity of debugger development. An IDE still needs an integration layer for its user interface and debugging protocol.
-
-But it puts an important boundary in the right place.
-
-**Tools should understand the execution state of an FQL program, not the private implementation of Ferret's virtual machine.**
+This does not eliminate the need for tool-specific integration. An IDE still has to map these capabilities into its own debugging protocol and user interface. What UAPI provides is a stable boundary between those tools and the runtime implementation, so debugger clients operate on the observable state of an FQL program rather than the private structures of Ferret's virtual machine.
 
 ## Where Wire fits
 
-You may have noticed that I've mentioned Wire several times.
+Wire builds directly on the contracts defined by UAPI, but the two projects address different parts of the architecture. UAPI defines how consumers interact with a runtime, while Wire provides a transport for accessing that runtime across a process boundary.
 
-That's not accidental.
+Wire implements the shared runtime contracts using Protocol Buffers and gRPC. On the server side, the host supplies an `api.Runtime` that represents its configured execution environment. On the client side, Wire exposes a remote implementation of the same interface. As a result, tools can use the same APIs for compilation, reusable plans, sessions, output handling, and debugging regardless of whether the runtime is local or hosted by another process.
 
-[Wire](https://github.com/MontFerret/wire) is one of the clearest demonstrations of why UAPI exists.
+The host remains responsible for constructing and configuring the runtime, including its modules, functions, services, and other capabilities. Wire does not reproduce or manage that configuration; it provides the communication layer through which consumers access it.
 
-But the two projects solve different problems.
+Remote execution still introduces concerns that do not exist, or have different characteristics, in a local runtime. Network latency, connection failures, authentication, cancellation, and distributed resource lifecycles all remain relevant. UAPI does not attempt to abstract those differences away completely. Instead, it provides a common interaction model so that supporting a remote runtime does not require consumers to adopt a separate execution API.
 
-UAPI defines how to interact with a runtime. Wire defines how to reach one across a process boundary.
-
-Wire provides a Protocol Buffers and gRPC implementation of the shared runtime contracts.
-
-On the server side, it accepts an `api.Runtime` supplied by the host application.
-
-On the client side, it exposes an implementation of that same interface.
-
-This means a development tool can interact with a remotely hosted runtime without learning an entirely different API for compilation, sessions, results, and debugging.
-
-The host remains responsible for configuring its engine and deciding which functions, modules, and capabilities are available.
-
-Wire handles communication.
-
-The distinction is important because a remote call is not equivalent to a local one in every respect.
-
-Network latency, disconnections, authentication, cancellation, and resource lifetimes still matter. UAPI doesn't make these differences disappear.
-
-What it does is prevent them from forcing an entirely separate programming model onto every consumer.
-
-I cover the remote execution side in more detail in [Introducing Ferret Wire](/blog/wire-introduction/).
+The remote execution model and Wire's architecture are covered in more detail in [Introducing Ferret Wire](/blog/wire-introduction/).
 
 ## What UAPI is not
 
-There's a danger with abstractions like this: once you introduce a common interface, it becomes tempting to turn it into a framework for everything.
+UAPI is intentionally limited in scope. It defines the contracts through which consumers interact with a Ferret runtime, but it is not itself a runtime implementation and does not compile or execute FQL on its own.
 
-That's not the goal.
+It also does not replace the Native API or take responsibility for runtime configuration. Module registration, host-specific functions, services, security policies, codecs, and other implementation-specific capabilities remain under the control of the runtime and its host application.
 
-UAPI isn't another Ferret engine. It doesn't compile or execute FQL by itself.
+Similarly, UAPI does not require every implementation to provide identical performance characteristics or internal behavior. Local and remote runtimes may differ significantly in how they manage resources, perform I/O, or execute operations. What they share is a common set of observable contracts and lifecycle semantics.
 
-It isn't a module registry, a plugin system, or a replacement for the native embedding API.
-
-And it doesn't define how an application should configure its runtime, enforce security policies, or expose host-specific functionality.
-
-It's also not a promise that all implementations have identical capabilities or performance characteristics.
-
-UAPI defines a shared set of operations and their expected behavior. An implementation still has to provide those operations correctly.
-
-Keeping that distinction clear is important, especially as Ferret continues to evolve.
-
-The abstraction should remain small enough to understand and useful enough that different parts of the ecosystem can rely on it.
+Keeping this boundary narrow is important for the long-term design of the API. UAPI should provide enough structure for tools and runtime implementations to interoperate consistently without becoming a general-purpose framework for configuring or implementing Ferret runtimes.
 
 ## Building an ecosystem without coupling everything together
 
-The immediate benefits are fairly practical.
+The practical benefit of UAPI is that different parts of the Ferret ecosystem can share the same execution model without depending directly on Ferret Core.
 
-The CLI can support different execution environments without maintaining completely separate query execution models.
+The CLI can support multiple runtime environments through the same set of contracts. Lab can execute tests against different runtime adapters while keeping test discovery, scheduling, retries, and assertions within its own domain. Daemons and IDE integrations can rely on common APIs for compilation, execution, and debugging, while applications that embed Ferret can expose their configured runtimes without exposing the engine's internal interfaces.
 
-Lab can run tests against different runtime adapters while preserving its own responsibilities for test discovery, scheduling, and assertions.
+The broader benefit is architectural independence. Ferret Core can continue to evolve its compiler, virtual machine, optimization pipeline, memory management, and execution internals without requiring every consumer to evolve in lockstep. At the same time, tools can develop new capabilities without being tied to a specific runtime implementation.
 
-The daemon and IDE integrations can use common compilation, execution, and debugging contracts.
-
-And applications embedding Ferret can expose their configured runtimes without giving external tools direct access to the engine's internal API.
-
-But the longer-term benefit is architectural.
-
-Ferret Core can evolve its compiler, VM, optimizations, memory management, and execution machinery independently of the tools that consume it.
-
-Meanwhile, those tools can evolve independently of a particular runtime implementation.
-
-That doesn't eliminate compatibility work. The Universal API itself is still in alpha, and its contracts will continue to evolve as we discover and address shortcomings.
-
-But it gives us a much better place to manage that evolution.
-
-Instead of allowing dependencies to spread across the entire ecosystem, we have an explicit boundary where they belong.
+UAPI does not eliminate compatibility concerns, and its contracts are still evolving during the alpha stage. What it provides is a defined boundary where those compatibility decisions can be managed explicitly, rather than allowing implementation dependencies to spread across the ecosystem.
 
 ## A small abstraction with a larger purpose
 
-When I started working on Ferret, I wasn't thinking about building an entire ecosystem of development tools.
+Ferret began as an embeddable language for querying and transforming data, but the surrounding ecosystem has grown to include a compiler, virtual machine, CLI, test runner, debugger, and integrations with multiple execution environments.
 
-I needed a language that applications could embed to query and transform data.
+That growth introduced a distinction that was less important in the early stages of the project: building Ferret as a reusable library and defining a portable interface for its consumers are separate architectural concerns.
 
-Over time, that grew into a compiler, a VM, a CLI, a test runner, a debugger, and integrations with increasingly different execution environments.
+The Universal API addresses the latter. It allows Ferret Core to remain focused on implementing the language and its runtime, while tools depend on a shared set of execution and debugging contracts rather than on the engine's internal APIs.
 
-That growth made one thing clear: building Ferret as a library was the right starting point, but **building a library and defining a portable contract for its consumers are two different architectural decisions**.
+This separation gives applications control over how their runtimes are configured and hosted, while providing consumers with a consistent way to interact with them. It also leaves room for new runtime implementations, transports, and tooling integrations without requiring them to reproduce the assumptions of the current engine.
 
-The Universal API is the second one.
-
-It lets Ferret Core remain an implementation of the language rather than becoming a dependency that every tool must understand intimately.
-
-It gives us a shared foundation for execution and debugging, while leaving applications in control of their own runtime environments.
-
-And it creates room for implementations and integrations we haven't built yet.
-
-That's exactly what I want from an abstraction: not more layers for their own sake, but fewer assumptions about how the pieces of a system must fit together.
+The purpose of UAPI is therefore not to introduce abstraction for its own sake, but to reduce the number of assumptions that different parts of the ecosystem make about one another. That gives Ferret a cleaner foundation for evolving its runtime and tooling independently.
 
 ### Getting started
 
@@ -393,9 +217,10 @@ The Universal API is open source and currently available as an alpha release.
 
 You can explore the implementation and integration guides here:
 
-- [Universal Ferret API on GitHub](https://github.com/MontFerret/api)
+- [Universal API on GitHub](https://github.com/MontFerret/api)
 - [Ferret Core](https://github.com/MontFerret/ferret)
-- [Universal API embedding guide](https://ferretlang.org/docs/embedding/go/universal-api/)
-- [Ferret Wire](https://github.com/MontFerret/wire)
+- [Universal API embedding guide]({{<ref "docs/embedding/go/universal-api/" >}})
+- [Wire](https://github.com/MontFerret/wire)
+- [Wire embedding guide](https://ferretlang.org/docs/embedding/wire/)
 
 Happy ferreting! 🦦

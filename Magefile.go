@@ -24,6 +24,7 @@ const THEME_DIR = "themes/ferret"
 const GENERATED_DIR = ".generated"
 const STDLIB_DOCS_DIR = ".generated/content/docs/standard-library"
 const VERSIONS_DATA = "data/versions.yaml"
+const SITE_ROUTES_CHECK = "scripts/verify-site-routes.mjs"
 const STDLIB_SEARCH_CHECK = "scripts/verify-stdlib-search.mjs"
 const REGISTRY_BASE_URL = "https://registry.ferretlang.org/"
 
@@ -35,6 +36,10 @@ type versionsData struct {
 
 func generateSite() error {
 	if err := sh.RunV("hugo"); err != nil {
+		return err
+	}
+
+	if err := sh.RunV("node", SITE_ROUTES_CHECK); err != nil {
 		return err
 	}
 
@@ -126,6 +131,10 @@ func ServeSearch() error {
 	}
 
 	if err := sh.RunV("hugo", "--baseURL", "http://localhost:1414/"); err != nil {
+		return err
+	}
+
+	if err := sh.RunV("node", SITE_ROUTES_CHECK); err != nil {
 		return err
 	}
 
