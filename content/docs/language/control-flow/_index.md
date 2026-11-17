@@ -95,7 +95,7 @@ See [Dispatch Expressions]({{< ref "dispatch" >}}) and [Waitfor Expressions]({{<
 A recovery tail attaches to an expression and tells the runtime what to do when it fails — return a fallback value, retry the operation, or propagate the error explicitly. The optional chaining operator (`?.`) handles the common case of accessing a member on a value that may be `none`.
 
 {{< code lang="fql" >}}
-let title = query one `.title` in doc on error return "untitled"
+let title = query one `.title` in doc using css on error return "untitled"
 
 let name = user?.name
 {{</ code >}}

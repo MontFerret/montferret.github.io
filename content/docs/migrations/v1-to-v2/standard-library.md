@@ -14,11 +14,7 @@ aliases:
 # Standard library migration
 
 Review legacy calls by area after the [initial compatibility check]({{< ref "docs/migrations/v1-to-v2" >}}).
-This guide includes the namespace and behavior changes introduced during the v2
-alpha series. Use a runtime containing the relevant APIs and a CLI release
-containing the documented migration rules. Older releases can support fewer rules.
-The [generated reference]({{< ref "docs/standard-library" >}}) follows the website's
-published runtime pin, which may precede these changes.
+The tables describe Core `v{{< data "versions.core.v2" >}}`. The automatic rewrites described here are available in CLI `v{{< data "versions.cli.v2" >}}`. For current signatures, see the [Standard Library reference]({{< ref "docs/standard-library" >}}).
 
 Preview replacements with `ferret migrate run --print path/to/project`.
 Automatic replacements target immutable operations, never `arrays::mut::` or

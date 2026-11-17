@@ -199,7 +199,7 @@ return for u in users {
 
 Instead of iterating a source, a `for` loop can repeat while a condition holds. `while` checks the condition before each pass; `do while` checks it after, so the body always runs at least once. An optional loop variable provides a zero-based counter.
 
-{{< code lang="fql" >}}
+{{< code lang="text" >}}
 for while condition {
     ...
     return value

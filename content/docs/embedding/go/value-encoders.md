@@ -12,18 +12,18 @@ aliases:
 
 When a session finishes, Ferret encodes the result value into bytes using a codec selected by content type. `Run` returns a consumable `Output` handle. Collect it to read the encoded bytes and their MIME type:
 
-These examples use the [documented Core checkout]({{< ref "/docs/embedding/go/getting-started#installation" >}}). For an existing byte-slice codec, follow the [Encoding API migration]({{< ref "/docs/migrations/encoding-api" >}}).
+These examples use the [documented Core release]({{< ref "/docs/embedding/go/getting-started#installation" >}}). For an existing byte-slice codec, follow the [Encoding API migration]({{< ref "/docs/migrations/encoding-api" >}}).
 
 {{< code lang="go" >}}
 output, err := session.Run(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer output.Close()
 
 content, err := output.Collect(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 fmt.Println(content.Metadata.ContentType) // "application/json"
@@ -54,19 +54,19 @@ session, err := plan.NewSession(ctx,
     ferret.WithOutputContentType("application/vnd.msgpack"),
 )
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer session.Close()
 
 output, err := session.Run(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer output.Close()
 
 content, err := output.Collect(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 fmt.Println(content.Metadata.ContentType)
@@ -473,47 +473,55 @@ func (d *plainTextDecoderConfigurer) Decoder() encoding.Decoder {
 }
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() (err error) {
     engine, err := ferret.New(
         ferret.WithEncodingCodec("text/plain", plainTextCodec{}),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer engine.Close()
+    defer func() { err = errors.Join(err, engine.Close()) }()
 
     plan, err := engine.Compile(
         context.Background(),
         ferret.NewAnonymousSource(`return "Hello, Ferret!"`),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer plan.Close()
+    defer func() { err = errors.Join(err, plan.Close()) }()
 
     session, err := plan.NewSession(
         context.Background(),
         ferret.WithOutputContentType("text/plain"),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer session.Close()
+    defer func() { err = errors.Join(err, session.Close()) }()
 
     output, err := session.Run(context.Background())
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer output.Close()
+    defer func() { err = errors.Join(err, output.Close()) }()
 
     content, err := output.Collect(context.Background())
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(content.Metadata.ContentType)
     // text/plain
     fmt.Println(string(content.Data))
     // Hello, Ferret!
+
+    return nil
 }
 {{</ code >}}
 

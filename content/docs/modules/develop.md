@@ -25,7 +25,7 @@ The initializer explains and prompts for:
 | Module name | Canonical lowercase Registry identity in `owner/name` form |
 | Go module path | Import path written to `go.mod` and used by Go consumers |
 | Directory | New destination directory for the project |
-| Namespace | Case-sensitive FQL namespace exposed at runtime |
+| Namespace | Namespace used by FQL callers. Registered names resolve case-insensitively. |
 
 It shows the resolved configuration before creating any files. Canceling the confirmation leaves the destination untouched.
 

@@ -11,7 +11,7 @@ description: "Choose a migration path for an existing Ferret project."
 Choose the version your project uses, then follow its migration guide. For an
 existing Ferret v1 project, start with **Ferret v1 → v2**.
 
-For a Go application using the earlier buffered output API, follow [Consumable output](consumable-output/). This development API migration covers Native and UAPI handles, error timing, and ownership.
+For a Go application using the earlier buffered output API, follow [Consumable output](consumable-output/). The guide covers Native and UAPI handles, error timing, and ownership.
 
 For a custom codec or direct encoding calls using the earlier byte-slice methods, follow [Encoding API](encoding-api/). This migration covers contexts, reader/writer ownership, byte helpers, and hooks.
 

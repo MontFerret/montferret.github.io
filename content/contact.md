@@ -7,7 +7,7 @@ description: "Find documentation, community help, issue reporting, private conta
 Need help using Ferret or want to get in touch? Choose the channel that best matches what you need.
 
 {{% notification type="info" %}}
-**Before opening an issue:** Make sure you’re using the [latest release](https://github.com/MontFerret/ferret/releases/latest) and check whether your question is already answered in the [documentation](/docs/) or [existing discussions](https://github.com/MontFerret/ferret/discussions).
+**Before opening an issue:** Make sure you’re using the [documented v2 release](https://github.com/MontFerret/ferret/releases/tag/v{{< data "versions.core.v2" >}}) and check whether your question is already answered in the [documentation](/docs/) or [existing discussions](https://github.com/MontFerret/ferret/discussions).
 {{% /notification %}}
 
 ## Documentation

@@ -17,9 +17,7 @@ FQL supports symbolic and keyword forms of the logical operators:
 The paired forms have the same behavior.
 
 {{< code lang="fql" >}}
-return true && false
-return true or false
-return not false
+return [true && false, true or false, not false]
 {{</ code >}}
 
 ## Truth values for and and or
@@ -127,10 +125,12 @@ Subqueries are an exception to this source-level model. Query planning may evalu
 `!` and `not` always return a Boolean. `and` and `or` return an operand, so their result may have any FQL type.
 
 {{< code lang="fql" >}}
-return 25 > 1 && 42 != 7
-return 22 in [23, 42] || 23 not in [22, 7]
-return none || "fallback"
-return true && 23
+return [
+    25 > 1 && 42 != 7,
+    22 in [23, 42] || 23 not in [22, 7],
+    none || "fallback",
+    true && 23
+]
 {{</ code >}}
 
 When a strict Boolean result is required from a binary logical expression, pass the result to `to_bool`.

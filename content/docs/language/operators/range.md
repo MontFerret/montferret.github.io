@@ -10,7 +10,7 @@ description: "The range operator for producing sequences of integer values."
 
 FQL supports expressing simple numeric ranges with the ``..`` operator. This operator can be used to easily iterate over a sequence of numeric values.
 
-The ``..`` operator will produce an array of the integer values in the defined range, with both bounding values included.
+The ``..`` operator produces an iterable range that includes both integer bounds. Use it in a loop, or return it directly to serialize its values as a JSON array. A range can also count down, as in `3..1`.
 
 {{< editor lang="fql" >}}
 return 2010..2013

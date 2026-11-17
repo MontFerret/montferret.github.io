@@ -42,7 +42,7 @@ type Result struct {
 }
 
 var repositoryProducts = map[string]string{
-	"MontFerret/ferret": "runtime",
+	"MontFerret/ferret": "core",
 	"MontFerret/cli":    "cli",
 	"MontFerret/lab":    "lab",
 	"MontFerret/worker": "worker",

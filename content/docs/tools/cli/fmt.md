@@ -31,10 +31,10 @@ ferret fmt *.fql
 
 ## Read from stdin
 
-Pipe a script through stdin to print the formatted output without writing a file:
+Use `--dry-run` with piped input. In CLI `v{{< data "versions.cli.v2" >}}`, this sends the formatted FQL to stdout. In-place formatting requires a filename.
 
 {{< terminal >}}
-cat script.fql | ferret fmt
+cat script.fql | ferret fmt --dry-run
 {{< /terminal >}}
 
 ## Preview changes

@@ -81,7 +81,7 @@ Use a Ferret distribution that registers the appropriate browser modules when an
 
 The JavaScript boundary accepts JSON-compatible values plus `Uint8Array`. It does not accept arbitrary class instances, cyclic object graphs, non-finite numbers, or JavaScript-specific values without a Ferret representation.
 
-Results are JSON-decoded JavaScript values. The current API does not expose MessagePack or custom output codecs, and binary results use Ferret's JSON base64 representation.
+`runJSON()` decodes JSON into JavaScript values. A binary result is represented as a base64 string in JSON. For encoded bytes, use `run()` and consume its output. The package uses the built-in output encoding.
 
 ## Execution concurrency
 

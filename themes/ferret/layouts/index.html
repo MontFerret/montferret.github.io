@@ -17,7 +17,7 @@ Ferret is an open-source, expression-oriented language with an embeddable runtim
                     </p>
 
                     <div class="landing-actions" aria-label="Primary actions">
-                        <a href="/try/" class="button is-primary">Open playground</a>
+                        <a href="/try/" class="button is-primary">Try Ferret</a>
                         <a href="/docs/getting-started/" class="button is-light">Read the docs</a>
                     </div>
                 </div>
@@ -48,16 +48,16 @@ Ferret is an open-source, expression-oriented language with an embeddable runtim
                                         <div id="hero-query-browser" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
 let page = web::html::open(@page, { driver: "cdp" })
 
-let products = waitfor value page[~ `.product-card`]
+let products = waitfor value page[~ css`.product-card`]
     when length(.) > 0
     timeout 5000
     on timeout return []
 
 return for product in products
     return {
-        brand: product[~? `.product-brand`].textContent,
-        title: product[~? `.product-title`].textContent,
-        price: product[~? `.product-price`].textContent,
+        brand: product[~? css`.product-brand`].textContent,
+        title: product[~? css`.product-title`].textContent,
+        price: product[~? css`.product-price`].textContent,
     }
                                         </div>
                                     </div>
@@ -145,7 +145,7 @@ return for invoice in query `
     SELECT id, customer, total
     FROM invoices
     WHERE total > ?
-` in db with { params: [@minTotal] }
+` in db using sql with { params: [@minTotal] }
 
     return {
         id: invoice.id,
@@ -202,7 +202,7 @@ return for row in query "A1:D100" in sales with { headers: true }
                                         <div id="hero-query-file" data-type="landing-code" data-lang="fql" class="code-editor-text landing-code-editor">
 let file = io::fs::read(@file)
 
-return for row in csv::decode_rows(file)
+return for row in csv::decode_stream(file)
     filter row.status == @status
     return {
         orderId: row.order_id,

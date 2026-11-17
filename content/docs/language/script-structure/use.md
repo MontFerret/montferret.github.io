@@ -48,15 +48,15 @@ Here, `get(...)` resolves to `io::net::http::get(...)`.
 
 `use` declarations belong in the script header. Put them before variable declarations, function declarations, function calls, standalone loops, and `return` statements.
 
-A script may declare more than one alias:
+A script may declare more than one alias. This example reads `data.json` relative to the configured filesystem root and fetches the supplied endpoint.
 
 {{< code lang="fql" >}}
 use io::fs as fs
 use io::net::http::get as get
 
-let data = fs::read("/tmp/data.json")
+let data = fs::read("data.json")
 
-return [data, get("https://api.example.com/data")]
+return [data, get(@endpoint)]
 {{</ code >}}
 
 ## Resolution rules

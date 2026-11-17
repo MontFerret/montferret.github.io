@@ -7,7 +7,7 @@ description: "Expose a Native Ferret engine through the portable Universal API."
 
 # Use the Universal API
 
-This page targets the Core development adapter and Universal API `v1.0.0-alpha.21`. Use the [development checkout setup](../getting-started/#installation). [Wire's remote client]({{< ref "docs/embedding/wire" >}}) uses the same portable runtime and consumable-output interfaces. Use the published dependency set in its [compatibility table]({{< ref "docs/embedding/wire#run-a-host-and-client" >}}).
+This page targets the adapter shipped with Core `v{{< data "versions.core.v2" >}}` and Universal API `v{{< data "versions.api.v1" >}}`. See [Go installation](../getting-started/#installation). [Wire's remote client]({{< ref "docs/embedding/wire" >}}) uses the same portable runtime and consumable-output interfaces. Use the published dependency set in its [compatibility table]({{< ref "docs/embedding/wire#run-a-host-and-client" >}}).
 
 Use `github.com/MontFerret/ferret/v2/uapi`, Ferret's official adapter, when
 your integration accepts `github.com/MontFerret/api` interfaces. For Native
@@ -147,9 +147,7 @@ Cancellation observed before publication leaves the previous set intact. Once
 publication succeeds, later cancellation does not undo it or cancel the debuggee.
 Completed, terminated, and closed sessions reject replacement.
 
-These signatures are included in the current API `v1.0.0-alpha.21` contract.
-Live DAP/IDE support additionally requires a later daemon release and matching
-Editorium pin.
+The released [ferretd debug adapter]({{< ref "/docs/tools/ferretd" >}}) uses breakpoint replacement for DAP clients. See [Debug a script in VS Code]({{< ref "/docs/tools/visual-studio-code" >}}) for the editor workflow and its bundled daemon version.
 
 ## Read the Core runtime version
 

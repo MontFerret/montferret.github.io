@@ -194,7 +194,7 @@ The following operations are supported inside an array operator:
 
 Inline expressions can be used with array expansion and flattening operators:
 
-{{< code lang="fql" >}}
+{{< code lang="text" >}}
 array[* filter condition limit count return expression]
 array[** filter condition limit count return expression]
 array[*** filter condition limit count return expression]
@@ -202,7 +202,7 @@ array[*** filter condition limit count return expression]
 
 When multiple inline operations are used together, they must appear in this order:
 
-{{< code lang="fql" >}}
+{{< code lang="text" >}}
 filter
 limit
 return
@@ -308,7 +308,7 @@ return values[* filter . > 2 limit 2]
 
 `limit` also supports an offset form:
 
-{{< code lang="fql" >}}
+{{< code lang="text" >}}
 limit offset, count
 {{</ code >}}
 
@@ -415,7 +415,7 @@ The following quantifiers are supported:
 - `none` requires no matching elements.
 - `any` requires at least one matching element.
 - `all` requires every element to match.
-- `at least n` requires at least `n` matching elements.
+- `at least (n)` requires at least `n` matching elements.
 
 The quantifier is followed by `filter` when a condition is specified.
 
@@ -428,7 +428,7 @@ return {
     noneNegative: values[? none filter . < 0],
     anyEven: values[? any filter . % 2 == 0],
     allPositive: values[? all filter . > 0],
-    atLeastTwoLarge: values[? at least 2 filter . > 4]
+    atLeastTwoLarge: values[? at least (2) filter . > 4]
 }
 {{</ editor >}}
 
@@ -460,13 +460,12 @@ return users[* return {
 }]
 {{</ editor >}}
 
-When the operator is used without a quantifier and without filter, it checks whether the value is a non-empty array.
+With no filter, `[?]` returns true when its input has at least one item. The input must be iterable. Applying it to a variable holding `none` raises a type error.
 
 {{< editor lang="fql" >}}
 return {
     empty: [][?],
-    nonEmpty: [1, 2, 3][?],
-    notArray: none[?]
+    nonEmpty: [1, 2, 3][?]
 }
 {{</ editor >}}
 
@@ -479,8 +478,8 @@ Conceptually, the question mark operator is equivalent to filtering an array and
 | `array[? none filter condition]` | `length(array[* filter condition]) == 0` |
 | `array[? any filter condition]` | `length(array[* filter condition]) > 0` |
 | `array[? all filter condition]` | `length(array[* filter condition]) == length(array)` |
-| `array[? at least n filter condition]` | `length(array[* filter condition]) >= n` |
-| `array[?]` | the value is an array with at least one element |
+| `array[? at least (n) filter condition]` | `length(array[* filter condition]) >= n` |
+| `array[?]` | the input contains at least one item |
 
 The question mark operator is especially useful for nested search, where a document, object, or result value contains arrays that need to be tested without expanding them into the final output.
 

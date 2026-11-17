@@ -11,7 +11,7 @@ Lab's runtime target identifies the complete adapter endpoint. Adapter settings 
 
 | Previous usage | Replacement |
 | --- | --- |
-| `--runtime=wire --runtime-endpoint=tcp://host:port` | `--runtime=wire+tcp://host:port` (existing loopback restriction applies) |
+| `--runtime=wire --runtime-endpoint=tcp://127.0.0.1:50051` | `--runtime=wire+tcp://127.0.0.1:50051` |
 | `--runtime-connect-timeout=10s` | `--runtime-option='connect-timeout:"10s"'` |
 | `--runtime-param='headers:{...}'` | `--runtime-option='headers:{...}'` |
 | `--runtime-param='path:"/v1/execute"'` | `--runtime-option='path:"/v1/execute"'` |
@@ -21,7 +21,7 @@ Lab's runtime target identifies the complete adapter endpoint. Adapter settings 
 | `LAB_RUNTIME_CONNECT_TIMEOUT=10s` | `LAB_RUNTIME_OPTION='connect-timeout:"10s"'` |
 | `--rp` | Removed; use `--runtime-option` for adapter configuration |
 
-The separate runtime FQL defaults layer has been removed. A configuration combining runtime defaults and per-run values may need to be expressed using existing CLI, binding, or query/assertion parameter facilities; there is no guaranteed lossless one-for-one migration of that layer. No new defaults layer is introduced. External CLI binary execution remains unsupported.
+The separate runtime FQL defaults layer has been removed. A configuration combining runtime defaults and per-run values may need to be expressed using existing CLI, binding, or query/assertion parameter facilities; there is no guaranteed lossless one-for-one migration of that layer. No new defaults layer is introduced. If an older setup launched a binary with `bin:` or `bin://`, expose its configured runtime through a Wire host or use a Worker-compatible HTTP service. Lab rejects both binary selectors.
 
 Only `127.0.0.1` and ports 1–65535 are supported for Wire TCP. The new URI does not add encryption or authentication. `connect-timeout` defaults to `"5s"` and bounds connection/handshake setup; test execution timeouts remain unchanged.
 

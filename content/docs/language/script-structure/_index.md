@@ -25,7 +25,7 @@ let user = {
     roles: ["admin", "editor"]
 }
 
-let isAdmin = contains(user.roles, "admin")
+let isAdmin = "admin" in user.roles
 
 return {
     name: user.name,
@@ -189,11 +189,12 @@ return match @status {
 }
 {{< /editor >}}
 
-A `waitfor` block describes event-oriented runtime logic:
+A `waitfor` expression can wait for an event from a host-provided observable value. Here the host supplies `@source` and its `response` events have a status and URL.
 
 {{< code lang="fql" >}}
-waitfor event network.response_received
-    when event.status == 200
+let event = waitfor event "response" in @source
+    when .status == 200
+    timeout 5s
 return event.url
 {{< /code >}}
 
@@ -226,21 +227,21 @@ It can span multiple lines.
 return "Hello, world!"
 {{< /editor >}}
 
-FQL is whitespace-insensitive. Spaces, tabs, and newlines separate tokens but do not affect semantics. Whitespace inside strings is preserved.
+Spaces, tabs, and newlines separate tokens. Put successive expression statements on separate lines to avoid continuing the preceding expression. Whitespace inside strings is preserved.
 
 ## Names and keywords
 
-Names identify variables, object fields, functions, and other script-level symbols. A name must start with a letter or underscore, followed by any combination of letters, digits, and underscores:
+Variable and function names start with an ASCII letter and may then contain ASCII letters, digits, and underscores. A single underscore is used as a discard binding.
 
 {{< code lang="fql" >}}
-let _name = "Ada"
+let first_name = "Ada"
 let name2 = "Grace"
-let Name = "Turing"
+let _ = name2
 {{< /code >}}
 
-Keywords are reserved words with special meaning in FQL. They are case-insensitive and conventionally written in lowercase. The full set of reserved keywords is:
+Keywords are reserved words with special meaning in FQL. They are case-insensitive and conventionally written in lowercase. Common keywords include the following.
 
-{{< code lang="fql" >}}
+{{< code lang="text" >}}
 use
 as
 match
@@ -253,6 +254,7 @@ using
 waitfor
 dispatch
 options
+trigger
 timeout
 every
 backoff

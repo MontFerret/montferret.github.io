@@ -26,7 +26,7 @@ return {
 
 Serialization happens after program execution completes, before the result is returned to the host.
 
-During execution, values remain Ferret runtime values. Arrays, objects, host values, functions, and other runtime constructs are evaluated according to FQL semantics. Only the final result is serialized.
+During execution, values remain Ferret runtime values. Arrays, objects, host values, and other runtime constructs are evaluated according to FQL semantics. Only the final result is serialized.
 
 Temporary values that are created and discarded during execution are not serialized. A value only needs to be serializable if it becomes part of the returned result.
 
@@ -106,10 +106,10 @@ Fields with a `none` value are included in the serialized output. A field set to
 Binary values represent raw bytes. Because many output formats are text-based, binary values are encoded in a format-appropriate way.
 
 {{< editor lang="fql" >}}
-return io::net::http::get("https://mockery.ferretlang.org/")
+return to_binary("Hi")
 {{</ editor >}}
 
-In JSON, binary values are encoded as Base64 strings. Other encodings may use a native binary representation.
+The JSON result is `"SGk="`, the Base64 encoding of the two bytes in `Hi`. Other encodings may use a native binary representation.
 
 ## Date and time values
 
@@ -136,31 +136,19 @@ The result uses strings such as `"5s"`, `"100ms"`, and `"1s"`. Ordinary JSON or 
 
 Host values represent values provided by the embedding runtime. They may wrap external resources such as database connections, browser pages, files, HTTP clients, streams, or other host-managed objects.
 
-Host values are not serialized by inspecting their internal structure. Instead, their serialized form is determined by the host runtime.
-
-A host value may serialize to an object, string, number, array, `none`, or another supported representation. The encoding depends on what the host value exposes. For example, a host value may implement a standard marshaling interface that defines how it is converted to the output format.
-
-Some host values may not be serializable at all. If a non-serializable host value is part of the returned result, serialization produces an error.
-
-{{< code lang="fql" >}}
-let db = db::sqlite::open("data.db")
-
-// This may fail — a connection handle may not be serializable
-return db
-{{</ code >}}
-
-Instead, return data extracted from the host value:
+The selected codec uses the capabilities exposed by the value. For example, a host type can implement a marshaling interface to supply its own JSON representation. A SQLite connection from the optional SQLite module encodes as the display string `"<db.sqlite.connection>"`.
 
 {{< code lang="fql" >}}
 let db = db::sqlite::open({ memory: true })
-
-return query `
-  SELECT id, name
-  FROM users
-` in db using sql
+return db
 {{</ code >}}
 
-The first example attempts to serialize a database connection handle, which may not have a meaningful external representation. The second example returns query results — basic values that serialize naturally.
+To return records from the database, query the connection. This example returns a row with id `1` and name `Ada`.
+
+{{< code lang="fql" >}}
+let db = db::sqlite::open({ memory: true })
+return query `SELECT 1 AS id, 'Ada' AS name` in db using sql
+{{</ code >}}
 
 See [Host Values]({{< ref "host" >}}) and [Capability Types]({{< ref "capabilities" >}}) for more about host values and their behavioral contracts.
 
@@ -175,27 +163,17 @@ let elements = query `.product-card` in page using css
 return elements
 {{</ editor >}}
 
-When an iterable value is part of the returned result, the runtime materializes it into a list before serialization. The iterable is fully consumed, and the resulting list is serialized as an array.
-
-This means iterable values are serializable as long as the values they produce are themselves serializable.
+For a value encoded through its iterable capability, the JSON encoder walks the items and writes a JSON array. An error while iterating or encoding an item is reported during output consumption.
 
 ## Cleanup before return
 
-Before the serialized result is returned, the runtime gives resource-backed values a chance to release external resources.
-
-Host values that support the close capability are closed automatically at the end of program execution. This applies to values such as open database connections, file handles, network clients, browser sessions, and other host-owned resources.
-
-Cleanup happens after execution completes and alongside serialization, before the final result is returned to the host. Errors during cleanup are reported alongside the output.
-
-FQL code does not need to close these resources manually. The runtime tracks closable values and handles cleanup automatically.
-
-See [Capability Types]({{< ref "capabilities" >}}) for more about the close capability.
+Native Ferret encodes the result and then closes the VM result, releasing the resources owned by that execution. This includes a closable host parameter when the encoder encounters it in the returned value. The caller observes encoding and cleanup failures when consuming the output. See [Go output]({{< ref "/docs/embedding/go/output" >}}).
 
 ## Encoding formats
 
 Serialization is controlled by the host runtime.
 
-Ferret includes built-in support for JSON and MessagePack encodings. The CLI serializes results as JSON by default. An embedded Go application may choose MessagePack or register a custom encoding. The current JavaScript package returns JSON-decoded JavaScript values and does not expose codec selection.
+Ferret includes built-in support for JSON and MessagePack encodings. The CLI serializes results as JSON by default. An embedded Go application may choose MessagePack or register a custom encoding. The JavaScript package uses JSON. Call `runJSON()` for a decoded value or use the output returned by `run()` for encoded bytes.
 
 FQL defines the value semantics. The host defines how those values are encoded outside the runtime.
 
@@ -207,55 +185,11 @@ FQL defines the value semantics. The host defines how those values are encoded o
 
 ## Non-serializable values
 
-Some runtime values do not have a portable serialized representation. Returning them as part of the final result produces a serialization error.
-
-Examples include:
-
-- **Functions** — function values are runtime constructs and cannot be represented in an external format.
-- **Non-serializable host values** — host values that do not define an external representation, such as raw connection handles or internal runtime objects.
-
-{{< code lang="fql" >}}
-let format = (val) => val + "!"
-
-// This fails — functions are not serializable
-return format
-{{</ code >}}
-
-If a non-serializable value is nested inside an otherwise serializable structure, the entire serialization fails:
-
-{{< code lang="fql" >}}
-let format = (val) => val + "!"
-
-// This also fails — the function is nested inside the returned object
-return {
-  name: "Ada",
-  formatter: format
-}
-{{</ code >}}
+A host type may reject serialization for a particular format. Return the fields the caller needs when the host type has no useful external representation.
 
 ## Serialization errors
 
-Serialization may fail if the returned value contains something that cannot be represented by the selected encoding.
-
-Common causes include:
-
-- Returning a host value that does not support serialization, such as a database connection or file handle.
-- Returning a function value.
-- Returning a value that contains a non-serializable value nested within it.
-
-When serialization fails, the error identifies what could not be serialized. The fix is usually to return extracted data instead of the raw resource:
-
-{{< code lang="fql" >}}
-// Instead of returning the connection
-let db = db::sqlite::open("data.db")
-
-// Return the data
-let users = (
-    query `SELECT id, name FROM users` in db using sql
-)
-
-return users
-{{</ code >}}
+Encoding can fail when a host value's marshaler returns an error or an iterable fails while producing its items. The same error can occur inside an array or object, because nested values are encoded recursively.
 
 ## Next steps
 

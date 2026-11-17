@@ -27,13 +27,14 @@ mkdir ferret-service && cd ferret-service
 go mod init ferret-service
 {{</ terminal >}}
 
-Apply the [development checkout setup]({{< ref "/docs/embedding/go/getting-started#installation" >}}) to use the consumable-output API in this guide. Then run a one-shot query to verify the setup:
+Follow the [Go installation instructions]({{< ref "/docs/embedding/go/getting-started#installation" >}}) to use the consumable-output API in this guide. Then run a one-shot query to verify the setup:
 
 {{< code lang="go" >}}
 package main
 
 import (
     "context"
+    "errors"
     "fmt"
     "log"
 
@@ -41,27 +42,35 @@ import (
 )
 
 func main() {
-    engine, err := ferret.New()
-    if err != nil {
+    if err := run(); err != nil {
         log.Fatal(err)
     }
-    defer engine.Close()
+}
+
+func run() (err error) {
+    engine, err := ferret.New()
+    if err != nil {
+        return err
+    }
+    defer func() { err = errors.Join(err, engine.Close()) }()
 
     output, err := engine.Run(
         context.Background(),
         ferret.NewAnonymousSource(`return { message: "Ferret is running" }`),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer output.Close()
+    defer func() { err = errors.Join(err, output.Close()) }()
 
     content, err := output.Collect(context.Background())
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(content.Data))
+
+    return nil
 }
 {{</ code >}}
 
@@ -92,7 +101,7 @@ See [Runtime Configuration]({{< ref "/docs/embedding/go/configuration" >}}) for 
 This service needs the HTML module to fetch and query pages. Install it from the `contrib` repository:
 
 {{< terminal command="true" >}}
-go get github.com/MontFerret/contrib/modules/web/html
+go get github.com/MontFerret/contrib/modules/web/html@v1.0.0-rc.29
 {{</ terminal >}}
 
 Configure the in-process memory driver for static HTML, then pass the module to `ferret.WithModules`:
@@ -194,7 +203,7 @@ plan, err := engine.Compile(ctx, ferret.NewSource(
 return page.title`,
 ))
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer plan.Close()
 
@@ -209,20 +218,18 @@ for _, url := range urls {
         ferret.WithSessionParam("url", url),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     output, err := session.Run(ctx)
     if err != nil {
-        session.Close()
-        log.Fatal(err)
+        return errors.Join(err, session.Close())
     }
 
     content, collectErr := output.Collect(ctx)
-    output.Close()
-    closeErr := session.Close()
+    closeErr := errors.Join(output.Close(), session.Close())
     if err := errors.Join(collectErr, closeErr); err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(content.Data))
@@ -242,6 +249,7 @@ package main
 
 import (
     "context"
+    "errors"
     "encoding/json"
     "log"
     "net/http"
@@ -260,6 +268,12 @@ type QueryRequest struct {
 }
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() (err error) {
     htmlmod := html.New(
         html.WithDefaultDriver(memory.New()),
     )
@@ -269,9 +283,9 @@ func main() {
         ferret.WithModules(htmlmod),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer engine.Close()
+    defer func() { err = errors.Join(err, engine.Close()) }()
 
     http.HandleFunc("/api/query", func(w http.ResponseWriter, r *http.Request) {
         if r.Method != http.MethodPost {
@@ -330,7 +344,7 @@ func main() {
     })
 
     log.Println("listening on :8080")
-    log.Fatal(http.ListenAndServe(":8080", nil))
+    return http.ListenAndServe(":8080", nil)
 }
 {{</ code >}}
 
@@ -431,66 +445,7 @@ See [Runtime Configuration]({{< ref "/docs/embedding/go/configuration" >}}) for 
 
 ## Shut down cleanly
 
-Handle OS signals and close the engine before exiting:
-
-{{< code lang="go" >}}
-package main
-
-import (
-    "context"
-    "log"
-    "net/http"
-    "os"
-    "os/signal"
-    "syscall"
-    "time"
-
-    "github.com/MontFerret/ferret/v2"
-    "github.com/MontFerret/ferret/v2/pkg/stdlib"
-
-    "github.com/MontFerret/contrib/modules/web/html"
-    "github.com/MontFerret/contrib/modules/web/html/drivers/memory"
-)
-
-func main() {
-    htmlmod := html.New(
-        html.WithDefaultDriver(memory.New()),
-    )
-
-    engine, err := ferret.New(
-        ferret.WithStdlib(stdlib.Safe()),
-        ferret.WithModules(htmlmod),
-        ferret.WithMaxActiveSessions(50),
-    )
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    srv := &http.Server{Addr: ":8080"}
-
-    // Register handlers using engine ...
-
-    go func() {
-        if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-            log.Fatal(err)
-        }
-    }()
-
-    quit := make(chan os.Signal, 1)
-    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-    <-quit
-
-    log.Println("shutting down")
-
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    defer cancel()
-
-    srv.Shutdown(ctx)
-    engine.Close()
-}
-{{</ code >}}
-
-Close active sessions and plans before closing the engine. `engine.Close()` runs engine-level cleanup hooks in reverse registration order (LIFO). Always close the HTTP server first so no new requests arrive while the engine is shutting down.
+Stop accepting new requests and drain active handlers before closing the engine. Each handler owns its output, session, and plan. The complete example gives each query a deadline and waits for HTTP shutdown before releasing the engine.
 
 ## Complete example
 
@@ -502,6 +457,7 @@ package main
 import (
     "context"
     "encoding/json"
+    "errors"
     "log"
     "net/http"
     "os"
@@ -523,6 +479,12 @@ type QueryRequest struct {
 }
 
 func main() {
+    if err := serve(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func serve() (err error) {
     htmlmod := html.New(
         html.WithDefaultDriver(memory.New()),
         html.WithDrivers(
@@ -538,8 +500,9 @@ func main() {
         ferret.WithMaxIdleVMsPerPlan(4),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
+    defer func() { err = errors.Join(err, engine.Close()) }()
 
     mux := http.NewServeMux()
 
@@ -604,24 +567,20 @@ func main() {
         Handler: mux,
     }
 
-    go func() {
-        log.Println("listening on :8080")
-        if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-            log.Fatal(err)
+    shutdown, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+    defer stop()
+
+    served := make(chan error, 1)
+    go func() { served <- srv.ListenAndServe() }()
+
+    select {
+    case <-shutdown.Done():
+    case err = <-served:
+        if errors.Is(err, http.ErrServerClosed) {
+            err = nil
         }
-    }()
-
-    quit := make(chan os.Signal, 1)
-    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-    <-quit
-
-    log.Println("shutting down")
-
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    defer cancel()
-
-    srv.Shutdown(ctx)
-    engine.Close()
+    }
+    return errors.Join(err, srv.Shutdown(context.Background()))
 }
 {{</ code >}}
 

@@ -111,13 +111,13 @@ return links[*
 When a page has repeating structures — product cards, table rows, list items — query the container first, then query inside each one:
 
 {{< editor lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/")
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 let cards = query ".product-card" in page using css
 
 return for card in cards
     return {
-        name: (query one query ".product-name" in card using css)?.textContent,
-        price: (query one query ".product-price" in card using css)?.textContent
+        name: (query one ".product-title" in card using css)?.textContent,
+        price: (query one ".product-price" in card using css)?.textContent
     }
 {{< /editor >}}
 
@@ -150,7 +150,7 @@ For more error handling patterns, see [Error handling and resilience]({{< ref "e
 Use `filter`, `sort`, and `limit` inside a `for` loop to shape the output:
 
 {{< editor lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/")
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/products/")
 let cards = query '.product-card' in page using css
 
 return for card in cards
@@ -169,11 +169,11 @@ return for card in cards
 Save a script to a file and pass the URL as a parameter:
 
 {{< terminal command="true" >}}
-echo '
+cat > headings.fql <<'FQL'
 let page = web::html::open(@url)
 let headers = query 'h1, h2, h3' in page using css
 return headers[*].textContent
-' > headings.fql
+FQL
 {{< /terminal >}}
 
 Run it with any URL:

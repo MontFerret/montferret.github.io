@@ -7,48 +7,15 @@ aliases:
   - /docs/fql/query-results/
 ---
 
-{{< header >}}
-Query results
-{{</ header >}}
+# Query results
 
-Unlike AQL, the result of an FQL query is an not always array of values. The individual values can be returned, not wrapped by an array.
+`RETURN` produces the value of its expression. For example, `RETURN 1` produces the number `1`. A `FOR` expression collects the values returned by its iterations into an array:
 
-For example, when the ``return`` statement is used as the last query statement, a values gets returned as it is:
+{{< editor lang="fql" >}}
+RETURN FOR link IN [{ href: "/docs/" }, { href: "/try/" }]
+    RETURN link.href
+{{< /editor >}}
 
-{{< code lang="fql" height="90px" >}}
-return 1
-{{</ code >}}
+The result is `["/docs/", "/try/"]`. A loop with no matching iterations produces `[]`.
 
-{{< code lang="fql" height="90px" >}}
-1
-{{</ code >}}
-
-{{< code lang="fql" height="90px" >}}
-return { foo: "bar" }
-{{</ code >}}
-
-{{< code lang="fql" height="90px" >}}
-{ "foo": "bar" }
-{{</ code >}}
-
-However, when returning data from an iteration, the result values will be always an array:
-
-{{< code lang="fql" height="100px" >}}
-return for u in elements
-    return i.href
-{{</ code >}}
-
-{{< code lang="fql" height="90px" >}}
-{ "foo": "bar" }
-{{</ code >}}
-
-{{< header size="2" >}}
-Result type
-{{</ header >}}
-
-The result data type is in JSON format. 
-All binary data gets encoded into base64 strings.
-
-## Next steps
-
-{{< docs-related tiles="web-extraction,language-control-flow-error-handling,tools-cli-run" >}}
+Ferret values are encoded when the host delivers output. The CLI’s default JSON encoding represents objects and arrays directly and binary values as base64 strings. See [Output]({{< ref "/docs/embedding/go/output" >}}) for consumption and codec options in Go.

@@ -30,9 +30,7 @@ See [Comparison Operators]({{< ref "comparison" >}}).
 Logical operators evaluate expressions according to their truth value. FQL supports `&&` / `and`, `||` / `or`, and `!` / `not`. The binary operators use short-circuit evaluation and return one of their operands rather than always returning a boolean.
 
 {{< code lang="fql" >}}
-return true && "value"
-return none || "fallback"
-return not false
+return [true && "value", none || "fallback", not false]
 {{</ code >}}
 
 See [Logical Operators]({{< ref "logical" >}}).
@@ -63,7 +61,7 @@ See [Arithmetic Operators]({{< ref "arithmetic" >}}).
 
 ## Range
 
-The range operator (`..`) produces an array of integer values between two bounds, inclusive.
+The range operator (`..`) produces an iterable range of integers between two bounds, inclusive.
 
 {{< code lang="fql" >}}
 2010..2013

@@ -44,7 +44,7 @@ const engine = await create({
 });
 
 try {
-    await engine.run(`
+    await engine.runJSON(`
         return OBSERVABILITY::TELEMETRY::track({ type: "query:run" })
     `);
 } finally {

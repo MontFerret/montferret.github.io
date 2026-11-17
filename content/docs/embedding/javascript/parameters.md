@@ -20,7 +20,7 @@ const orders = [
     { id: "A-101", customer: "Lin", total: 48 },
 ];
 
-const result = await engine.run(`
+const result = await engine.runJSON(`
     return for order in @orders {
         filter order.total >= @minimum
         return {
@@ -38,7 +38,7 @@ const result = await engine.run(`
 console.log(result); // [{ id: "A-100", customer: "Ada" }]
 {{</ code >}}
 
-Use the same `params` option with `plan.run()`. Use `plan.createSession({ params })` when a reusable session should capture one parameter set.
+Use the same `params` option with `plan.runJSON()`. Use `plan.createSession({ params })` when a reusable session should capture one parameter set.
 
 The JavaScript API does not currently define engine-wide persistent parameters. Bind values for each plan run or session.
 
@@ -75,7 +75,7 @@ Nested arrays and objects are converted recursively. Object keys remain strings.
 For example:
 
 {{< code lang="javascript" >}}
-const result = await engine.run(`
+const result = await engine.runJSON(`
     return {
         name: @name,
         count: @count,
@@ -111,7 +111,7 @@ Convert these values into supported primitives, arrays, plain objects, or `Uint8
 
 ## Returned values
 
-Ferret results are JSON-decoded. `none` becomes `null`; booleans, strings, numbers, arrays, and objects retain their corresponding shapes. Binary results are serialized as base64 strings rather than returned as `Uint8Array`.
+`runJSON()` decodes the output as JSON. `none` becomes `null`; booleans, strings, numbers, arrays, and objects retain their corresponding shapes. Binary results are serialized as base64 strings rather than returned as `Uint8Array`.
 
 ## Next steps
 

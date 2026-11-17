@@ -70,16 +70,7 @@ Status codes:
 
 ## Query errors
 
-Error responses use this shape:
-
-```json
-{
-  "error": "run program: missing parameter",
-  "details": "UnresolvedSymbol: missing parameter\n --> anonymous:1:8\n  |\n1 | RETURN @missing\n  |        ^^^^^^^^ parameter '@missing' was not provided\n"
-}
-```
-
-`error` is the plain wrapped error. `details` contains formatted Ferret diagnostics when the error supports diagnostics; otherwise it repeats the plain error text.
+When a query fails, Worker returns HTTP 400 and a JSON object with two strings. `error` contains the wrapped error, for example `run program: missing parameter`. If Ferret provides a diagnostic, `details` includes the location, source excerpt and any notes or hints. Otherwise it repeats the plain error.
 
 ## Browser-backed query
 
@@ -123,23 +114,7 @@ When Worker starts with `-no-chrome`, `/health` returns `200` without checking C
 curl http://localhost:8080/info
 {{< /terminal >}}
 
-Example response:
-
-```json
-{
-  "ip": "203.0.113.10",
-  "version": {
-    "worker": "{{< data "versions.worker.v2" >}}",
-    "chrome": {
-      "browser": "Chrome/148.0.7778.178",
-      "protocol": "1.3",
-      "v8": "14.8.x",
-      "webkit": "537.36"
-    },
-    "ferret": "{{< data "versions.core.v2" >}}"
-  }
-}
-```
+Worker reports the Ferret version embedded in its own binary. Run `worker -version` to check both versions locally.
 
 Fields:
 

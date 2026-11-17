@@ -11,12 +11,12 @@ description: "Delegate a query to a host value using the query ... in ... expres
 A `query` expression delegates work to a value that knows how to run queries. Instead of expressing the logic in FQL, you provide a query payload and pass it to a host value, such as an HTML document, database connection, API client, or JSON document.
 
 {{< code lang="fql" >}}
-query `.product .title` in doc
+query `.product .title` in doc using css
 {{</ code >}}
 
-This reads as: run the query `` `.product .title` `` against `doc`.
+This runs the CSS selector `.product .title` against `doc`.
 
-Some host values support more than one query dialect. In that case, the value may provide a default dialect, so `using` is not always required. For example, an HTML document may default to CSS selectors.
+The source determines which dialects it supports. The HTML module requires an explicit dialect, such as `css` or `xpath`.
 
 When you need to choose a specific dialect, add `using`:
 
@@ -29,13 +29,13 @@ This reads as: run the query `` `//article/h1` `` against `doc`, using the `xpat
 The query expression is often written with backticks so selectors and other syntax do not need escaping. It can also be a regular string, variable, bind parameter, member expression, indexed expression, or function call. Compound expressions must be wrapped in parentheses so the boundary before `in` is explicit.
 
 {{< code lang="fql" >}}
-query config.selector in page
-query (".item-" + category) in page
+query config.selector in page using css
+query (".item-" + category) in page using css
 {{</ code >}}
 
 ## Anatomy
 
-{{< code lang="fql" >}}
+{{< code lang="text" >}}
 query [modifier] <expression> in <source> [using <dialect>] [with <params>] [options <options>]
 {{</ code >}}
 
@@ -59,9 +59,9 @@ By default, a `query` returns a list of every match. A modifier after `query` ch
 | `query exists ...` | `true` if there is at least one match, otherwise `false` |
 
 {{< code lang="fql" >}}
-let total = query count `.item` in doc
-let hasNext = query exists `.pagination .next` in doc
-let title = query one `.product .title` in doc
+let total = query count `.item` in doc using css
+let hasNext = query exists `.pagination .next` in doc using css
+let title = query one `.product .title` in doc using css
 
 return { total, hasNext, title }
 {{</ code >}}
@@ -83,8 +83,8 @@ let title = doc[~? css`.product .title`]
 These are equivalent to:
 
 {{< code lang="fql" >}}
-let products = query `.product` in doc
-let title = query one `.product .title` in doc
+let products = query `.product` in doc using css
+let title = query one `.product .title` in doc using css
 {{</ code >}}
 
 The shortcut provides only the simple query form: a query expression, a source value, and the source value’s dialect. It does not support `with`, or `options`. Use the full `query` form when you need to pass parameters, configure execution options, or make the query behavior explicit.
@@ -93,21 +93,18 @@ The shortcut provides only the simple query form: a query expression, a source v
 
 ## Parameters and options
 
-`with` supplies parameters to the query, and `options` carries execution settings. Both are evaluated once.
+`with` supplies parameters to the query, and `options` supplies execution settings. Each is evaluated once. The source defines which values each clause accepts.
+
+The SQLite module binds SQL placeholders from the `params` array. This query returns `[{"name":"Ada"}]`.
 
 {{< code lang="fql" >}}
-query `SELECT name, price FROM products WHERE category = $c` in db
-with { c: "laptops" }
-options { timeout: 5000 }
+let db = db::sqlite::open({ memory: true })
+return query `SELECT ? AS name` in db using sql with {
+    params: ["Ada"]
+}
 {{</ code >}}
 
-For host values with multiple dialects, `using` can still be used together with `with` and `options`:
-
-{{< code lang="fql" >}}
-query `SELECT name, price FROM products WHERE category = $c` in db using sql
-with { c: "laptops" }
-options { timeout: 5000 }
-{{</ code >}}
+A REST client, for example, accepts URL query parameters under `with { query: ... }` and a per-request timeout under `options { timeout: ... }`.
 
 ## A host capability
 
@@ -118,7 +115,7 @@ The source value decides which dialects are available. It may also define a defa
 You can recover from such failures with a recovery clause.
 
 {{< code lang="fql" >}}
-let rows = query `.row` in doc on error return []
+let rows = query `.row` in doc using css on error return []
 {{</ code >}}
 
 For more on values that expose querying and other behaviors, see [Value Capabilities]({{% ref "../types/capabilities" %}}) and [Host Values]({{% ref "../types/host" %}}).

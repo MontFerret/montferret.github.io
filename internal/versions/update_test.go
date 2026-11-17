@@ -12,7 +12,7 @@ import (
 const versionsFixture = `# Website release pins.
 go: "1.25" # Hugo build toolchain
 
-runtime:
+core:
     v2: "2.0.0-alpha.46" # Current runtime
     v1: "1.0.0"
 
@@ -37,8 +37,8 @@ func TestUpdateFileResolvesSupportedRepositoriesAndChannels(t *testing.T) {
 		previous   string
 		version    string
 	}{
-		{name: "runtime v1", repository: "MontFerret/ferret", tag: "v1.0.1", path: "runtime.v1", previous: "1.0.0", version: "1.0.1"},
-		{name: "runtime v2", repository: "MontFerret/ferret", tag: "v2.0.0-alpha.47", path: "runtime.v2", previous: "2.0.0-alpha.46", version: "2.0.0-alpha.47"},
+		{name: "Core v1", repository: "MontFerret/ferret", tag: "v1.0.1", path: "core.v1", previous: "1.0.0", version: "1.0.1"},
+		{name: "Core v2", repository: "MontFerret/ferret", tag: "v2.0.0-alpha.47", path: "core.v2", previous: "2.0.0-alpha.46", version: "2.0.0-alpha.47"},
 		{name: "CLI v1", repository: "MontFerret/cli", tag: "1.12.0", path: "cli.v1", previous: "1.11.1", version: "1.12.0"},
 		{name: "CLI v2", repository: "MontFerret/cli", tag: "2.0.0-alpha.41", path: "cli.v2", previous: "2.0.0-alpha.40", version: "2.0.0-alpha.41"},
 		{name: "Lab v2", repository: "MontFerret/lab", tag: "2.0.0-alpha.32", path: "lab.v2", previous: "2.0.0-alpha.31", version: "2.0.0-alpha.32"},
@@ -62,6 +62,18 @@ func TestUpdateFileResolvesSupportedRepositoriesAndChannels(t *testing.T) {
 				t.Fatalf("UpdateFile major = %d, want 2", result.Major)
 			}
 		})
+	}
+}
+
+func TestUpdateCoreReleaseInWebsiteVersionFile(t *testing.T) {
+	// Exercise the checked-in schema without changing the site's release pins.
+	filename := writeVersionFixture(t, readFile(t, filepath.Join("..", "..", "data", "versions.yaml")))
+	result, err := UpdateFile(Request{Repository: "MontFerret/ferret", Tag: "v2.0.0-0", File: filename})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Path != "core.v2" {
+		t.Fatalf("Core release path = %q, want core.v2", result.Path)
 	}
 }
 
@@ -200,7 +212,7 @@ func TestUpdateFileRejectsInvalidVersionFiles(t *testing.T) {
 	}{
 		{name: "malformed YAML", contents: "cli: [\n", wantError: "parse version file"},
 		{name: "multiple documents", contents: "cli:\n    v2: \"2.0.0\"\n---\ncli:\n    v2: \"2.0.1\"\n", wantError: "exactly one YAML document"},
-		{name: "missing product", contents: "runtime:\n    v2: \"2.0.0\"\n", wantError: "top-level \"cli\" key"},
+		{name: "missing product", contents: "core:\n    v2: \"2.0.0\"\n", wantError: "top-level \"cli\" key"},
 		{name: "duplicate product", contents: "cli:\n    v2: \"2.0.0\"\ncli:\n    v2: \"2.0.1\"\n", wantError: "top-level \"cli\" key"},
 		{name: "missing channel", contents: "cli:\n    v1: \"1.0.0\"\n", wantError: "unsupported repository/major combination"},
 		{name: "duplicate channel", contents: "cli:\n    v2: \"2.0.0\"\n    v2: \"2.0.1\"\n", wantError: "exactly one cli.v2 key"},

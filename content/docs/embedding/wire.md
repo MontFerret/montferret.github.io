@@ -111,7 +111,7 @@ Use `Serve(ctx, listener)` for a caller-created listener, including Unix sockets
 
 ## Connect with the CLI
 
-Ferret CLI `v{{< data "versions.cli.v2" >}}` can execute source, open a REPL, and report the host's version against this example. The example's published dependency set uses the consumable-output framing required by current CLI `main`; older buffered-output hosts are incompatible. See the [CLI Wire guide]({{< ref "docs/tools/cli/wire" >}}) for the current compatibility requirements and separate CLI development host.
+Ferret CLI `v{{< data "versions.cli.v2" >}}` can execute source, open a REPL, debug a local FQL file, and report this host's version. This example uses the consumable-output framing required by that CLI release. See the [CLI Wire guide]({{< ref "docs/tools/cli/wire" >}}) for the current compatibility requirements and separate CLI development host.
 
 These commands use this example's `app::greet` function, not the CLI development host's `DEMO::IDENTITY`:
 
@@ -121,7 +121,7 @@ ferret repl --runtime wire --runtime-endpoint tcp://127.0.0.1:50051
 ferret version --runtime wire --runtime-endpoint tcp://127.0.0.1:50051
 {{< /terminal >}}
 
-The CLI uses the host's functions, modules, policies, and filesystem configuration. It supports source execution through Wire; artifacts and `ferret debug` require the builtin runtime. The [CLI Wire guide]({{< ref "docs/tools/cli/wire" >}}) covers its loopback-only endpoint syntax, timeout, compatibility, diagnostics, and ownership.
+The CLI uses the host's functions, modules, policies, and filesystem configuration. For an interactive walkthrough using this host’s greeting function, see [Debug on a Wire host]({{< ref "docs/tools/cli/debug" >}}#debug-on-a-wire-host). Compiled artifacts require the builtin CLI runtime. The [CLI Wire guide]({{< ref "docs/tools/cli/wire" >}}) covers its loopback-only endpoint syntax, timeout, compatibility, diagnostics, and ownership.
 
 ## What crosses the remote boundary
 
@@ -155,7 +155,7 @@ Use Wire when your application already owns a configured runtime and needs to ex
 
 Wire supports the Universal API debugging path: compile with `remote.CompileDebug`, then create a debugger with `plan.NewDebugSession`. The returned debugger session supports entry stops, breakpoints, stepping, inspection, and evaluation through the hosted implementation. Close the debugger and plan when finished.
 
-See the [Wire client debugger documentation](https://github.com/MontFerret/wire/blob/v{{< data "versions.wire.v1" >}}/docs/client.md#debugger) and [Universal API guide]({{< ref "docs/embedding/go/universal-api" >}}) for the Wire and Native adapter contracts. Wire's debugging capability does not imply that a particular editor or CLI can connect to its endpoint; that requires a tool-specific integration.
+See the [Wire client debugger documentation](https://github.com/MontFerret/wire/blob/v{{< data "versions.wire.v1" >}}/docs/client.md#debugger) and [Universal API guide]({{< ref "docs/embedding/go/universal-api" >}}) for the Wire and Native adapter contracts. The CLI connects directly. Editors that support external debugging use [ferretd]({{< ref "docs/tools/ferretd" >}}) to launch against a named Wire runtime.
 
 ## Own resources and secure the endpoint
 
@@ -164,6 +164,8 @@ The host owns its runtime and endpoint. Wire borrows the runtime and never close
 `client.New(ctx, target, options...)` creates and owns a gRPC channel. Its default is TLS with system trust and normal server identity verification. `client.WithInsecure()` explicitly selects plaintext for this loopback demo. There is **no plaintext fallback** if TLS fails. Constructor cancellation controls startup only; after construction, use each operation's context to cancel work.
 
 Closing the remote runtime gates new root operations. Existing plans and admitted work may retain the logical connection, so the owned channel closes only after its last descendant and in-flight work finish. Settle outputs, then close sessions, plans, and the remote runtime. With `client.From(ctx, conn)`, Wire always borrows the caller's transport, including on failed startup: the caller closes that channel after logical resources settle.
+
+Wire `v1.0.0-alpha.5` adds the optional `client.ConnectionLifetime` interface to runtimes returned by both `client.New` and `client.From`. To detect a lost host, wait for `ConnectionDone()` to close, then read `ConnectionError()`. It returns `nil` for locally initiated teardown, `client.ErrClosed` for unexpected EOF, or the decoded cause for another stream failure. A retained plan can keep this signal open after `Runtime.Close()`. The signal marks the end of the logical connection’s reader, before final cleanup. Check errors from closing the resources you own. [Wire alpha.5 client contract](https://github.com/MontFerret/wire/blob/v1.0.0-alpha.5/client/connection_lifetime.go)
 
 Configure TLS, mTLS, or host-supplied token middleware using the [Wire security examples]({{< ref "docs/embedding/wire-security" >}}). Server options and `Run` options collect validation failures before construction or listening; the security guide shows `errors.As` inspection and collection diagnostics. Loopback alone is not authentication or isolation between local users. Authorization and runtime capabilities remain the host's responsibility.
 

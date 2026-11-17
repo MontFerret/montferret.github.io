@@ -46,7 +46,7 @@ return score >= 80 ? "passed" : "failed"
 
 {{< editor lang="fql" >}}
 let user = { name: "Ada", roles: ["admin", "editor"] }
-let isAdmin = contains(user.roles, "admin")
+let isAdmin = "admin" in user.roles
 
 return {
     name: user.name,
@@ -106,7 +106,7 @@ let links = page[~ css`a[href]`]
 return links
 {{< /editor >}}
 
-The long form of a query expression makes the structure explicit, and supports passing query-specific data or options:
+The long form of a query expression makes the structure explicit, and supports passing parameters to the database:
 
 {{< editor lang="fql" >}}
 let db = db::sqlite::open({ memory: true })
@@ -126,7 +126,6 @@ let insert = query one `
     with {
         params: ["Ada"]
     }
-    options { transactionLevel: "read-uncommitted" }
 
 return db[~ sql`SELECT id, name FROM users`]
 {{< /editor >}}

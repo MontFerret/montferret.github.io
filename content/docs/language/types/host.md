@@ -21,12 +21,9 @@ A host value represents something owned by the host environment rather than by F
 For example, a database connection value may refer to an open connection managed by a Go module. A browser page value may refer to a live browser tab managed by the browser runtime. FQL does not inspect or copy those values directly. Instead, it works with them through functions, operators, and runtime capabilities.
 
 {{< code lang="fql" >}}
-let db = db::sqlite::open("data.db")
+let db = db::sqlite::open({ memory: true })
 
-return query `
-  SELECT name
-  FROM users
-` in db
+return query `SELECT 'Ada' AS name` in db using sql
 {{</ code >}}
 
 In this example, `db` is a host value. It is not an object containing database fields. It is a runtime-provided value that can be used by operations which understand database connections.
@@ -38,29 +35,27 @@ Host values can participate in normal expression flow.
 They can be assigned to variables:
 
 {{< code lang="fql" >}}
-let db = db::sqlite::open("data.db")
+let db = db::sqlite::open({ memory: true })
 {{</ code >}}
 
 They can be passed to functions:
 
 {{< code lang="fql" >}}
-return db::tables(db)
+let db = db::sqlite::open({ memory: true })
+return db::sqlite::close(db)
 {{</ code >}}
 
 They can be grouped with related data while a query is running:
 
 {{< code lang="fql" >}}
-let db = db::sqlite::open("data.db")
+let db = db::sqlite::open({ memory: true })
 
 let context = {
   source: db,
-  table: "users"
+  label: "example"
 }
 
-return query `
-  SELECT *
-  FROM users
-` in context.source
+return query `SELECT 1 AS id` in context.source using sql
 {{</ code >}}
 
 However, the internal data of a host value is opaque to FQL. A host value does not automatically expose object fields, array elements, or scalar operations unless the runtime explicitly supports them.
@@ -71,7 +66,7 @@ Host values are opaque by default.
 
 FQL can hold and pass a host value, but it cannot assume anything about the value's internal implementation. The supported operations depend on the value's runtime type and capabilities.
 
-Some host values expose capabilities that make them usable with familiar FQL syntax. For example, an HTML node may support property access, allowing fields such as `text`, `attrs`, or other module-defined properties to be read using normal property syntax.
+Some host values expose capabilities that make them usable with familiar FQL syntax. For example, an HTML element exposes properties such as `textContent` and `attributes`.
 
 Other host values may expose no properties at all and can only be used through functions or specific language operations.
 
@@ -90,12 +85,9 @@ Some host values expose capabilities.
 A capability describes an operation that a value supports. For example, a database connection may support query execution, which allows it to be used with `query ... in`.
 
 {{< code lang="fql" >}}
-let db = db::sqlite::open("data.db")
+let db = db::sqlite::open({ memory: true })
 
-return query `
-  SELECT *
-  FROM users
-` in db
+return query `SELECT 1 AS id` in db using sql
 {{</ code >}}
 
 The `query ... in db` expression works because `db` provides the capability required by query execution.
@@ -110,13 +102,7 @@ Some host values represent external resources with a lifetime, such as open file
 
 Those resources are owned by the host environment, module, or runtime that created them. FQL can receive and use host values during program execution, but resource cleanup is handled by the runtime according to the capabilities exposed by those values.
 
-At the end of program execution, before the final result is returned to the host, Ferret finalizes the result. During finalization, resource-backed values may be closed and the result is converted into the output format selected by the host.
-
-Host values that support the close capability are closed automatically during this step. This is similar to values that implement `io.Closer` in Go: the value may hold an external resource, and the runtime is responsible for releasing that resource when the program result is finalized.
-
-After cleanup, the final result is serialized using the encoding configured by the host. By default, Ferret serializes results as JSON.
-
-This means FQL code can work with host values while the program is running, but the value returned to the outside world must still be converted into the host-selected output format.
+Native Ferret encodes a successful result while its values are still available, then closes the VM result. The runtime releases closable resources it owns, including resources discovered while encoding. A host can share a parameter across runs while the script returns data derived from it. Returning the closable parameter itself, directly or inside an array or object, lets Native encoding adopt it for cleanup. See [Go output]({{< ref "/docs/embedding/go/output" >}}) for how the caller observes completion and cleanup errors.
 
 ## Result serialization
 
@@ -125,7 +111,7 @@ Host values are regular FQL values during execution, but they are not always ser
 When a program returns a result, Ferret converts that result into the output format selected by the host. The default output format is JSON, but embedded hosts may choose a different encoding.
 
 {{< code lang="fql" >}}
-return db::sqlite::open("data.db")
+return db::sqlite::open({ memory: true })
 {{</ code >}}
 
 This expression returns a host value during execution. When the program result is finalized, the host decides how that value should be represented in the selected output format.

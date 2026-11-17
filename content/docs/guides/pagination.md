@@ -10,7 +10,7 @@ description: "Collect data across multiple pages using common pagination pattern
 
 Most websites split data across multiple pages. This guide shows how to handle the most common pagination patterns: clicking a "next" button, iterating numbered pages by URL, and collecting results across all pages.
 
-All pagination examples use the `cdp` driver because page navigation and clicking require a browser. See [Browser-driven pages]({{< ref "browser-pages" >}}) for setup.
+Clicking a link or scrolling to load more content requires the `cdp` driver. Numbered pages with server-rendered HTML can be fetched using the memory driver. See [Browser-driven pages]({{< ref "browser-pages" >}}) for setup.
 
 ## Click a "next" button
 
@@ -24,7 +24,7 @@ Use `do while` because the loop body must run at least once to process the first
 let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/products/", { driver: "cdp" })
 
 // Keep selectors in variables so they can be reused throughout the query.
-let nextSelector = "a.next"
+let nextSelector = "a.next[href]"
 let itemSelector = ".product-card"
 
 // Find the "next" link, click it, and wait for the resulting navigation.
@@ -33,7 +33,7 @@ let itemSelector = ".product-card"
 func CLICK_NEXT() {
     return waitfor event "navigation" in page
         trigger (dispatch "click" in (query one nextSelector in page using css))
-        timeout 10s
+        timeout 10s on timeout fail
 }
 
 // Skip navigation during the first iteration because the first page
@@ -78,44 +78,23 @@ Key points
 
 ## Infinite scrolling
 
-Some websites load additional content when the user scrolls to the bottom of the page. Use `web::html::scroll_bottom` to trigger another content load, then process only the newly added items.
+On Mockery’s infinite-scroll page the first batch appears automatically. Scroll after that batch renders, then wait for the count to increase before reading the appended cards:
 
 {{< editor lang="fql" >}}
-// Open the page using the CDP browser driver.
-// Infinite scrolling depends on browser interaction and dynamically loaded content.
 let page = web::html::open("https://mockery.ferretlang.org/scenarios/infinite-scroll/", { driver: "cdp" })
+let firstBatch = waitfor value (query count ".product-card" in page using css)
+    when . > 0 timeout 5s on timeout fail
 
-// Number of products added after each scroll.
-let pageSize = 8
+web::html::scroll_bottom(page)
+let cards = waitfor value (query ".product-card" in page using css)
+    when length(.) > firstBatch timeout 5s on timeout fail
 
-// Process the initial content, then keep scrolling until the page
-// can no longer be scrolled further.
-return for i do while web::html::scroll_bottom(page)
-    // The first batch is already available.
-    // For subsequent iterations, briefly wait for newly requested
-    // content to be added to the page.
-    let _ = i == 0 ? none : wait(500)
-    // Skip products processed during previous iterations and return
-    // only the next batch of newly loaded items.
-    for product in query `:skip(${i * pageSize}, .product-card)` in page using css
-        return {
-        name: (query one '[data-testid="product-title"]' in product using css)?.textContent,
-        price: (query one '[data-testid="product-price"]' in product using css)?.textContent
-    }
-{{</ editor >}}
+return for card, index in cards
+    filter index >= firstBatch
+    return card[~? css`[data-testid="product-title"]`]?.textContent
+{{< /editor >}}
 
-Key points
-
-* Infinite scrolling requires a browser. The page uses JavaScript and user interaction to load additional content, so the query opens it with the CDP driver.
-* `for do while` processes the initial batch. The loop body runs before its condition is evaluated, allowing the products already present on the first page to be extracted before the first scroll.
-* `web::html::scroll_bottom` drives the loop. After each iteration, Ferret scrolls to the bottom of the page. The loop continues while further scrolling is possible.
-* The loop index identifies each batch. On the first iteration, i is 0, so the query processes the products initially present on the page. Later values correspond to batches loaded by subsequent scrolls.
-* The first iteration does not wait. The initial products are already available, so `wait` is used only after a scroll has triggered another content load.
-* The temporary wait avoids reading the page too early. It gives the website time to fetch and render newly loaded products before extraction begins. This is a temporary workaround until `page.network.status` can be used to wait for the page to become idle.
-* `:skip()` prevents duplicate results. Each iteration skips the products returned by earlier iterations and selects only the newly loaded batch.
-* `pageSize` must match the website’s behavior. The skip offset assumes that every scroll loads eight products. If the site returns variable-sized batches, track the number of already processed elements instead.
-* `query one` extracts fields from each product. Each title and price lookup is scoped to the current product card rather than the entire page.
-* This pattern needs a stopping condition. The loop ends when `web::html::scroll_bottom(page)` indicates that the page can no longer scroll further. A `limit` can also be added as a safety guard for sites that scroll indefinitely.
+For a longer collection, repeat until the page signals completion. Limit the number of scrolls and give each wait a deadline.
 
 ## Iterate numbered pages by URL
 
@@ -162,16 +141,15 @@ Key points
 If you do not know the total number of pages, open the first page to find out:
 
 {{< code lang="fql" >}}
-let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/?page="
-let firstPage = web::html::open(baseURL + "1")
+let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/products/"
+let firstPage = web::html::open(baseURL)
 
-let lastPageLink = query one ".pagination a:last-child" in firstPage using css
-let totalPages = to_int(lastPageLink?.textContent) on error return 1
+let totalPages = query count '[data-testid="page-link"]' in firstPage using css
 
 return for pageNum in 1..totalPages
-    let page = web::html::open(baseURL + to_string(pageNum))
+    let page = web::html::open(pageNum == 1 ? baseURL : `${baseURL}page/${pageNum}/`)
     for item in page[~ css`.product-card`]
-        return item[~? css`.product-name`]?.textContent
+        return item[~? css`.product-title`]?.textContent
 {{</ code >}}
 
 ## Collect results into a flat array
@@ -179,16 +157,16 @@ return for pageNum in 1..totalPages
 When each page returns an array of items, the outer loop produces an array of arrays. Use `arrays::flatten` to merge them:
 
 {{< code lang="fql" >}}
-let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/?page="
+let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/products/"
 
 let result = (
     for pageNum in 1..3
-        let page = web::html::open(baseURL + to_string(pageNum))
+        let page = web::html::open(pageNum == 1 ? baseURL : `${baseURL}page/${pageNum}/`)
 
         let items = (
             for item in page[~ css`.product-card`]
                 return {
-                    name: item[~? css`.product-name`]?.textContent,
+                    name: item[~? css`.product-title`]?.textContent,
                     price: item[~? css`.product-price`]?.textContent
                 }
         )
@@ -202,12 +180,13 @@ return arrays::flatten(result)
 Alternatively, use the `[**]` array contraction operator to flatten inline:
 
 {{< code lang="fql" >}}
+let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/products/"
 let result = (
     for pageNum in 1..3
-        let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/?page=" + to_string(pageNum))
+        let page = web::html::open(pageNum == 1 ? baseURL : `${baseURL}page/${pageNum}/`)
         return page[~ css`.product-card`][*
             return {
-                name: .[~? css`.product-name`]?.textContent,
+                name: .[~? css`.product-title`]?.textContent,
                 price: .[~? css`.product-price`]?.textContent
             }
         ]
@@ -221,11 +200,11 @@ return result[**]
 Pagination scripts are long-running and may encounter network errors or missing elements. Wrap page loads and interactions with error recovery:
 
 {{< code lang="fql" >}}
-let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/?page="
+let baseURL = "https://mockery.ferretlang.org/scenarios/ecommerce/products/"
 
 let result = (
     for pageNum in 1..10
-        let page = web::html::open(baseURL + to_string(pageNum))
+        let page = web::html::open(pageNum == 1 ? baseURL : `${baseURL}page/${pageNum}/`)
             on error retry 2 delay 1s backoff EXPONENTIAL
             or return none
 
@@ -235,7 +214,7 @@ let result = (
             for item in page[~ css`.product-card`]
                 return {
                     page: pageNum,
-                    name: item[~? css`.product-name`]?.textContent,
+                    name: item[~? css`.product-title`]?.textContent,
                     price: item[~? css`.product-price`]?.textContent
                 }
         )

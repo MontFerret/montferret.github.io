@@ -23,7 +23,7 @@ const engine = await create({
 });
 
 try {
-    const result = await engine.run(`
+    const result = await engine.runJSON(`
         return {
             name: full_name("Ada", "Lovelace"),
             total: inventory::total(12.5, 4),
@@ -74,7 +74,7 @@ const engine = await create({
     },
 });
 
-const user = await engine.run("return lookup_user(@id)", {
+const user = await engine.runJSON("return lookup_user(@id)", {
     params: { id: "user-42" },
 });
 {{</ code >}}
@@ -93,7 +93,7 @@ const engine = await create({
 });
 
 try {
-    await engine.run("return fail()");
+    await engine.runJSON("return fail()");
 } catch (error) {
     console.error(error instanceof Error ? error.message : error);
     // host lookup failed

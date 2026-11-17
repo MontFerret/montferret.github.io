@@ -42,7 +42,7 @@ engine, err := ferret.New(
 )
 
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 defer engine.Close()
@@ -60,7 +60,7 @@ plan, err := engine.Compile(ctx,
 )
 
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 defer plan.Close()
@@ -78,14 +78,14 @@ session, err := plan.NewSession(ctx,
 )
 
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 defer session.Close()
 
 output, err := session.Run(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 {{</ code >}}
 
@@ -97,7 +97,7 @@ The `Output` is a caller-owned handle. `Collect` returns detached `*ferret.Conte
 defer output.Close()
 content, err := output.Collect(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 fmt.Println(string(content.Data))
@@ -113,7 +113,7 @@ Close every directly created Engine, Plan, and Session when no longer needed. Co
 {{< code lang="go" >}}
 engine, err := ferret.New()
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer engine.Close()
 
@@ -121,13 +121,13 @@ plan, err := engine.Compile(ctx,
     ferret.NewSource("query.fql", `return 1 + 1`),
 )
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer plan.Close()
 
 session, err := plan.NewSession(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer session.Close()
 
@@ -160,13 +160,13 @@ For one-shot queries that do not need plan reuse, the engine provides a `Run` me
 {{< code lang="go" >}}
 output, err := engine.Run(ctx, ferret.NewAnonymousSource(`return 1 + 1`))
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 defer output.Close()
 content, err := output.Collect(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 fmt.Println(string(content.Data))
 // 2

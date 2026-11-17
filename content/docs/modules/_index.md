@@ -9,6 +9,8 @@ description: "Discover, install, develop, and publish Ferret modules."
 
 Modules add functions, host values, data formats, and integrations to a Ferret runtime. Public modules are distributed as Go packages and can be discovered through the [Ferret Registry]({{< ref "/registry" >}}).
 
+First-party packages in [MontFerret/contrib](https://github.com/MontFerret/contrib) include Web HTML, archive handling, databases and document formats. Each module has its own releases and compatibility range. Check its Registry entry and the modules registered by the runtime you will use.
+
 The CLI covers the complete module workflow:
 
 - install a registered module into a Go application

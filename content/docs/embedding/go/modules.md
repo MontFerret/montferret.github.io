@@ -35,7 +35,7 @@ See [Install a module]({{< ref "/docs/modules/install" >}}) for project prerequi
 You can also add a Go package manually when it is not registered or when its constructor needs host-specific setup. For example, the HTML module is published from the Ferret `contrib` repository:
 
 {{< terminal command="true" >}}
-go get github.com/MontFerret/contrib/modules/web/html
+go get github.com/MontFerret/contrib/modules/web/html@v1.0.0-rc.29
 {{</ terminal >}}
 
 Import the module and any supporting packages your configuration needs:

@@ -9,7 +9,7 @@ description: "Migrate byte-slice codecs to context-aware reader/writer methods a
 # Migrate the Encoding API
 
 Ferret codecs accept a caller context and borrowed `io.Writer` or `io.Reader`.
-Use the [documented Core checkout]({{< ref "/docs/embedding/go/getting-started#installation" >}})
+Use the [documented Core release]({{< ref "/docs/embedding/go/getting-started#installation" >}})
 for these examples. The [Value Encoders guide]({{< ref "/docs/embedding/go/value-encoders" >}})
 describes the current contract and provides a complete custom codec.
 

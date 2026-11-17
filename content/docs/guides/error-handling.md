@@ -214,7 +214,7 @@ return loaded ? {
     title: page?.title,
     items: page[~ css`.content .item`][*
         return {
-            name: .?.textContent
+            name: .textContent
         }
     ]
 } : { error: "page unavailable" }

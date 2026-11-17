@@ -83,7 +83,7 @@ The build embeds Worker and Ferret version metadata through linker flags when bu
 
 ## Chrome dependency
 
-Worker waits for Chrome during startup unless Chrome is disabled with `-no-chrome`. By default it checks:
+Worker waits for Chrome during startup unless you skip the check with `-no-chrome`. By default it checks:
 
 ```text
 http://127.0.0.1:9222

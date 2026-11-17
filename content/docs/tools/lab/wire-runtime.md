@@ -7,7 +7,13 @@ description: "Run Lab tests through the hosted Universal Ferret API over gRPC."
 
 # Wire Runtime
 
-Use Wire when a separately configured Ferret host should execute your tests through the Universal Ferret API over gRPC.
+Use Wire to test functions supplied by an application. Start the [example host]({{< ref "/docs/embedding/wire" >}}#host-the-configured-engine) and save this as `tests/greeting.fql`:
+
+{{< code lang="fql" >}}
+RETURN T::EQ(app::greet("Ada"), "Hello, Ada!")
+{{< /code >}}
+
+Run the test against the host that provides `app::greet`:
 
 {{< terminal >}}
 lab run --runtime=wire+tcp://127.0.0.1:50051 tests/
@@ -15,11 +21,11 @@ lab run --runtime=wire+tcp://127.0.0.1:50051 tests/
 
 Use Lab `v{{< data "versions.lab.v2" >}}` with a host such as the [published Wire example]({{< ref "/docs/embedding/wire" >}}), pinned to Wire `v{{< data "versions.wire.v1" >}}`, Universal API `v{{< data "versions.wire.api" >}}`, and Core `v{{< data "versions.wire.core" >}}`. Lab requires output framing version **1** and checks compatibility during the connection handshake. Incompatible peers fail at startup without a buffered-output fallback.
 
-Lab still owns test discovery, suites, parameters, scheduling, local services, and reporting. Wire is an additional integration adapter; the [HTTP/Worker adapter](../http-runtime/) remains available.
+Lab discovers tests, supplies parameters, schedules runs, starts requested local services, and reports the results. To test a Worker HTTP deployment, use the [HTTP adapter](../http-runtime/).
 
 ## Configure the connection
 
-The runtime target contains the complete endpoint. Only `wire+tcp://127.0.0.1:<port>` with a port from 1 to 65535 is accepted. Hostnames, IPv6, other addresses, credentials, paths, queries, and fragments are rejected. Lab translates the public URI to its existing internal TCP endpoint. The plaintext loopback transport is intended for trusted local development, including a host exposed through a local port mapping. The new URI scheme adds no encryption or authentication.
+The runtime target contains the complete endpoint. Only `wire+tcp://127.0.0.1:<port>` with a port from 1 to 65535 is accepted. Hostnames, IPv6, other addresses, credentials, paths, queries, and fragments are rejected. The client uses plaintext without authentication. Connect to a trusted local development host or a trusted host exposed through a local port mapping.
 
 {{< terminal >}}
 lab run \
@@ -33,7 +39,7 @@ LAB_RUNTIME_OPTION='connect-timeout:"10s"' \
 lab run tests/
 {{< /terminal >}}
 
-`connect-timeout` is the only Wire adapter option. It must be a positive JSON duration string and defaults to `"5s"`. It bounds transport establishment and the Connect handshake; cancellation or an earlier caller deadline also stops setup. The per-test `--timeout` remains separate and bounds execution. Unknown options, HTTP settings such as `headers` and `path`, and arbitrary FQL names fail before connecting. See [Configuration](../configuration/) for value syntax, environment precedence, and repeated keys.
+`connect-timeout` is the only Wire adapter option. It must be a positive JSON duration string and defaults to `"5s"`. It bounds transport establishment and the Connect handshake; cancellation or an earlier caller deadline also stops setup. The separate `--timeout` bounds each test execution attempt. Unknown options, HTTP settings such as `headers` and `path`, and arbitrary FQL names fail before connecting. See [Configuration](../configuration/) for value syntax, environment precedence, and repeated keys.
 
 ## Pass parameters
 

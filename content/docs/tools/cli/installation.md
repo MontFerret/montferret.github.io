@@ -11,7 +11,7 @@ aliases:
 
 The Ferret CLI runs on Linux, macOS, and Windows. This page covers CLI-specific setup. To compare the CLI with Go and JavaScript embedding, see the [Installation chooser]({{< ref "/docs/getting-started/installation" >}}).
 
-These CLI guides describe current `main`. [Build a source checkout](#build-from-source) to use that implementation. The tagged downloads below are published v2 releases and may not include changes added after their tag. Choose a v2 release explicitly; GitHub's latest stable release and the shell installer can select the v1 CLI.
+These guides use the published v2 prerelease `v{{< data "versions.cli.v2" >}}`. Choose this tag explicitly. GitHub’s latest stable release and the shell installer can select the v1 CLI.
 
 ## Prebuilt binary
 
@@ -40,10 +40,10 @@ On Windows, extract `ferret.exe` from the zip file and place it in a directory i
 
 ## Build from source
 
-Build current `main` with Go {{< data "versions.cli.go" >}} or later and `make`:
+Build the tagged source with Go {{< data "versions.cli.go" >}} or later and `make`:
 
 {{< terminal >}}
-git clone --branch main https://github.com/MontFerret/cli.git
+git clone --branch v{{< data "versions.cli.v2" >}} --depth 1 https://github.com/MontFerret/cli.git
 cd cli
 make compile
 export PATH="$PWD/bin:$PATH"
@@ -57,7 +57,7 @@ To install source from the published v2 tag instead:
 go install github.com/MontFerret/cli/v2/ferret@v{{< data "versions.cli.v2" >}}
 {{< /terminal >}}
 
-For the tagged Go installation, ensure Go's binary installation directory is on `PATH`.
+Add Go's binary installation directory to `PATH`. A plain `go install` leaves the CLI version field empty and reports `unknown` for the builtin runtime. Release archives and `make compile` include both version strings.
 
 ## Verify installation
 
@@ -69,7 +69,7 @@ This prints the CLI version and the runtime version.
 
 ## Update
 
-To update a published v2 installation, install the newer tagged archive or rerun `go install` with the newer v2 tag. For a source checkout, update `main` and rerun `make compile`.
+To update a published v2 installation, install the newer tagged archive or rerun `go install` with the newer v2 tag. For a source checkout, check out the new release tag and rerun `make compile`.
 
 The `ferret update self` command checks GitHub's latest non-prerelease release, so it does not advance between v2 prereleases. It also cannot install the Windows zip release. Do not use it as the v2 prerelease update path.
 

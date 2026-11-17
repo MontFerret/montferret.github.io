@@ -37,7 +37,7 @@ On Windows, extract `lab.exe` from the zip file and place it in a directory incl
 
 ## Docker
 
-Lab release images are published to Docker Hub and GitHub Container Registry. Use the documented version tag so the container runs the same Lab version as these pages.
+The published Lab images on Docker Hub and GitHub Container Registry target `linux/amd64`. Use the release archive for a native ARM64 binary. The container example uses the same release as the CLI commands on this page.
 
 {{< terminal >}}
 docker run --rm -v "$PWD/tests:/test" montferret/lab:{{< data "versions.lab.v2" >}}
@@ -61,15 +61,15 @@ Lab v2 is a Go module at `github.com/MontFerret/lab/v2`. Building `v{{< data "ve
 {{< terminal >}}
 git clone --branch v{{< data "versions.lab.v2" >}} --depth 1 https://github.com/MontFerret/lab.git
 cd lab
-make build
+make build VERSION=v{{< data "versions.lab.v2" >}}
 {{< /terminal >}}
 
-The build writes the binary to `./bin/lab`.
+The build writes the binary to `./bin/lab`. Multiple prerelease tags point to this commit. Passing the tag as `VERSION` ensures `lab version` identifies the release you selected.
 
-For a narrower local compile, run:
+To compile the binary with its version information and skip the vet and test steps, run:
 
 {{< terminal >}}
-go build -o ./bin/lab ./main.go
+make compile VERSION=v{{< data "versions.lab.v2" >}}
 {{< /terminal >}}
 
 ## Verify installation

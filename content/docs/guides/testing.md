@@ -197,15 +197,11 @@ Use runner options when a suite needs parallelism, repeated passes, or retries:
 lab run tests/ \
   --concurrency=4 \
   --timeout=30 \
-  --attempts=2 \
-  --times=3 \
   --reporter=simple
 {{< /terminal >}}
 
 - `--concurrency=4` runs up to four test files at once.
 - `--timeout=30` sets the per-test timeout to 30 seconds.
-- `--attempts=2` allows at most two attempts for a failed required run.
-- `--times=3` requires three successful runs of each test.
 - `--reporter=simple` produces line-oriented output suited to CI logs.
 
 See [Runners]({{< ref "/docs/tools/lab/runners" >}}) for retry and repetition behavior.

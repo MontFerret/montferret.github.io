@@ -8,7 +8,7 @@ description: "Capture screenshots and generate PDFs from web pages."
 
 # Screenshots and PDFs
 
-Ferret can capture screenshots and generate PDF documents from browser-backed pages. Both require the `cdp` driver.
+Ferret can capture screenshots and generate PDFs from browser-backed pages. Start a [CDP browser]({{< ref "browser-pages" >}}) for the CLI examples. Screenshot options below use the Web HTML module bundled with the documented CLI. Worker’s older module supports default JPEG capture but rejects the lowercase screenshot option keys.
 
 ## Take a screenshot
 
@@ -34,11 +34,11 @@ return data
 {{< /tab >}}
 {{< /tabs >}}
 
-`web::html::screenshot` returns binary data (base64-encoded PNG). To save it to a file, use `io::fs::write`:
+`web::html::screenshot` returns binary image data. The default format is JPEG. JSON output displays the bytes as a base64 string. To save it to a file, use `io::fs::write`:
 
 {{< code lang="fql" >}}
 let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
-let data = web::html::screenshot(page)
+let data = web::html::screenshot(page, { format: "png" })
 io::fs::write("screenshot.png", data)
 
 return "saved"
@@ -54,18 +54,19 @@ let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
 let data = web::html::screenshot(page, {
     format: "jpeg",
     quality: 80,
-    fullPage: true
+    width: 320,
+    height: 180
 })
 
-io::fs::write("full-page.jpg", data)
+io::fs::write("preview.jpg", data)
 return "saved"
 {{</ code >}}
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `format` | string | `"png"` (default) or `"jpeg"` |
+| `format` | string | `"jpeg"` (default) or `"png"` |
 | `quality` | int | JPEG quality, 0–100 (ignored for PNG) |
-| `fullPage` | bool | Capture the full scrollable page, not just the viewport |
+| `x`, `y`, `width`, `height` | number | Position and size of the capture rectangle. The default rectangle covers the viewport. |
 
 ## Generate a PDF
 
@@ -108,12 +109,12 @@ return "saved"
 Dynamic pages may need time to render. Wait for the content to stabilize before capturing:
 
 {{< code lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", { driver: "cdp" })
 
-waitfor exists query one ".fully-loaded" in page using css
-    timeout 10s
+waitfor exists query one ".product-card" in page using css
+    timeout 10s on timeout fail
 
-let data = web::html::screenshot(page, { fullPage: true })
+let data = web::html::screenshot(page, { format: "png" })
 io::fs::write("loaded.png", data)
 
 return "saved"
@@ -131,7 +132,7 @@ let urls = [
 
 return for url, i in urls
     let page = web::html::open(url, { driver: "cdp" })
-    let data = web::html::screenshot(page, { fullPage: true })
+    let data = web::html::screenshot(page, { format: "png" })
     let filename = "screenshot-" + to_string(i) + ".png"
     io::fs::write(filename, data)
 

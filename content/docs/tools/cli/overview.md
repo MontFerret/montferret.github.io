@@ -9,7 +9,7 @@ description: "Understand the Ferret CLI workflow, command groups, runtime select
 
 The Ferret CLI provides the local command-line workflow around FQL. It can run source scripts, open an interactive shell, check and format code, debug execution, build and inspect bytecode, manage browser processes, and work with Ferret modules.
 
-These guides describe current CLI `main`. The [installation guide]({{< ref "installation" >}}) separates source-checkout builds from published v2 releases, which may have fewer features.
+The [installation guide]({{< ref "installation" >}}) covers the published CLI prerelease used here, `v{{< data "versions.cli.v2" >}}`.
 
 Run an expression without creating a file:
 
@@ -48,7 +48,7 @@ Run `ferret <command> --help` for the flags accepted by a specific command.
 
 The CLI uses its builtin Ferret runtime by default. The runtime owns FQL parsing, compilation, module behavior, parameter semantics, execution, and result serialization. The CLI owns command parsing, source selection, runtime selection, persistent settings, logging, and local browser-process management.
 
-[Run]({{< ref "run" >}}), its `exec` alias, and [REPL]({{< ref "repl" >}}) can execute source against an application-configured [Wire runtime]({{< ref "wire" >}}) with `--runtime wire --runtime-endpoint tcp://127.0.0.1:<port>`. The host owns compilation, modules, policies, browser integrations, and FQL filesystem access. The CLI also retains Worker-compatible HTTP URL execution through `--runtime`. Compiled artifacts and interactive debugging require the builtin local runtime.
+[Run]({{< ref "run" >}}), its `exec` alias, and [REPL]({{< ref "repl" >}}) can execute source against an application-configured [Wire runtime]({{< ref "wire" >}}) with `--runtime wire --runtime-endpoint tcp://127.0.0.1:<port>`. The host owns compilation, modules, policies, browser integrations, and FQL filesystem access. [Debug]({{< ref "debug" >}}) can use the same Wire endpoint for a local source file. Worker-compatible HTTP URLs support source execution. Compiled artifacts require the builtin runtime.
 
 `ferret version` reports the CLI and selected runtime versions. In Wire mode it reads the hosted runtime version through the Universal API during the initial handshake; the REPL banner shows that version and endpoint.
 

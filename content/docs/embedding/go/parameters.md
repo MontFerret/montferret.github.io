@@ -126,7 +126,7 @@ plan, err := engine.Compile(ctx, ferret.NewSource(
 return url`,
 ))
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer plan.Close()
 

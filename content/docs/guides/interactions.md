@@ -16,33 +16,19 @@ Page interactions require the `cdp` driver. See [Browser-driven pages]({{< ref "
 
 Use `dispatch "click"` or the arrow shorthand `<-` to click:
 
-{{< code lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
-    driver: "cdp"
-})
-let button = query one '[data-testid="page-next"]' in page using css
-
-dispatch "click" in button
-
-// Arrow shorthand — equivalent to the above
-button <- "click"
-{{</ code >}}
-
-After a click, the page may change. Use `waitfor` to wait for the result before extracting data:
-
 {{< editor lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", {
-    driver: "cdp"
-})
-let button = query one '[data-testid="page-next"]' in page using css
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/dynamic-products/load-more/", { driver: "cdp" })
+let button = query one '[data-testid="load-more-products"]' in page using css
+waitfor exists query one ".product-card" in page using css timeout 5s on timeout fail
+let before = query count ".product-card" in page using css
 
 dispatch "click" in button
+return waitfor value (query count ".product-card" in page using css)
+    when . > before
+    timeout 5s on timeout fail
+{{< /editor >}}
 
-waitfor exists (query one '[data-testid="dynamic-product-card"]' in page using css)
-    timeout 5s
-
-return query '[data-testid="dynamic-product-card"]' in page using css
-{{</ editor >}}
+The query waits for the card count to increase after the click. To use the arrow form, replace the dispatch statement with `button <- "click"`.
 
 ## Fill a text input
 
@@ -54,19 +40,16 @@ let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/s
 })
 let input = query one "#search-query" in page using css
 
-let beforeCount = query count '.product-card' in page using css
+waitfor (query exists '#search-status[data-state="ready"]' in page using css) timeout 5s on timeout fail
 dispatch "input" in input with { value: "camera" }
-let afterCount = query count '.product-card' in page using css
-
-return {
-    beforeCount,
-    afterCount
-}
-{{</ editor >}}
+dispatch "click" in (query one '[data-testid="search-submit"]' in page using css)
+waitfor (query exists '#search-status[data-state="ready"]' in page using css) timeout 5s on timeout fail
+return query count ".product-card" in page using css
+{{< /editor >}}
 
 ## Select from a dropdown
 
-Use `dispatch "select"` with an array of values:
+Use `dispatch "select"` with the option value:
 
 {{< editor lang="fql" >}}
 let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/search/", {
@@ -74,15 +57,12 @@ let page = web::html::open("https://mockery.ferretlang.org/scenarios/ecommerce/s
 })
 let categories = query one "#search-category" in page using css
 
-let beforeCount = query count '.product-card' in page using css
+waitfor (query exists '#search-status[data-state="ready"]' in page using css) timeout 5s on timeout fail
 dispatch "select" in categories with { value: "laptops" }
-let afterCount = query count '.product-card' in page using css
-
-return {
-    beforeCount,
-    afterCount
-}
-{{</ editor >}}
+dispatch "click" in (query one '[data-testid="search-submit"]' in page using css)
+waitfor (query exists '#search-status[data-state="ready"]' in page using css) timeout 5s on timeout fail
+return query count ".product-card" in page using css
+{{< /editor >}}
 
 ## Submit a form
 
@@ -163,20 +143,7 @@ return test.textContent
 ## Scroll the page
 
 Use `web::html::scroll_bottom` or `web::html::scroll_top` to scroll the page, or `web::html::scroll_element` for a specific element.
-Here is a simple example of scrolling to the bottom of a page to load more products:
-
-{{< editor lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org/scenarios/infinite-scroll/", { driver: "cdp" })
-let pageSize = 8
-
-return for i while web::html::scroll_bottom(page)
-    wait(500)
-    for product in query `:skip(${i * pageSize}, .product-card)` in page using css
-        return {
-            name: query one '[data-testid="product-title"]' in product using css,
-            price: query one '[data-testid="product-price"]' in product using css,
-        }
-{{</ editor >}}
+The [pagination guide]({{< ref "pagination" >}}#infinite-scrolling) shows how to wait for the next batch of cards after a scroll.
 
 ## Multi-step interaction
 
@@ -198,10 +165,9 @@ dispatch "input" in (query one "#search-query" in page using css) with { value: 
 // Step 1b: submit the form
 dispatch "click" in (query one '[data-testid="search-submit"]' in page using css)
 
-// Step 2a: wait for the results to load by checking for the loader to disappear
-waitfor exists query one "#search-loader" in page using css
-    when to_bool(.attributes.disabled) == true
-    timeout 10s
+// Step 2a: wait for the results to load by checking the results status
+waitfor (query exists '#search-status[data-state="ready"]' in page using css)
+    timeout 10s on timeout fail
 
 // Step 2b: collect product cards
 let products = query ".product-card" in page using css

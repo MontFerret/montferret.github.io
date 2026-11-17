@@ -35,6 +35,8 @@ Submit an FQL expression with a terminal `RETURN`. Output is written as encoded 
 {"active":true,"name":"Ada"}
 ```
 
+The order of object keys in the encoded output can vary.
+
 ## Multi-line input
 
 For scripts that span multiple lines, start a block with `%`, type the lines, then close with `%` to submit:

@@ -25,12 +25,8 @@ An array is a basic value type. It is also iterable and sortable. These are sepa
 A host database connection is not an array, an object, or a string. It has none of those storage shapes. However, it may be queryable if the host exposes query execution for it.
 
 {{< code lang="fql" >}}
-let db = db::sqlite::open("data.db")
-
-return query `
-  SELECT name
-  FROM users
-` in db using sql
+let db = db::sqlite::open({ memory: true })
+return query `SELECT 'Ada' AS name` in db using sql
 {{</ code >}}
 
 The `query ... in` operation does not check whether `db` is an array or an object. It checks whether `db` supports query execution. That check is a capability check.
@@ -126,7 +122,8 @@ These capabilities apply only to binary operators. Unary arithmetic and incremen
 A sortable value can be sorted in place.
 
 {{< code lang="fql" >}}
-sort values asc
+let values = [3, 1, 2]
+return arrays::mut::sort(values)
 {{</ code >}}
 
 Arrays are sortable by default. A host value that represents a collection may also support sorting if the host provides that capability.
@@ -165,9 +162,7 @@ This capability is used when the runtime needs to know the size of a value, such
 
 A closable value owns an external resource that should be released after execution.
 
-Database connections, file handles, browser sessions, network clients, and other resource-backed values may support close. The runtime tracks closable values and releases their resources during program finalization, before the result is returned to the host.
-
-Host values that support close do not need to be closed manually in FQL code. The runtime handles cleanup automatically.
+Database connections, file handles, browser sessions, network clients, and other resource-backed values may support close. Native Ferret releases the closable values it owns during execution and result finalization. To share a host-owned connection, return data from the connection. Returning the connection itself lets Native result cleanup close it.
 
 See [Host Values]({{< ref "host" >}}) for more about host values and their lifecycle.
 
@@ -185,15 +180,16 @@ let last = items[length(items) - 1]
 Key-based access uses dot notation or bracket notation with a string key:
 
 {{< code lang="fql" >}}
-let name = user.name
-let name = user["name"]
+let user = { name: "Ada" }
+return [user.name, user["name"]]
 {{</ code >}}
 
 Safe navigation returns `none` instead of raising an error when the target value is `none`:
 
 {{< code lang="fql" >}}
-let city = user?.address?.city
-let first = items?[0]
+let user = {}
+let items = none
+return [user?.address?.city, items?.[0]]
 {{</ code >}}
 
 Built-in arrays are readable by index. Built-in objects are readable by key. Host values may support either or both forms of access.
@@ -237,7 +233,7 @@ This check happens at runtime, not at parse time. FQL does not statically verify
 | --- | --- |
 | `query ... in value` | Queryable |
 | `for item in value` | Iterable |
-| `sort value` | Sortable |
+| `arrays::mut::sort(values)` | Mutable list with in-place sorting |
 | `waitfor event ... in value` | Observable |
 | `dispatch ... in value` | Dispatchable |
 | `value == other` / `value != other` | Equatable |
@@ -286,7 +282,8 @@ return for item in 42 {
 This fails because a number is not iterable.
 
 {{< editor lang="fql" >}}
-return dispatch "click" in "not an element"
+let target = "not an element"
+return dispatch "click" in target
 {{</ editor >}}
 
 This fails because a string does not support dispatch.

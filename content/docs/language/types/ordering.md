@@ -10,9 +10,9 @@ aliases:
 
 # Type ordering
 
-FQL defines a deterministic relational order for non-Duration built-in values. It is used by `<`, `<=`, `>`, and `>=`, sorting, and recursive array and object comparison.
+FQL defines a relational order for the scalar and collection types listed below. It is used by `<`, `<=`, `>`, and `>=`, sorting, and recursive array and object comparison.
 
-When two non-Duration built-ins have different types, their type decides the result:
+When two values in this sequence have different types, their type decides the result:
 
 {{< code >}}
 none < bool < number < string < datetime < binary < array < object
@@ -62,11 +62,10 @@ return arrays::sorted([1s, "2s"]) // runtime error
 
 Equality does not use the cross-type order to make different types equal. Membership, `match`, grouping, set operations, and deduplication all verify canonical equality recursively.
 
-Equivalent native Durations collapse to the first representative, while strings and numbers remain distinct from Duration:
+Equivalent native Durations collapse to the first representative. This example retains three values, the Duration `1s`, the string `"1s"`, and the integer `1000`. The Duration and the string have the same representation when serialized to JSON.
 
 {{< code lang="fql" >}}
-distinct ["1s", 1000, 1s] // keeps all three values
-distinct [1s, 1000ms]      // keeps the first Duration
+return distinct [1s, 1000ms, "1s", 1000]
 {{</ code >}}
 
 Hashes may select candidate buckets internally, but equality determines whether values are actually the same.
@@ -81,19 +80,19 @@ Within a built-in type:
 - Durations compare by signed nanoseconds, only with Duration.
 - Strings compare lexically and case-sensitively.
 - DateTime values compare by canonical instant.
-- Binary values compare by their byte contents.
+- Binary values compare by length first, then by byte contents at equal lengths.
 
 DateTime comparison does not parse strings or convert numeric epoch values. Use `to_datetime` before comparison when conversion is intended.
 
 ## Arrays
 
-Arrays compare element by element from left to right. The first unequal element decides the result; if every shared element is equal, the shorter array comes first.
+The shorter array comes first. Arrays of equal length compare element by element from left to right until two elements differ.
 
 {{< code lang="fql" >}}
 [] < [0]
 [1] < [2]
 [1, 2] < [1, 3]
-[1] < [1, 0]
+[9] < [0, 0]
 {{</ code >}}
 
 Array comparison is recursive. A nested Duration/non-Duration pair remains unequal for equality and invalid for relational comparison.
@@ -105,13 +104,12 @@ Array comparison is recursive. A nested Duration/non-Duration pair remains unequ
 
 ## Objects
 
-Objects compare their attributes rather than declaration order. Attribute names are considered in sorted order, and corresponding values use the same recursive comparison rules.
-
-If one object lacks an attribute present in the other, the missing value is treated as `none` for comparison.
+Objects compare by number of properties first. For equal sizes, Ferret walks the keys in sorted order. At the first pair of different keys, the lexically larger key sorts first. Matching keys compare their values recursively. Equality requires exactly the same keys and equal values, including properties explicitly set to `none`.
 
 {{< code lang="fql" >}}
 {} < { "a": 1 }
-{} == { "a": none }
+{} != { "a": none }
+{ "b": 1 } < { "a": 1 }
 { "a": 1 } < { "a": 2 }
 { "a": true } < { "a": 0 }
 {{</ code >}}
@@ -121,6 +119,10 @@ Declaration order does not affect equality:
 {{< editor lang="fql" height="110px" >}}
 return { "a": 1, "b": 2 } == { "b": 2, "a": 1 }
 {{</ editor >}}
+
+## Ranges
+
+Two ranges compare by their integer endpoints, first by start and then by end. They are equal when both endpoints match.
 
 ## Host values
 

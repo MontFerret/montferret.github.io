@@ -12,140 +12,40 @@ description: "Run Ferret Worker as a long-running HTTP service for remote script
 
 ## Start Worker with Docker
 
-The simplest deployment uses the Worker Docker image:
+The release image includes Chromium. Start the service on your machine:
 
 {{< terminal command="true" >}}
-docker run -d -p 8080:8080 montferret/worker
+docker run --rm -d --name ferret-worker -p 127.0.0.1:8080:8080 montferret/worker:{{< data "versions.worker.v2" >}}
 {{< /terminal >}}
 
-Worker is now listening on port 8080. Test it with a curl request:
+Once Worker is ready, its health check returns HTTP 200 with an empty body:
 
 {{< terminal command="true" >}}
-curl -s -X POST http://localhost:8080/api/query \
+curl --fail --silent --show-error http://localhost:8080/health
+{{< /terminal >}}
+
+## Execute a query
+
+Send FQL source in `text` and bind values in `params`. A successful response contains the encoded FQL result.
+
+{{< terminal command="true" >}}
+curl --fail --silent --show-error http://localhost:8080/ \
   -H "Content-Type: application/json" \
-  -d '{"query": "return 1 + 1"}'
+  -d '{"text":"return @count + 1","params":{"count":2}}'
 {{< /terminal >}}
 
-## Add browser support
+## Use the CLI or Lab
 
-For scripts that need the `cdp` driver, run Worker alongside a Chromium container:
-
-```yaml
-# docker-compose.yml
-services:
-  worker:
-    image: montferret/worker
-    ports:
-      - "8080:8080"
-    environment:
-      - FERRET_WORKER_CHROME_URL=ws://chromium:9222
-    depends_on:
-      - chromium
-
-  chromium:
-    image: montferret/chromium
-```
-
-{{< terminal command="true" >}}
-docker compose up -d
-{{< /terminal >}}
-
-Now Worker can execute browser-backed scripts:
-
-{{< terminal command="true" >}}
-curl -s -X POST http://localhost:8080/api/query \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "let p = web::html::open(\"https://mockery.ferretlang.org\", { driver: \"cdp\" })\nreturn p.title"
-  }'
-{{< /terminal >}}
-
-## Configure Worker
-
-Worker is configured through environment variables or command-line flags. Common settings:
-
-| Variable | Default | Description |
-| --- | --- | --- |
-| `FERRET_WORKER_PORT` | `8080` | HTTP listen port |
-| `FERRET_WORKER_CHROME_URL` | — | WebSocket URL to a Chrome instance |
-| `FERRET_WORKER_LOG_LEVEL` | `info` | Log verbosity |
-| `FERRET_WORKER_QUERY_TIMEOUT` | `30s` | Maximum query execution time |
-| `FERRET_WORKER_RATE_LIMIT` | — | Maximum requests per second |
-| `FERRET_WORKER_FS_ENABLED` | `false` | Allow file system access |
-
-See [Worker Configuration]({{< ref "/docs/tools/worker/configuration" >}}) for the full list.
-
-## Pass parameters
-
-Send parameters alongside the query:
-
-{{< terminal command="true" >}}
-curl -s -X POST http://localhost:8080/api/query \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "let p = web::html::open(@url)\nreturn p.title",
-    "params": { "url": "https://mockery.ferretlang.org" }
-  }'
-{{< /terminal >}}
-
-## Health checks
-
-Worker exposes a health endpoint:
-
-{{< terminal command="true" >}}
-curl -s http://localhost:8080/api/health
-{{< /terminal >}}
-
-Use this in Docker health checks or load balancer probes:
-
-```yaml
-services:
-  worker:
-    image: montferret/worker
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-```
-
-## Run behind a reverse proxy
-
-For production deployments, place Worker behind a reverse proxy (nginx, Caddy, Traefik) to handle TLS, rate limiting, and authentication.
-
-Example nginx configuration:
-
-```nginx
-upstream worker {
-    server 127.0.0.1:8080;
-}
-
-server {
-    listen 443 ssl;
-    server_name ferret.example.com;
-
-    location /api/ {
-        proxy_pass http://worker;
-        proxy_read_timeout 60s;
-    }
-}
-```
-
-## Use Worker as a remote runtime
-
-The Ferret CLI and Lab can execute scripts against a remote Worker instance:
+With a local `script.fql` or a Lab suite under `tests/`, point the client at Worker:
 
 {{< terminal command="true" >}}
 ferret run --runtime http://localhost:8080 script.fql
+lab run --runtime=http://localhost:8080 tests/
 {{< /terminal >}}
 
-Lab supports this with the HTTP runtime:
+Worker supplies the modules, browser connection, filesystem, and outbound HTTP policy for those scripts. For browser setup, container configuration, and exposing the service through a reverse proxy, see [Worker deployment]({{< ref "/docs/tools/worker/deployment" >}}). The [HTTP API]({{< ref "/docs/tools/worker/api" >}}) describes query errors and health checks.
 
-{{< terminal command="true" >}}
-lab --dir ./tests --runtime http://localhost:8080
-{{< /terminal >}}
-
-See [HTTP Runtime]({{< ref "/docs/tools/lab/http-runtime" >}}) for details.
+When you finish, run `docker stop ferret-worker`.
 
 ## Next steps
 

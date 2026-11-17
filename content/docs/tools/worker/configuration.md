@@ -35,7 +35,7 @@ Environment variable names are the uppercase flag name with dashes changed to un
 | `-policy-http-blocked-request-headers` | `POLICY_HTTP_BLOCKED_REQUEST_HEADERS` | `Authorization,Cookie,Proxy-Authorization` | Comma-separated request headers removed from outbound Ferret HTTP requests. |
 | `-chrome-ip` | `CHROME_IP` | `127.0.0.1` | Chrome remote debugging host. |
 | `-chrome-port` | `CHROME_PORT` | `9222` | Chrome remote debugging port. |
-| `-no-chrome` | `NO_CHROME` | `false` | Disable the CDP driver and skip Chrome checks. |
+| `-no-chrome` | `NO_CHROME` | `false` | Skip Chrome readiness and version checks. |
 | `-version` | `VERSION` | `false` | Print Worker and Ferret version metadata, then exit. |
 | `-help` | `HELP` | `false` | Print flag help, then exit. |
 
@@ -103,7 +103,7 @@ Keep `-policy-fs-root` narrow in shared environments. Worker does not add authen
 
 ## Outbound HTTP access
 
-Worker disables Ferret's policy-backed outbound HTTP client by default. Configure an allowlist when scripts need to call specific services:
+Worker disables Ferret’s policy-backed outbound HTTP client by default. This policy applies to functions that use that client, including REST calls. The HTML drivers make their own requests. Configure an allowlist when scripts need to call specific services through the policy-backed client:
 
 {{< terminal >}}
 worker \
@@ -132,13 +132,13 @@ Point Worker at another Chrome host:
 worker -chrome-ip=chrome.internal -chrome-port=9222
 {{< /terminal >}}
 
-Disable Chrome when you only need non-browser scripts or the memory HTML driver:
+Skip Chrome startup and health checks when running non-browser scripts:
 
 {{< terminal >}}
 worker -no-chrome
 {{< /terminal >}}
 
-With Chrome disabled, scripts that select `{ driver: "cdp" }` cannot use the browser driver.
+Worker still registers the CDP driver at its default address in this mode. If scripts must have no browser access, run Worker without a reachable Chrome endpoint.
 
 ## Query plan cache
 

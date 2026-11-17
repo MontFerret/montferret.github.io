@@ -10,7 +10,6 @@ description: "The evaluation order of FQL operators, from lowest to highest prec
 
 The operator precedence in FQL is listed below from lowest to highest. This order follows the FQL grammar; do not assume unary and comparison operators have the same relative order as another language.
 
-- ``=``, ``+=``, ``-=``, ``*=``, ``/=`` assignment and compound assignment
 - ``? :`` ternary operator
 - ``??`` none-coalescing operator
 - ``||`` logical or
@@ -29,7 +28,7 @@ The operator precedence in FQL is listed below from lowest to highest. This orde
 - ``.`` member access
 - ``[]`` indexed value access
 
-Operators higher in this list bind more tightly. For example, multiplication is evaluated before addition, logical and before logical or, and comparisons before unary and logical operators.
+Operators nearer the bottom bind more tightly. Assignment is a statement and cannot be nested in an expression. For example, multiplication is evaluated before addition, logical and before logical or, and comparisons before unary and logical operators.
 
 {{< editor lang="fql" >}}
 // Multiplication binds tighter than addition:
@@ -38,9 +37,8 @@ return 2 + 3 * 4
 {{</ editor >}}
 
 {{< editor lang="fql" >}}
-// AND binds tighter than OR:
-// interpreted as false || (true && true)
-return false || true && true
+// The result is true: (false && true) || true.
+return false && true || true
 {{</ editor >}}
 
 {{< code lang="fql" >}}
@@ -59,6 +57,8 @@ return {
 }
 {{</ code >}}
 
+When `or` precedes `and`, write the grouping explicitly. For example, `false || (true && true)` compiles in this release. The compiler can report an ambiguity for the unparenthesized form.
+
 ## Using parentheses
 
 Parentheses ``(`` and ``)`` group expressions. Use them when the intended grouping differs from the precedence rules. Most binary operators associate to the left; `??` associates to the right, so `a ?? b ?? c` means `a ?? (b ?? c)`.
@@ -72,8 +72,7 @@ let price = 120
 let discount = 0.1
 let tax = 0.2
 
-// Without parentheses: discount * tax is evaluated first
-// With parentheses: subtraction happens before multiplication
+// Calculate the discount and tax factors before multiplying the price.
 return price * (1 - discount) * (1 + tax)
 {{</ editor >}}
 

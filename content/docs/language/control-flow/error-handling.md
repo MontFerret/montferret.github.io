@@ -23,7 +23,7 @@ return getData() on error return none
 The fallback expression is only evaluated when the guarded expression fails. Any expression can serve as the fallback — a literal, a variable, a function call, or a collection.
 
 {{< code lang="fql" >}}
-let rows = query `.items` in doc on error return []
+let rows = query `.items` in doc using css on error return []
 {{</ code >}}
 
 {{< code lang="fql" >}}
@@ -69,17 +69,14 @@ return fetchData() on error retry 3 delay 100ms backoff EXPONENTIAL
 
 `delay` accepts any value supported by the canonical Duration conversion. Numbers are milliseconds, duration strings may be compound, and singleton lists are converted recursively. The converted delay must be non-negative; conversion failures, overflow, and negative values raise runtime errors.
 
-Because the unparenthesized `or` token begins the retry fallback, wrap a logical `or` used inside the delay expression in parentheses:
+Parenthesize a logical `or` inside the delay expression. Here the first `or` selects the delay of 1ms. The second introduces the fallback returned after the retry also fails.
 
 {{< code lang="fql" >}}
-let base = 100
+let base = 1ms
 let preferredDelay = none
 
-return fetchData()
-    on error retry 3 delay base * 2 or return none
-
-return fetchData()
-    on error retry 3 delay (preferredDelay or base) or return none
+return (1 / 0)
+    on error retry 1 delay (preferredDelay or base) or return "unavailable"
 {{</ code >}}
 
 ### Fallback after retries
@@ -168,7 +165,7 @@ return obj?.name ?? "Unknown"
 
 See [none-Coalescing Operator]({{% ref "../operators/coalescing" %}}) for the complete behavior.
 
-Optional chaining applies only to member access. `func?()` and `arr?[0]` are not supported — use `on error return` or a grouped expression instead.
+Use `arr?.[0]` for optional indexed access. For a function call, attach a recovery tail or use postfix recovery, such as `fetch()?`.
 
 ## Where recovery applies
 

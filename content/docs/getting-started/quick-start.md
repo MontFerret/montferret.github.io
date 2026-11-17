@@ -13,7 +13,7 @@ In this guide, you will run your first Ferret queries and learn the basic shape 
 Ferret scripts are written in FQL (Ferret Query Language). A script can define values, work with structured data, query documents, interact with web pages, and return a result. The examples below start with the smallest possible script and gradually introduce the pieces you will use in real-world extraction workflows.
 
 {{< notification type="info" >}}
-Using Visual Studio Code? Install the official <a href="https://marketplace.visualstudio.com/items?itemName=ferretlang.ferret-lang">Ferret Lang extension</a>, save an example in a <code>.fql</code> file, and use the editor Run or Debug action. See the <a href="{{< ref "/docs/tools/visual-studio-code" >}}">Visual Studio Code guide</a> for the complete workflow. The terminal and Playground examples below remain available without Visual Studio Code.
+Using Visual Studio Code? Install the official <a href="https://marketplace.visualstudio.com/items?itemName=ferretlang.ferret-lang">Ferret Lang extension</a>, save an example in a <code>.fql</code> file, and use the editor Run or Debug action. See the <a href="{{< ref "/docs/tools/visual-studio-code" >}}">Visual Studio Code guide</a> for the complete workflow. The terminal and browser examples below remain available without Visual Studio Code.
 {{</ notification >}}
 
 ## Hello world: a simple expression
@@ -55,7 +55,7 @@ let user = {
 
 return {
     name: user.name,
-    isAdmin: contains(user.roles, "admin")
+    isAdmin: "admin" in user.roles
 }
 '
 {{< /terminal >}}
@@ -70,7 +70,7 @@ let user = {
 
 return {
     name: user.name,
-    isAdmin: contains(user.roles, "admin")
+    isAdmin: "admin" in user.roles
 }
 {{< /editor >}}
 {{< /tab >}}
@@ -78,7 +78,7 @@ return {
 
 This example defines a variable with `let`, creates an object, reads fields with dot notation, and returns a new object.
 
-`let` creates a local binding. Here, user is an object with a name field and a roles array. The `return` expression builds a new object from that data and uses `contains` to check whether the user has the admin role.
+`let` creates a local binding. Here, user is an object with a name field and a roles array. The `return` expression builds a new object from that data and uses `in` to check whether the user has the admin role.
 
 ## Query HTML
 

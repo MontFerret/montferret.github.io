@@ -150,7 +150,7 @@ builder.A2().Add("repeat_custom", repeatFunc)
 
 funcs, err := builder.Build()
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 engine, err := ferret.New(
@@ -167,6 +167,7 @@ package main
 
 import (
     "context"
+    "errors"
     "fmt"
     "log"
     "strings"
@@ -176,6 +177,12 @@ import (
 )
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() (err error) {
     lib := runtime.NewLibrary()
     ns := lib.Namespace("text")
 
@@ -205,9 +212,9 @@ func main() {
         ferret.WithNamespace(lib),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer engine.Close()
+    defer func() { err = errors.Join(err, engine.Close()) }()
 
     output, err := engine.Run(
         context.Background(),
@@ -220,17 +227,19 @@ func main() {
         `),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer output.Close()
+    defer func() { err = errors.Join(err, output.Close()) }()
 
     content, err := output.Collect(context.Background())
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(content.Data))
     // {"joined":"abc","titled":"Hello World","wrapped":"**content**"}
+
+    return nil
 }
 {{</ code >}}
 

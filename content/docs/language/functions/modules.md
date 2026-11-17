@@ -15,7 +15,7 @@ Namespaces organize related runtime-provided functions. The Standard Library, mo
 A namespaced function is called by prefixing the function name with the namespace and `::`.
 
 {{< code lang="fql" >}}
-return io::fs::read("/tmp/data.json")
+return io::fs::read("data.json")
 {{</ code >}}
 
 Namespaces can be nested. Each `::` separator introduces another level.
@@ -24,7 +24,7 @@ Namespaces can be nested. Each `::` separator introduces another level.
 return io::net::http::get("https://api.example.com/data")
 {{</ code >}}
 
-The namespace groups related functions and helps avoid name conflicts between providers. These examples require a runtime with the relevant I/O functions and access to the file or endpoint.
+The namespace groups related functions and helps avoid name conflicts between providers. These examples require a runtime with the relevant I/O functions and a configured filesystem root containing `data.json` or access to the HTTP endpoint.
 
 ## The use statement
 
@@ -33,7 +33,7 @@ When a script repeatedly calls functions from the same namespace, `use` can crea
 {{< code lang="fql" >}}
 use io::fs as fs
 
-return fs::read("/tmp/data.json")
+return fs::read("data.json")
 {{</ code >}}
 
 `use` is a compile-time alias; it does not load a module or change which functions the runtime provides. See the [`use` statement reference]({{< ref "/docs/language/script-structure/use" >}}) for function aliases, placement rules, and name-resolution behavior.

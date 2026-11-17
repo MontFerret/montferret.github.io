@@ -7,17 +7,10 @@ aliases:
   - /docs/fql/query-errors/
 ---
 
-{{< header >}}
-Query errors
-{{</ header >}}
-Issuing an invalid query to Ferret will result in a parse error if the query is syntactically invalid. The Ferret compiler will detect such errors during query inspection and abort further processing. Instead, an error message are returned so that the errors can be fixed.
+# Query errors
 
-Under some circumstances, executing a query may also produce run-time errors that cannot be predicted from inspecting the query text alone. This is because queries may use data from collections that may also be inhomogeneous. Some examples that will cause run-time errors are:
+Compilation checks syntax and bindings before execution. Use [`ferret check`]({{< ref "/docs/tools/cli/check" >}}) to locate a malformed expression or an undeclared variable.
 
-- Division by zero: Will be triggered when an attempt is made to use the value 0 as the divisor in an arithmetic division or modulus operation
-- Invalid argument types: Some function can return an error if given arguments have invalid type.
-- Timeouts: Interactions with web pages may timeout due to some changes on the pages or invalid query logic or selectors.
+Errors that depend on input or a host operation can surface during execution. A divisor can be zero, a function can receive an unsupported type, or a browser operation can fail. For a missing element, `QUERY ONE` returns `NONE`; optional member access such as `title?.textContent` lets the script return that absence.
 
-## Next steps
-
-{{< docs-related tiles="language-control-flow-error-handling,web-extraction,tools-lab" >}}
+Use the [error handling reference]({{< ref "/docs/language/control-flow/error-handling" >}}) for recovery and [WAITFOR]({{< ref "/docs/language/control-flow/waitfor" >}}) to choose how a wait should handle its timeout.

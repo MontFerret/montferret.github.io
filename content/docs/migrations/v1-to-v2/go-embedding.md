@@ -297,8 +297,9 @@ import (
     "github.com/MontFerret/ferret/v2/pkg/runtime"
 )
 
-const query = `let page = document(@url, { driver: @driver })
-return { url: page.url, title: normalize(element(page, "h1").innerText) }`
+const query = `let page = web::html::open(@url, { driver: @driver })
+let heading = query one "h1" in page using css
+return { url: page.url, title: normalize(heading?.textContent ?? page.title) }`
 
 type (
     App struct {
@@ -424,7 +425,7 @@ func normalize(_ context.Context, arg runtime.Value) (runtime.Value, error) {
 }
 {{</ code >}}
 
-The v2 example targets the [Core development checkout]({{< ref "/docs/embedding/go/getting-started#installation" >}}) with consumable output. The application helper collects inside the Run context lifetime before closing its session, and returns detached Content. Preparation errors arrive from Run; terminal execution, encoding, and output cleanup failures arrive from collection. See [the output migration]({{< ref "/docs/migrations/consumable-output" >}}).
+The v2 example uses the [published Core release]({{< ref "/docs/embedding/go/getting-started#installation" >}}) with consumable output. The application helper collects inside the Run context lifetime before closing its session, and returns detached Content. Preparation errors arrive from Run; terminal execution, encoding, and output cleanup failures arrive from collection. See [the output migration]({{< ref "/docs/migrations/consumable-output" >}}).
 
 The memory driver is always registered as the default. When `FERRET_CDP_ADDRESS` is set, the application registers CDP as an additional named driver and passes `cdp` as the per-session `driver` parameter. The URL remains data rather than being interpolated into FQL source.
 

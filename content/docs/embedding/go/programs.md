@@ -28,14 +28,14 @@ sourcePlan, err := engine.Compile(ctx,
     ferret.NewSource("query.fql", `return 1 + 1`),
 )
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer sourcePlan.Close()
 
 // From a pre-compiled artifact — loads and returns a plan
 artifactPlan, err := engine.Load(artifactBytes)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer artifactPlan.Close()
 {{</ code >}}
@@ -59,20 +59,20 @@ plan, err := engine.Compile(ctx,
     ferret.NewSource("query.fql", `return upper(@name)`),
 )
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer plan.Close()
 
 // Serialize to bytes
 data, err := plan.Marshal()
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 // Write to file
 err = os.WriteFile("query.fqlc", data, 0o644)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 {{</ code >}}
 
@@ -94,12 +94,12 @@ Load the artifact back into the engine with `engine.Load`:
 {{< code lang="go" >}}
 data, err := os.ReadFile("query.fqlc")
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 plan, err := engine.Load(data)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer plan.Close()
 
@@ -107,19 +107,19 @@ session, err := plan.NewSession(ctx,
     ferret.WithSessionParam("name", "ferret"),
 )
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer session.Close()
 
 output, err := session.Run(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer output.Close()
 
 content, err := output.Collect(ctx)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 {{</ code >}}
 
@@ -130,7 +130,7 @@ if err != nil {
 {{< code lang="go" >}}
 program, err := ferret.UnmarshalProgram(data)
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 
 data, err = ferret.MarshalProgram(
@@ -188,7 +188,7 @@ if artifact.HasMagic(data) {
     )
 }
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer plan.Close()
 {{</ code >}}
@@ -235,7 +235,7 @@ if errors.Is(err, artifact.ErrIncompatibleISA) {
     // artifact was compiled with a different bytecode version
 }
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer plan.Close()
 {{</ code >}}

@@ -13,36 +13,35 @@ Use Wire when a separate application owns the Ferret engine, custom functions, m
 ferret run --runtime wire --runtime-endpoint tcp://127.0.0.1:54321 --eval 'RETURN 42'
 {{< /terminal >}}
 
-Replace the endpoint with the one printed by your host. Wire source execution is available in `run`, its `exec` alias, and `repl`. Builtin execution remains the default. Worker-compatible HTTP URLs in `--runtime` retain their existing behavior.
+Replace the endpoint with the one printed by your host. Use `run`, its `exec` alias, or `repl` for source execution. Use [Debug]({{< ref "debug" >}}#debug-on-a-wire-host) for an interactive session with a local source file. Builtin execution is the default.
 
-This guide describes current CLI `main`. Follow the [source-checkout instructions]({{< ref "installation" >}}#build-from-source) for that implementation. Published CLI releases are listed separately; the compatible host dependency pins below describe the runtime the CLI connects to.
+Install the [published CLI]({{< ref "installation" >}}), `v{{< data "versions.cli.v2" >}}`, before starting the host below.
 
 ## Start a development host
 
-The [CLI development example](https://github.com/MontFerret/cli/tree/main/examples/wire-host) exposes a configured native engine through the Universal API and Wire. It adds a host-only `DEMO::IDENTITY(value)` function and prints an ephemeral IPv4 loopback endpoint.
+The [CLI development example](https://github.com/MontFerret/cli/tree/v{{< data "versions.cli.v2" >}}/examples/wire-host) exposes a configured native engine through the Universal API and Wire. It adds a host-only `DEMO::IDENTITY(value)` function and prints an ephemeral IPv4 loopback endpoint.
 
-In terminal 1, check out CLI `main`, then build the CLI and start the host:
+In terminal 1, start the host from the matching source tag:
 
 {{< terminal >}}
-git clone --branch main https://github.com/MontFerret/cli.git
+git clone --branch v{{< data "versions.cli.v2" >}} --depth 1 https://github.com/MontFerret/cli.git
 cd cli
-GOFLAGS=-mod=mod make compile
-go run -mod=mod ./examples/wire-host
+go run ./examples/wire-host
 {{< /terminal >}}
 
-The commands require Go {{< data "versions.cli.go" >}} or later. Module mode bypasses the checkout's vendor directory. Example endpoint:
+The commands require Go {{< data "versions.cli.go" >}} or later. Example endpoint:
 
 ```text
 tcp://127.0.0.1:54321
 ```
 
-In terminal 2, from the same CLI checkout, run the built binary using the endpoint printed by terminal 1:
+In terminal 2, run the installed CLI using the endpoint printed by terminal 1:
 
 {{< terminal >}}
-./bin/ferret run --runtime wire --runtime-endpoint tcp://127.0.0.1:54321 --eval 'RETURN DEMO::IDENTITY(@value)' --param value=42
+ferret run --runtime wire --runtime-endpoint tcp://127.0.0.1:54321 --eval 'RETURN DEMO::IDENTITY(@value)' --param value=42
 {{< /terminal >}}
 
-It prints `42`. The function runs on the host; the CLI does not register it locally. Stop the example host with Ctrl+C when finished. Its shutdown is bounded and closes the host-owned engine after Wire work settles.
+It prints `42`. The function runs on the host; the CLI does not register it locally. Stop the example host with Ctrl+C when finished.
 
 For a host you build into your own application, see [Remote runtimes (Wire)]({{< ref "docs/embedding/wire" >}}).
 
@@ -70,7 +69,7 @@ ferret exec --runtime wire --runtime-endpoint tcp://127.0.0.1:54321 script.fql
 cat script.fql | ferret run --runtime wire --runtime-endpoint tcp://127.0.0.1:54321
 {{< /terminal >}}
 
-Input files are read by the CLI. It sends their source name and contents to the host, where compilation and execution happen. The CLI creates no local engine for Wire execution. Compiled artifacts and `ferret debug` require the builtin runtime.
+Input files are read by the CLI. It sends their source name and contents to the host, where compilation and execution happen. The CLI creates no local engine for Wire execution. Compiled artifacts require the builtin runtime. For a local FQL source file, the [debug command]({{< ref "debug" >}}#debug-on-a-wire-host) uses the same Wire connection settings.
 
 Parameters use the same [JSON-aware parsing]({{< ref "run" >}}#pass-parameters) in builtin and Wire modes. Null, arrays, objects, and explicitly quoted strings retain their values:
 
@@ -128,7 +127,7 @@ Only `tcp://127.0.0.1:<port>` is accepted, with a port from 1–65535. Other hos
 
 The timeout bounds connection establishment and the Wire handshake, including hosted metadata retrieval. It does not set a query execution timeout. Command cancellation interrupts connection setup and active work.
 
-These settings are shared by `run`, `exec`, `repl`, and `version`. [Configuration precedence]({{< ref "configuration" >}}#configuration-priority) remains flags, environment variables, config file, then defaults. To persist a Wire connection:
+These settings are shared by `run`, `exec`, `repl`, `debug`, and `version`. [Configuration precedence]({{< ref "configuration" >}}#configuration-priority) remains flags, environment variables, config file, then defaults. To persist a Wire connection:
 
 {{< terminal >}}
 ferret config set runtime wire

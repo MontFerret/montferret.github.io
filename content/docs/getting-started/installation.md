@@ -44,21 +44,21 @@ See [CLI Installation]({{< ref "/docs/tools/cli/installation" >}}) for prebuilt 
 
 Choose native Go embedding when the host needs full control over runtime configuration, modules, host values, codecs, and sandboxed services.
 
-Follow [Go Embedding: Getting Started]({{< ref "/docs/embedding/go/getting-started#installation" >}}) for the exact Core checkout and module replacement used by these examples. That checkout requires **Go 1.26 or later** and includes the current Encoding and Output APIs. The generated Standard Library reference has its own published-version pin; use the Go embedding setup when following Go examples.
+Install the published module from [Go Embedding: Getting Started]({{< ref "/docs/embedding/go/getting-started#installation" >}}). The guide runs a query and shows how to consume and close its output.
 
 ## Embed Ferret in JavaScript
 
 Choose JavaScript embedding to run Ferret from Node.js or a modern browser through `@montferret/ferret`.
 
 {{< terminal >}}
-npm install @montferret/ferret
+npm install --save-exact @montferret/ferret@{{< data "versions.core_js.v2" >}}
 {{< /terminal >}}
 
 Continue with [JavaScript Embedding: Getting Started]({{< ref "/docs/embedding/javascript/getting-started" >}}).
 
 ## What to choose next
 
-- Start with the [Quick Start]({{< ref "/docs/getting-started/quick-start" >}}) when you want to learn FQL in Visual Studio Code, the terminal, or the Playground.
+- Start with the [Quick Start]({{< ref "/docs/getting-started/quick-start" >}}) when you want to learn FQL in Visual Studio Code, the terminal, or the online editor.
 - Read the [Embedding overview]({{< ref "/docs/embedding" >}}) when an application will own the runtime.
 - Use [Worker]({{< ref "/docs/tools/worker" >}}) when an existing system needs Ferret through a separately deployed HTTP service.
 

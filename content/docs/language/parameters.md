@@ -35,13 +35,10 @@ In this example, `@active` is not a boolean literal written in the query. It is 
 
 ## Parameter names
 
-Parameter names must start with a letter or underscore. They may contain letters, digits, and underscores.
+Parameter identifiers start with an ASCII letter and may then contain ASCII letters, digits, and underscores.
 
 {{< code lang="fql" >}}
-return @name
-return @user_id
-return @value1
-return @_value
+return [@name, @user_id, @value1]
 {{</ code >}}
 
 The leading `@` is part of the parameter syntax, but not part of the parameter name itself.

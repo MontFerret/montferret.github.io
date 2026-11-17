@@ -8,14 +8,12 @@ description: "Fetch data from REST APIs and combine it with HTML extraction."
 
 # Work with APIs
 
-Ferret is not limited to HTML. It can fetch data from REST APIs, parse JSON responses, and combine API data with HTML extraction in a single script.
+Use the CLI or an embedded runtime with outbound HTTP enabled to fetch JSON from a REST API. The website editor’s Worker disables these HTTP calls. A self-hosted Worker can [allow specific API hosts]({{< ref "/docs/tools/worker/configuration" >}}#outbound-http-access).
 
 ## Make a GET request
 
 Use `io::net::http::get` to fetch data from an API:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
 let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts/1")
@@ -23,16 +21,6 @@ let data = encoding::json_parse(to_string(response))
 return data
 '
 {{< /terminal >}}
-{{< /tab >}}
-
-{{< tab title="Try in browser" >}}
-{{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts/1")
-let data = encoding::json_parse(to_string(response))
-return data
-{{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 `io::net::http::get` returns raw bytes. Use `to_string` to convert to a string, then `encoding::json_parse` to decode JSON.
 
@@ -60,8 +48,6 @@ return encoding::json_parse(to_string(response))
 
 Fetch a list and process it with `for`:
 
-{{< tabs >}}
-{{< tab title="Terminal" >}}
 {{< terminal command="true" >}}
 ferret run -e '
 let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts")
@@ -75,22 +61,6 @@ return for post in posts
     }
 '
 {{< /terminal >}}
-{{< /tab >}}
-
-{{< tab title="Try in browser" >}}
-{{< editor lang="fql" height="auto" copy="true" apiVersion="2" orientation="horizontal" >}}
-let response = io::net::http::get("https://jsonplaceholder.typicode.com/posts")
-let posts = encoding::json_parse(to_string(response))
-
-return for post in posts
-    limit 5
-    return {
-        id: post.id,
-        title: post.title
-    }
-{{< /editor >}}
-{{< /tab >}}
-{{< /tabs >}}
 
 ## Paginate an API
 

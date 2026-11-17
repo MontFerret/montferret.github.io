@@ -12,104 +12,32 @@ Some pages embed content in iframes — login forms, embedded widgets, third-par
 
 Iframe access requires the `cdp` driver. See [Browser-driven pages]({{< ref "browser-pages" >}}) for setup.
 
-{{< notification type="warning" >}}
-Cross-origin iframes restrict access to their content. The iframe must be on the same domain as the parent page, or the browser will block property and content access.
-{{</ notification >}}
-
 ## List frames on a page
 
-A browser-backed page exposes its frames through the `frames` property:
+Open the [Mockery iframe scenario](https://mockery.ferretlang.org/scenarios/iframes/) with the browser driver. The page’s `frames` collection exposes documents, including the main document. Use their URLs to identify them; frame ordering can vary.
 
 {{< code lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
-
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/iframes/", { driver: "cdp" })
 return for frame in page.frames
-    return {
-        url: frame.URL,
-        title: frame.title
-    }
-{{</ code >}}
-
-## Find a frame by URL
-
-Use `filter` to locate a specific frame:
-
-{{< code lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
-
-let target = (
-    for frame in page.frames
-        filter contains(frame.URL, "embedded-form")
-        limit 1
-        return frame
-)
-
-let frame = arrays::first(target)
-return frame?.title
-{{</ code >}}
+    return { url: frame.URL, title: frame.title }
+{{< /code >}}
 
 ## Extract content from a frame
 
-Once you have a frame reference, query it the same way you query a page:
+Frame A contains a product card. Find its document by URL and run the CSS query against that document. Polling allows time for the browser to load it:
 
 {{< code lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/iframes/", { driver: "cdp" })
+let frame = waitfor value arrays::first((
+    for candidate in page.frames
+        filter contains(candidate.URL, "/iframes/frame-a/")
+        return candidate
+)) timeout 5s on timeout fail
 
-let target = arrays::first((
-    for frame in page.frames
-        filter contains(frame.URL, "embedded")
-        limit 1
-        return frame
-))
+return frame[~? css`[data-testid="product-title"]`]?.textContent
+{{< /code >}}
 
-let items = target != none
-    ? target[~ css`.content-item`]
-    : []
-
-return items[*].textContent
-{{</ code >}}
-
-## Interact with elements inside a frame
-
-Dispatch events to elements within the frame just as you would on the main page:
-
-{{< code lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
-
-let frame = arrays::first((
-    for f in page.frames
-        filter contains(f.URL, "login")
-        limit 1
-        return f
-))
-
-let input = query one "input[name='email']" in frame using css
-dispatch "input" in input with "user@example.com"
-
-let submit = query one "button[type='submit']" in frame using css
-submit <- "click"
-
-return "submitted"
-{{</ code >}}
-
-## Handle missing frames
-
-A frame might not be present on every page. Use error recovery or conditional checks:
-
-{{< code lang="fql" >}}
-let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })
-
-let frames = (
-    for f in page.frames
-        filter contains(f.URL, "target-frame")
-        limit 1
-        return f
-)
-
-return length(frames) > 0
-    ? arrays::first(frames)[~ css`.data`][*].textContent
-    : []
-{{</ code >}}
+These examples use same-origin frames. If a frame is optional, use `ON TIMEOUT RETURN NONE` and check the value before querying its document.
 
 ## Next steps
 

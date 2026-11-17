@@ -13,7 +13,7 @@ aliases:
 
 # Standard Library
 
-Built-in Ferret functions and namespaces provided by the Ferret core runtime.
+This reference covers the built-in functions and namespaces supplied by Ferret Core. Embedded applications can select which standard-library groups to register. A function supplied by an optional module, such as `web::html::open`, requires a runtime with that module installed. See [Go engine configuration]({{< ref "/docs/embedding/go/configuration" >}}) and [Modules]({{< ref "/docs/modules" >}}).
 
 Registered namespace segments and host-function names are case-insensitive in FQL. This reference uses their single canonical lowercase qualified spelling.
 

@@ -23,7 +23,7 @@ Each test receives a cloned parameter set, so Lab system parameters and suite da
 
 ## Set the test timeout
 
-Use `--timeout` to set the per-test timeout in seconds.
+Use `--timeout` to set the timeout in seconds for each attempt to run a test file. Repetitions and retries each receive a fresh timeout.
 
 {{< terminal >}}
 lab run --timeout=60 tests/
@@ -33,13 +33,13 @@ The default is `30` seconds. YAML suites can override this with a top-level `tim
 
 ## Retry failed tests
 
-Use `--attempts` to set the maximum number of attempts for a test.
+For a single required pass (the default), use `--attempts` to set the maximum number of attempts.
 
 {{< terminal >}}
 lab run --attempts=3 tests/
 {{< /terminal >}}
 
-`--attempts=3` means Lab may run a failing test up to three times total. A successful attempt stops the retry loop for the current required run.
+`--attempts=3` means Lab may run a failing test up to three times total. The first success completes the test.
 
 The default is `1`, which means no retry after the first failure.
 
@@ -51,7 +51,9 @@ Use `--times` to require each test to pass multiple times.
 lab run --times=5 tests/
 {{< /terminal >}}
 
-The default is `1`. Lab increments the run count only after a successful execution. If a run fails, Lab retries according to `--attempts`; if attempts are exhausted, the test fails.
+The default is `1`. Lab counts successful executions toward `--times`.
+
+In this release, a repeated test shares one attempt counter. A failure stops the test when the counter equals `--attempts`. If the threshold is reached on a success, later failures can keep retrying beyond the configured attempt count. For a bounded retry budget on every repetition, run separate Lab invocations with `--times=1`.
 
 Lab uses one-shot execution by default. With `--times` or `--attempts` greater than one, the built-in and Wire runtimes compile each unit, query, or assertion on first use and reuse successful plans within that case. Every invocation receives fresh parameters, a fresh session, and a fresh output. Lab resolves referenced scripts on each attempt; changed names or text select another plan. Failed compilations are not cached. HTTP transparently continues using one-shot execution because compilation is unsupported.
 
@@ -95,9 +97,9 @@ Each reported test result includes:
 | Field | Meaning |
 | --- | --- |
 | `file` | Source file name. |
-| `duration` | Average duration for successful runs. If no run succeeds, it reflects accumulated failed attempt time. |
+| `duration` | Total time spent executing attempts divided by the number of successful runs, or the accumulated attempt time when all executions fail. |
 | `attempts` | Number of attempts made. |
-| `times` | Number of successful required runs completed. |
+| `times` | Number of successful runs. A test that executes and fails every attempt reports `times=1`; use the pass/fail status to determine its outcome. |
 | `error` | Runtime, source, timeout, or assertion error for failed tests. |
 
 The summary includes total passed tests, failed tests, and total runner duration.

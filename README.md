@@ -45,7 +45,7 @@ When adding or reorganizing first-party tool pages, follow the
 ### Generating the Standard Library reference
 
 The website generates the Standard Library reference from the published Ferret
-Core API Reference selected by `runtime.v2` in `data/versions.yaml`. The
+Core API Reference selected by `core.v2` in `data/versions.yaml`. The
 selected release must include its sibling API Catalog, whose ordered categories
 drive the reference navigation.
 

@@ -24,6 +24,8 @@ You can also install it from Visual Studio Code:
 
 Open or create a file ending in `.fql`. Visual Studio Code registers it as a Ferret document automatically.
 
+The [0.1.0 release](https://github.com/MontFerret/editorium/releases/tag/vscode/v0.1.0) runs and debugs files with its local runtime. External runtime selection for Run and Debug is available in Editorium’s development branch and has not shipped in this extension release.
+
 ## Bundled Ferret daemon
 
 The extension includes the appropriate `ferretd` executable for macOS, Linux, and Windows on ARM64 and x64. You do not normally need to install the daemon separately or add it to `PATH`.

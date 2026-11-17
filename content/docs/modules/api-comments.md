@@ -65,17 +65,15 @@ Optionality belongs to the type. Use `?` instead of brackets around the paramete
 // @param options {Object?} Decode options.
 ```
 
-Use `|` for unions, `Array<T>` for collections, and a trailing `...` when documenting a variadic Ferret value:
+Use `|` for unions and `[Type]` for a list of elements. Describe variadic arguments in the parameter description:
 
 ```go
 // @param data {String|Binary} XML content.
-// @param names {Array<String>} Field names.
-// @param values {Any...} Values to concatenate.
+// @param names {[String]} Field names.
+// @param values {Any} One or more values to concatenate.
 ```
 
-Barn preserves the complete type expression as authored; it does not parse or
-canonicalize this notation. Whether the registered function signature is
-variadic still comes from the Ferret SDK registration and Go function type.
+Barn parses parameter and return types into structured metadata. The Registry preserves named types and recognizes union and list structure. A suffix such as `?` is part of a type’s name in this metadata. The function’s variadic calling convention comes from its SDK registration and Go function type.
 
 Do not use JSDoc-style parameter names or separators:
 

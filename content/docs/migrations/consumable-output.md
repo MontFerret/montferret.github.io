@@ -8,7 +8,7 @@ description: "Migrate buffered Native and UAPI output to the one-shot Output and
 
 # Migrate to consumable output
 
-The Core development API adopts Universal API `v1.0.0-alpha.21`: Run returns a consumable handle, and collected data lives in `Content`. Use the [development checkout instructions]({{< ref "/docs/embedding/go/getting-started#installation" >}}) for these examples. For remote runtimes, use the published dependency set in the [Wire compatibility table]({{< ref "/docs/embedding/wire#run-a-host-and-client" >}}).
+In Core `v{{< data "versions.core.v2" >}}` and Universal API `v{{< data "versions.api.v1" >}}`, Run returns a consumable handle, and collected data lives in `Content`. Use the [Go installation instructions]({{< ref "/docs/embedding/go/getting-started#installation" >}}) for these examples. For remote runtimes, use the published dependency set in the [Wire compatibility table]({{< ref "/docs/embedding/wire#run-a-host-and-client" >}}).
 
 This migration changes the Go output contract, error timing, and ownership. It does not change FQL semantics or require rewriting queries. The [Output reference]({{< ref "/docs/embedding/go/output" >}}) owns the complete lifecycle rules.
 
@@ -28,7 +28,7 @@ fmt.Printf("%s: %s\n", output.ContentType, output.Content)
 Now collect the handle before reading bytes:
 
 {{< code lang="go" >}}
-// After: Native development API.
+// After: Native consumable output API.
 output, err := engine.Run(ctx, source)
 if err != nil {
     return err // preparation failure
@@ -55,6 +55,10 @@ if err != nil {
 | Runtime failures checked from Run | Preparation checked from Run; terminal failures checked from consumption |
 
 Root `ferret` and `pkg/encoding` alias the API's `Output`, `Content`, `Metadata`, and `Consumer` types. Output sentinels retain canonical API identity. Existing compatibility APIs and `vm.Result` remain unchanged.
+
+## JavaScript callers
+
+With `@montferret/ferret` version `{{< data "versions.core_js.v2" >}}`, replace `await engine.run(source)` with `await engine.runJSON(source)` where the caller expects a decoded JavaScript value. The same change applies to `plan.run()` and `session.run()`. Callers that need encoded bytes can keep `run()` and consume or close its output. See [Executing Ferret in JavaScript]({{< ref "/docs/embedding/javascript/executing" >}}).
 
 ## Settle every execution
 
@@ -138,6 +142,6 @@ The separate [Encoding API migration]({{< ref "/docs/migrations/encoding-api" >}
 
 ## Check integration boundaries
 
-Update each Native or UAPI caller that decodes, prints, forwards, or ignores a Run result. Services retaining or replaying content should materialize it. Tools, SDK tests, and downstream runtime adapters need compatible contracts before adopting this Core development API. Keep transport and release pins coordinated. Wire hosts and clients must both support output framing version 1; incompatible peers fail during Connect, with no fallback to buffered inline output. Upgrade both sides together using the published dependency set in the [Wire example]({{< ref "/docs/embedding/wire" >}}).
+Update each Native or UAPI caller that decodes, prints, forwards, or ignores a Run result. Services retaining or replaying content should materialize it. Tools, SDK tests, and downstream runtime adapters need compatible contracts before adopting consumable output. Keep transport and release pins coordinated. Wire hosts and clients must both support output framing version 1; incompatible peers fail during Connect, with no fallback to buffered inline output. Upgrade both sides together using the published dependency set in the [Wire example]({{< ref "/docs/embedding/wire" >}}).
 
 {{< docs-related tiles="embedding-go-output,embedding-go-getting-started,embedding-go-universal-api,migrations-encoding-api,embedding-wire,migrations-v1-to-v2" >}}

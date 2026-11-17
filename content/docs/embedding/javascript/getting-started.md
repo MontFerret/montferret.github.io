@@ -14,20 +14,20 @@ description: "Install @montferret/ferret and run an FQL program from JavaScript.
 
 Use one of these environments:
 
-- Node.js {{< data "versions.ferretjs.node" >}} or newer
+- Node.js {{< data "versions.core_js.node" >}} or newer
 - a modern browser with WebAssembly, `fetch`, and `crypto.getRandomValues`
 
-Building the package from source also requires Go {{< data "versions.ferretjs.go" >}} or newer. Applications that install the published package do not need Go.
+Building the package from source also requires Go {{< data "versions.core_js.go" >}} or newer. Applications that install the published package do not need Go.
 
 ## Install the package
 
 {{< terminal >}}
-npm install @montferret/ferret
+npm install --save-exact @montferret/ferret@{{< data "versions.core_js.v2" >}}
 {{< /terminal >}}
 
 ## Run a program
 
-Import `create`, initialize an engine, and pass an FQL program to `engine.run()`:
+Import `create`, initialize an engine, and pass an FQL program to `engine.runJSON()`:
 
 {{< code lang="javascript" >}}
 import { create } from "@montferret/ferret";
@@ -35,14 +35,14 @@ import { create } from "@montferret/ferret";
 const engine = await create();
 
 try {
-    const result = await engine.run("return 1 + 1");
+    const result = await engine.runJSON("return 1 + 1");
     console.log(result); // 2
 } finally {
     await engine.close();
 }
 {{</ code >}}
 
-`create()` loads and initializes the WASM runtime. There is no separate initialization call. `engine.run()` compiles and executes the program asynchronously, then returns its result as a JavaScript value.
+`create()` loads and initializes the WASM runtime. There is no separate initialization call. `engine.runJSON()` compiles and executes the program asynchronously, then consumes the output and decodes it as a JavaScript value.
 
 Always close the engine when the application no longer needs it. Closing releases plans, sessions, network resources, and the WASM runtime owned by that engine.
 
@@ -67,7 +67,7 @@ let engine;
 
 try {
     engine = await create();
-    const result = await engine.run("return missing_function()");
+    const result = await engine.runJSON("return missing_function()");
     console.log(result);
 } catch (error) {
     console.error(error instanceof Error ? error.message : error);

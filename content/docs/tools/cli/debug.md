@@ -17,15 +17,33 @@ The debugger compiles the script, pauses at the first executable location, and p
 
 ```
 Ferret debugger started.
-Paused at script.fql:1
+Paused at script.fql:1:1
 1 | LET x = 42
+    ~~~~~~~~~~
 Type "help" for available commands.
 (fdb)
 ```
 
 ## Requirements
 
-The debugger requires the builtin runtime and a source file. It does not support compiled artifacts, stdin, inline evaluation (`--eval`), or remote runtimes.
+Pass one local FQL source file. The builtin runtime is the default. A Wire host can compile and debug the same file with its own functions and modules. Compiled artifacts, stdin, inline evaluation, and Worker HTTP endpoints are unsupported.
+
+## Debug on a Wire host
+
+Start the [example Wire host]({{< ref "/docs/embedding/wire" >}}#host-the-configured-engine). Save the following as `greeting.fql`:
+
+{{< code lang="fql" >}}
+LET greeting = app::greet(@name)
+RETURN greeting
+{{< /code >}}
+
+From the directory containing the file, connect to the host and pass the script parameter:
+
+{{< terminal >}}
+ferret debug --runtime wire --runtime-endpoint tcp://127.0.0.1:50051 --param name=Ada greeting.fql
+{{< /terminal >}}
+
+At the initial stop, type `next` and then `locals` to inspect `greeting`. Type `continue` to finish. The CLI reads the local source and sends it to the host. You can step through FQL around a host function. The host retains its native code, filesystem policy, and browser configuration. Exiting the debugger releases the session and leaves the host running.
 
 ## Set breakpoints
 
@@ -33,7 +51,7 @@ Use the `break` command (alias `b`) to set a breakpoint at a source location:
 
 ```
 (fdb) break 5
-Breakpoint 1 set at script.fql:5 (next-file).
+Breakpoint 1 set at script.fql:5:1 (requested script.fql:5, next-file).
 ```
 
 Locations can include a column and a filename:
@@ -66,8 +84,8 @@ List all breakpoints with `breakpoints` (aliases `bp`, `bl`):
 
 ```
 (fdb) breakpoints
-ID  Requested      Bound           Mode       State
-1   script.fql:5   script.fql:5    next-file  bound
+ID  Requested     Bound           Mode       State
+1   script.fql:5  script.fql:5:1  next-file  bound
 ```
 
 Delete a breakpoint by ID with `delete` (alias `d`):
@@ -85,7 +103,7 @@ Breakpoint 1 deleted.
 | `step` | `s` | Step into the next source location |
 | `next` | `n` | Step over the current source location |
 | `out` | | Step out of the current frame |
-| `pause` | | Request a pause after the next resume |
+| `pause` | | Queue a pause after the next resume on the builtin runtime. Wire accepts pause only while running and rejects it at a stopped prompt. |
 
 Pressing Enter with no input repeats the last `continue`, `step`, `next`, or `out` command.
 
@@ -100,8 +118,8 @@ Pressing Enter with no input repeats the last `continue`, `step`, `next`, or `ou
 ```
 (fdb) locals
 Locals:
-  x = 42
   name = "Ada"
+  x = 42
 ```
 
 ```
@@ -127,7 +145,7 @@ Type `quit` (alias `q`) or press `Ctrl-D` to end the debug session.
 | `step` | `s` | Step into next source location |
 | `next` | `n` | Step over current source location |
 | `out` | | Step out of current frame |
-| `pause` | | Request pause after next resume |
+| `pause` | | Request a pause (builtin runtime at a stopped prompt) |
 | `where` | `w`, `bt` | Show stack trace |
 | `locals` | `l` | Show local variables |
 | `print <expr>` | `p`, `e`, `eval` | Evaluate a safe expression |
@@ -135,7 +153,7 @@ Type `quit` (alias `q`) or press `Ctrl-D` to end the debug session.
 
 ## Runtime and browser flags
 
-The debug command accepts the same runtime, browser, parameter, and builtin policy flags as [`ferret run`](../run/#runtime-and-browser-flags). Debugging requires the builtin runtime: selecting Wire or an HTTP runtime is rejected before connecting or starting a browser.
+Use the [runtime flags](../run/#runtime-and-browser-flags) to select Wire, set its endpoint and connection timeout, and pass parameters. Browser and filesystem/HTTP policy flags configure the builtin runtime. Explicit local policies or browser settings are rejected in Wire mode.
 
 ## Next steps
 

@@ -38,11 +38,10 @@ mkdir ferret-existing-html && cd ferret-existing-html
 go mod init example.com/ferret-existing-html
 {{</ terminal >}}
 
-Apply the [Core development checkout setup]({{< ref "/docs/embedding/go/getting-started#installation" >}}), then install the HTML module and the small HTML parser used at the end of the example:
+Install the [documented Core release]({{< ref "/docs/embedding/go/getting-started#installation" >}}), then install the HTML module and the small HTML parser used at the end of the example:
 
 {{< terminal command="true" >}}
-go get github.com/MontFerret/contrib/modules/web/html \
-  golang.org/x/net/html
+go get github.com/MontFerret/contrib/modules/web/html@v1.0.0-rc.29
 {{</ terminal >}}
 
 The following program runs two plans against the same document. The first passes a Go string and decodes structured output. The second passes `[]byte`, modifies the document, and decodes the returned HTML string.

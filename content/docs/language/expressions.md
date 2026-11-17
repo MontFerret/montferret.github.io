@@ -290,6 +290,7 @@ let total = price * quantity
 `return` is also a statement. The value after `return` is an expression:
 
 {{< editor lang="fql" >}}
+let total = 300
 return total >= 250
 {{</ editor >}}
 
@@ -300,12 +301,11 @@ Declarations, assignments, `delete`, function declarations, and direct bare `for
 Parentheses group an expression; they do not create a separate runtime value or change whether a returnless loop produces a result. The formatter removes redundant parentheses when doing so preserves parsing, precedence, associativity, recovery-tail ownership, comments, and tokenization.
 
 {{< code lang="fql" >}}
-// Canonically formatted as: return value
-return ((value))
-
-// Required to make addition happen before multiplication.
-return (left + right) * scale
+let value = 8
+return [((value)), (2 + 3) * value]
 {{</ code >}}
+
+The result is `[8, 40]`. The formatter removes the parentheses around `value` and keeps `(2 + 3)` so the addition happens before multiplication.
 
 Some boundaries require grouping even when precedence alone would not: an embedded `for`, a compound `query` payload, a compound member source, or an expression that owns a recovery tail. Parentheses containing comments are retained when removing them would lose or relocate the comment.
 

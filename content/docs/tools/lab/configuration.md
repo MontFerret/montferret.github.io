@@ -18,13 +18,13 @@ The current Lab v2 command surface does not include `--cdp` or `LAB_CDP`. Browse
 | Flag | Alias | Env var | Default | Meaning |
 | --- | --- | --- | --- | --- |
 | `--files` | `-f` | `LAB_FILES` | | Location of test files to run. Can be repeated. |
-| `--timeout` | `-t` | `LAB_TIMEOUT` | `30` | Per-test timeout in seconds. |
+| `--timeout` | `-t` | `LAB_TIMEOUT` | `30` | Timeout in seconds for each attempt. |
 | `--reporter` | | `LAB_REPORTER` | `console` | Reporter: `console` or `simple`. |
 | `--runtime` | `-r` | `LAB_RUNTIME` | Builtin | Complete target: `builtin`, HTTP/HTTPS URL, or `wire+tcp://127.0.0.1:<port>`. |
 | `--runtime-option` | | `LAB_RUNTIME_OPTION` | | Repeatable adapter setting: `name:<JSON value>`. |
 | `--concurrency` | `-c` | `LAB_CONCURRENCY` | `1` | Number of tests to run at once. |
 | `--times` | | `LAB_TIMES` | `1` | Required successful runs per test. |
-| `--attempts` | `-a` | `LAB_ATTEMPTS` | `1` | Maximum attempts per required run. |
+| `--attempts` | `-a` | `LAB_ATTEMPTS` | `1` | Maximum attempts for a single required pass. See the [repeat and retry behavior](../runners/#repeat-successful-runs) when using `--times`. |
 | `--times-interval` | | `LAB_TIMES_INTERVAL` | `0` | Seconds to wait between repeated runs or retry attempts. |
 | `--serve` | | `LAB_SERVE` | | Static directory mapping for test execution. Can be repeated. |
 | `--mock` | | `LAB_MOCK` | | OpenAPI mock API spec mapping for test execution. Can be repeated. |

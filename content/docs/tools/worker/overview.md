@@ -58,7 +58,11 @@ Worker creates a Ferret engine with the standard Ferret runtime plus these contr
 | Web HTML | Open, parse, query, and interact with HTML documents. |
 | Web article, robots, sitemap | Extract article content and inspect web metadata. |
 | SQLite | Use the SQLite module in memory-only mode. |
-| JWT | Work with JSON Web Tokens. |
+| JWT, OAuth2 | Work with tokens and OAuth2 flows. |
+| Archive, PDF, XLSX | Work with archives, documents, and spreadsheets. |
+| REST, LLM | Make REST requests and interact with configured model providers. |
+
+The Worker executable registers these modules at startup. Network operations still depend on the host’s network policy and any credentials the operation requires.
 
 The HTML module registers two drivers:
 
@@ -91,7 +95,7 @@ ferret run --runtime http://localhost:8080 script.fql
 lab run --runtime=http://localhost:8080 tests/
 {{< /terminal >}}
 
-Remote runtimes execute source queries. Compiled artifacts and interactive debugging require the builtin local runtime.
+Worker accepts source queries over HTTP. The CLI runs compiled artifacts locally. For remote interactive debugging, use a [Wire runtime]({{< ref "/docs/tools/cli/wire" >}}) that exposes the debugger.
 
 ## Next steps
 

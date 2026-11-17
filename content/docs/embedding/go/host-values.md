@@ -26,7 +26,7 @@ Host values let an embedding application expose Go-managed resources and objects
 |-----------|----------|-------------|-----------|
 | Parameter | Static data: strings, numbers, config, JSON-like structures | `@name` — a plain value | Host sets before execution |
 | Function | Stateless computation: hash, format, fetch | `fn(args)` → result | No state between calls |
-| Host value | Stateful resource or behavioral object | Variable with capabilities: `val.prop`, `for x in val`, `query ... in val` | Host creates; runtime tracks `io.Closer` |
+| Host value | Stateful resource or behavioral object | Variable with capabilities: `val.prop`, `for x in val`, `query ... in val` | See [cleanup and finalization](#cleanup-and-finalization) |
 | Module | Self-contained extension bundling functions + hooks | Namespaced functions and values | Module `Register` + engine lifecycle hooks |
 
 When in doubt, walk through these questions:
@@ -88,11 +88,9 @@ The helper calls `Value.Copy()` once and checks that its result implements the s
 
 Copying remains shallow. The host implementation must provide the storage independence required by its capability; this check does not validate that independence or change resource ownership. It does not recover panics inside a host's `Copy` method. The existing `Value.Copy() Value` method stays unchanged.
 
-This helper requires a Ferret runtime containing the checked typed-copy change.
-
 ## Constructing an empty collection
 
-In Ferret versions containing the collection factory change, `runtime.List`
+`runtime.List`
 embeds `Factory[List]` and `runtime.Map` embeds `Factory[Map]`:
 
 {{< code lang="go" >}}
@@ -388,6 +386,7 @@ package main
 
 import (
     "context"
+    "errors"
     "fmt"
     "hash/fnv"
     "log"
@@ -460,6 +459,12 @@ func (s *Store) QueryExists(ctx context.Context, q runtime.Query) (runtime.Boole
 }
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() (err error) {
     ctx := context.Background()
 
     engine, err := ferret.New(
@@ -471,38 +476,40 @@ func main() {
         }),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer engine.Close()
+    defer func() { err = errors.Join(err, engine.Close()) }()
 
     plan, err := engine.Compile(ctx, ferret.NewSource("host-values.fql", `
         let db = db::open()
         return query "SELECT * WHERE age > 18" in db
     `))
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer plan.Close()
+    defer func() { err = errors.Join(err, plan.Close()) }()
 
     session, err := plan.NewSession(ctx)
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer session.Close()
+    defer func() { err = errors.Join(err, session.Close()) }()
 
     output, err := session.Run(ctx)
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer output.Close()
+    defer func() { err = errors.Join(err, output.Close()) }()
 
     content, err := output.Collect(ctx)
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(content.Data))
-    // [{"age":25,"name":"Carol"},{"age":30,"name":"Alice"}]
+    // [{"name":"Alice","age":30},{"name":"Carol","age":25}]
+
+    return nil
 }
 {{</ code >}}
 
@@ -534,15 +541,15 @@ session, err := plan.NewSession(ctx,
 
 ## Cleanup and finalization
 
-The runtime automatically tracks values that implement `io.Closer`:
+For a VM-owned value that implements `io.Closer`, Core tracks a comparable Go value (including a pointer) by its identity. A non-comparable closer needs to implement `runtime.Resource` to participate in VM ownership tracking.
 
-1. During execution, any `io.Closer` value encountered in the result is added to a tracked closer set.
+1. During execution, the VM tracks resources it owns. It transfers escaping resources to the result. The encoder can also discover nested resources during materialization.
 2. After encoding the output, the runtime calls `Close()` on every tracked closer.
 3. Result cleanup errors are retained by the returned `Output` and reported by `Collect` or `Consume`. `Output.Close` also retains the cleanup outcome; it does not report execution or encoding failures.
 
-This means a host value returned by a function inside a script is encoded first, then closed. The host receives a handle to the encoded content; the value is already closed by the time `Run` returns. Consume or collect the handle to observe execution, encoding, and cleanup failures. Direct calls to a codec borrow values and leave source and child-resource cleanup to the caller. See [Value Encoders]({{< ref "/docs/embedding/go/value-encoders#context-and-buffering" >}}).
+When a script returns a tracked resource created by a host function, Native encodes the value and closes it before `Run` returns. The caller receives a handle to the encoded content. Consume or collect the handle to observe execution, encoding, and cleanup failures. Direct calls to a codec borrow values and leave source and child-resource cleanup to the caller. See [Value Encoders]({{< ref "/docs/embedding/go/value-encoders#context-and-buffering" >}}).
 
-For values referenced multiple times, implement the `Resource` interface to prevent double-closing:
+Result materialization can also adopt a non-comparable closer. Without a stable identity, repeated discoveries may close it more than once. Implement `runtime.Resource` for such values or when different Go values represent the same underlying resource.
 
 {{< code lang="go" >}}
 type Resource interface {
@@ -553,7 +560,7 @@ type Resource interface {
 
 `ResourceID` must return a stable, unique identifier for the resource. The runtime uses it to deduplicate closers — two references to the same resource result in a single `Close` call.
 
-Values stored in engine-level parameters are **not** tracked by the result's closer set. The host owns their lifecycle and must close them explicitly when the engine shuts down.
+A parameter is borrowed during evaluation. If a script returns `@db` or a container holding it, Native encoding adopts the closer and result cleanup closes it before `Run` returns. To share a connection across sessions, return the queried records and keep the handle out of the result. The host closes the shared connection after its last use.
 
 ## Context and cancellation
 

@@ -43,6 +43,8 @@ ferret browser start
 
 See [CLI Browser]({{< ref "/docs/tools/cli/browser" >}}) for full details on browser management.
 
+Go hosts that register Web HTML can configure allowed HTTP(S) origins for the memory or CDP driver. The CDP policy applies across the Chromium endpoint, so give it a dedicated browser. See the [Web HTML driver configuration](https://github.com/MontFerret/contrib/blob/modules/web/html/v1.0.0-rc.29/modules/web/html/README.md).
+
 ## Open a page with a browser
 
 Pass `{ driver: "cdp" }` to `web::html::open`:
@@ -111,7 +113,8 @@ return query "article" in page using css
 `waitfor` supports several clauses to control timing:
 
 {{< code lang="fql" >}}
-waitfor exists query one ".result" in page using css
+let page = web::html::open("https://mockery.ferretlang.org/scenarios/dynamic-products/basic/", { driver: "cdp" })
+return waitfor exists query one ".product-card" in page using css
     timeout 10s
     every 100ms, 2s
     backoff EXPONENTIAL
@@ -156,14 +159,14 @@ return for product in grid.children
     let title = product[~? css`.product-title`]
     return {
         title: title?.textContent,
-        price: product[~? css`.product-price`],
-        inStock: product[~? css`.product-in-stock`]?.attributes["data-stock-count"] != "0"
+        price: product[~? css`.product-price`]?.textContent,
+        inStock: product.attributes["data-in-stock"] == "true"
     }
 {{< /editor >}}
 
 ## Navigate within a page
 
-Use `NAVIGATE` to go to a different URL within the same browser session:
+Click a link and wait for its navigation in the same browser session:
 
 {{< editor lang="fql" >}}
 let page = web::html::open("https://mockery.ferretlang.org", { driver: "cdp" })

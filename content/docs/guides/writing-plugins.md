@@ -46,7 +46,7 @@ cd kvplugin
 go mod tidy
 {{</ terminal >}}
 
-Apply the [Core development checkout replacement]({{< ref "/docs/embedding/go/getting-started#installation" >}}) in the generated module before using the consumable-output examples below; the initializer may select an older published Core dependency.
+Install the [documented Core release]({{< ref "/docs/embedding/go/getting-started#installation" >}}) in the generated module before using the consumable-output examples below; the initializer may select an older published Core dependency.
 
 The initializer creates the module manifest, Go module, starter registration, documentation, and package directories. Replace the starter registration and add the implementation and test files as you follow the guide:
 
@@ -378,6 +378,7 @@ package main
 
 import (
     "context"
+    "errors"
     "fmt"
     "log"
 
@@ -387,15 +388,21 @@ import (
 )
 
 func main() {
+    if err := run(); err != nil {
+        log.Fatal(err)
+    }
+}
+
+func run() (err error) {
     engine, err := ferret.New(
         ferret.WithModules(kvplugin.New(
             kvplugin.WithMaxSize(500),
         )),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer engine.Close()
+    defer func() { err = errors.Join(err, engine.Close()) }()
 
     output, err := engine.Run(
         context.Background(),
@@ -413,22 +420,24 @@ func main() {
         `),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer output.Close()
+    defer func() { err = errors.Join(err, output.Close()) }()
 
     content, err := output.Collect(context.Background())
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(content.Data))
+
+    return nil
 }
 {{</ code >}}
 
 ## Test through the SDK harness
 
-These examples use the [Core development checkout]({{< ref "/docs/embedding/go/getting-started#installation" >}}). The harness returns consumable output too: collect before decoding, and assert runtime failures from consumption rather than Run. Construction and preparation errors remain immediate.
+These examples use the [published Core release]({{< ref "/docs/embedding/go/getting-started#installation" >}}). The harness returns consumable output too: collect before decoding, and assert runtime failures from consumption rather than Run. Construction and preparation errors remain immediate.
 
 Use `sdktest` for black-box tests that exercise registration, compilation, runtime argument checks, lifecycle hooks, and result encoding together:
 

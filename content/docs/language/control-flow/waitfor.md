@@ -175,13 +175,12 @@ waitfor event "message" in socket
 
 ### Synchronizing event occurrences
 
-Event groups use the existing event entry syntax and may subscribe to different sources:
+Event groups can subscribe to different sources. Each source defines the event names it supports. For example, two browser pages can each emit a navigation event.
 
 {{< code lang="fql" >}}
 let event = waitfor event any {
-    "navigation" in page
-    "download" in browser
-    "disconnect" in socket
+    "navigation" in firstPage
+    "navigation" in secondPage
 }
 timeout 10s
 {{</ code >}}
@@ -192,8 +191,8 @@ timeout 10s
 
 {{< code lang="fql" >}}
 let events = waitfor event all {
-    "domcontentloaded" in page
-    "networkidle" in page
+    "navigation" in page
+    "network.idle" in page
 }
 timeout 10s
 {{</ code >}}
@@ -206,8 +205,7 @@ Event groups synchronize **occurrences**, unlike polling groups, which synchroni
 return waitfor event any {
     "response" in page
         when .status >= 500
-    "dialog" in page
-        when .type == "confirm"
+    "network.request_failed" in page
 }
 timeout 10s
 {{</ code >}}

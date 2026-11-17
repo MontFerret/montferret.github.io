@@ -9,12 +9,12 @@ owned by `github.com/MontFerret/specs`.
 ## Select the documented Ferret version
 
 `data/versions.yaml` is the version source for the website. The generator reads
-`runtime.v2`, finds that exact version in the published index, and follows its
+`core.v2`, finds that exact version in the published index, and follows its
 `href` to `api.json`. The matching `catalog.json` URL is derived from that
 authoritative artifact directory. It does not select `latest` or the greatest
 prerelease.
 
-Changing `runtime.v2` replaces the current unversioned reference in place. Alpha
+Changing `core.v2` replaces the current unversioned reference in place. Alpha
 releases do not create retained documentation trees or a version picker.
 
 ## Generate locally
@@ -75,7 +75,7 @@ The importable Mage helpers live in `tools/stdlibdocs` and
 
 Specs must publish the API Catalog package before Ferret can publish a release
 that uses it. Ferret then publishes both sibling artifacts before this site's
-exact `runtime.v2` pin is advanced. Existing API-only alpha releases remain
+exact `core.v2` pin is advanced. Existing API-only alpha releases remain
 immutable publication state, but the website cannot select them. Historical
 and version-aware Standard Library documentation remains deferred until after
 the final 2.0.0 release.

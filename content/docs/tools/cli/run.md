@@ -77,7 +77,7 @@ The `--param` flag can be repeated to pass multiple parameters.
 
 ## Runtime and browser flags
 
-These flags control where and how scripts execute. They are shared by the `run`, [`repl`](../repl/), and [`debug`](../debug/) commands; debugging requires builtin mode. The `version` command accepts only the runtime selection flags from this table.
+These flags control where and how scripts execute. They are shared by the `run`, [`repl`](../repl/), and [`debug`](../debug/) commands. Debugging accepts a local source file and a builtin or Wire runtime. The `version` command accepts only the runtime selection flags from this table.
 
 | Flag | Default | Description |
 | --- | --- | --- |
@@ -135,7 +135,7 @@ ferret run --runtime http://localhost:8080 script.fql
 
 The Worker adapter sends source text and parameters with `POST /` and reads the hosted Ferret version with `GET /info`. Execution responses stream unchanged regardless of HTTP status: an error status alone does not fail the command, and the body is not interpreted as structured query diagnostics. Request, body-read, writer, cancellation, and cleanup failures still fail the command.
 
-Remote runtimes cannot run compiled artifacts or CLI debug sessions. Worker does not expose reusable Universal API compilation, output codec selection, or per-session filesystem-root selection.
+Worker supports source execution. For interactive debugging against an application host, use [Wire]({{< ref "debug" >}}#debug-on-a-wire-host). Use the builtin runtime for compiled artifacts. The Worker adapter has no reusable Universal API compilation, output codec selection, or per-session filesystem-root selection.
 
 All runtime and browser flags can also be set persistently through the [`config`](../configuration/) command or environment variables.
 

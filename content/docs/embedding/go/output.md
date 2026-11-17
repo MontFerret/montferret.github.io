@@ -10,7 +10,7 @@ description: "Collect owned content or consume borrowed bytes, and settle output
 
 `Engine.Run` and `Session.Run` return `(ferret.Output, error)`. Output is a caller-owned, one-shot handle: use `Collect` when you need owned bytes, or `Consume` when you want to forward or discard them. Both report terminal failures and finalize the handle.
 
-These contracts target the [Core development checkout]({{< ref "/docs/embedding/go/getting-started#installation" >}}) and Universal API `v1.0.0-alpha.21`. See the [migration guide]({{< ref "/docs/migrations/consumable-output" >}}) for buffered-output applications. For remote runtimes, use the dependency set in the [Wire compatibility table]({{< ref "/docs/embedding/wire#run-a-host-and-client" >}}).
+These contracts target the [published Core release]({{< ref "/docs/embedding/go/getting-started#installation" >}}) and Universal API `v1.0.0-alpha.21`. See the [migration guide]({{< ref "/docs/migrations/consumable-output" >}}) for buffered-output applications. For remote runtimes, use the dependency set in the [Wire compatibility table]({{< ref "/docs/embedding/wire#run-a-host-and-client" >}}).
 
 ## Output methods
 

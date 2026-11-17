@@ -28,7 +28,7 @@ Save this as `script.fql` for the commands below. The CLI's browser flags manage
 ferret browser open
 {{< /terminal >}}
 
-This starts a browser and prints the process ID. The CLI waits until the browser exits.
+This starts a browser in the foreground. Use `--detach` to leave it running and receive its process ID.
 
 ### Flags
 

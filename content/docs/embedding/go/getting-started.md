@@ -14,18 +14,11 @@ This page walks through installing Ferret as a Go dependency, running a query, a
 
 ## Installation
 
-These Go embedding pages target the **Core development API**, using Universal API `v1.0.0-alpha.21` and consumable output. The website's Standard Library version listing retains its separate release pin. The [Wire example's compatibility table]({{< ref "docs/embedding/wire#run-a-host-and-client" >}}) lists its published dependency set for remote runtimes.
-
-The documented checkout requires **Go 1.26 or later**. It includes both the reader/writer Encoding API and consumable Output API. Use this checkout as a local module replacement. From the directory containing your Go application (with its own `go.mod`), clone Core into a sibling directory and select the revision documented here:
+From your Go application module, install Ferret Core v{{< data "versions.core.v2" >}}. This release requires Go {{< data "versions.go" >}} or later. For a new application, run `go mod init example.com/myapp` first.
 
 {{< terminal >}}
-git clone https://github.com/MontFerret/ferret.git ../ferret-core
-git -C ../ferret-core checkout 3dcc1849b08685e9cdc71021fd2b6dd9d4003077
-go mod edit -replace=github.com/MontFerret/ferret/v2=../ferret-core
-go get github.com/MontFerret/ferret/v2
+go get github.com/MontFerret/ferret/v2@v{{< data "versions.core.v2" >}}
 {{</ terminal >}}
-
-After adding the Go source below, run `go mod tidy`. Initialize a new application's module first with `go mod init example.com/myapp`. The replacement resolves Core locally at the exact revision above; it does not depend on the version selected by an unpinned `go get`. Remove it when upgrading to a compatible published release.
 
 For an existing integration, follow the [consumable output migration]({{< ref "/docs/migrations/consumable-output" >}}) and the [Encoding API migration]({{< ref "/docs/migrations/encoding-api" >}}).
 
@@ -38,6 +31,7 @@ package main
 
 import (
     "context"
+    "errors"
     "fmt"
     "log"
 
@@ -45,28 +39,36 @@ import (
 )
 
 func main() {
-    engine, err := ferret.New()
-    if err != nil {
+    if err := run(); err != nil {
         log.Fatal(err)
     }
-    defer engine.Close()
+}
+
+func run() (err error) {
+    engine, err := ferret.New()
+    if err != nil {
+        return err
+    }
+    defer func() { err = errors.Join(err, engine.Close()) }()
 
     output, err := engine.Run(
         context.Background(),
         ferret.NewAnonymousSource(`return { name: "Ferret", version: 2 }`),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
-    defer output.Close()
+    defer func() { err = errors.Join(err, output.Close()) }()
 
     content, err := output.Collect(context.Background())
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(content.Data))
     // {"name":"Ferret","version":2}
+
+    return nil
 }
 {{</ code >}}
 
@@ -83,7 +85,7 @@ plan, err := engine.Compile(ctx,
     ferret.NewSource("greeting.fql", `return upper(@name)`),
 )
 if err != nil {
-    log.Fatal(err)
+    return err
 }
 defer plan.Close()
 
@@ -95,20 +97,18 @@ for _, name := range names {
         ferret.WithSessionParam("name", name),
     )
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     output, err := session.Run(ctx)
     if err != nil {
-        session.Close()
-        log.Fatal(err)
+        return errors.Join(err, session.Close())
     }
 
     content, collectErr := output.Collect(ctx)
-    output.Close()
-    closeErr := session.Close()
+    closeErr := errors.Join(output.Close(), session.Close())
     if err := errors.Join(collectErr, closeErr); err != nil {
-        log.Fatal(err)
+        return err
     }
 
     fmt.Println(string(content.Data))
@@ -146,7 +146,7 @@ You can inspect which parameters a compiled query declares:
 {{< code lang="go" >}}
 params := plan.Params()
 fmt.Println(params)
-// [base_url user_id]
+// [name] for greeting.fql
 {{</ code >}}
 
 See [Parameters]({{< ref "/docs/embedding/go/parameters" >}}) for the full parameter API.

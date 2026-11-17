@@ -179,7 +179,7 @@ return for user in users {
 
 ## Function names
 
-Function names follow the same rules as variable names: they must start with a letter or underscore, followed by any combination of letters, digits, and underscores.
+Function names follow the same rules as variable names. They start with an ASCII letter and may then contain ASCII letters, digits, and underscores.
 
 Function names are case-sensitive. `add` and `Add` are different functions.
 

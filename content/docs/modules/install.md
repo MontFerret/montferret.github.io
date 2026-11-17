@@ -10,7 +10,7 @@ description: "Install a registered Ferret module into a Go application."
 
 Use `ferret mod install` to add a registered module to an existing Go application. The installer resolves a compatible release, adds its Go package, and registers it in the application's Ferret engine composition.
 
-This workflow requires Ferret CLI `v{{< data "versions.cli.v2" >}}` or later and a Go project with an existing `go.mod`.
+These instructions use Ferret CLI `v{{< data "versions.cli.v2" >}}` and a Go project with an existing `go.mod`.
 
 ## Find a module
 
