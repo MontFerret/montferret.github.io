@@ -8,7 +8,7 @@ description: "Use ferretd for editor language services, workspace execution, and
 
 # Ferret daemon
 
-`ferretd` provides developer services for FQL editors and other clients. Use it to analyze an open document, run a saved workspace script, or debug FQL from an editor. An editor integration can supply the executable. Standalone clients can download the [daemon prerelease](https://github.com/MontFerret/ferretd/releases/tag/v{{< data "versions.ferretd.v1" >}}).
+`ferretd` provides developer services for FQL editors and other clients. Use it to analyze an open document, run a saved workspace script, or debug FQL from an editor. The [Visual Studio Code]({{< ref "/docs/tools/visual-studio-code" >}}) and [JetBrains IDEs]({{< ref "/docs/tools/jetbrains" >}}) integrations bundle the daemon. Standalone clients can download the [daemon prerelease](https://github.com/MontFerret/ferretd/releases/tag/v{{< data "versions.ferretd.v1" >}}).
 
 | Command | Use |
 | --- | --- |
@@ -38,6 +38,8 @@ Start the [example Wire host]({{< ref "/docs/embedding/wire" >}}#host-the-config
 
 The example host uses plaintext on loopback. For a TLS host, omit `insecure` and use a hostname or IP address covered by the certificate. Ferretd verifies server identity using system trust. The optional `connectTimeout` is a positive duration string and defaults to `"5s"`.
 
+To use this file from an IDE, see how to configure runtimes in [Visual Studio Code]({{< ref "/docs/tools/visual-studio-code#configure-runtimes" >}}) or [JetBrains IDEs]({{< ref "/docs/tools/jetbrains#configure-runtimes" >}}).
+
 Point the workspace service and debug adapter at the same file when both need those definitions. For example, a client can launch each process with:
 
 {{< terminal >}}
@@ -62,4 +64,4 @@ The Go client negotiates the daemon API version. API 1.2 adds runtime discovery 
 
 By default, `serve` accepts local connections over a Unix socket on macOS and Linux or a named pipe on Windows. Clients that require loopback TCP can request an ephemeral port and authenticate using a bearer token. This incoming daemon connection is separate from an outbound connection to a Wire host. See the [daemon client and transport guide](https://github.com/MontFerret/ferretd/blob/v{{< data "versions.ferretd.v1" >}}/README.md#commands) for connection details.
 
-{{< docs-related tiles="embedding-wire,tools-cli-wire,tools-visual-studio-code" >}}
+{{< docs-related tiles="embedding-wire,tools-cli-wire,tools-visual-studio-code,tools-jetbrains" >}}

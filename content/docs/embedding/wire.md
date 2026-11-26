@@ -123,6 +123,10 @@ ferret version --runtime wire --runtime-endpoint tcp://127.0.0.1:50051
 
 The CLI uses the host's functions, modules, policies, and filesystem configuration. For an interactive walkthrough using this host’s greeting function, see [Debug on a Wire host]({{< ref "docs/tools/cli/debug" >}}#debug-on-a-wire-host). Compiled artifacts require the builtin CLI runtime. The [CLI Wire guide]({{< ref "docs/tools/cli/wire" >}}) covers its loopback-only endpoint syntax, timeout, compatibility, diagnostics, and ownership.
 
+## Connect from your IDE
+
+The official Ferret integrations can run and debug the greeting query from a local `.fql` file against this host. Add the host to [the daemon runtime configuration]({{< ref "/docs/tools/ferretd#configure-a-runtime" >}}), then follow the editor steps for [Visual Studio Code]({{< ref "/docs/tools/visual-studio-code#run-and-debug-on-a-wire-host" >}}) or [JetBrains IDEs]({{< ref "/docs/tools/jetbrains#run-and-debug-on-a-wire-host" >}}).
+
 ## What crosses the remote boundary
 
 Registered functions and modules, host services, and runtime configuration stay on the host. Wire does not construct that runtime or transfer its configuration to the client.
@@ -155,7 +159,7 @@ Use Wire when your application already owns a configured runtime and needs to ex
 
 Wire supports the Universal API debugging path: compile with `remote.CompileDebug`, then create a debugger with `plan.NewDebugSession`. The returned debugger session supports entry stops, breakpoints, stepping, inspection, and evaluation through the hosted implementation. Close the debugger and plan when finished.
 
-See the [Wire client debugger documentation](https://github.com/MontFerret/wire/blob/v{{< data "versions.wire.v1" >}}/docs/client.md#debugger) and [Universal API guide]({{< ref "docs/embedding/go/universal-api" >}}) for the Wire and Native adapter contracts. The CLI connects directly. Editors that support external debugging use [ferretd]({{< ref "docs/tools/ferretd" >}}) to launch against a named Wire runtime.
+See the [Wire client debugger documentation](https://github.com/MontFerret/wire/blob/v{{< data "versions.wire.v1" >}}/docs/client.md#debugger) and [Universal API guide]({{< ref "docs/embedding/go/universal-api" >}}) for the Wire and Native adapter contracts. The CLI connects directly. The official editor integrations use [ferretd]({{< ref "docs/tools/ferretd" >}}) to launch against a named Wire runtime.
 
 ## Own resources and secure the endpoint
 

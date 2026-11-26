@@ -147,7 +147,7 @@ Cancellation observed before publication leaves the previous set intact. Once
 publication succeeds, later cancellation does not undo it or cancel the debuggee.
 Completed, terminated, and closed sessions reject replacement.
 
-The released [ferretd debug adapter]({{< ref "/docs/tools/ferretd" >}}) uses breakpoint replacement for DAP clients. See [Debug a script in VS Code]({{< ref "/docs/tools/visual-studio-code" >}}) for the editor workflow and its bundled daemon version.
+The [ferretd debug adapter]({{< ref "/docs/tools/ferretd" >}}) uses breakpoint replacement for DAP clients. See the debugging workflows for [Visual Studio Code]({{< ref "/docs/tools/visual-studio-code#debugging" >}}) and [JetBrains IDEs]({{< ref "/docs/tools/jetbrains#debugging" >}}).
 
 ## Read the Core runtime version
 

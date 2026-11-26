@@ -355,6 +355,55 @@ Native arithmetic remains authoritative. In particular, if either `+` operand is
 | `Unwrappable` | `Unwrap() any` | Extract the inner Go value |
 | `DebugInspectable` | `DebugInfo() DebugInfo` | Presentation hints for the debugger |
 
+Use `DebugInfo` to give a host value a semantic type or a short display. For
+example, an HTML node that already holds its tag and class can return
+`runtime.DebugInfo{TypeName: "HTML::Node", Display: "<div.product-card>"}`.
+Each field is optional. An opaque value with no hints appears as `<Resource>`.
+An `sdk.HostValue` with an explicitly declared Ferret type can show that name
+while keeping its wrapped target private.
+
+The debugger calls the hook once per description. Return metadata already in
+memory. Reading children, running a query, or formatting the entire resource
+inside the hook makes listing locals pay that cost. Implementing `List`,
+`Map`, or `Queryable` alone grants no debugger access to children.
+
+When you pass a pointer to a native runtime scalar, the debugger displays the
+pointed-to value. For example, a pointer to `runtime.Int(42)` displays `42`,
+and a nil `*runtime.Int` displays `<Int>`. A pointer to `runtime.Binary`
+displays its byte length. DateTime displays preserve the numeric timezone
+offset, for example `2026-02-03T04:05:06.123456789-03:30`.
+
+Descriptions are shallow. A positive reference lets you request a page from
+the paused session. For example, to read elements 1000 through 1019 of a
+buffered array, use the reference from its local or evaluation result.
+
+{{< code lang="go" >}}
+children, err := session.Variables(ctx, value.Reference, ferret.DebugVariablePage{
+    Filter: ferret.DebugVariableFilterIndexed,
+    Start:  1000,
+    Count:  20,
+})
+{{</ code >}}
+
+Each child includes its absolute index or exact property name. The default
+page size is 100 and the maximum is 1,000. `IndexedCount` and `NamedCount` are
+optional exact counts. A nil count is unknown. A zero reference leaves the
+value available as a summary. Repeated reads of a binding or child reuse its
+reference during the stop. After resume or close, retained page data remains
+readable and its expansion references expire.
+
+To expose safe children of a host value, implement
+`runtime.DebugChildrenProvider`. Return exact known counts and readable views
+from `DebugChildrenInfo()`. Implement `DebugChildAt(ctx, kind, position)` using
+stable in-memory storage, observe cancellation, and return `found=false` at
+the end. Keep reachable values and borrowed array backing slices stable
+throughout the pause. A deferred query or cursor can use presentation alone.
+
+Evaluating a member expression such as `items[0]` reads the selected child.
+Use `ferret.WithDebugFormat` to set `MaxBytes`, the byte budget for each type and display.
+The budget includes string quotes, escapes, and the `...` truncation marker.
+A truncated field with only one or two bytes available uses one or two dots.
+
 `Equatable` and `Comparable` are independent. `Equal` must be reflexive, symmetric, and transitive within the value's compatible comparison domain, and must return false without an error for an incompatible value. `Compare` must provide a reflexive, antisymmetric, and transitive order within that domain and return an error compatible with `runtime.ErrInvalidOperation` for an incompatible value. If both interfaces are implemented, `Equal` must return true exactly when `Compare` returns `runtime.Equal`.
 
 Semantically equal values must return the same `Hash()`. A hash is only a candidate selector; Ferret verifies `Equal` before grouping or deduplicating host values.
@@ -438,8 +487,8 @@ func (s *Store) Query(_ context.Context, q runtime.Query) (runtime.List, error) 
         }
 
         obj := runtime.NewObject()
-        obj.Set(context.Background(), runtime.NewString("name"), runtime.NewString(r.Name))
-        obj.Set(context.Background(), runtime.NewString("age"), runtime.NewInt(r.Age))
+        obj.SetString("name", runtime.NewString(r.Name))
+        obj.SetString("age", runtime.NewInt(r.Age))
         out.Append(context.Background(), obj)
     }
 

@@ -186,10 +186,10 @@ The ecosystem includes:
 - embedding APIs for Go and JavaScript applications that need to control what scripts can see and do
 - Wire for compiling, executing, and debugging scripts against an application's hosted runtime from another process
 - Lab, a test runner for Ferret scripts
-- the official Visual Studio Code integration for language intelligence, formatting, execution, and debugging
+- official integrations for [Visual Studio Code]({{< ref "/docs/tools/visual-studio-code" >}}) and [JetBrains IDEs]({{< ref "/docs/tools/jetbrains" >}}) for language intelligence, formatting, execution, and debugging
 - Mockery, a safe fake website used in examples, demos, and driver testing
 
-The Visual Studio Code integration includes the appropriate Ferret daemon for supported platforms. It uses the daemon for language-server features, execution, and debugging without requiring a separate installation for normal use.
+Both IDE integrations bundle the Ferret daemon for language services, execution, and debugging.
 
 These pieces are designed to work together while keeping the core language and runtime small.
 
@@ -197,4 +197,4 @@ These pieces are designed to work together while keeping the core language and r
 
 If you are new to Ferret, start with the basics and then move into the areas that match how you plan to use it.
 
-{{< docs-related tiles="getting-started-installation,getting-started-quick-start,tools-visual-studio-code,language,web-extraction,embedding,embedding-wire,tools-lab,tools-worker" >}}
+{{< docs-related tiles="getting-started-installation,getting-started-quick-start,tools-visual-studio-code,tools-jetbrains,language,web-extraction,embedding,embedding-wire,tools-lab,tools-worker" >}}
