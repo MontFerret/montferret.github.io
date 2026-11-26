@@ -641,3 +641,408 @@ $editor-gutter: #10131d;
         }
     }
 }
+
+.repl .hero-body {
+    padding-block: clamp(1.5rem, 4vw, 3rem);
+    padding-inline: clamp(.75rem, 3vw, 2rem);
+}
+
+.repl .repl-title {
+    color: $darkpurple;
+    font-family: $family-primary;
+    font-size: clamp(1.65rem, 3vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+}
+
+.playground-clipboard {
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+.code-editor.playground {
+    $divider: rgba(#c1bce5, .16);
+    $muted: #b6b6cd;
+    $focus: #a0e8f4;
+
+    font-family: $family-primary;
+    margin: 0;
+
+    [hidden] {
+        display: none !important;
+    }
+
+    button,
+    select,
+    input,
+    textarea,
+    pre {
+        &:focus-visible {
+            outline: 2px solid $focus;
+            outline-offset: 2px;
+        }
+    }
+
+    .playground-toolbar {
+        align-items: center;
+        background: $editor-toolbar;
+        display: flex;
+        flex-wrap: wrap;
+        gap: .45rem;
+        padding: .7rem .85rem .35rem;
+    }
+
+    .playground-button,
+    .playground-text-button,
+    .playground-tabs button {
+        font: inherit;
+        font-size: .85rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+
+        &:disabled,
+        &[aria-disabled="true"] {
+            cursor: not-allowed;
+            opacity: .55;
+        }
+    }
+
+    .playground-button {
+        background: #2c3044;
+        border: 1px solid #555b77;
+        border-radius: 5px;
+        color: #f0effb;
+        min-height: 2.25rem;
+        padding: .3rem .7rem;
+
+        &:hover:not(:disabled):not([aria-disabled="true"]),
+        &[aria-expanded="true"] {
+            background: #3a3d56;
+        }
+    }
+
+    .playground-run {
+        align-items: center;
+        background: #cbb8ff;
+        border-color: transparent;
+        color: #211939;
+        display: inline-flex;
+        gap: .45rem;
+        justify-content: center;
+        min-width: 5rem;
+
+        &::before {
+            border-block: .28rem solid transparent;
+            border-left: .43rem solid currentColor;
+            content: "";
+        }
+
+        &:hover:not(:disabled):not([aria-disabled="true"]) {
+            background: #e2d8ff;
+        }
+
+        &[aria-disabled="true"]:not(:disabled) {
+            opacity: .85;
+        }
+    }
+
+    .playground-examples {
+        color-scheme: dark;
+        width: 6.6rem;
+    }
+
+    .playground-text-button {
+        background: transparent;
+        border: 0;
+        border-radius: 3px;
+        color: $focus;
+        min-height: 1.75rem;
+        padding: .15rem .35rem;
+
+        &:hover:not(:disabled) {
+            text-decoration: underline;
+        }
+    }
+
+    .playground-connection {
+        align-items: center;
+        color: $muted;
+        display: flex;
+        flex-wrap: wrap;
+        font-size: .82rem;
+        gap: .35rem;
+        margin-inline-start: auto;
+    }
+
+    .playground-notice {
+        background: $editor-toolbar;
+        border-bottom: 1px solid $divider;
+        color: $focus;
+        font-size: .8rem;
+        min-height: 1.25rem;
+        padding: 0 .85rem .2rem;
+    }
+
+    .playground-share-link {
+        display: block;
+        margin: .25rem 0;
+        width: 100%;
+    }
+
+    .playground-grid {
+        display: grid;
+        grid-template-areas: "source" "params" "diagnostics" "output";
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .playground-source { grid-area: source; }
+    .playground-params { grid-area: params; }
+    .playground-diagnostics { grid-area: diagnostics; }
+    .playground-output { grid-area: output; }
+
+    .playground-section-bar,
+    .playground-output-meta {
+        align-items: center;
+        background: $editor-gutter;
+        display: flex;
+        gap: .5rem;
+        justify-content: space-between;
+        min-height: 2.25rem;
+        padding: .15rem .85rem;
+
+        h2 {
+            color: #e6e1f6;
+            font: inherit;
+            font-size: .85rem;
+            font-weight: 600;
+        }
+    }
+
+    .playground-editor {
+        height: clamp(16rem, 36vh, 25rem);
+
+        &.ace_focus {
+            outline: 2px solid $focus;
+            outline-offset: -2px;
+        }
+
+        .ace_comment {
+            color: #a7abc2;
+        }
+    }
+
+    .playground-output,
+    .playground-params,
+    .playground-diagnostics {
+        border-top: 1px solid $divider;
+        min-width: 0;
+    }
+
+    .playground-params {
+        background: #1b1f30;
+    }
+
+    .playground-params-content {
+        color: $muted;
+        display: grid;
+        font-size: .85rem;
+        gap: .65rem;
+        max-height: 24rem;
+        overflow: auto;
+        padding: .8rem .85rem;
+
+        > button { justify-self: start; }
+
+        code {
+            background: transparent;
+            color: #e2d8ff;
+            padding: 0;
+        }
+    }
+
+    .playground-params-rows,
+    .playground-param-row {
+        display: grid;
+        gap: .5rem;
+    }
+
+    .playground-param-row {
+        align-items: start;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto;
+    }
+
+    .playground-param-row input,
+    .playground-param-row textarea,
+    .playground-share-link {
+        background: $editor-gutter;
+        border: 1px solid #555b77;
+        border-radius: 4px;
+        color: #f0effb;
+        font: .8rem/1.45 $family-code;
+        min-width: 0;
+        padding: .34rem .45rem;
+        resize: vertical;
+
+        &::placeholder { color: $muted; }
+        &[aria-invalid="true"] { border-color: #ffb6bb; }
+    }
+
+    .playground-suggestions {
+        p { margin-bottom: .3rem; }
+        button { margin: 0 .3rem .3rem 0; }
+    }
+
+    .playground-error,
+    .playground-diagnostic-label[data-severity="error"] {
+        color: #ffb6bb;
+    }
+
+    .playground-diagnostics {
+        background: #252037;
+        color: #f2ebfa;
+        font-size: .85rem;
+        padding: .5rem .85rem;
+
+        h2 {
+            font: inherit;
+            font-weight: 600;
+        }
+
+        ul {
+            max-height: 9rem;
+            overflow: auto;
+            padding: .2rem 0 .15rem .2rem;
+        }
+
+        li + li { margin-top: .35rem; }
+        p { color: #d3cde3; }
+    }
+
+    .playground-diagnostic-label {
+        color: $muted;
+        margin-inline-end: .5rem;
+        text-transform: capitalize;
+    }
+
+    .playground-diagnostic-link {
+        background: transparent;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+        font: inherit;
+        padding: 0;
+        text-align: left;
+        text-decoration: underline;
+    }
+
+    .playground-tabs {
+        align-items: stretch;
+        display: flex;
+        gap: 1rem;
+
+        button {
+            background: transparent;
+            border: 0;
+            border-bottom: 2px solid transparent;
+            color: $muted;
+            min-height: 2.25rem;
+            padding: .1rem .2rem;
+
+            &[aria-selected="true"] {
+                border-bottom-color: #cbb8ff;
+                color: #f0effb;
+            }
+        }
+    }
+
+    .playground-output-panel {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        height: clamp(11rem, 24vh, 16rem);
+
+        pre,
+        .playground-empty {
+            background: transparent;
+            color: #dedff0;
+            font-size: .85rem;
+            margin: 0;
+            overflow: auto;
+            padding: .65rem .85rem;
+        }
+
+        pre {
+            line-height: 1.5;
+            scrollbar-color: rgba(#fff, .28) transparent;
+            white-space: pre;
+
+            &:focus-visible { outline-offset: -2px; }
+        }
+
+        .playground-empty { color: $muted; }
+    }
+
+    .playground-output-meta {
+        background: #1b1f30;
+        color: $muted;
+        font-size: .8rem;
+        justify-content: flex-end;
+
+        span { margin-inline-end: auto; }
+    }
+
+    @media (min-width: 900px) {
+        .playground-grid.has-params {
+            grid-template-areas: "source params" "diagnostics params" "output params";
+            grid-template-columns: minmax(0, 1fr) minmax(17.5rem, 29%);
+        }
+
+        .playground-params {
+            border-inline-start: 1px solid $divider;
+            border-top: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .playground-toolbar {
+            gap: .28rem;
+            padding: .55rem .65rem .25rem;
+
+            > .playground-button {
+                font-size: .8rem;
+                padding-inline: .4rem;
+            }
+        }
+
+        .playground-examples {
+            width: 5.7rem;
+        }
+
+        .playground-run {
+            min-width: 3.75rem;
+        }
+
+        .playground-connection {
+            margin-inline-start: 0;
+            width: 100%;
+        }
+
+        .playground-editor {
+            height: clamp(15rem, 36vh, 22rem);
+        }
+
+        .playground-output-panel {
+            height: clamp(12rem, 26vh, 16rem);
+        }
+
+        .playground-output-meta {
+            font-size: .76rem;
+        }
+    }
+}

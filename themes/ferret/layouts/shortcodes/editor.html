@@ -16,6 +16,9 @@
 {{ $source := trim .Inner "\n" }}
 {{ $name := default "example" ( .Get "name" )}}
 
+{{ if eq (.Get "backend") "playground" }}
+    {{ partial "repl/workspace.html" (dict "id" $id "source" $source "params" $params "readOnly" $isReadOnly "copyable" $isCopyable "sharable" $sharable) }}
+{{ else }}
 <div class="code-editor is-horizontal{{ $readonlyClass }}{{ $autoHeightClass }}">
     {{- if eq $sharable "true" }}
     <input id="{{ $id }}-share-clipboard" class="code-editor-clipboard" tabindex="-1" aria-hidden="true"></input>
@@ -484,7 +487,7 @@
 
             function onEnd(result) {
                 isRunning = false;
-                textEditor.setReadOnly(false);
+                textEditor.setReadOnly({{ eq $isReadOnly "true" }});
                 runProgress.hidden = true;
                 runStatus.textContent = '';
                 editorHeader.setAttribute('aria-busy', 'false');
@@ -556,3 +559,4 @@
         }, false);
     </script>
 </div>
+{{ end }}
