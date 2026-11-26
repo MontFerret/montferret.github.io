@@ -1,0 +1,96 @@
+{{- $id := .id -}}
+{{- $examples := hugo.Data.repl.examples -}}
+{{- $default := index $examples 0 -}}
+{{- $readonly := eq .readOnly "true" -}}
+<div class="code-editor playground" data-playground
+    data-url="{{ hugo.Data.repl.playgroundURL }}" data-theme="{{ hugo.Data.repl.theme }}"
+    data-examples="{{ $examples | jsonify }}" data-params="{{ .params }}" data-readonly="{{ $readonly }}">
+    <div class="code-editor-shell">
+        <div class="playground-toolbar">
+            <button class="playground-button playground-run" type="button" data-part="run" aria-keyshortcuts="Control+Enter Meta+Enter" disabled>
+                Run
+            </button>
+            {{ if not $readonly }}
+            <select class="playground-button playground-examples" data-part="examples" aria-label="Examples">
+                <option value="">Examples</option>
+                {{- range $index, $example := $examples }}
+                <option value="{{ $index }}">{{ $example.title }}</option>
+                {{- end }}
+            </select>
+            <button class="playground-button" type="button" data-part="format" disabled>Format</button>
+            {{ end }}
+            <button class="playground-button" type="button" data-part="params" aria-expanded="false" aria-controls="{{ $id }}-params">Params</button>
+            {{ if eq .sharable "true" }}
+            <button class="playground-button" type="button" data-part="share">Share</button>
+            {{ end }}
+            <div class="playground-connection">
+                <span data-part="connection" role="status">Connecting to Playground…</span>
+                <button class="playground-text-button" type="button" data-part="retry" hidden>Retry connection</button>
+            </div>
+        </div>
+        <div class="playground-notice">
+            <span data-part="notice" role="status"></span>
+            <input class="playground-share-link" data-part="share-link" type="text" aria-label="Share link" readonly hidden>
+        </div>
+        <div class="playground-grid" data-part="grid">
+            <section class="playground-source" aria-labelledby="{{ $id }}-source-label">
+                <div class="playground-section-bar">
+                    <h2 id="{{ $id }}-source-label">FQL source</h2>
+                    {{ if .copyable }}
+                    <button class="playground-text-button" type="button" data-part="source-copy" aria-label="Copy source">Copy</button>
+                    {{ end }}
+                </div>
+                <div class="code-editor-text playground-editor" data-part="editor">{{ default $default.source .source }}</div>
+            </section>
+
+            <aside id="{{ $id }}-params" class="playground-params" data-part="dock" aria-labelledby="{{ $id }}-params-label" hidden>
+                <div class="playground-section-bar">
+                    <h2 id="{{ $id }}-params-label">Parameters</h2>
+                    <button class="playground-text-button" type="button" data-part="params-close" aria-label="Close parameters">Close</button>
+                </div>
+                <div class="playground-params-content">
+                    <p>Values are read as JSON when valid and as plain text otherwise. Use quotes to pass a string such as <code>"false"</code>.</p>
+                    <p data-part="params-empty">No parameters added.</p>
+                    <div class="playground-params-rows" data-part="params-rows"></div>
+                    <div class="playground-suggestions" data-part="params-suggestions" hidden></div>
+                    <p class="playground-error" data-part="params-error" role="alert" hidden></p>
+                    <button class="playground-button" type="button" data-part="params-add">Add parameter</button>
+                </div>
+            </aside>
+
+            <section class="playground-diagnostics" data-part="diagnostics" aria-labelledby="{{ $id }}-diagnostics-label" hidden>
+                <h2 id="{{ $id }}-diagnostics-label">Diagnostics</h2>
+                <ul data-part="diagnostics-list"></ul>
+            </section>
+            <span class="code-editor-sr-only" data-part="diagnostics-status" role="status"></span>
+
+            <section class="playground-output" aria-label="Query output">
+                <div class="playground-section-bar">
+                    <div class="playground-tabs" role="tablist" aria-label="Output">
+                        <button id="{{ $id }}-result-tab" type="button" role="tab" aria-selected="true" aria-controls="{{ $id }}-result" data-part="result-tab">Result</button>
+                        <button id="{{ $id }}-bytecode-tab" type="button" role="tab" aria-selected="false" aria-controls="{{ $id }}-bytecode" tabindex="-1" data-part="bytecode-tab">Bytecode</button>
+                    </div>
+                </div>
+                <div id="{{ $id }}-result" class="playground-output-panel" role="tabpanel" aria-labelledby="{{ $id }}-result-tab" data-part="result-panel">
+                    <div class="playground-output-meta">
+                        <span data-part="result-meta" role="status"></span>
+                        <button class="playground-text-button" type="button" data-part="result-copy" aria-label="Copy result" disabled>Copy</button>
+                    </div>
+                    <p class="playground-empty" data-part="result-empty">Run a query to see its JSON result.</p>
+                    <pre tabindex="0" aria-label="JSON result" data-part="result-text" hidden></pre>
+                </div>
+                <div id="{{ $id }}-bytecode" class="playground-output-panel" role="tabpanel" aria-labelledby="{{ $id }}-bytecode-tab" data-part="bytecode-panel" hidden>
+                    <div class="playground-output-meta">
+                        <span data-part="bytecode-meta" role="status"></span>
+                        <button class="playground-text-button" type="button" data-part="inspect" disabled>Inspect</button>
+                        <button class="playground-text-button" type="button" data-part="bytecode-copy" aria-label="Copy bytecode" disabled>Copy</button>
+                    </div>
+                    <p class="playground-empty" data-part="bytecode-empty">Inspect the source to see its bytecode.</p>
+                    <pre tabindex="0" aria-label="Bytecode disassembly" data-part="bytecode-text" hidden></pre>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{{- $workspace := resources.Get "js/playground.mjs" | js.Build (dict "targetPath" "js/playground.js" "format" "esm" "minify" hugo.IsProduction) | resources.Fingerprint }}
+<script src="{{ $workspace.Permalink }}" type="module"></script>
