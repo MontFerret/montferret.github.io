@@ -27,7 +27,7 @@ Choose how you will work with Ferret. Use an IDE to write, run, and debug FQL, t
 ## Use your IDE
 
 - [Visual Studio Code installation]({{< ref "/docs/tools/visual-studio-code#installation" >}}) for the official Ferret Lang extension.
-- [JetBrains IDEs installation]({{< ref "/docs/tools/jetbrains#installation" >}}) for the official Ferret plugin in IntelliJ IDEA and GoLand.
+- [JetBrains IDEs installation]({{< ref "/docs/tools/jetbrains#installation" >}}) to install the Ferret plugin from JetBrains Marketplace in IntelliJ IDEA or GoLand.
 
 Both integrations include the Ferret daemon. After installing, save a `.fql` file and use your IDE's Run or Debug action.
 

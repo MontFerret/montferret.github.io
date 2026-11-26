@@ -13,6 +13,14 @@ The official Ferret plugin for IntelliJ IDEA and GoLand provides language intell
 
 The v0.1.0 plugin supports IntelliJ IDEA and GoLand on the **2026.2** and **2026.3** release lines.
 
+### Install from Marketplace
+
+1. Open **Settings → Plugins** and search for **Ferret**. Select **Show Marketplace results** if needed.
+2. Select the **Ferret** plugin published by **Ferret**, then click **Install**.
+3. Restart the IDE if prompted.
+
+### Install from disk
+
 1. From the [JetBrains v0.1.0 release](https://github.com/MontFerret/editorium/releases/tag/jetbrains/v0.1.0), download `ferret-jetbrains-0.1.0-signed.zip` and its `.sha256` file. Keep both files in the same directory.
 2. Verify the ZIP's SHA-256 against the checksum file. On macOS or Linux, run `shasum -a 256 -c ferret-jetbrains-0.1.0-signed.zip.sha256`. In PowerShell, use `Get-FileHash ferret-jetbrains-0.1.0-signed.zip -Algorithm SHA256` and compare the hash with the published value.
 3. In **Settings → Plugins**, open the gear menu and choose **Install Plugin from Disk…**. Select the ZIP and restart the IDE if prompted.
@@ -79,7 +87,7 @@ Each launch uses the application's functions, modules, and filesystem policies. 
 
 ## Troubleshooting
 
-- If the plugin fails to load, check the IDE version and enable **Ferret** under **Settings → Plugins → Installed**. For a daemon startup error, check the IDE log and reinstall the signed archive if the bundled executable is missing.
+- If the plugin fails to load, check the IDE version and enable **Ferret** under **Settings → Plugins → Installed**. For a daemon startup error, check the IDE log. If the bundled executable is missing, follow the [installation steps](#installation) to reinstall the plugin.
 - For a Run or Debug failure, check the corresponding tool window. Confirm the source file is saved, the parameters are a JSON object, and the selected runtime is in the catalog.
 - If a Wire launch cannot connect, check the endpoint and confirm the host is running. After an endpoint change, update the configuration file, reload runtimes, and start a new launch.
 
