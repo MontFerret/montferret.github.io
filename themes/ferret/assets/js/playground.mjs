@@ -6,6 +6,12 @@ import {
 
 const analysisDelay = 350;
 const sourceName = 'query.fql';
+const operationLabels = { execute: 'Run', format: 'Format', compile: 'Bytecode' };
+const operationFailures = {
+    execute: 'The query could not run.',
+    format: 'The source could not be formatted.',
+    compile: 'The source could not be compiled for bytecode inspection.',
+};
 
 async function copyText(text) {
     if (navigator.clipboard?.writeText) {
@@ -144,7 +150,7 @@ function bindExamplesMenu(trigger, menu, selectExample) {
     });
 }
 
-function initPlayground(root) {
+export function initPlayground(root) {
     const part = name => root.querySelector(`[data-part="${name}"]`);
     const sourceElement = part('editor');
     const editor = ace.edit(sourceElement);
@@ -162,11 +168,12 @@ function initPlayground(root) {
     const client = createPlaygroundClient(root.dataset.url);
     const requests = createRequestState();
     const outputs = {};
-    const diagnostics = new Map();
-    const tabs = ['result', 'bytecode'];
+    const problemSets = new Map();
+    const problemRows = new Map();
+    const tabs = ['result', 'bytecode', 'problems'];
     let environment;
     let analysisTimer;
-    let analysisError = '';
+    let analysisStatus = 'Checking source…';
 
     function setNotice(message) {
         part('notice').textContent = message;
@@ -194,7 +201,8 @@ function initPlayground(root) {
         const summary = [];
         if (pending) summary.push(result ? 'Running query…' : 'Inspecting source…');
         if (stale) summary.push(result ? 'From earlier inputs' : 'From earlier source');
-        if (output && !stale && !pending) summary.push(...describeTimings(output.timings));
+        else if (output?.previous) summary.push(result ? 'Previous output' : 'Previous bytecode');
+        else if (output && !pending) summary.push(...describeTimings(output.timings));
         const meta = part(`${kind}-meta`);
         const label = summary.join(' · ');
         if (meta.textContent !== label) meta.textContent = label;
@@ -226,27 +234,46 @@ function initPlayground(root) {
         }
     }
 
-    function renderDiagnostics() {
-        const list = part('diagnostics-list');
-        list.replaceChildren();
-        const seen = new Set();
-        const annotations = [];
-        for (const diagnostic of Array.from(diagnostics.values()).flat()) {
-            const { severity, message, hint, phase } = diagnostic;
-            const range = diagnosticRange(diagnostic);
-            const key = JSON.stringify([severity, message, hint, range]);
-            if (seen.has(key)) continue;
-            seen.add(key);
+    function renderProblems() {
+        const problems = new Map();
+        for (const { revision, entries } of problemSets.values()) {
+            if (!requests.matches(revision)) continue;
+            for (const entry of entries) {
+                const { severity, message, hint, phase, operation, code } = entry;
+                const range = diagnosticRange(entry);
+                const key = JSON.stringify([severity, message, hint || '', phase, operation, code, range]);
+                problems.set(key, { ...entry, range });
+            }
+        }
 
+        const list = part('problems-list');
+        let annotationsChanged = false;
+        for (const [key, { row, marker, annotation }] of problemRows) {
+            if (problems.has(key)) continue;
+            row.remove();
+            if (marker !== undefined) editor.session.removeMarker(marker);
+            if (annotation) annotationsChanged = true;
+            problemRows.delete(key);
+        }
+
+        for (const [key, { severity, message, hint, phase, operation, range }] of problems) {
+            if (problemRows.has(key)) continue;
             const row = document.createElement('li');
             const label = document.createElement('span');
             label.className = 'playground-diagnostic-label';
             label.dataset.severity = severity;
-            label.textContent = [severity, phase].filter(Boolean).join(' · ');
+            label.textContent = [severity, operationLabels[operation] ?? phase].filter(Boolean).join(' · ');
             row.append(label);
+            let annotation;
+            let marker;
             if (range) {
-                annotations.push({ ...range.start, text: message, type: severity });
                 const { start, end } = range;
+                annotation = { ...start, text: message, type: severity };
+                annotationsChanged = true;
+                if (start.row !== end.row || start.column !== end.column) {
+                    marker = editor.session.addMarker(Range.fromPoints(start, end),
+                        `playground-diagnostic-marker playground-diagnostic-marker-${severity}`, 'text');
+                }
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'playground-diagnostic-link';
@@ -266,17 +293,22 @@ function initPlayground(root) {
                 row.append(details);
             }
             list.append(row);
+            problemRows.set(key, { row, marker, annotation });
         }
-        if (analysisError) {
-            const row = document.createElement('li');
-            row.textContent = `Analysis unavailable. ${analysisError}`;
-            list.append(row);
+        if (annotationsChanged) {
+            editor.session.setAnnotations(Array.from(problemRows.values(), problem => problem.annotation).filter(Boolean));
         }
-        editor.session.setAnnotations(annotations);
-        part('diagnostics').hidden = !list.childElementCount;
-        const summary = part('diagnostics-status');
-        const count = seen.size;
-        const label = count === 1 ? '1 diagnostic' : count ? `${count} diagnostics` : '';
+        const count = problems.size;
+        list.hidden = count === 0;
+        const status = part('analysis-status');
+        const message = analysisStatus || (count ? '' : 'No problems detected');
+        if (status.textContent !== message) status.textContent = message;
+        status.hidden = !message;
+        const tab = part('problems-tab');
+        const title = count ? `Problems (${count})` : 'Problems';
+        if (tab.textContent !== title) tab.textContent = title;
+        const summary = part('problems-status');
+        const label = count === 1 ? '1 problem' : count ? `${count} problems` : '';
         if (summary.textContent !== label) summary.textContent = label;
     }
 
@@ -294,7 +326,7 @@ function initPlayground(root) {
         const container = part('params-suggestions');
         const bytecode = outputs.bytecode;
         const names = new Set(rows().map(([name]) => name.value.trim()));
-        const suggestions = bytecode && requests.matches(bytecode.revision)
+        const suggestions = bytecode && !bytecode.previous && requests.matches(bytecode.revision)
             ? bytecode.parameters?.filter(name => !names.has(name)) ?? []
             : [];
         container.replaceChildren();
@@ -320,13 +352,14 @@ function initPlayground(root) {
 
     function parametersChanged() {
         requests.changeParams();
-        diagnostics.delete('execute');
+        const runProblems = problemSets.get('execute');
+        if (runProblems && !requests.matches(runProblems.revision)) problemSets.delete('execute');
         const error = part('params-error');
         error.hidden = true;
         part('params-rows').querySelector('[aria-invalid]')?.removeAttribute('aria-invalid');
         part('params-empty').hidden = part('params-rows').childElementCount > 0;
         renderSuggestions();
-        renderDiagnostics();
+        renderProblems();
         renderOutput('result');
     }
 
@@ -373,18 +406,19 @@ function initPlayground(root) {
         parametersChanged();
     }
 
-    function currentParameters() {
+    function currentParameters(revealError = true) {
         const fields = rows();
         const params = serializeParameters(fields.map(pair => pair.map(field => field.value)));
         if (params.error) {
             const field = fields[params.error.index][0];
             const error = part('params-error');
-            setDock(true);
             error.textContent = params.error.message;
             error.hidden = false;
             field.setAttribute('aria-invalid', 'true');
-            field.focus();
-            return null;
+            if (revealError) {
+                setDock(true);
+                field.focus();
+            }
         }
         return params;
     }
@@ -398,85 +432,111 @@ function initPlayground(root) {
         }
     }
 
-    async function operate(operation, onOutcome, onError, paramsJSON) {
+    function operationFailed(operation) {
+        const output = operation === 'execute' ? outputs.result : outputs.bytecode;
+        if (operation === 'format') setNotice('');
+        else if (output) output.previous = true;
+        selectTab('problems');
+    }
+
+    async function operate(operation, onSuccess, paramsJSON) {
         const request = requests.start(operation);
         if (!request) return;
         const source = { text: editor.getValue(), name: sourceName };
         renderControls();
         if (operation === 'execute') renderOutput('result');
         if (operation === 'compile') renderOutput('bytecode');
+
+        let response;
+        let requestError;
         try {
-            const response = await client.request(operation, { source, paramsJSON, signal: request.controller.signal });
-            if (!requests.canApply(request)) return;
-            diagnostics.set(operation, response.diagnostics);
-            onOutcome(response, request.revision);
-            renderDiagnostics();
+            response = await client.request(operation, { source, paramsJSON, signal: request.controller.signal });
         } catch (error) {
-            if (!requests.canApply(request)) return;
-            diagnostics.delete(operation);
-            onError(playgroundErrorMessage(error), request.revision);
-            renderDiagnostics();
-        } finally {
-            requests.finish(request);
-            renderControls();
-            if (operation === 'execute') renderOutput('result');
-            if (operation === 'compile') {
-                renderOutput('bytecode');
-                renderSuggestions();
-            }
+            requestError = playgroundErrorMessage(error);
         }
+
+        const applies = requests.canApply(request);
+        requests.finish(request);
+        if (applies) {
+            const failed = response?.status !== 'ok';
+            let entries = response?.diagnostics ?? [];
+            const revision = operation === 'execute' && response?.status === 'invalid'
+                ? { source: request.revision.source } : request.revision;
+            if (operation === 'analyze') {
+                analysisStatus = requestError ? `Analysis unavailable. ${requestError}` : '';
+                if (failed && !entries.length && !analysisStatus) analysisStatus = 'Analysis could not check this source.';
+            } else if (failed) {
+                if (!entries.length) {
+                    entries = [{ severity: 'error', operation, message: requestError ?? operationFailures[operation] }];
+                }
+                operationFailed(operation);
+            }
+            problemSets.set(operation, { revision, entries });
+            if (!failed) onSuccess?.(response, request.revision);
+            renderProblems();
+        }
+
+        renderControls();
+        if (operation === 'execute') renderOutput('result');
+        if (operation === 'compile') renderOutput('bytecode');
+        if (operation === 'compile' && applies) renderSuggestions();
     }
 
     function scheduleAnalysis() {
         clearTimeout(analysisTimer);
-        if (!environment?.capabilities.analyze) return;
-        analysisTimer = setTimeout(() => operate('analyze',
-            () => { analysisError = ''; },
-            message => { analysisError = message; },
-        ), analysisDelay);
+        if (environment?.capabilities.analyze) {
+            analysisStatus = 'Checking source…';
+            analysisTimer = setTimeout(() => operate('analyze'), analysisDelay);
+        } else if (environment) {
+            analysisStatus = 'This runtime does not support source analysis.';
+        }
+        renderProblems();
     }
 
     function formatSource() {
         if (!environment?.capabilities.format || readonly || requests.pending('format')) return;
         setNotice('Formatting source…');
         void operate('format', response => {
-            if (response.status === 'invalid') {
-                setNotice('Check the diagnostics before formatting.');
-            } else {
-                const changed = applyFormattedSource(editor, response);
-                setNotice(changed ? 'Source formatted.' : 'Source is already formatted.');
-            }
-        }, setNotice);
+            const changed = applyFormattedSource(editor, response);
+            setNotice(changed ? 'Source formatted.' : 'Source is already formatted.');
+        });
     }
 
     function inspectSource() {
         if (!canInspect(environment) || requests.pending('compile')) return;
         void operate('compile', (response, revision) => {
-            const artifacts = response.status === 'ok' ? response.artifacts : null;
+            const { bytecode, parameters } = response.artifacts;
             outputs.bytecode = {
-                text: artifacts?.bytecode.text,
-                parameters: artifacts?.parameters,
-                message: 'Check the diagnostics before inspecting bytecode.',
+                text: bytecode.text,
+                parameters,
                 timings: response.timings,
                 revision,
             };
-        }, (message, revision) => { outputs.bytecode = { message, revision }; });
+        });
     }
 
     function run() {
         if (!environment?.capabilities.execute || requests.pending('execute')) return;
-        const params = currentParameters();
-        if (!params) return;
-        selectTab('result');
+        const params = currentParameters(false);
+        if (params.error) {
+            problemSets.set('execute', {
+                revision: requests.revision('execute'),
+                entries: [{ severity: 'error', operation: 'execute', message: params.error.message }],
+            });
+            operationFailed('execute');
+            renderProblems();
+            renderOutput('result');
+            return;
+        }
         void operate('execute', (response, revision) => {
-            const failure = response.diagnostics[0];
-            const message = {
-                ok: 'The query completed without a result.',
-                invalid: 'Check the diagnostics before running the query.',
-                failed: playgroundErrorMessage(failure ?? {}),
-            }[response.status];
-            outputs.result = { text: response.outputText, message, timings: response.timings, revision };
-        }, (message, revision) => { outputs.result = { message, revision }; }, params.json);
+            outputs.result = {
+                text: response.outputText,
+                message: 'The query completed without a result.',
+                timings: response.timings,
+                revision,
+            };
+            selectTab('result');
+        }, params.json);
     }
 
     async function discover() {
@@ -484,6 +544,8 @@ function initPlayground(root) {
         const retry = part('retry');
         retry.hidden = true;
         connection.textContent = 'Connecting to Playground…';
+        analysisStatus = 'Checking source…';
+        renderProblems();
         try {
             environment = await client.request('environment');
             connection.textContent = environment.runtime.version ? `Ferret ${environment.runtime.version}` : 'Ferret Playground';
@@ -493,15 +555,18 @@ function initPlayground(root) {
             renderOutput('bytecode');
             scheduleAnalysis();
         } catch (error) {
-            connection.textContent = playgroundErrorMessage(error);
+            const message = playgroundErrorMessage(error);
+            connection.textContent = message;
             retry.hidden = false;
+            analysisStatus = `Analysis unavailable. ${message}`;
+            renderProblems();
         }
         renderControls();
     }
 
     async function share() {
         const params = currentParameters();
-        if (!params) return;
+        if (params.error) return;
         let link;
         try {
             link = createShareURL(location.href, editor.getValue(), params.entries);
@@ -546,10 +611,8 @@ function initPlayground(root) {
     loadParameters(shared?.entries ?? parameterRows(JSON.parse(root.dataset.params || '{}')));
     editor.session.on('change', () => {
         requests.changeSource();
-        diagnostics.clear();
-        analysisError = '';
+        problemSets.clear();
         setNotice('');
-        renderDiagnostics();
         renderSuggestions();
         renderControls();
         renderOutput('result');
@@ -603,10 +666,15 @@ function initPlayground(root) {
         const button = part(`${kind}-tab`);
         button.addEventListener('click', () => {
             selectTab(kind);
-            if (kind === 'bytecode' && (!outputs.bytecode || !requests.matches(outputs.bytecode.revision))) inspectSource();
+            if (kind === 'bytecode' && !problemSets.has('compile')) inspectSource();
         });
         button.addEventListener('keydown', event => {
-            const neighbors = { ArrowLeft: 1 - index, ArrowRight: 1 - index, Home: 0, End: 1 };
+            const neighbors = {
+                ArrowLeft: (index + tabs.length - 1) % tabs.length,
+                ArrowRight: (index + 1) % tabs.length,
+                Home: 0,
+                End: tabs.length - 1,
+            };
             if (!Object.hasOwn(neighbors, event.key)) return;
             event.preventDefault();
             part(`${tabs[neighbors[event.key]]}-tab`).focus();
@@ -616,4 +684,4 @@ function initPlayground(root) {
     void discover();
 }
 
-if (window.ace) document.querySelectorAll('[data-playground]').forEach(initPlayground);
+if (globalThis.window?.ace) document.querySelectorAll('[data-playground]').forEach(initPlayground);

@@ -7,6 +7,10 @@ export function createRequestState() {
         return revision.source === source && (revision.params === undefined || revision.params === params);
     }
 
+    function revision(operation) {
+        return { source, params: operation === 'execute' ? params : undefined };
+    }
+
     return {
         changeSource() {
             source++;
@@ -24,8 +28,7 @@ export function createRequestState() {
             if (operation === 'execute' && previous) return null;
             previous?.controller.abort();
             const controller = new AbortController();
-            const revision = { source, params: operation === 'execute' ? params : undefined };
-            const request = { operation, controller, revision };
+            const request = { operation, controller, revision: revision(operation) };
             pending.set(operation, request);
             return request;
         },
@@ -35,6 +38,7 @@ export function createRequestState() {
         pending(operation) {
             return pending.has(operation);
         },
+        revision,
         matches,
         canApply(request) {
             return pending.get(request.operation) === request && matches(request.revision);

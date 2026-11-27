@@ -837,7 +837,8 @@ $editor-gutter: #10131d;
         border-bottom: 1px solid $divider;
         color: $focus;
         font-size: .8rem;
-        min-height: 1.25rem;
+        line-height: 1.5;
+        min-height: calc(1.4rem + 1px);
         padding: 0 .85rem .2rem;
     }
 
@@ -849,13 +850,12 @@ $editor-gutter: #10131d;
 
     .playground-grid {
         display: grid;
-        grid-template-areas: "source" "params" "diagnostics" "output";
+        grid-template-areas: "source" "params" "output";
         grid-template-columns: minmax(0, 1fr);
     }
 
     .playground-source { grid-area: source; }
     .playground-params { grid-area: params; }
-    .playground-diagnostics { grid-area: diagnostics; }
     .playground-output { grid-area: output; }
 
     .playground-section-bar,
@@ -890,8 +890,7 @@ $editor-gutter: #10131d;
     }
 
     .playground-output,
-    .playground-params,
-    .playground-diagnostics {
+    .playground-params {
         border-top: 1px solid $divider;
         min-width: 0;
     }
@@ -955,22 +954,11 @@ $editor-gutter: #10131d;
         color: #ffb6bb;
     }
 
-    .playground-diagnostics {
-        background: #252037;
+    .playground-problems-list {
         color: #f2ebfa;
         font-size: .85rem;
-        padding: .5rem .85rem;
-
-        h2 {
-            font: inherit;
-            font-weight: 600;
-        }
-
-        ul {
-            max-height: 9rem;
-            overflow: auto;
-            padding: .2rem 0 .15rem .2rem;
-        }
+        overflow-wrap: anywhere;
+        padding: .65rem .85rem;
 
         li + li { margin-top: .35rem; }
         p { color: #d3cde3; }
@@ -993,18 +981,33 @@ $editor-gutter: #10131d;
         text-decoration: underline;
     }
 
+    .playground-diagnostic-marker {
+        border-bottom: 1px solid $focus;
+        position: absolute;
+
+        &.playground-diagnostic-marker-error { border-color: #ffb6bb; }
+        &.playground-diagnostic-marker-warning { border-color: #ffdd99; }
+    }
+
     .playground-tabs {
         align-items: stretch;
         display: flex;
         gap: 1rem;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+        width: 100%;
 
         button {
             background: transparent;
             border: 0;
             border-bottom: 2px solid transparent;
             color: $muted;
+            flex: 0 0 auto;
             min-height: 2.25rem;
             padding: .1rem .2rem;
+
+            &:focus-visible { outline-offset: -2px; }
 
             &[aria-selected="true"] {
                 border-bottom-color: #cbb8ff;
@@ -1039,6 +1042,16 @@ $editor-gutter: #10131d;
         .playground-empty { color: $muted; }
     }
 
+    .playground-problems-panel {
+        display: block;
+        overflow: auto;
+
+        &:focus-visible {
+            outline: 2px solid $focus;
+            outline-offset: -2px;
+        }
+    }
+
     .playground-output-meta {
         background: #1b1f30;
         color: $muted;
@@ -1050,7 +1063,7 @@ $editor-gutter: #10131d;
 
     @media (min-width: 900px) {
         .playground-grid.has-params {
-            grid-template-areas: "source params" "diagnostics params" "output params";
+            grid-template-areas: "source params" "output params";
             grid-template-columns: minmax(0, 1fr) minmax(17.5rem, 29%);
         }
 

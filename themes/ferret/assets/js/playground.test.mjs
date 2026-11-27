@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { canInspect, createPlaygroundClient, playgroundErrorMessage, readPlaygroundResponse } from './playground-api.mjs';
+import { initPlayground } from './playground.mjs';
 import {
     applyFormattedSource, createRequestState, createShareURL, diagnosticRange,
     parameterRows, readShareURL, serializeParameters,
@@ -17,6 +18,267 @@ const runtime = {
         execution: { maxTimeoutMs: 5000, maxOutputBytes: 4096 },
     },
 };
+
+async function mountPlayground(t) {
+    let focused;
+    class Element extends EventTarget {
+        children = [];
+        attributes = new Map();
+        dataset = {};
+        textContent = '';
+        classList = { toggle() {} };
+
+        get childElementCount() { return this.children.length; }
+        setAttribute(name, value) { this.attributes.set(name, value); }
+        querySelector() { return null; }
+        querySelectorAll() { return this.children.filter(child => ['input', 'textarea'].includes(child.tag)); }
+        focus() { focused = this; }
+        click() { this.dispatchEvent(new Event('click')); }
+        append(...children) {
+            for (const child of children) child.parent = this;
+            this.children.push(...children);
+        }
+        replaceChildren() { this.children = []; }
+        remove() { this.parent.children = this.parent.children.filter(child => child !== this); }
+    }
+
+    const parts = new Map();
+    const part = name => {
+        if (!parts.has(name)) parts.set(name, new Element());
+        return parts.get(name);
+    };
+    const root = {
+        dataset: { examples: '[]', url: 'https://playground.example/' },
+        querySelector(selector) {
+            const name = selector.match(/data-part="([^"]+)"/)[1];
+            return ['examples', 'share', 'source-copy'].includes(name) ? null : part(name);
+        },
+    };
+    part('result-tab').setAttribute('aria-selected', 'true');
+    const editorInput = new Element();
+    let source = 'RETURN 1';
+    let changeSource;
+    let run;
+    let selectedRange;
+    let annotations = [];
+    let nextMarker = 0;
+    const markers = new Map();
+    const editor = {
+        setTheme() {}, setOptions() {}, setReadOnly() {},
+        getValue: () => source,
+        focus: () => editorInput.focus(),
+        textInput: { getElement: () => editorInput },
+        renderer: { scrollCursorIntoView() {} },
+        selection: { setSelectionRange(range) { selectedRange = range; } },
+        commands: { addCommand(command) { run = command.exec; } },
+        session: {
+            setUseWorker() {}, setMode() {},
+            on(_event, callback) { changeSource = callback; },
+            setAnnotations(value) { annotations = value; },
+            addMarker(range) { markers.set(++nextMarker, range); return nextMarker; },
+            removeMarker(id) { markers.delete(id); },
+        },
+    };
+    const document = {
+        createElement(tag) { return Object.assign(new Element(), { tag }); },
+        createTextNode(textContent) { return Object.assign(new Element(), { textContent }); },
+    };
+    const pending = [];
+    t.mock.method(globalThis, 'fetch', url => {
+        const request = Promise.withResolvers();
+        pending.push({ operation: url.pathname.split('/').at(-1), ...request });
+        return request.promise;
+    });
+    for (const [name, value] of Object.entries({
+        document,
+        ace: { edit: () => editor, require: () => ({ Range: { fromPoints: (start, end) => ({ start, end }) } }) },
+        ResizeObserver: class { observe() {} },
+    })) {
+        const original = Object.getOwnPropertyDescriptor(globalThis, name);
+        Object.defineProperty(globalThis, name, { value, configurable: true });
+        t.after(() => {
+            if (original) Object.defineProperty(globalThis, name, original);
+            else delete globalThis[name];
+        });
+    }
+    t.mock.timers.enable({ apis: ['setTimeout'] });
+
+    async function respond(operation, body, status = 200) {
+        const index = pending.findIndex(request => request.operation === operation);
+        assert.ok(index >= 0, `${operation} request is pending`);
+        const [request] = pending.splice(index, 1);
+        request.resolve(Response.json(body, { status }));
+        await new Promise(setImmediate);
+    }
+
+    initPlayground(root);
+    await respond('environment', runtime);
+    return {
+        part, respond, editorInput, markers,
+        analyze() { t.mock.timers.tick(350); },
+        edit(text) { source = text; changeSource(); },
+        run: () => run(),
+        get focused() { return focused; },
+        get selectedRange() { return selectedRange; },
+        get annotations() { return annotations; },
+        get tab() { return ['result', 'bytecode', 'problems'].find(kind => part(`${kind}-tab`).attributes.get('aria-selected') === 'true'); },
+    };
+}
+
+const sourceProblem = {
+    severity: 'error', phase: 'parse', message: 'Expected an expression', hint: 'Add a value after RETURN.',
+    location: { range: { start: { line: 0, character: 0 }, end: { line: 0, character: 6 } } },
+};
+const invalidSource = { status: 'invalid', diagnostics: [sourceProblem] };
+const validSource = { status: 'ok', diagnostics: [] };
+
+test('background analysis preserves tab selection and focus while rendering source problems', async t => {
+    const page = await mountPlayground(t);
+    page.part('problems-tab').click();
+    assert.match(page.part('analysis-status').textContent, /Checking source/);
+    page.part('bytecode-tab').click();
+    page.editorInput.focus();
+    page.analyze();
+    await page.respond('analyze', invalidSource);
+    assert.equal(page.tab, 'bytecode');
+    assert.equal(page.focused, page.editorInput);
+    assert.equal(page.part('problems-tab').textContent, 'Problems (1)');
+    assert.deepEqual(page.annotations, [{ row: 0, column: 0, text: sourceProblem.message, type: 'error' }]);
+    assert.equal(page.markers.size, 1);
+
+    page.part('problems-tab').click();
+    const [label, link, hint] = page.part('problems-list').children[0].children;
+    assert.equal(label.textContent, 'error · parse');
+    assert.equal(link.textContent, `1:1 ${sourceProblem.message}`);
+    assert.equal(hint.textContent, sourceProblem.hint);
+    link.focus();
+    link.click();
+    assert.equal(page.focused, page.editorInput);
+    assert.deepEqual(page.selectedRange, diagnosticRange(sourceProblem));
+
+    page.edit('RETURN 2');
+    assert.equal(page.markers.size, 0);
+    assert.deepEqual(page.annotations, []);
+    assert.match(page.part('analysis-status').textContent, /Checking source/);
+    page.analyze();
+    await page.respond('analyze', validSource);
+    assert.equal(page.part('analysis-status').textContent, 'No problems detected');
+    page.edit('RETURN 3');
+    page.analyze();
+    await page.respond('analyze', {}, 503);
+    assert.match(page.part('analysis-status').textContent, /Analysis unavailable/);
+    assert.equal(page.tab, 'problems');
+});
+
+test('Run selects the outcome tab and clean analysis keeps a current runtime failure and previous output', async t => {
+    const page = await mountPlayground(t);
+    const runtimeFailure = { severity: 'error', phase: 'execute', code: 'runtime_error', message: 'The program failed during execution.' };
+    page.part('problems-tab').click();
+    page.editorInput.focus();
+    page.run();
+    assert.equal(page.tab, 'problems');
+    await page.respond('execute', { ...validSource, output: false });
+    assert.equal(page.tab, 'result');
+    assert.equal(page.part('result-text').textContent, 'false');
+    page.run();
+    await page.respond('execute', { status: 'failed', diagnostics: [runtimeFailure] });
+    assert.equal(page.tab, 'problems');
+    assert.equal(page.focused, page.editorInput);
+    assert.equal(page.part('result-text').textContent, 'false');
+    assert.equal(page.part('result-meta').textContent, 'Previous output');
+
+    page.part('result-tab').click();
+    page.analyze();
+    await page.respond('analyze', validSource);
+    assert.equal(page.tab, 'result');
+    assert.equal(page.part('problems-tab').textContent, 'Problems (1)');
+    assert.equal(page.part('problems-list').children[0].children[1].textContent, runtimeFailure.message);
+    assert.deepEqual(page.annotations, []);
+    assert.equal(page.markers.size, 0);
+
+    page.part('params-add').click();
+    assert.equal(page.part('problems-tab').textContent, 'Problems');
+    assert.equal(page.part('result-meta').textContent, 'From earlier inputs');
+    assert.equal(page.part('result-text').textContent, 'false');
+});
+
+test('explicit failures select Problems and duplicate compiler diagnostics retain their focused link', async t => {
+    const page = await mountPlayground(t);
+    page.run();
+    await page.respond('execute', invalidSource);
+    assert.equal(page.tab, 'problems');
+    const link = page.part('problems-list').children[0].children[1];
+    page.part('params-add').click();
+    assert.equal(page.part('problems-list').children[0].children[1], link);
+    link.focus();
+    page.analyze();
+    await page.respond('analyze', invalidSource);
+    assert.equal(page.part('problems-tab').textContent, 'Problems (1)');
+    assert.equal(page.part('problems-list').children[0].children[1], link);
+    assert.equal(page.focused, link);
+    assert.equal(page.markers.size, 1);
+
+    page.part('result-tab').click();
+    page.part('format').click();
+    await page.respond('format', invalidSource);
+    assert.equal(page.tab, 'problems');
+    page.part('bytecode-tab').click();
+    await page.respond('compile', {}, 503);
+    assert.equal(page.tab, 'problems');
+    page.part('result-tab').click();
+    page.run();
+    await page.respond('execute', {}, 429);
+    assert.equal(page.tab, 'problems');
+    const operations = page.part('problems-list').children.slice(1);
+    assert.match(operations[0].children[0].textContent, /Bytecode/);
+    assert.match(operations[1].children[1].textContent, /All execution slots are busy/);
+    assert.equal(page.markers.size, 1);
+});
+
+test('local Run validation opens Problems while editor focus stays in place', async t => {
+    const page = await mountPlayground(t);
+    page.part('params-add').click();
+    const [name, value] = page.part('params-rows').children[0].children;
+    value.value = 'true';
+    value.dispatchEvent(new Event('input'));
+    page.editorInput.focus();
+    page.run();
+    assert.equal(page.tab, 'problems');
+    assert.equal(page.focused, page.editorInput);
+    assert.equal(name.attributes.get('aria-invalid'), 'true');
+    assert.equal(page.part('problems-list').children[0].children[1].textContent, 'Enter a name for this parameter.');
+    assert.equal(page.markers.size, 0);
+});
+
+test('stale tooling and Run settlements leave current problems, Ace markers, and tabs alone', async t => {
+    const page = await mountPlayground(t);
+    page.analyze();
+    page.part('bytecode-tab').click();
+    page.run();
+    page.edit('RETURN 2');
+    page.part('problems-tab').click();
+    page.editorInput.focus();
+    page.analyze();
+    await page.respond('analyze', { status: 'invalid', diagnostics: [{ ...sourceProblem, message: 'Old problem' }] });
+    assert.equal(page.part('problems-tab').textContent, 'Problems');
+    await page.respond('analyze', invalidSource);
+    const [marker] = page.markers.keys();
+    await page.respond('compile', {}, 503);
+    await page.respond('execute', { ...validSource, output: 1 });
+    assert.equal(page.tab, 'problems');
+    assert.equal(page.part('problems-tab').textContent, 'Problems (1)');
+    assert.deepEqual([...page.markers.keys()], [marker]);
+    assert.equal(page.part('result-text').hidden, true);
+    assert.equal(page.focused, page.editorInput);
+
+    page.part('result-tab').click();
+    page.run();
+    page.part('params-add').click();
+    await page.respond('execute', {}, 429);
+    assert.equal(page.tab, 'result');
+    assert.equal(page.part('problems-tab').textContent, 'Problems (1)');
+    assert.deepEqual([...page.markers.keys()], [marker]);
+});
 
 test('successful execute renders the JSON value, including falsy output and absent content', () => {
     for (const value of [null, false, 0, '', [], {}]) {
