@@ -447,6 +447,34 @@ The built-in client does not inherit `HTTP_PROXY`, `HTTPS_PROXY`, or `NO_PROXY`.
 
 HTTP policy is defense in depth, not a complete sandbox for arbitrary untrusted FQL. Combine it with production allowlists, execution limits, restricted module sets, and infrastructure-level egress controls.
 
+#### Reusing the configured client in Go
+
+After creating a native engine, use `eng.Network().HTTP()` to pass its configured
+client to another component. Requests made through the client follow the
+engine's configured HTTP policy.
+
+{{< code lang="go" >}}
+eng, err := ferret.New()
+if err != nil {
+    return err
+}
+defer eng.Close()
+
+client := eng.Network().HTTP()
+
+// Pass the client to an external component.
+{{</ code >}}
+
+The network and client are borrowed. Finish operations using an engine-owned
+network before calling `eng.Close()` and leave its cleanup to the engine. If
+you supplied the network through `ferret.WithNetwork`, your application remains
+responsible for cleanup.
+
+During module registration, `bootstrap.Host().Network()` gets the same service
+from `module.HostContext`. During native function execution, use
+`ferretnet.HTTPClientFrom(ctx)` to retrieve the configured client from the
+execution context.
+
 #### Accessing HTTP from a function
 
 Retrieve the configured HTTP client from the function context and pass the same context to the request:
