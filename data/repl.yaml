@@ -6,29 +6,29 @@ examples:
   - title: Mockery product extraction
     source: |-
       // Open the product listing in the hosted browser.
-      LET doc = DOCUMENT('https://mockery.ferretlang.org/scenarios/dynamic-products/basic/')
+      let doc = web::html::document('https://mockery.ferretlang.org/scenarios/dynamic-products/basic/')
 
       // Wait for JavaScript to render the product cards.
-      LET products = WAITFOR VALUE doc[~ css`.product-card`]
-          WHEN LENGTH(.) > 0
-          TIMEOUT 5000
+      let products = waitfor value doc[~ css`.product-card`]
+          when length(.) > 0
+          timeout 5000
 
-      RETURN FOR product IN products
-          RETURN {
+      return for product in products
+          return {
               brand: product[~? css`.product-brand`].textContent,
               title: product[~? css`.product-title`].textContent,
-              price: TO_FLOAT(REPLACE(product[~? css`.product-price`].textContent, '$', '')) ON ERROR RETURN 0
+              price: to_float(replace(product[~? css`.product-price`].textContent, '$', '')) on error return 0
           }
   - title: Basic evaluation
-    source: RETURN 1 + 2
+    source: return 1 + 2
   - title: Bind parameters
-    source: RETURN @payload
+    source: return @payload
     params:
       payload:
         name: Ada
         values: [0, false, null]
   - title: Collection transformation
     source: |-
-      RETURN FOR price IN [3, 12, 20]
-          FILTER price >= 10
-          RETURN price * 2
+      return for price in [3, 12, 20]
+          filter price >= 10
+          return price * 2
