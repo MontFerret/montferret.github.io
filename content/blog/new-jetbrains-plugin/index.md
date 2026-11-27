@@ -1,7 +1,7 @@
 ---
 title: "Ferret Comes to JetBrains IDEs"
 subtitle: "Native FQL development in IntelliJ IDEA and GoLand."
-draft: true
+draft: false
 author: "Tim Voronov"
 authorLink: "https://github.com/ziflex"
 date: "2026-11-26"
