@@ -679,7 +679,6 @@ $editor-gutter: #10131d;
     }
 
     button,
-    select,
     input,
     textarea,
     pre {
@@ -754,8 +753,60 @@ $editor-gutter: #10131d;
     }
 
     .playground-examples {
+        align-items: center;
+        display: inline-flex;
+        gap: .45rem;
+
+        &::after {
+            border: solid currentColor;
+            border-width: 0 1.5px 1.5px 0;
+            content: "";
+            height: .4rem;
+            transform: translateY(-.1rem) rotate(45deg);
+            width: .4rem;
+        }
+    }
+
+    .playground-examples-menu {
+        --examples-max-height: min(16rem, var(--examples-available-height));
+
+        background: $editor-toolbar;
+        border: 1px solid $divider;
+        border-radius: 5px;
+        box-shadow: 0 8px 24px rgba(#000, .3);
         color-scheme: dark;
-        width: 6.6rem;
+        max-height: var(--examples-max-height);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: .25rem;
+        position: fixed;
+        width: 15rem;
+        z-index: 5;
+    }
+
+    .playground-example {
+        background: transparent;
+        border: 0;
+        border-radius: 3px;
+        color: #f0effb;
+        cursor: pointer;
+        display: block;
+        font: inherit;
+        font-size: .85rem;
+        min-height: 2.25rem;
+        overflow-wrap: anywhere;
+        padding: .3rem .65rem;
+        text-align: start;
+        width: 100%;
+
+        &:hover,
+        &:focus-visible {
+            background: #3a3d56;
+        }
+
+        &:focus-visible {
+            outline-offset: -2px;
+        }
     }
 
     .playground-text-button {
@@ -1018,10 +1069,6 @@ $editor-gutter: #10131d;
                 font-size: .8rem;
                 padding-inline: .4rem;
             }
-        }
-
-        .playground-examples {
-            width: 5.7rem;
         }
 
         .playground-run {

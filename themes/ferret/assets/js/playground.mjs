@@ -38,6 +38,112 @@ function describeTimings(timings) {
         .map(([key, label]) => `${label} ${timings[key].toLocaleString(undefined, { maximumFractionDigits: 2 })}\u00a0ms`);
 }
 
+function bindExamplesMenu(trigger, menu, selectExample) {
+    const items = Array.from(menu.querySelectorAll('[role="menuitem"]'));
+    const viewport = window.visualViewport;
+    let openListeners;
+
+    function positionMenu() {
+        const gutter = 8;
+        const viewportLeft = viewport?.offsetLeft ?? 0;
+        const viewportTop = viewport?.offsetTop ?? 0;
+        const width = viewport?.width ?? document.documentElement.clientWidth;
+        const height = viewport?.height ?? document.documentElement.clientHeight;
+        const bottom = viewportTop + height - gutter;
+        const anchor = trigger.getBoundingClientRect();
+        const top = anchor.bottom + 4;
+
+        menu.style.maxWidth = `${Math.max(0, width - 2 * gutter)}px`;
+        const left = Math.min(anchor.left, viewportLeft + width - menu.offsetWidth - gutter);
+        menu.style.left = `${Math.max(viewportLeft + gutter, left)}px`;
+        menu.style.top = `${top}px`;
+        menu.style.setProperty('--examples-available-height', `${Math.max(0, bottom - top)}px`);
+        return bottom;
+    }
+
+    function focusItem(index) {
+        const item = items[index];
+        item.focus({ preventScroll: true });
+        const top = item.offsetTop;
+        const bottom = top + item.offsetHeight;
+        if (top < menu.scrollTop) {
+            menu.scrollTop = top;
+        } else if (bottom > menu.scrollTop + menu.clientHeight) {
+            menu.scrollTop = bottom - menu.clientHeight;
+        }
+    }
+
+    function close(restoreFocus = false) {
+        menu.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+        openListeners.abort();
+        if (restoreFocus) trigger.focus({ preventScroll: true });
+    }
+
+    function dismissOutside(event) {
+        if (!trigger.contains(event.target) && !menu.contains(event.target)) close();
+    }
+
+    function open() {
+        menu.hidden = false;
+        trigger.setAttribute('aria-expanded', 'true');
+        menu.scrollTop = 0;
+        const viewportBottom = positionMenu();
+        const clipped = Math.ceil(items[0].getBoundingClientRect().bottom + menu.clientTop - viewportBottom);
+        if (clipped > 0) {
+            window.scrollBy({ top: clipped, behavior: 'instant' });
+            positionMenu();
+        }
+        openListeners = new AbortController();
+        const { signal } = openListeners;
+        document.addEventListener('pointerdown', dismissOutside, { capture: true, signal });
+        document.addEventListener('focusin', dismissOutside, { capture: true, signal });
+        window.addEventListener('scroll', positionMenu, { passive: true, signal });
+        window.addEventListener('resize', positionMenu, { signal });
+        viewport?.addEventListener('scroll', positionMenu, { passive: true, signal });
+        viewport?.addEventListener('resize', positionMenu, { signal });
+        focusItem(0);
+    }
+
+    trigger.addEventListener('click', () => {
+        if (menu.hidden) open();
+        else close(true);
+    });
+    items.forEach(item => {
+        item.addEventListener('click', () => {
+            close(true);
+            selectExample(Number(item.dataset.exampleIndex));
+        });
+    });
+    menu.addEventListener('keydown', event => {
+        if (event.key === 'Tab') {
+            // Let the browser move focus before hiding the item it starts from.
+            const { signal } = openListeners;
+            setTimeout(() => {
+                if (!signal.aborted) close();
+            }, 0);
+            return;
+        }
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            close(true);
+            return;
+        }
+
+        const index = items.indexOf(event.target);
+        const next = {
+            ArrowDown: (index + 1) % items.length,
+            ArrowUp: (index + items.length - 1) % items.length,
+            Home: 0,
+            End: items.length - 1,
+        };
+        if (!Object.hasOwn(next, event.key)) return;
+        event.preventDefault();
+        focusItem(next[event.key]);
+    });
+}
+
 function initPlayground(root) {
     const part = name => root.querySelector(`[data-part="${name}"]`);
     const sourceElement = part('editor');
@@ -457,13 +563,14 @@ function initPlayground(root) {
         exec: run,
     });
 
-    part('examples')?.addEventListener('change', event => {
-        const example = event.target.value === '' ? null : examples[Number(event.target.value)];
-        if (!example) return;
-        editor.setValue(example.source, -1);
-        loadParameters(parameterRows(example.params));
-        event.target.value = '';
-    });
+    const examplesTrigger = part('examples');
+    if (examplesTrigger) {
+        bindExamplesMenu(examplesTrigger, part('examples-menu'), index => {
+            const example = examples[index];
+            editor.setValue(example.source, -1);
+            loadParameters(parameterRows(example.params));
+        });
+    }
     part('run').addEventListener('click', run);
     part('format')?.addEventListener('click', formatSource);
     part('inspect').addEventListener('click', inspectSource);

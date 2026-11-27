@@ -11,12 +11,14 @@
                 Run
             </button>
             {{ if not $readonly }}
-            <select class="playground-button playground-examples" data-part="examples" aria-label="Examples">
-                <option value="">Examples</option>
+            <button id="{{ $id }}-examples" class="playground-button playground-examples" type="button" data-part="examples"
+                aria-haspopup="menu" aria-expanded="false" aria-controls="{{ $id }}-examples-menu">Examples</button>
+            <div id="{{ $id }}-examples-menu" class="playground-examples-menu" data-part="examples-menu" role="menu"
+                aria-labelledby="{{ $id }}-examples" hidden>
                 {{- range $index, $example := $examples }}
-                <option value="{{ $index }}">{{ $example.title }}</option>
+                <button class="playground-example" type="button" role="menuitem" tabindex="-1" data-example-index="{{ $index }}">{{ $example.title }}</button>
                 {{- end }}
-            </select>
+            </div>
             <button class="playground-button" type="button" data-part="format" disabled>Format</button>
             {{ end }}
             <button class="playground-button" type="button" data-part="params" aria-expanded="false" aria-controls="{{ $id }}-params">Params</button>
